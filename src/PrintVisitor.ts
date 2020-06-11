@@ -77,7 +77,8 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#emptyStatement.
- visitEmptyStatement (ctx:RuleContext) {  console.trace('not implemented')
+ visitEmptyStatement (ctx:RuleContext) {  
+  console.info("visitEmptyStatement: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
@@ -235,7 +236,9 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#functionBody.
- visitFunctionBody (ctx:RuleContext) {  console.trace('not implemented')
+ visitFunctionBody (ctx:RuleContext) { 
+  console.info("visitFunctionBody: " + ctx.getText());
+
   return this.visitChildren(ctx);
 };
 
@@ -301,13 +304,16 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#arguments.
- visitArguments (ctx:RuleContext) {  console.trace('not implemented')
+ visitArguments (ctx:RuleContext) {  
+  console.info("visitArguments: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#argumentList.
- visitArgumentList (ctx:RuleContext) {  console.trace('not implemented')
+ visitArgumentList (ctx:RuleContext) {  
+  console.info("visitArgumentList: " + ctx.getText());
+
   return this.visitChildren(ctx);
 };
 
@@ -368,7 +374,9 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#ArgumentsExpression.
- visitArgumentsExpression (ctx:RuleContext) {  console.trace('not implemented')
+ visitArgumentsExpression (ctx:RuleContext) {  
+  console.info("visitArgumentsExpression: " + ctx.getText());
+
   return this.visitChildren(ctx);
 };
 
@@ -504,7 +512,8 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
- visitMemberDotExpression (ctx:RuleContext) {  console.trace('not implemented')
+ visitMemberDotExpression (ctx:RuleContext) {  
+  console.info("visitMemberDotExpression: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
@@ -516,7 +525,9 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#IdentifierExpression.
- visitIdentifierExpression (ctx:RuleContext) {  console.trace('not implemented')
+ visitIdentifierExpression (ctx:RuleContext) { 
+  console.info("visitIdentifierExpression: " + ctx.getText());
+
   return this.visitChildren(ctx);
 };
 
@@ -545,7 +556,8 @@ export class PrintVisitor extends DelvenVisitor {
 };
 
 // Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
- visitAssignmentOperator (ctx:RuleContext) {  console.trace('not implemented')
+ visitAssignmentOperator (ctx:RuleContext) { 
+  console.info("visitAssignmentOperator: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
@@ -565,19 +577,24 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#identifierName.
- visitIdentifierName (ctx:RuleContext) {  console.trace('not implemented')
+ visitIdentifierName (ctx:RuleContext) {  
+  console.info("visitIdentifierName: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#reservedWord.
- visitReservedWord (ctx:RuleContext) {  console.trace('not implemented')
+ visitReservedWord (ctx:RuleContext) {  
+  console.info("visitReservedWord: " + ctx.getText());
+
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#keyword.
- visitKeyword (ctx:RuleContext) {  console.trace('not implemented')
+ visitKeyword (ctx:RuleContext) {  
+  console.info("visitKeyword: " + ctx.getText());
+
   return this.visitChildren(ctx);
 };
 

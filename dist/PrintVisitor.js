@@ -70,7 +70,7 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#emptyStatement.
   visitEmptyStatement(ctx) {
-    console.trace('not implemented');
+    console.info("visitEmptyStatement: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -226,7 +226,7 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#functionBody.
   visitFunctionBody(ctx) {
-    console.trace('not implemented');
+    console.info("visitFunctionBody: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -292,13 +292,13 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#arguments.
   visitArguments(ctx) {
-    console.trace('not implemented');
+    console.info("visitArguments: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by ECMAScriptParser#argumentList.
   visitArgumentList(ctx) {
-    console.trace('not implemented');
+    console.info("visitArgumentList: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -358,7 +358,7 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#ArgumentsExpression.
   visitArgumentsExpression(ctx) {
-    console.trace('not implemented');
+    console.info("visitArgumentsExpression: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -490,7 +490,7 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
   visitMemberDotExpression(ctx) {
-    console.trace('not implemented');
+    console.info("visitMemberDotExpression: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -502,7 +502,7 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#IdentifierExpression.
   visitIdentifierExpression(ctx) {
-    console.trace('not implemented');
+    console.info("visitIdentifierExpression: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -532,7 +532,7 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
   visitAssignmentOperator(ctx) {
-    console.trace('not implemented');
+    console.info("visitAssignmentOperator: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -550,19 +550,19 @@ class PrintVisitor extends _ECMAScriptVisitor.ECMAScriptVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#identifierName.
   visitIdentifierName(ctx) {
-    console.trace('not implemented');
+    console.info("visitIdentifierName: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by ECMAScriptParser#reservedWord.
   visitReservedWord(ctx) {
-    console.trace('not implemented');
+    console.info("visitReservedWord: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by ECMAScriptParser#keyword.
   visitKeyword(ctx) {
-    console.trace('not implemented');
+    console.info("visitKeyword: " + ctx.getText());
     return this.visitChildren(ctx);
   }
 

@@ -20,13 +20,14 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 // https://github.com/antlr/grammars-v4/tree/master/javascript/javascript
 console.info('Transpiller');
 let input1 = "( 1 + 2 )";
-let input2 = "var x = function(y, z) { console.info('this is a string');}";
+let input2 = "var x = function(y, z) { console.info('this is a string') ; }";
 let input3 = "var x =  2 + 4";
-let chars = new antlr4.InputStream(input1);
+let chars = new antlr4.InputStream(input2);
 let lexer = new _ECMAScriptLexer.ECMAScriptLexer(chars);
 let tokens = new antlr4.CommonTokenStream(lexer);
 let parser = new _ECMAScriptParser.ECMAScriptParser(tokens);
 parser.buildParseTrees = true;
-let tree = parser.program();
+let tree = parser.program(); // console.info(tree.toStringTree())
+
 tree.accept(new _PrintVisitor.PrintVisitor()); // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)
