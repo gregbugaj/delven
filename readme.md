@@ -32,3 +32,5 @@ https://www.w3.org/TR/webdriver1
 
 
 https://babeljs.io/videos
+
+https://dzone.com/articles/create-a-transpiler-from-vba-to-vbnet
