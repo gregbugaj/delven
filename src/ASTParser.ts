@@ -5,8 +5,10 @@ import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
 import ASTNode from "./ASTNode";
-import { ExpressionStatement, Literal, Script, BlockStatement, Statement } from "./nodes";
+import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression } from "./nodes";
 import { Syntax } from "./syntax";
+import { type } from "os"
+import { Interval } from "antlr4"
 let fs = require("fs");
 
 /**
@@ -31,6 +33,7 @@ export interface Marker {
 
 export default abstract class ASTParser {
     private visitor: (typeof DelvenVisitor | null)
+   
     constructor(visitor?: DelvenASTVisitor) {
         this.visitor = visitor || new DelvenASTVisitor();
     }
@@ -50,6 +53,8 @@ export default abstract class ASTParser {
         let lexer = new DelvenLexer(chars);
         let tokens = new antlr4.CommonTokenStream(lexer);
         let parser = new DelvenParser(tokens);
+ 
+ 
         let tree = parser.program();
         // console.info(tree.toStringTree())
         tree.accept(new PrintVisitor());
@@ -74,20 +79,69 @@ export default abstract class ASTParser {
             default:
                 throw new Error("Unkown parser type");
         }
-        return parser.generate(source)
+
+       return parser.generate(source)
     }
 }
 
 class ASTParserDefault extends ASTParser {
 
 }
-function type(o) {
-    return o && o.constructor && o.constructor.name
-}
 
 export class DelvenASTVisitor extends DelvenVisitor {
+    private ruleTypeMap: Map<number, string> = new Map();
+
     constructor() {
         super();
+        this.setupTypeRules();
+    }
+
+    private setupTypeRules(){
+        const keys = Object.getOwnPropertyNames(ECMAScriptParser);
+        for(var key in keys){
+            let name = keys[key];
+            if(name.startsWith('RULE_')){
+                this.ruleTypeMap.set(parseInt(ECMAScriptParser[name]), name)
+            }
+        }
+    }
+
+    private dumpContext(ctx: RuleContext){
+        const keys = Object.getOwnPropertyNames(ECMAScriptParser);
+        let context = []
+        for(var key in keys){
+            let name = keys[key];
+            if(name.endsWith('Context')){
+                if(ctx instanceof ECMAScriptParser[name]){
+                    context.push(name);
+                }
+            }
+        }
+        return context;
+    }
+
+    private dumpContextAllChildren(ctx: RuleContext, indent:number = 0){
+        let pad = " ".padStart(indent, "\t");
+        let nodes = this.dumpContext(ctx);
+        if(nodes.length > 0){
+            console.info(pad + " * " + nodes)
+        }
+        for(let i = 0; i < ctx.getChildCount(); ++i)
+        {
+            let child = ctx?.getChild(i);
+            if(child){
+                this.dumpContextAllChildren(child, ++indent);
+                --indent;
+            }
+        }
+    }
+    
+    /**
+     * Get rule name by the Id
+     * @param id 
+     */
+    getRuleById(id: number): string | undefined {
+        return this.ruleTypeMap.get(id);
     }
 
     private asMarker(metadata: any) {
@@ -100,9 +154,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return node;
     }
 
+    private throwTypeError(typeId: any) {
+        throw new Error("Unhandled type : " + typeId + " : " + this.getRuleById(typeId));
+    }
+    
     // Visit a parse tree produced by ECMAScriptParser#program.
-    visitProgram(ctx: RuleContext) {
-        console.info("visitProgram: " + ctx.getText());
+    visitProgram(ctx: ECMAScriptParser.ProgramContext) {                
+        console.info("visitProgram [%s] : [%s]",ctx.getChildCount(), ctx.getText());       
+
+        
         // Interval { start: 0, stop: 0 }
         let interval = ctx.getSourceInterval();
         console.info('interval : %s', JSON.stringify(interval))
@@ -115,40 +175,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 statements.push(statement);
             }
         }
-        let metadata = {
-            start: {
-                line: 1,
-                column: interval.start,
-                offset: 0
-            },
-
-            end: {
-                line: 1,
-                column: interval.stop,
-                offset: 0
-            }
-        };
 
         let script = new Script(statements);
-        return this.decorate(script, this.asMarker(metadata));
+        return this.decorate(script, this.asMarker(this.asMetadata(interval)));
     };
 
     // Visit a parse tree produced by ECMAScriptParser#statement.
     visitStatement(ctx: RuleContext) {
         console.info("visitStatement [%s] : %s", ctx.getChildCount(), ctx.getText());
+        this.dumpContextAllChildren(ctx);
         if (ctx.getChildCount() != 1) {
-            throw new Error("Wrong child count, expected 1 got : " + ctx.getChildCount());
+         //   throw new Error("Wrong child count, expected 1 got : " + ctx.getChildCount());
         }
 
         let node: RuleContext = ctx.getChild(0);
+       
         let type = node.ruleIndex;
         if (type == ECMAScriptParser.RULE_block) {
             return this.visitBlock(node);
         } else if (type == ECMAScriptParser.RULE_expressionStatement) {
             return this.visitExpressionStatement(node);
         }
-        else {
-            throw new Error("Unhandled type XX: " + type);
+        else {            
+            this.throwTypeError(type)
         }
     };
 
@@ -168,12 +217,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 let expression = this.visitExpressionStatement(node);
                 body.push(expression);
             }
-
             else if (type == undefined) {
                 continue;
             }
-            else {
-                throw new Error("Unhandled type : " + type);
+            else {                
+                this.throwTypeError(type);
             }
         }
 
@@ -196,7 +244,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 continue;
             }
             else {
-                throw new Error("Unhandled type : " + type);
+                this.throwTypeError(type);
             }
         }
         return body;
@@ -205,7 +253,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     // Visit a parse tree produced by ECMAScriptParser#variableStatement.
     visitVariableStatement(ctx: RuleContext) {
         console.info("visitVariableStatement: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
@@ -234,209 +282,207 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.info("visitEmptyStatementXX: " + ctx.getText());
     };
 
+    private getRuleType(node:any, index:number) : number {
+        return node.getChild(index).ruleIndex;
+    }
+    
+    private assertNodeCount(ctx: RuleContext, count: number) {
+        if (ctx.getChildCount() != count) {
+            throw new Error("Wrong child count, expected 1 got : " + ctx.getChildCount());
+        }
+    }
 
     // Visit a parse tree produced by ECMAScriptParser#expressionStatement.
     visitExpressionStatement(ctx: RuleContext) {
         console.info("visitExpressionStatement: " + ctx.getText());
-        if (ctx.getChildCount() != 1) {
-            throw new Error("Wrong child count, expected 1 got : " + ctx.getChildCount());
-        }
+        this.assertNodeCount(ctx, 1);
+
         // visitExpressionStatement:>visitExpressionSequence:>visitLiteralExpression
         let node: RuleContext = ctx.getChild(0); // visitExpressionSequence 
-        let expression = node.getChild(0);
-        let expressionId = expression.ruleIndex;
-        let literal;
-        if (expressionId == ECMAScriptParser.RULE_singleExpression) {            
-            literal = this.visitLiteralExpression(expression);            
-        } else {
-            throw new Error("Unhandled type : " + type);
-        }
-
-        let interval = expression.getSourceInterval();
-        let statement = new ExpressionStatement(literal);
-        const metadata = {
+        let sequence = this.visitExpressionSequence(node);
+        return sequence;
+    }
+    
+    private asMetadata(interval: Interval): any {
+        return {
             start: {
                 line: 1,
                 column: interval.start,
                 offset: 0
             },
-
             end: {
                 line: 1,
                 column: interval.stop,
                 offset: 3
             }
-        };
-
-        return this.decorate(statement, this.asMarker(metadata));
-    };
-
+        }
+    }
 
     // Visit a parse tree produced by ECMAScriptParser#ifStatement.
     visitIfStatement(ctx: RuleContext) {
         console.info("visitIfStatement: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#DoStatement.
     visitDoStatement(ctx: RuleContext) {
         console.info("visitDoStatement: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#WhileStatement.
     visitWhileStatement(ctx: RuleContext) {
         console.info("visitWhileStatement: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#ForStatement.
     visitForStatement(ctx: RuleContext) {
         console.info("visitWhileStatement: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#ForVarStatement.
     visitForVarStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#ForInStatement.
     visitForInStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#ForVarInStatement.
     visitForVarInStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#continueStatement.
     visitContinueStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#breakStatement.
     visitBreakStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#returnStatement.
     visitReturnStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#withStatement.
     visitWithStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#switchStatement.
     visitSwitchStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#caseBlock.
     visitCaseBlock(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#caseClauses.
     visitCaseClauses(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#caseClause.
     visitCaseClause(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#defaultClause.
     visitDefaultClause(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#labelledStatement.
     visitLabelledStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#throwStatement.
     visitThrowStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#tryStatement.
     visitTryStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#catchProduction.
     visitCatchProduction(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#finallyProduction.
     visitFinallyProduction(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#debuggerStatement.
     visitDebuggerStatement(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#functionDeclaration.
     visitFunctionDeclaration(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#formalParameterList.
     visitFormalParameterList(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
@@ -444,155 +490,189 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitFunctionBody(ctx: RuleContext) {
         console.info("visitFunctionBody: " + ctx.getText());
 
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#arrayLiteral.
     visitArrayLiteral(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#elementList.
     visitElementList(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#elision.
     visitElision(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#objectLiteral.
     visitObjectLiteral(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#propertyNameAndValueList.
     visitPropertyNameAndValueList(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#PropertyExpressionAssignment.
     visitPropertyExpressionAssignment(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#PropertyGetter.
     visitPropertyGetter(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#PropertySetter.
     visitPropertySetter(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#propertyName.
     visitPropertyName(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#propertySetParameterList.
     visitPropertySetParameterList(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#arguments.
     visitArguments(ctx: RuleContext) {
         console.info("visitArguments: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#argumentList.
     visitArgumentList(ctx: RuleContext) {
         console.info("visitArgumentList: " + ctx.getText());
-
-        this.visitChildren(ctx);
     };
-
 
     // Visit a parse tree produced by ECMAScriptParser#expressionSequence.
     visitExpressionSequence(ctx: RuleContext) {
-        console.info("visitExpressionSequence: " + ctx.getText());
-        this.visitChildren(ctx);
+        console.info("visitExpressionSequence [%s] : [%s]", ctx.getChildCount(), ctx.getText());
+
+        this.dumpContextAllChildren(ctx);
+
+        if(true)
+            return;
+
+
+        let node = ctx;
+        let count = node.getChildCount();
+        let interval = node.getSourceInterval();
+        let expressions:[] = [];
+
+        this.dumpContext(ctx)
+        let child  = node.getChild(0);
+        if(child instanceof ECMAScriptParser.AssignmentExpressionContext)
+        {
+            console.info("ASSIGMENT :: " )
+        }
+
+        for(var i = 0; i < count; ++i){
+            let child = node.getChild(i);
+            let typeId = child.ruleIndex;
+            let type  = this.getRuleById(typeId);
+
+            console.info("*** " + type)
+            if(typeId == undefined) {
+                continue;
+            }else if (typeId == ECMAScriptParser.RULE_singleExpression) {            
+                let literal = this.visitLiteralExpression(child);                     
+                 expressions.push(literal);
+            }  
+             else {
+                this.throwTypeError(typeId);
+            }
+        }
+
+        let sequence = new SequenceExpression(expressions);   
+        return this.decorate(sequence, this.asMarker(this.asMetadata(ctx.getSourceInterval())))
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#TernaryExpression.
     visitTernaryExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#LogicalAndExpression.
     visitLogicalAndExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#PreIncrementExpression.
     visitPreIncrementExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#ObjectLiteralExpression.
     visitObjectLiteralExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#InExpression.
     visitInExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#LogicalOrExpression.
     visitLogicalOrExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#NotExpression.
     visitNotExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#PreDecreaseExpression.
     visitPreDecreaseExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
@@ -600,98 +680,98 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitArgumentsExpression(ctx: RuleContext) {
         console.info("visitArgumentsExpression: " + ctx.getText());
 
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#ThisExpression.
     visitThisExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#FunctionExpression.
     visitFunctionExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#UnaryMinusExpression.
     visitUnaryMinusExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#PostDecreaseExpression.
     visitPostDecreaseExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#AssignmentExpression.
     visitAssignmentExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#TypeofExpression.
     visitTypeofExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#InstanceofExpression.
     visitInstanceofExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#UnaryPlusExpression.
     visitUnaryPlusExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#DeleteExpression.
     visitDeleteExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
     visitEqualityExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#BitXOrExpression.
     visitBitXOrExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#MultiplicativeExpression.
     visitMultiplicativeExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#BitShiftExpression.
     visitBitShiftExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
@@ -699,81 +779,71 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitParenthesizedExpression(ctx: RuleContext) {
         console.info("visitParenthesizedExpression: " + ctx.getText());
 
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#AdditiveExpression.
     visitAdditiveExpression(ctx: RuleContext) {
         console.info("visitAdditiveExpression: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#RelationalExpression.
     visitRelationalExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#PostIncrementExpression.
     visitPostIncrementExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#BitNotExpression.
     visitBitNotExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#NewExpression.
     visitNewExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#LiteralExpression.
     visitLiteralExpression(ctx: RuleContext) {
-        console.info("visitLiteralExpression: " + ctx.getText());
-        if (ctx.getChildCount() != 1) {
-            throw new Error("Wrong child count, expected 1 got : " + ctx.getChildCount());
-        }
-        // visitLiteralExpression: > visitLiteral:  visitNumericLiteral:
-        let node: RuleContext = ctx.getChild(0);
-        let expression = node.getChild(0);
-        let expressionId = expression.ruleIndex;
-        if (expressionId == ECMAScriptParser.RULE_numericLiteral) {            
-            return this.visitNumericLiteral(ctx);            
-        } else {
-            throw new Error("Unhandled type : " + type);
-        }
-    };
-
+        console.info("visitLiteralExpression [%s] : [%s]",ctx.getChildCount(), ctx.getText());
+        this.assertNodeCount(ctx, 1);
+        // visitLiteralExpression: > visitLiteral
+        return this.visitLiteral(ctx.getChild(0))
+    }
 
     // Visit a parse tree produced by ECMAScriptParser#ArrayLiteralExpression.
     visitArrayLiteralExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
     visitMemberDotExpression(ctx: RuleContext) {
         console.info("visitMemberDotExpression: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#MemberIndexExpression.
     visitMemberIndexExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
@@ -781,64 +851,86 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitIdentifierExpression(ctx: RuleContext) {
         console.info("visitIdentifierExpression: " + ctx.getText());
 
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
     visitBitAndExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
     visitBitOrExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#AssignmentOperatorExpression.
     visitAssignmentOperatorExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#VoidExpression.
     visitVoidExpression(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
     // Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
     visitAssignmentOperator(ctx: RuleContext) {
         console.info("visitAssignmentOperator: " + ctx.getText());
-        this.visitChildren(ctx);
+        
     };
-
 
     // Visit a parse tree produced by ECMAScriptParser#literal.
     visitLiteral(ctx: RuleContext) {
-        console.info("visitLiteral: " + ctx.getText());
-        this.visitChildren(ctx);
-    };
+        console.info("visitLiteral [%s] : [%s]",ctx.getChildCount(), ctx.getText());
+        this.assertNodeCount(ctx, 1);
+        let node: RuleContext = ctx.getChild(0);
+        let typeId = node.ruleIndex;
+        let count = node.getChildCount(); 
+        console.info('typeId ' + typeId + " count = " + count)
+        //  visitLiteral
+        if(count == 0) { 
+            if(typeId == undefined){ // TerminalNode
+                return this.createLiteralValue(node);
+            }
+        } else if(count == 1) { 
+            // only RULE_numericLiteral parsed right now ??
+            let count = ctx.getChildCount();
+            let node: RuleContext = ctx.getChild(0);
+            let expression = node.getChild(0);
+            let expressionId = expression.ruleIndex;
+            if (expressionId == ECMAScriptParser.RULE_numericLiteral) {            
+                return this.visitNumericLiteral(ctx);            
+            } 
+        }
+
+        this.throwTypeError(typeId);
+    }
 
 
     // Visit a parse tree produced by ECMAScriptParser#numericLiteral.
-    visitNumericLiteral(ctx: RuleContext) {
-        console.info("visitNumericLiteral: " + ctx.getText());
+    visitNumericLiteral(ctx: RuleContext) {        
+        return this.createLiteralValue(ctx);
+    }
+    
+    createLiteralValue(ctx: RuleContext) {
+        console.info("createLiteralValue [%s]: [%s]", ctx.getChildCount(), ctx.getText());
         let value = ctx.getText();
-        let expression = new Literal("number", value);
-        return expression;''
-    };
-
+        let literal = new Literal(value, value);
+        return this.decorate(literal, this.asMarker(this.asMetadata(ctx.getSourceInterval())))
+    }
 
     // Visit a parse tree produced by ECMAScriptParser#identifierName.
     visitIdentifierName(ctx: RuleContext) {
         console.info("visitIdentifierName: " + ctx.getText());
-        this.visitChildren(ctx);
     };
 
 
@@ -846,7 +938,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitReservedWord(ctx: RuleContext) {
         console.info("visitReservedWord: " + ctx.getText());
 
-        this.visitChildren(ctx);
+        
     };
 
 
@@ -854,40 +946,40 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitKeyword(ctx: RuleContext) {
         console.info("visitKeyword: " + ctx.getText());
 
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#futureReservedWord.
     visitFutureReservedWord(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#getter.
     visitGetter(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 
     // Visit a parse tree produced by ECMAScriptParser#setter.
     visitSetter(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
     // Visit a parse tree produced by ECMAScriptParser#eos.
     visitEos(ctx: RuleContext) {
         //console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
     // Visit a parse tree produced by ECMAScriptParser#eof.
     visitEof(ctx: RuleContext) {
         console.trace('not implemented')
-        this.visitChildren(ctx);
+        
     };
 
 }

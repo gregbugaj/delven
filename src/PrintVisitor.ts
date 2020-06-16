@@ -454,7 +454,7 @@ export class PrintVisitor extends DelvenVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#AssignmentExpression.
   visitAssignmentExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitAssignmentExpression [%s]: [%s]", ctx.getChildCount(),  ctx.getText());
     return this.visitChildren(ctx);
   };
 
@@ -475,7 +475,7 @@ export class PrintVisitor extends DelvenVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#UnaryPlusExpression.
   visitUnaryPlusExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitUnaryPlusExpression [%s]: [%s]", ctx.getChildCount(),  ctx.getText());
     return this.visitChildren(ctx);
   };
 
