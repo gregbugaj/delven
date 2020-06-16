@@ -21,14 +21,13 @@ npm install --save-dev babel-loader @babel/core
 
 ## Reference
 
+Notes
 
 ### Grammars
 https://stackoverflow.com/questions/1786565/ebnf-for-ecmascript
 
-
 https://github.com/babel/babel/tree/master/packages
 https://babeljs.io/docs/en/plugins
-
 
 
 https://babeljs.io/videos
@@ -39,6 +38,8 @@ https://tomassetti.me/parse-tree-abstract-syntax-tree/
 estree 
 https://astexplorer.net/
 
+https://github.com/dat2/ecmascript
+https://github.com/jquery/esprima/
 
 ### Webdriver
 
