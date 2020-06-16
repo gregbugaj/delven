@@ -13,7 +13,7 @@ let input1 = "( 1 + 2 )"
 let input2 = "var x = function(y, z) { console.info('this is a string') ; }" 
 let input3 = "var x =  2 + 4" 
 
-let chars = new antlr4.InputStream(input2);
+let chars = new antlr4.InputStream(input1);
 let lexer = new DelvenLexer(chars);
 let tokens  = new antlr4.CommonTokenStream(lexer);
 let parser = new DelvenParser(tokens);

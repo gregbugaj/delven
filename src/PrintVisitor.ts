@@ -5,7 +5,8 @@ export class PrintVisitor extends DelvenVisitor {
 
 // Visit a parse tree produced by ECMAScriptParser#program.
  visitProgram (ctx:RuleContext) {  
-  //  console.trace('not implemented')
+  console.info("visitProgram: " + ctx.getText());
+  
   return this.visitChildren(ctx);
 };
 
@@ -20,7 +21,6 @@ export class PrintVisitor extends DelvenVisitor {
 // Visit a parse tree produced by ECMAScriptParser#sourceElement.
  visitSourceElement (ctx:RuleContext) {  
   console.info("visitSourceElement: " + ctx.getText());
-
   return this.visitChildren(ctx);
 };
 
@@ -33,7 +33,8 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#block.
- visitBlock (ctx:RuleContext) {  console.trace('not implemented')
+ visitBlock (ctx:RuleContext) {  
+  console.info("visitBlock: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
@@ -92,25 +93,29 @@ export class PrintVisitor extends DelvenVisitor {
 
 
 // Visit a parse tree produced by ECMAScriptParser#ifStatement.
- visitIfStatement (ctx:RuleContext) {  console.trace('not implemented')
+ visitIfStatement (ctx:RuleContext) {  
+  console.info("visitIfStatement: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#DoStatement.
- visitDoStatement (ctx:RuleContext) {  console.trace('not implemented')
+ visitDoStatement (ctx:RuleContext) { 
+  console.info("visitDoStatement: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#WhileStatement.
- visitWhileStatement (ctx:RuleContext) {  console.trace('not implemented')
+ visitWhileStatement (ctx:RuleContext) {  
+  console.info("visitWhileStatement: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ForStatement.
- visitForStatement (ctx:RuleContext) {  console.trace('not implemented')
+ visitForStatement (ctx:RuleContext) {  
+  console.info("visitWhileStatement: " + ctx.getText());
   return this.visitChildren(ctx);
 };
 
