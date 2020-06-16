@@ -4,7 +4,6 @@ import { ECMAScriptParser as DelvenParser, ECMAScriptParser } from "./parser/ECM
 import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
-
 import ASTNode from "./ASTNode";
 import { ExpressionStatement, Literal, Script, BlockStatement, Statement } from "./nodes";
 import { Syntax } from "./syntax";

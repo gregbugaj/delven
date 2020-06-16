@@ -41,6 +41,8 @@ https://astexplorer.net/
 https://github.com/dat2/ecmascript
 https://github.com/jquery/esprima/
 
+
+https://helpx.adobe.com/experience-manager/6-5/sites/developing/using/reference-materials/javadoc/org/mozilla/javascript/ast/AstNode.html#debugPrint--
 ### Webdriver
 
 https://webdriver.io/
