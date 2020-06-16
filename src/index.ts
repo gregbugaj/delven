@@ -4,9 +4,11 @@ import {ECMAScriptParser as  DelvenParser} from "./parser/ECMAScriptParser"
 import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
+let fs = require('fs');
 
 // Grammar 
 // https://github.com/antlr/grammars-v4/tree/master/javascript/javascript
+// https://stackoverflow.com/questions/1786565/ebnf-for-ecmascript
 
 console.info('Transpiller');
 let input1 = "( 1 + 2 )" 
