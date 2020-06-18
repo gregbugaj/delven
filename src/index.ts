@@ -36,8 +36,14 @@ let input3 = "var x =  2 + 4"
 // let ast = ASTParser.parse({ type: "code", value: "var x = 1 + 1"});
 // let ast = ASTParser.parse({ type: "code", value: "x = [x, 2 + 1]"});
 // let ast = ASTParser.parse({ type: "code", value: "[1, 2, 3,,,,]"});
-//let ast = ASTParser.parse({ type: "code", value: "var x = 1;"});
-let ast = ASTParser.parse({ type: "code", value: 'x = {"A": 1, x:2}'});
+//let ast = ASTParser.parse({ type: "code", value: "var x, y"});
+//let ast = ASTParser.parse({ type: "code", value: 'x = {"A": 1, x:2}'});
+//let ast = ASTParser.parse({ type: "code", value: '[11,,,]'});
+// let ast = ASTParser.parse({ type: "code", value: 'var x = {"a":1}'});
+//let ast = ASTParser.parse({ type: "code", value: 'var x = [1,2]'});
+//let ast = ASTParser.parse({ type: "code", value: ' var x = [1, {}]'});
+let ast = ASTParser.parse({ type: "code", value: ' var x = [1, {"a":23, z:"abc"}]'});
+
 console.info(toJson(ast))
 //let generator = new SourceGenerator();
 //generator.visit(ast);
