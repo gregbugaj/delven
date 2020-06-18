@@ -107,7 +107,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
     private dumpContext(ctx: RuleContext) {
         const keys = Object.getOwnPropertyNames(ECMAScriptParser);
         let context = []
-        
         for (var key in keys) {
             let name = keys[key];
             // this only test inheritance
@@ -117,20 +116,39 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 }
             }
         }
-        
-        for(let key in context){
-            let name = context[key];
-            let clazz =  ECMAScriptParser[name];
-            if(ctx == clazz.prototype) {
-                console.info("Target : " + clazz)
+
+        // diry hack for walking antler depency chain 
+        // find longest dependency chaing;
+        // this traversal is specific to ANTL parser
+        // We want to be able to find dependencies such as;
+        /*
+            -------- ------------
+            PropertyExpressionAssignmentContext
+            ** PropertyAssignmentContext
+            ** ParserRuleContext
+            -------- ------------
+            PropertyAssignmentContext
+            ** ParserRuleContext
+         */
+         if (context.length > 1) {
+            let contextName;
+            let longest = 0;
+            for (const key in context) {
+                const name = context[key];
+                let obj = ECMAScriptParser[name];
+                let chain = 1;
+                do {
+                    ++chain;
+                    obj = ECMAScriptParser[obj.prototype.__proto__.constructor.name];
+                } while (obj && obj.prototype)
+                if(chain > longest){
+                    longest = chain;
+                    contextName = `${name} [${chain}]`;
+                }
             }
-            
-            // console.info("CLAZZ : "+  key+ " -- "+ clazz.prototype.constructor.)
-            //console.info("CLAZZ : "+  key+ " -- " + clazz.prototype)
-
+            return [contextName];
         }
-
-        return  context;
+        return context;
     }
 
     private dumpContextAllChildren(ctx: RuleContext, indent: number = 0) {
@@ -176,9 +194,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * @param type 
      */
     private throwInsanceError(type: any) {
-/*         if (type == undefined || type == "") {
-           return;
-        } */
+        /*         if (type == undefined || type == "") {
+                   return;
+                } */
         throw new TypeError("Unhandled instance type : " + type);
     }
 
@@ -219,8 +237,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else if (node instanceof ECMAScriptParser.VariableStatementContext) {
             return this.visitVariableStatement(node);
         } else if (node instanceof ECMAScriptParser.BlockContext) {
-            return this.visitBlock(node);}
-         else if (node instanceof ECMAScriptParser.EmptyStatementContext) {
+            return this.visitBlock(node);
+        }
+        else if (node instanceof ECMAScriptParser.EmptyStatementContext) {
             // NOOP,
             // var x;
         } else {
@@ -518,9 +537,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ArrayLiteralContext)
         // this.assertNodeCount(ctx, 3)
         let elementList = ctx.getChild(1);
-        let elements =  this.visitElementList(elementList);
+        let elements = this.visitElementList(elementList);
         let elisionValues
-        if(ctx.getChildCount() == 5) {
+        if (ctx.getChildCount() == 5) {
             let elision = ctx.getChild(3);
             elisionValues = this.visitElision(elision);
         }
@@ -540,9 +559,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             let node = ctx.getChild(i);
 
-            if(node.symbol != undefined)
+            if (node.symbol != undefined)
                 continue;
-            
+
             let elem;
             if (node instanceof ECMAScriptParser.IdentifierExpressionContext) {
                 elem = this.visitIdentifierExpression(node);
@@ -553,7 +572,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             } else if (node instanceof ECMAScriptParser.MultiplicativeExpressionContext) {
                 elem = this.visitMultiplicativeExpression(node);
             } else {
-               this.throwInsanceError(this.dumpContext(node));
+                this.throwInsanceError(this.dumpContext(node));
             }
             elements.push(elem);
         }
@@ -566,7 +585,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ElisionContext)
         // compliance: esprima compliane or returning `null` 
         let elision = [];
-        for(let i = 0; i < ctx.getChildCount(); ++i) {
+        for (let i = 0; i < ctx.getChildCount(); ++i) {
             elision.push(null);
         }
         return elision;
@@ -646,7 +665,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 exp = this.visitLiteralExpression(node);
             } else if (node instanceof ECMAScriptParser.ObjectLiteralExpressionContext) {
                 exp = this.visitObjectLiteralExpression(node);
-            }else if (node instanceof ECMAScriptParser.AssignmentExpressionContext) {
+            } else if (node instanceof ECMAScriptParser.AssignmentExpressionContext) {
                 exp = this.visitAssignmentExpression(node);
             } else if (node instanceof ECMAScriptParser.AdditiveExpressionContext) {
                 let node = exp = this.visitAdditiveExpression(node);
