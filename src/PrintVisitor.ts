@@ -48,7 +48,6 @@ export class PrintVisitor extends DelvenVisitor {
   // Visit a parse tree produced by ECMAScriptParser#variableStatement.
   visitVariableStatement(ctx: RuleContext) {
     console.info("visitVariableStatement: " + ctx.getText());
-
     return this.visitChildren(ctx);
   }
 
@@ -295,42 +294,42 @@ export class PrintVisitor extends DelvenVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#propertyNameAndValueList.
   visitPropertyNameAndValueList(ctx: RuleContext) {
-    console.info("visitPropertyNameAndValueList [%s] : [%s]", ctx.getChildCount(), ctx.getText());
+    console.info("visitPropertyNameAndValueList [%s] : %s", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#PropertyExpressionAssignment.
   visitPropertyExpressionAssignment(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitPropertyExpressionAssignment [%s] : %s", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#PropertyGetter.
   visitPropertyGetter(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitPropertyGetter [%s] : %s", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#PropertySetter.
   visitPropertySetter(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitPropertySetter [%s] : %s", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#propertyName.
   visitPropertyName(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitPropertyName [%s] : %s", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#propertySetParameterList.
   visitPropertySetParameterList(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitPropertySetParameterList [%s] : %s", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -380,7 +379,7 @@ export class PrintVisitor extends DelvenVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#ObjectLiteralExpression.
   visitObjectLiteralExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitObjectLiteralExpression [%s] : %s", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 

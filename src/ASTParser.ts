@@ -107,15 +107,30 @@ export class DelvenASTVisitor extends DelvenVisitor {
     private dumpContext(ctx: RuleContext) {
         const keys = Object.getOwnPropertyNames(ECMAScriptParser);
         let context = []
+        
         for (var key in keys) {
             let name = keys[key];
+            // this only test inheritance
             if (name.endsWith('Context')) {
                 if (ctx instanceof ECMAScriptParser[name]) {
                     context.push(name);
                 }
             }
         }
-        return context;
+        
+        for(let key in context){
+            let name = context[key];
+            let clazz =  ECMAScriptParser[name];
+            if(ctx == clazz.prototype) {
+                console.info("Target : " + clazz)
+            }
+            
+            // console.info("CLAZZ : "+  key+ " -- "+ clazz.prototype.constructor.)
+            //console.info("CLAZZ : "+  key+ " -- " + clazz.prototype)
+
+        }
+
+        return  context;
     }
 
     private dumpContextAllChildren(ctx: RuleContext, indent: number = 0) {
@@ -257,6 +272,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitVariableStatement(ctx: RuleContext) {
         console.info("visitVariableStatement [%s] : %s", ctx.getChildCount(), ctx.getText());
         this.dumpContextAllChildren(ctx)
+
     }
 
     // Visit a parse tree produced by ECMAScriptParser#variableDeclarationList.
@@ -558,14 +574,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     // Visit a parse tree produced by ECMAScriptParser#objectLiteral.
     visitObjectLiteral(ctx: RuleContext) {
-        console.trace('not implemented')
-
+        console.info("visitObjectLiteral [%s] : %s", ctx.getChildCount(), ctx.getText());
+        this.assertType(ctx, ECMAScriptParser.ObjectLiteralContext);
+        // this.dumpContextAllChildren(ctx)
+        let val = this.dumpContext(ctx.getChild(1).getChild(0));
+        console.info(val)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#propertyNameAndValueList.
     visitPropertyNameAndValueList(ctx: RuleContext) {
         console.trace('not implemented')
-
     }
 
 
@@ -620,15 +638,18 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.info("visitExpressionSequence [%s] : [%s]", ctx.getChildCount(), ctx.getText());
         this.assertType(ctx, ECMAScriptParser.ExpressionSequenceContext);
         let expressions = [];
+
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             let node: RuleContext = ctx.getChild(i);
             let exp;
             if (node instanceof ECMAScriptParser.LiteralExpressionContext) {
                 exp = this.visitLiteralExpression(node);
-            } else if (node instanceof ECMAScriptParser.AssignmentExpressionContext) {
+            } else if (node instanceof ECMAScriptParser.ObjectLiteralExpressionContext) {
+                exp = this.visitObjectLiteralExpression(node);
+            }else if (node instanceof ECMAScriptParser.AssignmentExpressionContext) {
                 exp = this.visitAssignmentExpression(node);
             } else if (node instanceof ECMAScriptParser.AdditiveExpressionContext) {
-                exp = this.visitAdditiveExpression(node);
+                let node = exp = this.visitAdditiveExpression(node);
             } else if (node instanceof ECMAScriptParser.MultiplicativeExpressionContext) {
                 exp = this.visitMultiplicativeExpression(node);
             } else if (node instanceof ECMAScriptParser.ArrayLiteralExpressionContext) {
@@ -676,8 +697,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     // Visit a parse tree produced by ECMAScriptParser#ObjectLiteralExpression.
     visitObjectLiteralExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-
+        console.info("visitObjectLiteralExpression [%s] : %s", ctx.getChildCount(), ctx.getText());
+        this.assertType(ctx, ECMAScriptParser.ObjectLiteralExpressionContext);
+        let expressions = [];
+        let node = ctx.getChild(0);
+        this.dumpContextAllChildren(node);
+        let obj = this.visitObjectLiteral(node);
     }
 
 
