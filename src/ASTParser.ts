@@ -588,7 +588,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let results = []
         // skip `[ and  ]` 
         for (let i = 1; i < ctx.getChildCount() - 1; ++i) {
-            const node = ctx.getChild(i);
+            const node:RuleContext = ctx.getChild(i);
             let exp = [];
             if (node instanceof ECMAScriptParser.ElementListContext) {
                 exp = this.visitElementList(node);
