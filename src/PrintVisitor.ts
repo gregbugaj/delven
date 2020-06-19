@@ -486,7 +486,7 @@ export class PrintVisitor extends DelvenVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
   visitEqualityExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitEqualityExpression [%s] : [%s]", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
@@ -577,14 +577,14 @@ export class PrintVisitor extends DelvenVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#MemberIndexExpression.
   visitMemberIndexExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitMemberIndexExpression [%s] : [%s]", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#IdentifierExpression.
   visitIdentifierExpression(ctx: RuleContext) {
-    console.info("visitIdentifierExpression: " + ctx.getText());
+    console.info("visitIdentifierExpression [%s] : [%s]", ctx.getChildCount(), ctx.getText());
 
     return this.visitChildren(ctx);
   }
@@ -592,34 +592,34 @@ export class PrintVisitor extends DelvenVisitor {
 
   // Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
   visitBitAndExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitBitAndExpression [%s] : [%s]", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
   visitBitOrExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitBitOrExpression [%s] : [%s]", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#AssignmentOperatorExpression.
   visitAssignmentOperatorExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitAssignmentOperatorExpression [%s] : [%s]", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
 
   // Visit a parse tree produced by ECMAScriptParser#VoidExpression.
   visitVoidExpression(ctx: RuleContext) {
-    console.trace('not implemented')
+    console.info("visitVoidExpression [%s] : [%s]", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 
   // Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
   visitAssignmentOperator(ctx: RuleContext) {
-    console.info("visitAssignmentOperator: " + ctx.getText());
+    console.info("visitAssignmentOperator [%s] : [%s]", ctx.getChildCount(), ctx.getText());
     return this.visitChildren(ctx);
   }
 

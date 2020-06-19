@@ -42,8 +42,18 @@ let input3 = "var x =  2 + 4"
 // let ast = ASTParser.parse({ type: "code", value: 'var x = {"a":1}'});
 //let ast = ASTParser.parse({ type: "code", value: 'var x = [1,2]'});
 //let ast = ASTParser.parse({ type: "code", value: ' var x = [1, {}]'});
-let ast = ASTParser.parse({ type: "code", value: ' var x = [1, {"a":23, z:"abc"}]'});
-
+// let ast = ASTParser.parse({ type: "code", value: ' var x = [1, {"a":23, z:"abc"}]'});
+ // let ast = ASTParser.parse({ type: "code", value: '(1 + 1 )'});
+// let ast = ASTParser.parse({ type: "code", value: ' x != 1 '});
+//let ast = ASTParser.parse({ type: "code", value: ' if(x != 1){ }'});
+// let ast = ASTParser.parse({ type: "code", value: ' if(x){ }'});
+//let ast = ASTParser.parse({ type: "code", value: ' if(x != 1){ } else {} '});
+//let ast = ASTParser.parse({ type: "code", value: ' if(x != 1){ } else if (x == 2) {}'});
+//let ast = ASTParser.parse({ type: "code", value: ' if(x != 1){ } else if (x == 2) {} else {}'});
+// let ast = ASTParser.parse({ type: "code", value: ' x = y.z '});
+//let ast = ASTParser.parse({ type: "code", value: ' x[1] '}); 
+let ast = ASTParser.parse({ type: "code", value: ' x+=1 '}); 
+//let ast = ASTParser.parse({ type: "code", value: ' x+=y '});
 console.info(toJson(ast))
 //let generator = new SourceGenerator();
 //generator.visit(ast);
