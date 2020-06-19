@@ -17,16 +17,23 @@ npm install --save-dev babel-loader @babel/core
 ```bash
  ./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts'  --source-maps inline
 
-```
-Run ESLint 
 
+ antlr4 -Dlanguage=JavaScript *.g4 -o ../parser -visitor -no-listener
+```
+
+Run ESLint 
 ```bash
 npx eslint ./src/
 ```
 
 ## Reference
 
-Notes
+ANTL$ linux setup
+http://www.cs.sjsu.edu/~mak/tutorials/InstallANTLR4.pdf
+
+antlr-4.8-complete.jar
+
+
 
 ### Grammars
 
@@ -58,3 +65,23 @@ https://webdriver.io/
 https://github.com/webdriverio/webdriverio
 https://docs.microsoft.com/en-us/azure/data-lake-analytics/data-lake-analytics-u-sql-get-started
 https://www.w3.org/TR/webdriver1
+
+
+
+## ERRORS
+
+https://github.com/antlr/grammars-v4/pull/1553
+
+https://github.com/antlr/grammars-v4/issues/1580
+
+RangeError: Maximum call stack size exceeded
+    at Hash.update (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/Utils.js:338:34)
+    at Hash.update (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/Utils.js:344:25)
+    at AND.updateHashCode (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/SemanticContext.js:245:10)
+    at Hash.update (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/Utils.js:360:31)
+    at ATNConfig.hashCodeForConfigSet (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ATNConfig.js:110:10)
+    at Set.hashATNConfig [as hashFunction] (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ATNConfigSet.js:21:11)
+    at Set.add (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/Utils.js:96:21)
+    at ATNConfigSet.add (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ATNConfigSet.js:99:35)
+    at ParserATNSimulator.closure_ (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1263:17)
+    at ParserATNSimulator.closureCheckingStopState (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1254:10)

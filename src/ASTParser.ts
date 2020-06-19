@@ -1,6 +1,6 @@
 import * as antlr4 from "antlr4"
-import { ECMAScriptVisitor as DelvenVisitor } from "./parser/ECMAScriptVisitor"
-import { ECMAScriptParser as DelvenParser, ECMAScriptParser } from "./parser/ECMAScriptParser"
+import { ECMAScriptParserVisitor as DelvenVisitor } from "./parser/ECMAScriptParserVisitor"
+import { ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
 import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
@@ -10,6 +10,7 @@ import { Syntax } from "./syntax";
 import { type } from "os"
 import * as fs from "fs"
 import { Interval } from "antlr4"
+
 
 /**
  * Version that we generate the AST for. 
@@ -95,23 +96,23 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     private setupTypeRules() {
-        const keys = Object.getOwnPropertyNames(ECMAScriptParser);
+        const keys = Object.getOwnPropertyNames(DelvenParser);
         for (var key in keys) {
             let name = keys[key];
             if (name.startsWith('RULE_')) {
-                this.ruleTypeMap.set(parseInt(ECMAScriptParser[name]), name)
+                this.ruleTypeMap.set(parseInt(DelvenParser[name]), name)
             }
         }
     }
 
     private dumpContext(ctx: RuleContext) {
-        const keys = Object.getOwnPropertyNames(ECMAScriptParser);
+        const keys = Object.getOwnPropertyNames(DelvenParser);
         let context = []
         for (var key in keys) {
             let name = keys[key];
             // this only test inheritance
             if (name.endsWith('Context')) {
-                if (ctx instanceof ECMAScriptParser[name]) {
+                if (ctx instanceof DelvenParser[name]) {
                     context.push(name);
                 }
             }
@@ -223,7 +224,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#program.
-    visitProgram(ctx: ECMAScriptParser.ProgramContext): Script {
+    visitProgram(ctx: RuleContext): Script {
         console.info("visitProgram [%s] : %s", ctx.getChildCount(), ctx.getText());
         // visitProgram ->visitSourceElements -> visitSourceElement -> visitStatement
         let statements: any = [];
@@ -758,7 +759,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#expressionSequence.
-    visitExpressionSequence(ctx: RuleContext): ExpressionStatement | SequenceExpression {
+    visitExpressionSequence(ctx: RuleContext): ExpressionStatement{
         console.info("visitExpressionSequence [%s] : [%s]", ctx.getChildCount(), ctx.getText());
         this.assertType(ctx, ECMAScriptParser.ExpressionSequenceContext);
         const expressions = [];

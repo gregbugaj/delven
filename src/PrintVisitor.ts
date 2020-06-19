@@ -1,4 +1,4 @@
-import { ECMAScriptVisitor as DelvenVisitor } from "./parser/ECMAScriptVisitor"
+import { ECMAScriptParserVisitor as DelvenVisitor } from "./parser/ECMAScriptParserVisitor"
 import { RuleContext } from "antlr4/RuleContext"
 
 export class PrintVisitor extends DelvenVisitor {

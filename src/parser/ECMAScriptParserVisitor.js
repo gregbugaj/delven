@@ -1,604 +1,604 @@
-// Generated from ECMAScript.g4 by ANTLR 4.8
+// Generated from ECMAScriptParser.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
 // This class defines a complete generic visitor for a parse tree produced by ECMAScriptParser.
 
-function ECMAScriptVisitor() {
+function ECMAScriptParserVisitor() {
 	antlr4.tree.ParseTreeVisitor.call(this);
 	return this;
 }
 
-ECMAScriptVisitor.prototype = Object.create(antlr4.tree.ParseTreeVisitor.prototype);
-ECMAScriptVisitor.prototype.constructor = ECMAScriptVisitor;
+ECMAScriptParserVisitor.prototype = Object.create(antlr4.tree.ParseTreeVisitor.prototype);
+ECMAScriptParserVisitor.prototype.constructor = ECMAScriptParserVisitor;
 
 // Visit a parse tree produced by ECMAScriptParser#program.
-ECMAScriptVisitor.prototype.visitProgram = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitProgram = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#sourceElements.
-ECMAScriptVisitor.prototype.visitSourceElements = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitSourceElements = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#sourceElement.
-ECMAScriptVisitor.prototype.visitSourceElement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitSourceElement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#statement.
-ECMAScriptVisitor.prototype.visitStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#block.
-ECMAScriptVisitor.prototype.visitBlock = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitBlock = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#statementList.
-ECMAScriptVisitor.prototype.visitStatementList = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitStatementList = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#variableStatement.
-ECMAScriptVisitor.prototype.visitVariableStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitVariableStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#variableDeclarationList.
-ECMAScriptVisitor.prototype.visitVariableDeclarationList = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitVariableDeclarationList = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#variableDeclaration.
-ECMAScriptVisitor.prototype.visitVariableDeclaration = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitVariableDeclaration = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#initialiser.
-ECMAScriptVisitor.prototype.visitInitialiser = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitInitialiser = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#emptyStatement.
-ECMAScriptVisitor.prototype.visitEmptyStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitEmptyStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#expressionStatement.
-ECMAScriptVisitor.prototype.visitExpressionStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitExpressionStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ifStatement.
-ECMAScriptVisitor.prototype.visitIfStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitIfStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#DoStatement.
-ECMAScriptVisitor.prototype.visitDoStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitDoStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#WhileStatement.
-ECMAScriptVisitor.prototype.visitWhileStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitWhileStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ForStatement.
-ECMAScriptVisitor.prototype.visitForStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitForStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ForVarStatement.
-ECMAScriptVisitor.prototype.visitForVarStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitForVarStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ForInStatement.
-ECMAScriptVisitor.prototype.visitForInStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitForInStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ForVarInStatement.
-ECMAScriptVisitor.prototype.visitForVarInStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitForVarInStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#continueStatement.
-ECMAScriptVisitor.prototype.visitContinueStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitContinueStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#breakStatement.
-ECMAScriptVisitor.prototype.visitBreakStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitBreakStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#returnStatement.
-ECMAScriptVisitor.prototype.visitReturnStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitReturnStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#withStatement.
-ECMAScriptVisitor.prototype.visitWithStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitWithStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#switchStatement.
-ECMAScriptVisitor.prototype.visitSwitchStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitSwitchStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#caseBlock.
-ECMAScriptVisitor.prototype.visitCaseBlock = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitCaseBlock = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#caseClauses.
-ECMAScriptVisitor.prototype.visitCaseClauses = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitCaseClauses = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#caseClause.
-ECMAScriptVisitor.prototype.visitCaseClause = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitCaseClause = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#defaultClause.
-ECMAScriptVisitor.prototype.visitDefaultClause = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitDefaultClause = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#labelledStatement.
-ECMAScriptVisitor.prototype.visitLabelledStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitLabelledStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#throwStatement.
-ECMAScriptVisitor.prototype.visitThrowStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitThrowStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#tryStatement.
-ECMAScriptVisitor.prototype.visitTryStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitTryStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#catchProduction.
-ECMAScriptVisitor.prototype.visitCatchProduction = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitCatchProduction = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#finallyProduction.
-ECMAScriptVisitor.prototype.visitFinallyProduction = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitFinallyProduction = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#debuggerStatement.
-ECMAScriptVisitor.prototype.visitDebuggerStatement = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitDebuggerStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#functionDeclaration.
-ECMAScriptVisitor.prototype.visitFunctionDeclaration = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitFunctionDeclaration = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#formalParameterList.
-ECMAScriptVisitor.prototype.visitFormalParameterList = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitFormalParameterList = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#functionBody.
-ECMAScriptVisitor.prototype.visitFunctionBody = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitFunctionBody = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#arrayLiteral.
-ECMAScriptVisitor.prototype.visitArrayLiteral = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitArrayLiteral = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#elementList.
-ECMAScriptVisitor.prototype.visitElementList = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitElementList = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#elision.
-ECMAScriptVisitor.prototype.visitElision = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitElision = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#objectLiteral.
-ECMAScriptVisitor.prototype.visitObjectLiteral = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitObjectLiteral = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#propertyNameAndValueList.
-ECMAScriptVisitor.prototype.visitPropertyNameAndValueList = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPropertyNameAndValueList = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#PropertyExpressionAssignment.
-ECMAScriptVisitor.prototype.visitPropertyExpressionAssignment = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPropertyExpressionAssignment = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#PropertyGetter.
-ECMAScriptVisitor.prototype.visitPropertyGetter = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPropertyGetter = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#PropertySetter.
-ECMAScriptVisitor.prototype.visitPropertySetter = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPropertySetter = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#propertyName.
-ECMAScriptVisitor.prototype.visitPropertyName = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPropertyName = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#propertySetParameterList.
-ECMAScriptVisitor.prototype.visitPropertySetParameterList = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPropertySetParameterList = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#arguments.
-ECMAScriptVisitor.prototype.visitArguments = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitArguments = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#argumentList.
-ECMAScriptVisitor.prototype.visitArgumentList = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitArgumentList = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#expressionSequence.
-ECMAScriptVisitor.prototype.visitExpressionSequence = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitExpressionSequence = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#TernaryExpression.
-ECMAScriptVisitor.prototype.visitTernaryExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitTernaryExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#LogicalAndExpression.
-ECMAScriptVisitor.prototype.visitLogicalAndExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitLogicalAndExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#PreIncrementExpression.
-ECMAScriptVisitor.prototype.visitPreIncrementExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPreIncrementExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ObjectLiteralExpression.
-ECMAScriptVisitor.prototype.visitObjectLiteralExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitObjectLiteralExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#InExpression.
-ECMAScriptVisitor.prototype.visitInExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitInExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#LogicalOrExpression.
-ECMAScriptVisitor.prototype.visitLogicalOrExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitLogicalOrExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#NotExpression.
-ECMAScriptVisitor.prototype.visitNotExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitNotExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#PreDecreaseExpression.
-ECMAScriptVisitor.prototype.visitPreDecreaseExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPreDecreaseExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ArgumentsExpression.
-ECMAScriptVisitor.prototype.visitArgumentsExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitArgumentsExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ThisExpression.
-ECMAScriptVisitor.prototype.visitThisExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitThisExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#FunctionExpression.
-ECMAScriptVisitor.prototype.visitFunctionExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitFunctionExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#UnaryMinusExpression.
-ECMAScriptVisitor.prototype.visitUnaryMinusExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitUnaryMinusExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#PostDecreaseExpression.
-ECMAScriptVisitor.prototype.visitPostDecreaseExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPostDecreaseExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#AssignmentExpression.
-ECMAScriptVisitor.prototype.visitAssignmentExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitAssignmentExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#TypeofExpression.
-ECMAScriptVisitor.prototype.visitTypeofExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitTypeofExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#InstanceofExpression.
-ECMAScriptVisitor.prototype.visitInstanceofExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitInstanceofExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#UnaryPlusExpression.
-ECMAScriptVisitor.prototype.visitUnaryPlusExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitUnaryPlusExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#DeleteExpression.
-ECMAScriptVisitor.prototype.visitDeleteExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitDeleteExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
-ECMAScriptVisitor.prototype.visitEqualityExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitEqualityExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#BitXOrExpression.
-ECMAScriptVisitor.prototype.visitBitXOrExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitBitXOrExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#MultiplicativeExpression.
-ECMAScriptVisitor.prototype.visitMultiplicativeExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitMultiplicativeExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#BitShiftExpression.
-ECMAScriptVisitor.prototype.visitBitShiftExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitBitShiftExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ParenthesizedExpression.
-ECMAScriptVisitor.prototype.visitParenthesizedExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitParenthesizedExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#AdditiveExpression.
-ECMAScriptVisitor.prototype.visitAdditiveExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitAdditiveExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#RelationalExpression.
-ECMAScriptVisitor.prototype.visitRelationalExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitRelationalExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#PostIncrementExpression.
-ECMAScriptVisitor.prototype.visitPostIncrementExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitPostIncrementExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#BitNotExpression.
-ECMAScriptVisitor.prototype.visitBitNotExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitBitNotExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#NewExpression.
-ECMAScriptVisitor.prototype.visitNewExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitNewExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#LiteralExpression.
-ECMAScriptVisitor.prototype.visitLiteralExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitLiteralExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#ArrayLiteralExpression.
-ECMAScriptVisitor.prototype.visitArrayLiteralExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitArrayLiteralExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
-ECMAScriptVisitor.prototype.visitMemberDotExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitMemberDotExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#MemberIndexExpression.
-ECMAScriptVisitor.prototype.visitMemberIndexExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitMemberIndexExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#IdentifierExpression.
-ECMAScriptVisitor.prototype.visitIdentifierExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitIdentifierExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
-ECMAScriptVisitor.prototype.visitBitAndExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitBitAndExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
-ECMAScriptVisitor.prototype.visitBitOrExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitBitOrExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#AssignmentOperatorExpression.
-ECMAScriptVisitor.prototype.visitAssignmentOperatorExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitAssignmentOperatorExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#VoidExpression.
-ECMAScriptVisitor.prototype.visitVoidExpression = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitVoidExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
-ECMAScriptVisitor.prototype.visitAssignmentOperator = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitAssignmentOperator = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#literal.
-ECMAScriptVisitor.prototype.visitLiteral = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitLiteral = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#numericLiteral.
-ECMAScriptVisitor.prototype.visitNumericLiteral = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitNumericLiteral = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#identifierName.
-ECMAScriptVisitor.prototype.visitIdentifierName = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitIdentifierName = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#reservedWord.
-ECMAScriptVisitor.prototype.visitReservedWord = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitReservedWord = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#keyword.
-ECMAScriptVisitor.prototype.visitKeyword = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitKeyword = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#futureReservedWord.
-ECMAScriptVisitor.prototype.visitFutureReservedWord = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitFutureReservedWord = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#getter.
-ECMAScriptVisitor.prototype.visitGetter = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitGetter = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#setter.
-ECMAScriptVisitor.prototype.visitSetter = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitSetter = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#eos.
-ECMAScriptVisitor.prototype.visitEos = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitEos = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#eof.
-ECMAScriptVisitor.prototype.visitEof = function(ctx) {
+ECMAScriptParserVisitor.prototype.visitEof = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 
-exports.ECMAScriptVisitor = ECMAScriptVisitor;
+exports.ECMAScriptParserVisitor = ECMAScriptParserVisitor;
