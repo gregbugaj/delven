@@ -85,3 +85,29 @@ RangeError: Maximum call stack size exceeded
     at ATNConfigSet.add (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ATNConfigSet.js:99:35)
     at ParserATNSimulator.closure_ (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1263:17)
     at ParserATNSimulator.closureCheckingStopState (/home/gbugaj/devio/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1254:10)
+
+
+
+Causes ERRROR ::
+```JavaScript
+class x extends y { }
+class x extends function() {} {}
+class x extends class x {} {} {}
+```
+---------------------
+
+/home/greg/dev/delven.io/delven-transpiler/dist/parser/ECMAScriptParser.js:1038
+	    	throw re;
+	    	^
+
+RangeError: Maximum call stack size exceeded
+    at ParserATNSimulator.canDropLoopEntryEdgeInLeftRecursiveRule (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1316:80)
+    at ParserATNSimulator.closure_ (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1268:25)
+    at ParserATNSimulator.closureCheckingStopState (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1254:10)
+    at ParserATNSimulator.closure_ (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1310:18)
+    at ParserATNSimulator.closureCheckingStopState (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1254:10)
+    at ParserATNSimulator.closure_ (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1310:18)
+    at ParserATNSimulator.closureCheckingStopState (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1254:10)
+    at ParserATNSimulator.closure_ (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1310:18)
+    at ParserATNSimulator.closureCheckingStopState (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1254:10)
+    at ParserATNSimulator.closure_ (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1310:18)

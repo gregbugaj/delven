@@ -29,6 +29,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 lexer grammar ECMAScriptLexer;
+
 channels { ERROR }
 
 options { superClass=ECMAScriptLexerBase; }
@@ -151,9 +152,9 @@ In:                             'in';
 Try:                            'try';
 As:                             'as';
 From:                           'from';
+Let:                            'let';
 
 /// Future Reserved Words
-
 Class:                          'class';
 Enum:                           'enum';
 Extends:                        'extends';

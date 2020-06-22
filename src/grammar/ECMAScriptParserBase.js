@@ -7,6 +7,23 @@ function ECMAScriptParserBase(input) {
 
 ECMAScriptParserBase.prototype = Object.create(antlr4.Parser.prototype);
 
+
+/**
+ * Check if the the token matches a string
+ * Todo : create pull request
+ */
+ECMAScriptParserBase.prototype.n = function(str) {
+    return this.next(str);
+};
+
+ECMAScriptParserBase.prototype.next = function(str) {
+    const source = this._input.LT(1).source[1].strdata;
+    const start = this._input.LT(1).start;
+    const stop = this._input.LT(1).stop;
+    const next = source.slice(start, stop + 1);
+    return next === str;
+};
+
 ECMAScriptParserBase.prototype.p = function(str) {
     return this.prev(str);
 };

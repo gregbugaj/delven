@@ -1,4 +1,4 @@
-// Generated from /home/gbugaj/devio/delven-transpiler/grammars/JavaScriptParser.g4 by ANTLR 4.7.1
+// Generated from /home/greg/dev/delven.io/delven-transpiler/grammars/ECMAScriptVanila.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -220,7 +220,7 @@ public class ECMAScriptLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "JavaScriptParser.g4"; }
+	public String getGrammarFileName() { return "ECMAScriptVanila.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

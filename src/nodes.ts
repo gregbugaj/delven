@@ -2,7 +2,6 @@
  * https://raw.githubusercontent.com/jquery/esprima/master/src/nodes.ts
  */
 import { Syntax } from './syntax';
-import ASTNode from './ASTNode';
 
 export type ArgumentListElement = Expression | SpreadElement;
 export type ArrayExpressionElement = Expression | SpreadElement | null;
