@@ -99,9 +99,9 @@ console.info("---------------------");
  //let ast = ASTParser.parse({ type: "code", value: 'x = {"A":2, "B":1, [propName]: 15}'}); // ComputedPropertyExpressionAssignment
 //let ast = ASTParser.parse({ type: "code", value: ' x =  {y : {async pxy(){}}}  '}); // 
 //let ast = ASTParser.parse({ type: "code", value: ' x = { async pxy(){}} '}); //   FunctionProperty
-let ast = ASTParser.parse({ type: "code", value: ' x = {z : 1, async pxy(){}} '}); //   FunctionProperty
+// let ast = ASTParser.parse({ type: "code", value: ' x = {z : 1, async pxy(){}} '}); //   FunctionProperty
 // let ast = ASTParser.parse({ type: "code", value: 'x = {async pxy(){}, byz(){}} '}); 
-// let ast = ASTParser.parse({ type: "code", value: 'x = { type: 'Monster', name, power }; '});  // Shorthand
+let ast = ASTParser.parse({ type: "code", value: 'x = { type: "Monster", name, power }; '});  // Shorthand
 console.info(toJson(ast))
 //let generator = new SourceGenerator();
 //generator.visit(ast);

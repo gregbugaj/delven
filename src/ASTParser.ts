@@ -807,11 +807,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new ObjectExpression(properties);
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#propertyShorthand.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#propertyShorthand.
+     *  | Ellipsis? singleExpression                                                    # PropertyShorthand
+     * @param ctx 
+     */
     visitPropertyShorthand(ctx: RuleContext): ObjectExpressionProperty {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.PropertyShorthandContext)
-        throw new TypeError("not implemented")
+        const computed = false;
+        const method = false;
+        const shorthand = true;
+        const value = this.singleExpression(ctx.getChild(0));
+        const key: PropertyKey =  new Identifier(ctx.getText())
+        return new Property("init", key, computed, value, method, shorthand);
     }
 
     // Visit a parse tree produced by ECMAScriptParser#propertyShorthand.
@@ -820,7 +829,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.FunctionPropertyContext)
         throw new TypeError("not implemented")
     }
-
 
     // Visit a parse tree produced by ECMAScriptParser#propertyNameAndValueList.
     visitPropertyNameAndValueList(ctx: RuleContext): ObjectExpressionProperty[] {
