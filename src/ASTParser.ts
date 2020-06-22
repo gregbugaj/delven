@@ -830,24 +830,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         throw new TypeError("not implemented")
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#propertyNameAndValueList.
-    visitPropertyNameAndValueList(ctx: RuleContext): ObjectExpressionProperty[] {
-        console.info("visitPropertyNameAndValueList [%s] : %s", ctx.getChildCount(), ctx.getText());
-        this.assertType(ctx, ECMAScriptParser.PropertyNameAndValueListContext);
-        const properties: ObjectExpressionProperty[] = [];
-        const nodes: RuleContext[] = this.filterSymbols(ctx);
-        for (let i = 0; i < nodes.length; ++i) {
-            const node = nodes[i];
-            if (node instanceof ECMAScriptParser.PropertyExpressionAssignmentContext) {
-                const property: ObjectExpressionProperty = this.visitPropertyExpressionAssignment(node);
-                properties.push(property);
-            } else {
-                this.throwInsanceError(this.dumpContext(node))
-            }
-        }
-        return properties;
-    }
-
     /**
      * Filter out TerminalNodes (commas, pipes, brackets)
      * @param ctx 
