@@ -1,4 +1,4 @@
-// Generated from /home/greg/dev/delven.io/delven-transpiler/src/grammar/ECMAScriptParser.g4 by ANTLR 4.7.1
+// Generated from /home/gbugaj/devio/delven-transpiler/src/grammar/ECMAScriptParser.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -5713,11 +5713,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ArrowFunctionBodyContext extends ParserRuleContext {
-		public SingleExpressionContext singleExpression() {
-			return getRuleContext(SingleExpressionContext.class,0);
-		}
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
+		}
+		public SingleExpressionContext singleExpression() {
+			return getRuleContext(SingleExpressionContext.class,0);
 		}
 		public ArrowFunctionBodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -5736,18 +5736,18 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(920);
-				singleExpression(0);
+				match(OpenBrace);
+				setState(921);
+				functionBody();
+				setState(922);
+				match(CloseBrace);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(921);
-				match(OpenBrace);
-				setState(922);
-				functionBody();
-				setState(923);
-				match(CloseBrace);
+				setState(924);
+				singleExpression(0);
 				}
 				break;
 			}
@@ -6945,33 +6945,33 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		"\3\2\2\2\u0391{\3\2\2\2\u0392\u0399\5\u008eH\2\u0393\u0395\7\t\2\2\u0394"+
 		"\u0396\5Z.\2\u0395\u0394\3\2\2\2\u0395\u0396\3\2\2\2\u0396\u0397\3\2\2"+
 		"\2\u0397\u0399\7\n\2\2\u0398\u0392\3\2\2\2\u0398\u0393\3\2\2\2\u0399}"+
-		"\3\2\2\2\u039a\u03a0\5t;\2\u039b\u039c\7\13\2\2\u039c\u039d\5`\61\2\u039d"+
-		"\u039e\7\f\2\2\u039e\u03a0\3\2\2\2\u039f\u039a\3\2\2\2\u039f\u039b\3\2"+
-		"\2\2\u03a0\177\3\2\2\2\u03a1\u03a2\t\b\2\2\u03a2\u0081\3\2\2\2\u03a3\u03ab"+
-		"\7=\2\2\u03a4\u03ab\7>\2\2\u03a5\u03ab\7y\2\2\u03a6\u03ab\7z\2\2\u03a7"+
-		"\u03ab\7\6\2\2\u03a8\u03ab\5\u0084C\2\u03a9\u03ab\5\u0086D\2\u03aa\u03a3"+
-		"\3\2\2\2\u03aa\u03a4\3\2\2\2\u03aa\u03a5\3\2\2\2\u03aa\u03a6\3\2\2\2\u03aa"+
-		"\u03a7\3\2\2\2\u03aa\u03a8\3\2\2\2\u03aa\u03a9\3\2\2\2\u03ab\u0083\3\2"+
-		"\2\2\u03ac\u03ad\t\t\2\2\u03ad\u0085\3\2\2\2\u03ae\u03af\t\n\2\2\u03af"+
-		"\u0087\3\2\2\2\u03b0\u03b1\6E#\2\u03b1\u03b2\5\u008eH\2\u03b2\u03b3\5"+
-		"l\67\2\u03b3\u0089\3\2\2\2\u03b4\u03b5\6F$\2\u03b5\u03b6\5\u008eH\2\u03b6"+
-		"\u03b7\5l\67\2\u03b7\u008b\3\2\2\2\u03b8\u03bb\7x\2\2\u03b9\u03bb\5\u0090"+
-		"I\2\u03ba\u03b8\3\2\2\2\u03ba\u03b9\3\2\2\2\u03bb\u008d\3\2\2\2\u03bc"+
-		"\u03bd\t\13\2\2\u03bd\u008f\3\2\2\2\u03be\u03c2\5\u0092J\2\u03bf\u03c2"+
-		"\7=\2\2\u03c0\u03c2\7>\2\2\u03c1\u03be\3\2\2\2\u03c1\u03bf\3\2\2\2\u03c1"+
-		"\u03c0\3\2\2\2\u03c2\u0091\3\2\2\2\u03c3\u03c4\t\f\2\2\u03c4\u0093\3\2"+
-		"\2\2\u03c5\u03ca\7\r\2\2\u03c6\u03ca\7\2\2\3\u03c7\u03ca\6K%\2\u03c8\u03ca"+
-		"\6K&\2\u03c9\u03c5\3\2\2\2\u03c9\u03c6\3\2\2\2\u03c9\u03c7\3\2\2\2\u03c9"+
-		"\u03c8\3\2\2\2\u03ca\u0095\3\2\2\2o\u0097\u009a\u00b4\u00b8\u00bf\u00c5"+
-		"\u00c9\u00d0\u00d8\u00dd\u00df\u00e8\u00ec\u00f4\u00f9\u0102\u010a\u010e"+
-		"\u0113\u011e\u0124\u0133\u0147\u014b\u014f\u0157\u0160\u0165\u016d\u0174"+
-		"\u017b\u0182\u0189\u0199\u019d\u019f\u01a6\u01ac\u01b1\u01c0\u01c3\u01c8"+
-		"\u01cb\u01d6\u01da\u01df\u01ec\u01f2\u01fb\u01fd\u0206\u020a\u0210\u0213"+
-		"\u0216\u021b\u0223\u0226\u0230\u0233\u0238\u023f\u0246\u024b\u024e\u0253"+
-		"\u0259\u025e\u0267\u026b\u0270\u0275\u027b\u027f\u028e\u0291\u0296\u02ad"+
-		"\u02b0\u02b9\u02c1\u02c5\u02c7\u02cc\u02d0\u02d7\u02de\u02e4\u030d\u034d"+
-		"\u0351\u035e\u0360\u0366\u036e\u0371\u0374\u037a\u037e\u0382\u038a\u0390"+
-		"\u0395\u0398\u039f\u03aa\u03ba\u03c1\u03c9";
+		"\3\2\2\2\u039a\u039b\7\13\2\2\u039b\u039c\5`\61\2\u039c\u039d\7\f\2\2"+
+		"\u039d\u03a0\3\2\2\2\u039e\u03a0\5t;\2\u039f\u039a\3\2\2\2\u039f\u039e"+
+		"\3\2\2\2\u03a0\177\3\2\2\2\u03a1\u03a2\t\b\2\2\u03a2\u0081\3\2\2\2\u03a3"+
+		"\u03ab\7=\2\2\u03a4\u03ab\7>\2\2\u03a5\u03ab\7y\2\2\u03a6\u03ab\7z\2\2"+
+		"\u03a7\u03ab\7\6\2\2\u03a8\u03ab\5\u0084C\2\u03a9\u03ab\5\u0086D\2\u03aa"+
+		"\u03a3\3\2\2\2\u03aa\u03a4\3\2\2\2\u03aa\u03a5\3\2\2\2\u03aa\u03a6\3\2"+
+		"\2\2\u03aa\u03a7\3\2\2\2\u03aa\u03a8\3\2\2\2\u03aa\u03a9\3\2\2\2\u03ab"+
+		"\u0083\3\2\2\2\u03ac\u03ad\t\t\2\2\u03ad\u0085\3\2\2\2\u03ae\u03af\t\n"+
+		"\2\2\u03af\u0087\3\2\2\2\u03b0\u03b1\6E#\2\u03b1\u03b2\5\u008eH\2\u03b2"+
+		"\u03b3\5l\67\2\u03b3\u0089\3\2\2\2\u03b4\u03b5\6F$\2\u03b5\u03b6\5\u008e"+
+		"H\2\u03b6\u03b7\5l\67\2\u03b7\u008b\3\2\2\2\u03b8\u03bb\7x\2\2\u03b9\u03bb"+
+		"\5\u0090I\2\u03ba\u03b8\3\2\2\2\u03ba\u03b9\3\2\2\2\u03bb\u008d\3\2\2"+
+		"\2\u03bc\u03bd\t\13\2\2\u03bd\u008f\3\2\2\2\u03be\u03c2\5\u0092J\2\u03bf"+
+		"\u03c2\7=\2\2\u03c0\u03c2\7>\2\2\u03c1\u03be\3\2\2\2\u03c1\u03bf\3\2\2"+
+		"\2\u03c1\u03c0\3\2\2\2\u03c2\u0091\3\2\2\2\u03c3\u03c4\t\f\2\2\u03c4\u0093"+
+		"\3\2\2\2\u03c5\u03ca\7\r\2\2\u03c6\u03ca\7\2\2\3\u03c7\u03ca\6K%\2\u03c8"+
+		"\u03ca\6K&\2\u03c9\u03c5\3\2\2\2\u03c9\u03c6\3\2\2\2\u03c9\u03c7\3\2\2"+
+		"\2\u03c9\u03c8\3\2\2\2\u03ca\u0095\3\2\2\2o\u0097\u009a\u00b4\u00b8\u00bf"+
+		"\u00c5\u00c9\u00d0\u00d8\u00dd\u00df\u00e8\u00ec\u00f4\u00f9\u0102\u010a"+
+		"\u010e\u0113\u011e\u0124\u0133\u0147\u014b\u014f\u0157\u0160\u0165\u016d"+
+		"\u0174\u017b\u0182\u0189\u0199\u019d\u019f\u01a6\u01ac\u01b1\u01c0\u01c3"+
+		"\u01c8\u01cb\u01d6\u01da\u01df\u01ec\u01f2\u01fb\u01fd\u0206\u020a\u0210"+
+		"\u0213\u0216\u021b\u0223\u0226\u0230\u0233\u0238\u023f\u0246\u024b\u024e"+
+		"\u0253\u0259\u025e\u0267\u026b\u0270\u0275\u027b\u027f\u028e\u0291\u0296"+
+		"\u02ad\u02b0\u02b9\u02c1\u02c5\u02c7\u02cc\u02d0\u02d7\u02de\u02e4\u030d"+
+		"\u034d\u0351\u035e\u0360\u0366\u036e\u0371\u0374\u037a\u037e\u0382\u038a"+
+		"\u0390\u0395\u0398\u039f\u03aa\u03ba\u03c1\u03c9";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

@@ -382,10 +382,20 @@ arrowFunctionParameters
     : identifier
     | '(' formalParameterList? ')'
     ;
+
 arrowFunctionBody
+    : '{' functionBody '}' 
+    | singleExpression
+    ;
+
+/* 
+    // issue with `() => {}` resolving as object literal
+    arrowFunctionBody
     : singleExpression
     | '{' functionBody '}'
-    ;
+    ; */
+
+
 assignmentOperator
  : '*=' 
  | '/=' 

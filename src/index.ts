@@ -101,7 +101,40 @@ console.info("---------------------");
 //let ast = ASTParser.parse({ type: "code", value: ' x = { async pxy(){}} '}); //   FunctionProperty
 // let ast = ASTParser.parse({ type: "code", value: ' x = {z : 1, async pxy(){}} '}); //   FunctionProperty
 // let ast = ASTParser.parse({ type: "code", value: 'x = {async pxy(){}, byz(){}} '}); 
-let ast = ASTParser.parse({ type: "code", value: 'x = { type: "Monster", name, power }; '});  // Shorthand
+// let ast = ASTParser.parse({ type: "code", value: 'x = { type: "Monster", name, power }; '});  // Shorthand
+
+// Array Literals
+// let ast = ASTParser.parse({ type: "code", value: 'x = []'}); 
+//let ast = ASTParser.parse({ type: "code", value: 'let x = [,,...a, b]'}); // SpreadElement
+//let ast = ASTParser.parse({ type: "code", value: 'let x = [,,...{a:2}, b]'}); 
+
+// let ast = ASTParser.parse({ type: "code", value: ' a:2 '}); //LabeledStatement
+
+// Arrow Function
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+//  let ast = ASTParser.parse({ type: "code", value: ' ()=> { } '});  //BlockStatement not ObjectLiteral
+//  let ast = ASTParser.parse({ type: "code", value: ' ()=> { x = 2 } '});  //BlockStatement not ObjectLiteral
+//  let ast = ASTParser.parse({ type: "code", value: ' params => {foo: bar} '}); // LabeledStatement
+//  let ast = ASTParser.parse({ type: "code", value: ' params => ({foo: bar}) '}); //  Parenthesize the body of a function to return an object literal expression
+//  let ast = ASTParser.parse({ type: "code", value: ' params => ({foo: bar, x:2}, z = 3) '}); //  Parenthesize the body of a function to return an object literal expression
+//  let ast = ASTParser.parse({ type: "code", value: '()=>{ a:2 } '}); 
+// let ast = ASTParser.parse({ type: "code", value: '()=>{ let x = 1} '}); 
+// let ast = ASTParser.parse({ type: "code", value: ' () =>  1 + 1'}); 
+// let ast = ASTParser.parse({ type: "code", value: ' test =>  1 + 1'}); 
+// let ast = ASTParser.parse({ type: "code", value: 'test=>{}'}); 
+// let ast = ASTParser.parse({ type: "code", value: '(test)=>{}'}); 
+// let ast = ASTParser.parse({ type: "code", value: ' (param1, param2, ...rest) => {  } '});  // Rest parameters 
+// let ast = ASTParser.parse({ type: "code", value: ' let x = (param1, param2, ...rest) => {  } '});  // Rest parameters 
+// let ast = ASTParser.parse({ type: "code", value: ' (param1 = defaultValue1, param2) => { 1 }'});  // default parameters 
+let ast = ASTParser.parse({ type: "code", value: ' (param1, param2, ...rest) =>  1 + 1'});  // Expressions 
+
+// Destructuring assignment  *** NOT SUPPORTED
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+// let ast = ASTParser.parse({ type: "code", value: ' [a, b] = [10, 20]; '}); 
+
+
+// let ast = ASTParser.parse({ type: "code", value: ' function a(x, y){}'});  // default parameters 
+
 console.info(toJson(ast))
 //let generator = new SourceGenerator();
 //generator.visit(ast);
