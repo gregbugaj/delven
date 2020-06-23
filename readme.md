@@ -71,6 +71,21 @@ https://docs.microsoft.com/en-us/azure/data-lake-analytics/data-lake-analytics-u
 https://www.w3.org/TR/webdriver1
 
 
+## Footnotes
+
+### 3. Order swapped for NewExpression and ArgumentsExpression
+
+This is necessary so the expression in form will be evaluated as `NewExpression` with 3 nodes(NEW singleExpression arguments?) an d not as `NewExpression` with 2 nodes(NEW singleExpression) where `singleExpression` is a `ArgumentsExpression` node.
+```
+let x = new z(...k)
+```
+
+
+```
+    | New singleExpression arguments?                                       # NewExpression      // GB:footnote 4
+    | New '.' identifier                                                    # MetaExpression // new.target
+    | singleExpression arguments                                            # ArgumentsExpression
+```
 
 ## ERRORS
 

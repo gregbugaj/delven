@@ -4,8 +4,19 @@ import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 
 import ASTParser, { ParserType } from "./ASTParser"
 import SourceGenerator from "./SourceGenerator";
+import * as fs from 'fs'
 
-let toJson = (obj:any): string=>JSON.stringify(obj, function replacer(key, value) { return value});
+let toJson = (obj: any): string => JSON.stringify(obj, function replacer(key, value) { return value }, 2);
+
+function writeJson(outputFilename: string, obj: any): void {
+        fs.writeFile(outputFilename, toJson(obj), function (err) {
+                if (err) {
+                        console.log(err);
+                } else {
+                        console.log("JSON saved to " + outputFilename);
+                }
+        });
+}
 
 console.info('Transpiller');
 let input1 = "1"
@@ -42,7 +53,7 @@ console.info("---------------------");
 //  let ast = ASTParser.parse({ type: "code", value: "true, 1, 'A', \"X\"" });
 //let ast = ASTParser.parse({ type: "code", value: "x = 1" });
 //  let ast = ASTParser.parse({ type: "code", value: " 1, true, 'A' "});
- //let ast = ASTParser.parse({ type: "code", value: " 1.2 ,true, \"Text\""});
+//let ast = ASTParser.parse({ type: "code", value: " 1.2 ,true, \"Text\""});
 // let ast = ASTParser.parse({ type: "code", value: " function AA(x, y){}"});
 // let ast = ASTParser.parse({ type: "code", value: " function AA(x, y){}  function BB(x, y){} "});
 
@@ -63,7 +74,7 @@ console.info("---------------------");
 //let ast = ASTParser.parse({ type: "code", value: 'var x = [1,2]'});
 //let ast = ASTParser.parse({ type: "code", value: ' var x = [1, {}]'});
 // let ast = ASTParser.parse({ type: "code", value: ' var x = [1, {"a":23, z:"abc"}]'});
- // let ast = ASTParser.parse({ type: "code", value: '(1 + 1 )'});
+// let ast = ASTParser.parse({ type: "code", value: '(1 + 1 )'});
 // let ast = ASTParser.parse({ type: "code", value: ' x != 1 '});
 //let ast = ASTParser.parse({ type: "code", value: ' if(x != 1){ }'});
 // let ast = ASTParser.parse({ type: "code", value: ' if(x){ }'});
@@ -96,7 +107,7 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' x = {y:1, z:2, a} '}); 
 // let ast = ASTParser.parse({ type: "code", value: 'x = {[pxy]: 15} '}); // ComputedPropertyExpressionAssignment
 // let ast = ASTParser.parse({ type: "code", value: 'x = {[1+1]: 2, "A":4} '}); // ComputedPropertyExpressionAssignment
- //let ast = ASTParser.parse({ type: "code", value: 'x = {"A":2, "B":1, [propName]: 15}'}); // ComputedPropertyExpressionAssignment
+//let ast = ASTParser.parse({ type: "code", value: 'x = {"A":2, "B":1, [propName]: 15}'}); // ComputedPropertyExpressionAssignment
 //let ast = ASTParser.parse({ type: "code", value: ' x =  {y : {async pxy(){}}}  '}); // 
 //let ast = ASTParser.parse({ type: "code", value: ' x = { async pxy(){}} '}); //   FunctionProperty
 // let ast = ASTParser.parse({ type: "code", value: ' x = {z : 1, async pxy(){}} '}); //   FunctionProperty
@@ -104,9 +115,10 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: 'x = { type: "Monster", name, power }; '});  // Shorthand
 
 // Array Literals
-// let ast = ASTParser.parse({ type: "code", value: 'x = []'}); 
+//  let ast = ASTParser.parse({ type: "code", value: 'x = []'}); 
+// let ast = ASTParser.parse({ type: "code", value: 'x = [1, 2, 3]' });
 //let ast = ASTParser.parse({ type: "code", value: 'let x = [,,...a, b]'}); // SpreadElement
-//let ast = ASTParser.parse({ type: "code", value: 'let x = [,,...{a:2}, b]'}); 
+// let ast = ASTParser.parse({ type: "code", value: 'let x = [,,...{a:2}, b]'}); // SpreadElement > ObjectExpression
 
 // let ast = ASTParser.parse({ type: "code", value: ' a:2 '}); //LabeledStatement
 
@@ -126,18 +138,62 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' (param1, param2, ...rest) => {  } '});  // Rest parameters 
 // let ast = ASTParser.parse({ type: "code", value: ' let x = (param1, param2, ...rest) => {  } '});  // Rest parameters 
 // let ast = ASTParser.parse({ type: "code", value: ' (param1 = defaultValue1, param2) => { 1 }'});  // default parameters 
-let ast = ASTParser.parse({ type: "code", value: ' (param1, param2, ...rest) =>  1 + 1'});  // Expressions 
+// let ast = ASTParser.parse({ type: "code", value: ' (param1, param2, ...rest) =>  1 + 1'});  // Expressions 
+
+
+// New Expression
+
+//  let ast = ASTParser.parse({ type: "code", value: ' let x = new []'}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' let x = new [1, 2]'}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' let x = new z '}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' let x = new z() '}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' let x = new z(...k) '}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' let x =  new String(z, y, ...rest)'}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' let x = Test(x, y)'}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' let x = new String(x, y);'}); 
+// let ast = ASTParser.parse({ type: "code", value: ' let x = this'}); // This Expression
+// Member Expression
+// let ast = ASTParser.parse({ type: "code", value: ' let x = z.y'});
+// let ast = ASTParser.parse({ type: "code", value: ' let x = z[p]'});
+//let ast = ASTParser.parse({ type: "code", value: ' let x = y[z=2]'});
+
+// Function Declaration (FunctionDeclaration vs FunctionExpression)
+// let ast = ASTParser.parse({ type: "code", value: 'function x(){}' }); // BlockStatement
+//  let ast = ASTParser.parse({ type: "code", value: ' function x(){ {} } ' }); // BlockStatement > BlockStatement
+// let ast = ASTParser.parse({ type: "code", value: ' function x(){ {z} } ' }); // FunctionDeclaration BlockStatement > BlockStatement
+// let ast = ASTParser.parse({ type: "code", value: ' z = function x(){ } ' }); // ExpressionStatement > FunctionExpression
+// let ast = ASTParser.parse({ type: "code", value: ' (function x(){ }) ' }); // ExpressionStatement > FunctionExpression
+// let ast = ASTParser.parse({ type: "code", value: ' ((function x(){ })) ' }); // ExpressionStatement > FunctionExpression
+// let ast = ASTParser.parse({ type: "code", value: ' z = (function x(){ }) ' }); // ExpressionStatement > FunctionExpression
+// let ast = ASTParser.parse({ type: "code", value: ' 1 ' }); 
+
+
+//let ast = ASTParser.parse({ type: "code", value: 'void x' }); // Void Expressions
+
+// let ast = ASTParser.parse({ type: "code", value: 'x++' });
+// let ast = ASTParser.parse({ type: "code", value: '++x' }); 
+
+// ReturnStatement
+//  let ast = ASTParser.parse({ type: "code", value: 'function s(){ return  }' });  
+//  let ast = ASTParser.parse({ type: "code", value: 'function s(){ return 1 }' });  
+//  let ast = ASTParser.parse({ type: "code", value: 'function s(){ return (1, 2) }' });  
+// Iterator statements
+// let ast = ASTParser.parse({ type: "code", value: 'while(true){ x++ }' });  // WhileStatement > Literal 
+// let ast = ASTParser.parse({ type: "code", value: 'while(true, false){ x++ }' });  // WhileStatement > SequenceExpression
+// let ast = ASTParser.parse({ type: "code", value: ' while(true){ continue } ' });  
+// let ast = ASTParser.parse({ type: "code", value: ' while(true){ continue x; } ' });  
+// let ast = ASTParser.parse({ type: "code", value: ' while(true){ break ; } ' });  
+let ast = ASTParser.parse({ type: "code", value: ' while(true){ break x; } ' });  
 
 // Destructuring assignment  *** NOT SUPPORTED
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
 // let ast = ASTParser.parse({ type: "code", value: ' [a, b] = [10, 20]; '}); 
-
-
 // let ast = ASTParser.parse({ type: "code", value: ' function a(x, y){}'});  // default parameters 
 
-console.info(toJson(ast))
+console.table(toJson(ast))
 //let generator = new SourceGenerator();
 //generator.visit(ast);
+
 
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

@@ -314,13 +314,14 @@ expressionSequence
  ;
 
 singleExpression
-    : anoymousFunction                                                      # FunctionExpression
+    : anoymousFunction                                                      # FunctionExpression  // GB: footnote 5
     | Class identifier? classTail                                           # ClassExpression
     | singleExpression '[' expressionSequence ']'                           # MemberIndexExpression
     | singleExpression '?'? '.' '#'? identifierName                         # MemberDotExpression
-    | singleExpression arguments                                            # ArgumentsExpression
-    | New singleExpression arguments?                                       # NewExpression
+    | New singleExpression arguments                                        # NewExpression      // GB:footnote 4
+    | New singleExpression arguments?                                       # NewExpression      // GB:footnote 4
     | New '.' identifier                                                    # MetaExpression // new.target
+    | singleExpression arguments                                            # ArgumentsExpression
     | singleExpression {this.notLineTerminator()}? '++'                     # PostIncrementExpression
     | singleExpression {this.notLineTerminator()}? '--'                     # PostDecreaseExpression
     | Delete singleExpression                                               # DeleteExpression
