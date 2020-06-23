@@ -6,7 +6,7 @@ import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
 import ASTNode from "./ASTNode";
-import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement, ArrayPattern, ObjectPattern } from "./nodes";
+import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement, ArrayPattern, ObjectPattern, CallExpression } from "./nodes";
 import { Syntax } from "./syntax";
 import { type } from "os"
 import * as fs from "fs"
@@ -1239,7 +1239,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else {
             const assignable = this.visitAssignable(ctx.getChild(0))
             const expression = this.singleExpression(ctx.getChild(2));
-            
+
             return new AssignmentPattern(assignable, expression);
         }
     }
@@ -1339,18 +1339,19 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * | singleExpression arguments                # ArgumentsExpression
      * @param ctx 
      */
-    visitArgumentsExpression(ctx: RuleContext) {
+    visitArgumentsExpression(ctx: RuleContext): CallExpression {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.ArgumentsExpressionContext);
-
-        throw new TypeError("Not implemented")
-        const single = this.singleExpression(ctx.singleExpression());
-        const args = ctx.arguments();
-
-        console.info(single)
-
-        return single;
+        const arg = ctx.arguments();
+        const callee = this.singleExpression(ctx.singleExpression());
+        let args: ArgumentListElement[] = [];
+        if (arg) {
+            args = this.visitArguments(arg);
+        }
+        // (callee: Expression | Import, args: ArgumentListElement[])
+        return new CallExpression(callee, args);
     }
+ 
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#ThisExpression.
@@ -1726,7 +1727,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.NewExpressionContext);
         const single = ctx.singleExpression();
         const arg = ctx.arguments();
-
         const callee = this.singleExpression(single);
         let args: ArgumentListElement[] = [];
         if (arg) {
