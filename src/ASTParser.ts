@@ -12,7 +12,6 @@ import * as fs from "fs"
 import { Interval } from "antlr4"
 import Trace, { CallSite } from "./trace"
 
-
 /**
  * Version that we generate the AST for. 
  * This allows for testing different implementations
