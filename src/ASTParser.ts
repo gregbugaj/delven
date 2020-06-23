@@ -6,7 +6,7 @@ import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
 import ASTNode from "./ASTNode";
-import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement } from "./nodes";
+import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement, ArrayPattern, ObjectPattern } from "./nodes";
 import { Syntax } from "./syntax";
 import { type } from "os"
 import * as fs from "fs"
@@ -791,6 +791,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const elementListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ElementListContext)
         const elements: ArrayExpressionElement[] = this.visitElementList(elementListContext);
         return elements;
+
     }
 
     /**
@@ -862,7 +863,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const nodes = this.filterSymbols(ctx);
         const properties: ObjectExpressionProperty[] = [];
         for (const node of nodes) {
-            let property: ObjectExpressionProperty;
+            let property: ObjectExpressionProperty = undefined;
             if (node instanceof ECMAScriptParser.PropertyExpressionAssignmentContext) {
                 property = this.visitPropertyExpressionAssignment(node);
             } else if (node instanceof ECMAScriptParser.PropertyShorthandContext) {
@@ -872,7 +873,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
             } else {
                 this.throwInsanceError(this.dumpContext(node))
             }
-
             if (property != undefined) {
                 properties.push(property)
             }
@@ -1263,9 +1263,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (assignable instanceof ECMAScriptParser.IdentifierContext) {
             return this.visitIdentifier(assignable);
         } else if (assignable instanceof ECMAScriptParser.ArrayLiteralContext) {
-            console.info("((((  (((((")
+            const elements = this.visitArrayLiteral(assignable)
+            return new ArrayPattern(elements)
         } else if (assignable instanceof ECMAScriptParser.ObjectLiteralContext) {
-            console.info("((((  (((((")
+            const elements = this.visitObjectLiteral(assignable)
+            const properties: ObjectPatternProperty[] = elements.properties;
+            return new ObjectPattern(properties)
         }
         this.throwInsanceError(this.dumpContext(ctx));
     }
@@ -1754,6 +1757,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      *  Visit a parse tree produced by ECMAScriptParser#ArrayLiteralExpression.
+     * 
      *  arrayLiteral
      *    : ('[' elementList ']')
      *    ;

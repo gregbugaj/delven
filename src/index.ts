@@ -96,11 +96,18 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' function gen(x, y){} '});
 // let ast = ASTParser.parse({ type: "code", value: ' async function gen(x, y){} '});
 //  let ast = ASTParser.parse({ type: "code", value: 'async function* gen(z, x = 2, y){} '});
+
+// VariableDeclarator 
 // let ast = ASTParser.parse({ type: "code", value: 'let x = 2'});
 //let ast = ASTParser.parse({ type: "code", value: 'let {} = {"a":2, "b":4}'});
 //let ast = ASTParser.parse({ type: "code", value: 'let {x, z} = {"a":2, "b":4}'});
 // let ast = ASTParser.parse({ type: "code", value: 'let x, y = {"A":2, "B":1}'});
 //let ast = ASTParser.parse({ type: "code", value: 'let x, y = 1'});
+//let ast = ASTParser.parse({ type: "code", value: 'let [x, y] = 1'}); 
+// let ast = ASTParser.parse({ type: "code", value: 'let {x, y} = 1'}); 
+//let ast = ASTParser.parse({ type: "code", value: 'let {x=2, y} = 1'});  // THIS BREAKS OUR GRAMMAR We expect AssignmentPattern
+
+
 // Object Literall Expressions
 
 // let ast = ASTParser.parse({ type: "code", value: ' x = {} '}); 
@@ -183,7 +190,7 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' while(true){ continue } ' });  
 // let ast = ASTParser.parse({ type: "code", value: ' while(true){ continue x; } ' });  
 // let ast = ASTParser.parse({ type: "code", value: ' while(true){ break ; } ' });  
-let ast = ASTParser.parse({ type: "code", value: ' while(true){ break x; } ' });  
+// let ast = ASTParser.parse({ type: "code", value: ' while(true){ break x; } ' });  
 
 // Destructuring assignment  *** NOT SUPPORTED
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
