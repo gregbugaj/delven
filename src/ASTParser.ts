@@ -1004,12 +1004,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.throwInsanceError(this.dumpContext(node));
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#propertySetParameterList.
-    visitPropertySetParameterList(ctx: RuleContext) {
-        console.trace('not implemented')
-
-    }
-
     /**
       * Visit a parse tree produced by ECMAScriptParser#arguments.
       * 
@@ -1055,11 +1049,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else {
             return new SpreadElement(evalNode(ctx.getChild(1)))
         }
-    }
-
-    // Visit a parse tree produced by ECMAScriptParser#argumentList.
-    visitArgumentList(ctx: RuleContext) {
-        console.info("visitArgumentList: " + ctx.getText());
     }
 
     // Visit a parse tree produced by ECMAScriptParser#expressionSequence.
@@ -1167,8 +1156,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ClassTailContext);
         //  (Extends singleExpression)? '{' classElement* '}'
         this.dumpContextAllChildren(ctx)
-        const node = this.getNodeByType(ctx, ECMAScriptParser.ClassElementContext);
-    }
+        throw new Error("not implemented");
+     }
 
     private getNodeByType(ctx: RuleContext, type: any) {
         for (let i = 0; i < ctx.getChildCount(); ++i) {
@@ -1182,13 +1171,21 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     // Visit a parse tree produced by ECMAScriptParser#classElement.
     visitClassElement(ctx: RuleContext) {
-        this.log(ctx, Trace.frame());
+        this.log(ctx, Trace.frame());        
+        this.assertType(ctx, ECMAScriptParser.ClassTailContext);
+        //  (Extends singleExpression)? '{' classElement* '}'
+        this.dumpContextAllChildren(ctx)
+        throw new Error("not implemented");
     }
 
 
     // Visit a parse tree produced by ECMAScriptParser#methodDefinition.
     visitMethodDefinition(ctx: RuleContext) {
         this.log(ctx, Trace.frame());
+        this.assertType(ctx, ECMAScriptParser.ClassTailContext);
+        //  (Extends singleExpression)? '{' classElement* '}'
+        this.dumpContextAllChildren(ctx)
+        throw new Error("not implemented");
     }
 
     /**
@@ -1229,8 +1226,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitFormalParameterArg(ctx: RuleContext): AssignmentPattern | BindingIdentifier | BindingPattern {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.FormalParameterArgContext);
-        //  constructor(left: BindingIdentifier | BindingPattern, right: Expression)
-
         const count = ctx.getChildCount();
         if (count != 1 && count != 3) {
             this.throwInsanceError(this.dumpContext(ctx));
@@ -1244,6 +1239,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else {
             const assignable = this.visitAssignable(ctx.getChild(0))
             const expression = this.singleExpression(ctx.getChild(2));
+            
             return new AssignmentPattern(assignable, expression);
         }
     }

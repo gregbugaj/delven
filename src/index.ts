@@ -197,6 +197,9 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' [a, b] = [10, 20]; '}); 
 // let ast = ASTParser.parse({ type: "code", value: ' function a(x, y){}'});  // default parameters 
 
+// CallExpression
+ let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
+
 console.table(toJson(ast))
 //let generator = new SourceGenerator();
 //generator.visit(ast);
