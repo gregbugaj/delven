@@ -104,8 +104,21 @@ console.info("---------------------");
 //  let ast = ASTParser.parse({ type: "code", value: 'async function* gen(z, x = 2, y){} '});
 
 // Class Defintion
+// let ast = ASTParser.parse({ type: "code", value: ' class x {}'}); 
+// let ast = ASTParser.parse({ type: "code", value: ' class x extends y {}'});  // Fixme
+// let ast = ASTParser.parse({ type: "code", value: ' class x extends function(){} {} '});   // FIXME
+// let ast = ASTParser.parse({ type: "code", value: ' class x { constructor(w, h) {} } '}); 
+// let ast = ASTParser.parse({ type: "code", value: ' class x { constructor(w, h) {}  hello() {} } '}); 
+//let ast = ASTParser.parse({ type: "code", value: ' class x { static hello() {} } '}); 
+// let ast = ASTParser.parse({ type: "code", value: ' class x { * hello() {} } '}); 
+// let ast = ASTParser.parse({ type: "code", value: ' class x { static hello() {} } '});  // FIXME
+let ast = ASTParser.parse({ type: "code", value: " class Animal { constructor(name = 'anonymous', legs = 4, noise = 'nothing') {} } "});  
+// let ast = ASTParser.parse({ type: "code", value: ' class x { constructor(w, h) {this.p1 = 2} }  '}); 
+/* 
+class x { async hello () {} }
+class x { static hello(){} }
+class x {* hello(){}} */
 
-let ast = ASTParser.parse({ type: "code", value: ' class x {} '});
 // let ast = ASTParser.parse({ type: "code", value: 'class x extends y {} '});// Call stack
 // let ast = ASTParser.parse({ type: "code", value: 'class x extends function() {} {}'}); // Call stack
 // let ast = ASTParser.parse({ type: "code", value: 'class x extends function() {} {}'});// Call stack
