@@ -48,6 +48,7 @@ console.info("---------------------");
  // literals
 
 //  let ast = ASTParser.parse({ type: "code", value: ' 1 '}); //NumericLiteral
+//  let ast = ASTParser.parse({ type: "code", value: ' 1,2,3,4 '}); 
 //  let ast = ASTParser.parse({ type: "code", value: ' true '}); 
 //  let ast = ASTParser.parse({ type: "code", value: ' "test xyz" '}); 
 //  let ast = ASTParser.parse({ type: "code", value: " 'test xyz' "}); 
@@ -58,6 +59,7 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: "{ var x = 1;   var x = 2; }" });
 // let ast = ASTParser.parse({ type: "code", value: "{ {  } }" });
 // let ast = ASTParser.parse({ type: "code", value: "  x = 1  " });
+let ast = ASTParser.parse({ type: "code", value: "  let x = 1  " });
 // let ast = ASTParser.parse({ type: "code", value: "  x /= 1  " });
 //let ast = ASTParser.parse({ type: "code", value: "{ { 1, true, 'A'} } " });
 //  let ast = ASTParser.parse({ type: "code", value: "true, 1, 'A', \"X\"" });
@@ -117,12 +119,8 @@ console.info("---------------------");
 // Class Expressions 
 // let ast = ASTParser.parse({ type: "code", value: 'let x = class y {}'});  
 // let ast = ASTParser.parse({ type: "code", value: 'let x = class {}'});  
-let ast = ASTParser.parse({ type: "code", value: 'let x = (class {})'});  
+// let ast = ASTParser.parse({ type: "code", value: 'let x = (class {})'});  
 // let ast = ASTParser.parse({ type: "code", value: ' class x { constructor(w, h) {this.p1 = 2} }  '}); 
-/* 
-class x { async hello () {} }
-class x { static hello(){} }
-class x {* hello(){}} */
 
 // let ast = ASTParser.parse({ type: "code", value: 'class x extends y {} '});// Call stack
 // let ast = ASTParser.parse({ type: "code", value: 'class x extends function() {} {}'}); // Call stack
@@ -235,9 +233,12 @@ class x {* hello(){}} */
  //let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
 
 console.table(toJson(ast))
-//let generator = new SourceGenerator();
-//generator.visit(ast);
 
+const generator = new SourceGenerator();
+const script = generator.toSource(ast);
+
+console.info('-------')
+console.info(script)
 
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

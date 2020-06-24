@@ -1,17 +1,50 @@
-import ASTNode from "./ASTNode";
+import * as Node from "./nodes";
+
 
 /**
  * A visitor for abstract syntax tree.
  */
-export default class ASTVisitor {
-    
-    constructor(){
+export default interface ASTVisitor {
 
-    }
+    /**
+     * 
+     * @param node V
+     */
+    visitScript(node: Node.Script): void;
 
-    visit(ast: ASTNode): void {
-        console.info('Generating : ' + JSON.stringify(ast, replacer))
-    }
+    /**
+     * 
+     * @param node 
+     */
+    visitExpressionStatement(node: Node.ExpressionStatement): void;
+
+    /**
+     * 
+     * @param node 
+     */
+    visitSequenceExpression(node: Node.SequenceExpression): void;
+
+    /**
+     * 
+     * @param literal 
+     */
+    visitLiteral(literal: Node.Literal): void;
+
+    /**
+     * 
+     * @param identifier 
+     */
+    visitIdentifier(identifier: Node.Identifier): void;
+
+    /**
+     * 
+     * @param expression 
+     */
+    visitExpression(expression: Node.Expression): void;
+
+    /**
+     * 
+     * @param expression 
+     */
+    visitAssignmentExpression(expression: Node.AssignmentExpression): void;
 }
-
-function replacer(key, value) { return value};

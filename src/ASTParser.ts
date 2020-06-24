@@ -5,7 +5,6 @@ import { ECMAScriptParser as DelvenParser, ECMAScriptParser, ProgramContext } fr
 import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
-import ASTNode from "./ASTNode";
 import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement, ArrayPattern, ObjectPattern, CallExpression, TemplateLiteral, RegexLiteral, TemplateElement } from "./nodes";
 import * as Node from "./nodes";
 import { type } from "os"
@@ -1929,7 +1928,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitIdentifier(ctx: RuleContext): Node.Identifier {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.IdentifierContext)
-        return new Identifier(ctx.getChild(0).getText())
+        return new Node.Identifier(ctx.getChild(0).getText())
     }
 
     // Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
@@ -1966,7 +1965,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitVoidExpression(ctx: RuleContext): Node.UnaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.VoidExpressionContext);
-        return new UnaryExpression("void", this.singleExpression(ctx.singleExpression()))
+        return new Node.UnaryExpression("void", this.singleExpression(ctx.singleExpression()))
     }
 
     // Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
