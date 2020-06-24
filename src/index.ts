@@ -112,7 +112,10 @@ console.info("---------------------");
 //let ast = ASTParser.parse({ type: "code", value: ' class x { static hello() {} } '}); 
 // let ast = ASTParser.parse({ type: "code", value: ' class x { * hello() {} } '}); 
 // let ast = ASTParser.parse({ type: "code", value: ' class x { static hello() {} } '});  // FIXME
-let ast = ASTParser.parse({ type: "code", value: " class Animal { constructor(name = 'anonymous', legs = 4, noise = 'nothing') {} } "});  
+// let ast = ASTParser.parse({ type: "code", value: " class Animal { constructor(name = 'anonymous', legs = 4, noise = 'nothing') {} } "});  
+
+// Class Expressions 
+let ast = ASTParser.parse({ type: "code", value: 'let x = class y {}'});  
 // let ast = ASTParser.parse({ type: "code", value: ' class x { constructor(w, h) {this.p1 = 2} }  '}); 
 /* 
 class x { async hello () {} }
