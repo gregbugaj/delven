@@ -24,11 +24,12 @@ export default class SourceGenerator {
     }
 }
 
-class ExplicitASTNodeVisitor implements ASTVisitor {
+class ExplicitASTNodeVisitor extends ASTVisitor {
 
     private _buffer: string;
 
     constructor() {
+        super();
         this._buffer = "";
     }
 
