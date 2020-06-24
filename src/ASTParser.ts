@@ -1117,6 +1117,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitPreIncrementExpression(node);
         } else if (node instanceof ECMAScriptParser.ThisExpressionContext) {
             return this.visitThisExpression(node);
+        }else if (node instanceof ECMAScriptParser.ClassExpressionContext) {
+            return this.visitClassExpression(node);
         }
         this.throwInsanceError(this.dumpContext(node));
     }
@@ -1208,7 +1210,35 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitMethodDefinition(methodDefContext)
         }
 
-        return Node.EmptyStatement()
+        return new Node.EmptyStatement()
+    }    
+    
+    /**
+     * Examples :
+     * ```
+     * let x = class y {}
+     * let x = class {}
+     * let x = (class {})
+     * ```
+     * Grammar :
+     * ```
+     * Class identifier? classTail    # ClassExpression
+     * ```
+     * @param ctx 
+     * 
+     */
+    visitClassExpression(ctx: RuleContext): Node.ClassExpression {
+        this.log(ctx, Trace.frame());
+        this.assertType(ctx, ECMAScriptParser.ClassExpressionContext);
+
+        if(ctx.getChildCount() == 2) {
+            const body = this.visitClassTail(ctx.getChild(1)); 
+            return new Node.ClassExpression(null, null, body);
+        } else {
+            const identifier = this.visitIdentifier(ctx.getChild(1)); 
+            const body = this.visitClassTail(ctx.getChild(2)); 
+            return new Node.ClassExpression(identifier, null, body);
+        }
     }
 
     /**
