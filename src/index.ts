@@ -44,6 +44,16 @@ console.info("---------------------");
         "true"
         }
  */
+
+ // literals
+
+//  let ast = ASTParser.parse({ type: "code", value: ' 1 '}); //NumericLiteral
+//  let ast = ASTParser.parse({ type: "code", value: ' true '}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' "test xyz" '}); 
+//  let ast = ASTParser.parse({ type: "code", value: " 'test xyz' "}); 
+//  let ast = ASTParser.parse({ type: "code", value: ' /[a-z]/gi '}); 
+//  let ast = ASTParser.parse({ type: "code", value: '`Payload ${Param1} middle ${Param2} endof ${Param3} end`'}); 
+
 //let astparser = ASTParser.parse({ type: "code", value: "source" }, ParserType.ECMAScript);
 // let ast = ASTParser.parse({ type: "code", value: "{ var x = 1;   var x = 2; }" });
 // let ast = ASTParser.parse({ type: "code", value: "{ {  } }" });
@@ -85,17 +95,23 @@ console.info("---------------------");
 //let ast = ASTParser.parse({ type: "code", value: ' x[1] '}); 
 //let ast = ASTParser.parse({ type: "code", value: ' x+=1 '}); 
 //let ast = ASTParser.parse({ type: "code", value: ' x+=y '});
-// let ast = ASTParser.parse({ type: "code", value: 'class x {} '});
-// let ast = ASTParser.parse({ type: "code", value: 'class x extends y {} '});// Call stack
-// let ast = ASTParser.parse({ type: "code", value: 'class x extends function() {} {}'}); // Call stack
-// let ast = ASTParser.parse({ type: "code", value: 'class x extends function() {} {}'});// Call stack
-// let ast = ASTParser.parse({ type: "code", value: 'class x {constructor(){}}'});// Call stack
+
 // let ast = ASTParser.parse({ type: "code", value: 'async function test() {}'});
 //let ast = ASTParser.parse({ type: "code", value: 'import * as antlr4 from "antlr4"'});
 // let ast = ASTParser.parse({ type: "code", value: 'try{}catch(e){}'});
 // let ast = ASTParser.parse({ type: "code", value: ' function gen(x, y){} '});
 // let ast = ASTParser.parse({ type: "code", value: ' async function gen(x, y){} '});
 //  let ast = ASTParser.parse({ type: "code", value: 'async function* gen(z, x = 2, y){} '});
+
+// Class Defintion
+
+let ast = ASTParser.parse({ type: "code", value: ' class x {} '});
+// let ast = ASTParser.parse({ type: "code", value: 'class x extends y {} '});// Call stack
+// let ast = ASTParser.parse({ type: "code", value: 'class x extends function() {} {}'}); // Call stack
+// let ast = ASTParser.parse({ type: "code", value: 'class x extends function() {} {}'});// Call stack
+// let ast = ASTParser.parse({ type: "code", value: 'class x {constructor(){}}'});// Call stack
+
+
 
 // VariableDeclarator 
 // let ast = ASTParser.parse({ type: "code", value: 'let x = 2'});
@@ -198,7 +214,7 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' function a(x, y){}'});  // default parameters 
 
 // CallExpression
- let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
+ //let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
 
 console.table(toJson(ast))
 //let generator = new SourceGenerator();
