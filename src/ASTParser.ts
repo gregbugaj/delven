@@ -693,6 +693,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         return this.functionDeclaration(ctx)
     }
+
     functionDeclaration(ctx: RuleContext): FunctionDeclaration | AsyncFunctionDeclaration {
         let async = false;
         let generator = false;
@@ -902,11 +903,25 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.Property("init", key, computed, value, method, shorthand);
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#propertyShorthand.
+    /**
+     * 
+     * Visit a parse tree produced by ECMAScriptParser#propertyAssignment.
+     * ```
+     *  | Async? '*'? propertyName '(' formalParameterList?  ')'  '{' functionBody '}'  # FunctionProperty
+     * ```
+     * @param ctx 
+     */
     visitFunctionProperty(ctx: RuleContext): Node.ObjectExpressionProperty {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.FunctionPropertyContext)
-        throw new TypeError("not implemented")
+        
+        const computed = false;
+        const method = false;
+        const shorthand = true;
+        const key: Node.PropertyKey = new Identifier(ctx.getText())
+        let value = this.functionDeclaration(ctx)
+
+        return new Node.Property("init", key, computed, value, method, shorthand);
     }
 
     /**
@@ -1578,35 +1593,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
 
-    visitFunctionExpressionXXXX(ctx: RuleContext, isStatement = true): Node.FunctionExpression | Node.FunctionDeclaration {
-        this.log(ctx, Trace.frame());
-        this.assertType(ctx, ECMAScriptParser.FunctionExpressionContext);
-        // determinte if we are performing expression or declaration
-        //  FunctionExpression | FunctionDeclaration
-        const node = ctx.getChild(0);
-        let functionExpression;
-        if (node instanceof ECMAScriptParser.FunctionDeclContext) {
-            const decl = this.visitFunctionDecl(ctx.getChild(0));
-            if (isStatement) {
-                functionExpression = decl;
-            } else {
-                // FunctionDeclaration | AsyncFunctionDeclaration 
-                if (decl instanceof Node.AsyncFunctionDeclaration) {
-                    functionExpression = new Node.AsyncFunctionExpression(decl.id, decl.params, decl.body);
-                } else {
-                    functionExpression = new Node.FunctionExpression(decl.id, decl.params, decl.body, decl.generator);
-                }
-            }
-        } else if (node instanceof ECMAScriptParser.AnoymousFunctionDeclContext) {
-            functionExpression = this.visitAnoymousFunctionDecl(ctx.getChild(0));
-        } else if (node instanceof ECMAScriptParser.ArrowFunctionContext) {
-            functionExpression = this.visitArrowFunction(ctx.getChild(0));
-        } else {
-            throw new TypeError("not implemented")
-        }
-        
-        return functionExpression;
-    }
     // Visit a parse tree produced by ECMAScriptParser#functionDecl
     visitAnoymousFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration {
         this.log(ctx, Trace.frame());

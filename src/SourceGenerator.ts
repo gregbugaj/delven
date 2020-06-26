@@ -111,7 +111,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     vistReturnStatement(expression: Node.ReturnStatement): void {
         this.write('return ', false, false)
 
-        if(expression.argument != null){
+        if (expression.argument != null) {
             this.visitExpression(expression.argument)
         }
     }
@@ -178,7 +178,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 const statement = body[i]
                 this.indentIncease()
                 this.visit(statement);
-                this.write('\n', false, false)
+                this.write(i < body.length - 1 ? '\n' : '', false, false)
                 this.indentDecrease()
             }
         }
@@ -452,7 +452,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
 
         this.visitParams(expression.params)
-        this.visit(expression.body)
+        this.visitBlockStatement(expression.body)
     }
 
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {

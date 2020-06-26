@@ -1,0 +1,2 @@
+// propertyShorthand
+let x = {function(){}}

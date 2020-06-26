@@ -1,4 +1,4 @@
-// Generated from /home/gbugaj/devio/delven-transpiler/src/grammar/ECMAScriptParser.g4 by ANTLR 4.7.1
+// Generated from /home/greg/dev/delven.io/delven-transpiler/src/grammar/ECMAScriptParser.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
