@@ -459,10 +459,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.VariableDeclarationContext)
         const assignableContext = this.getTypedRuleContext(ctx, ECMAScriptParser.AssignableContext, 0);
         const assignable = this.visitAssignable(assignableContext);
-        // console.info(assignable)
         let init = null;
         if (ctx.getChildCount() == 3) {
-            init = this.singleExpression(ctx.getChild(2));
+            init = this.singleExpression(ctx.getChild(2), false);
         }
         return new VariableDeclarator(assignable, init);
     }
