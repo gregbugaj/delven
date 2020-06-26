@@ -47,4 +47,33 @@ export default abstract class ASTVisitor {
      * @param expression 
      */
     abstract visitAssignmentExpression(expression: Node.AssignmentExpression): void;
+
+    /**
+     * 
+     * @param declaration 
+     */
+    abstract visitVariableDeclaration(declaration: Node.VariableDeclaration): void;
+
+    /**
+     * 
+     */
+    abstract visitVariableDeclarator(node: Node.VariableDeclarator): void;
+
+    /**
+     * 
+     * @param node 
+     */
+    abstract visitBlockStatement(node: Node.BlockStatement): void;
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitObjectExpression(expression: Node.ObjectExpression): void;
+
+    /**
+     * 
+     * @param property 
+     */
+    abstract visitObjectExpressionProperty(property: Node.ObjectExpressionProperty): void;
 }

@@ -832,9 +832,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#objectLiteral.
+     * ```
      * objectLiteral
      *  : '{' (propertyAssignment (',' propertyAssignment)*)? ','? '}'
      *  ;
+     * ```
      * @param ctx 
      */
     visitObjectLiteral(ctx: RuleContext): Node.ObjectExpression {
@@ -922,34 +924,32 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitPropertyExpressionAssignment(ctx: RuleContext): Node.ObjectExpressionProperty {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.PropertyExpressionAssignmentContext);
-
         let node = ctx.getChild(0);
 
         this.dumpContextAllChildren(ctx)
+
         let n0 = ctx.getChild(0); // PropertyName
-        let n1 = ctx.getChild(1); // symbol :
-        let n2 = ctx.getChild(2); //  singleExpression 
-        let key: PropertyKey = this.visitPropertyName(n0);
+
+        let key: PropertyKey;
         let value;
         const computed = false;
         const method = false;
         const shorthand = false;
 
-        if (n2 instanceof ECMAScriptParser.PropertyExpressionAssignmentContext) {
-            console.info(' -- PropertyExpressionAssignmentContext')
+        if (n0 instanceof ECMAScriptParser.PropertyNameContext) {
             key = this.visitPropertyName(n0);
-        } else if (n2 instanceof ECMAScriptParser.ComputedPropertyExpressionAssignmentContext) {
-            console.info(' -- ComputedPropertyExpressionAssignmentContext')
-        } else if (n2 instanceof ECMAScriptParser.FunctionPropertyContext) {
-            console.info(' -- FunctionPropertyContext')
-        } else if (n2 instanceof ECMAScriptParser.PropertyGetterContext) {
-            console.info(' -- PropertyGetterContext')
-        } else if (n2 instanceof ECMAScriptParser.PropertySetterContext) {
-            console.info(' -- PropertySetterContext')
-        } else if (n2 instanceof ECMAScriptParser.PropertyShorthandContext) {
-            console.info(' -- PropertyShorthandContext')
+            value = this.singleExpression(ctx.getChild(2));
+        } else if (n0 instanceof ECMAScriptParser.ComputedPropertyExpressionAssignmentContext) {
+            throw new TypeError("Not implemented : ComputedPropertyExpressionAssignmentContext")
+        } else if (n0 instanceof ECMAScriptParser.FunctionPropertyContext) {
+            throw new TypeError("Not implemented : FunctionPropertyContext")
+        } else if (n0 instanceof ECMAScriptParser.PropertyGetterContext) {
+            throw new TypeError("Not implemented : PropertyGetterContext")
+        } else if (n0 instanceof ECMAScriptParser.PropertySetterContext) {
+            throw new TypeError("Not implemented : PropertySetterContext")
+        } else if (n0 instanceof ECMAScriptParser.PropertyShorthandContext) {
+            throw new TypeError("Not implemented : PropertyShorthandContext")
         }
-        // this.singleExpression(n2);
 
         return new Node.Property("init", key, computed, value, method, shorthand);
     }
@@ -986,10 +986,27 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const node = ctx.getChild(0);
         const count = node.getChildCount();
 
+        this.dumpContextAllChildren(ctx)
         if (count == 0) { // literal
-            return this.visitLiteral(node);
+            
+            const symbol = node.symbol;
+            const state = symbol.type;
+            const raw = node.getText();
+            switch (state) {
+                case ECMAScriptParser.BooleanLiteral:
+                    return this.createLiteralValue(node, raw === 'true', raw);
+                case ECMAScriptParser.StringLiteral:
+                    return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw);
+            }
+           // return this.visitLiteral(node);
+
+
         } else if (count == 1) {
-            return this.visitIdentifierName(node)
+            if (node instanceof ECMAScriptParser.IdentifierNameContext) {
+                return this.visitIdentifierName(node)
+            } else if (node instanceof ECMAScriptParser.NumericLiteralContext) {
+               return this.visitNumericLiteral(node)
+            } 
         }
         this.throwInsanceError(this.dumpContext(node));
     }
@@ -1406,8 +1423,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ObjectLiteralExpressionContext);
         const node = ctx.getChild(0);
-        const properties: Node.ObjectExpressionProperty[] = this.visitObjectLiteral(node);
-        return new Node.ObjectExpression(properties);
+        return this.visitObjectLiteral(node);
     }
 
     // Visit a parse tree produced by ECMAScriptParser#InExpression.
@@ -1854,6 +1870,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.LiteralExpressionContext);
         this.assertNodeCount(ctx, 1);
+
         const node = ctx.getChild(0)
         if (node instanceof ECMAScriptParser.LiteralContext) {
             return this.visitLiteral(node);

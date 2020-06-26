@@ -59,10 +59,10 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: "{ var x = 1;   var x = 2; }" });
 // let ast = ASTParser.parse({ type: "code", value: "{ {  } }" });
 // let ast = ASTParser.parse({ type: "code", value: "  x = 1  " });
-let ast = ASTParser.parse({ type: "code", value: "  let x = 1  " });
+// let ast = ASTParser.parse({ type: "code", value: "  let x = 1  " });
 // let ast = ASTParser.parse({ type: "code", value: "  x /= 1  " });
 //let ast = ASTParser.parse({ type: "code", value: "{ { 1, true, 'A'} } " });
-//  let ast = ASTParser.parse({ type: "code", value: "true, 1, 'A', \"X\"" });
+//  let ast = ASTParser.parse({ type: "code", value: "trurm e, 1, 'A', \"X\"" });
 //let ast = ASTParser.parse({ type: "code", value: "x = 1" });
 //  let ast = ASTParser.parse({ type: "code", value: " 1, true, 'A' "});
 //let ast = ASTParser.parse({ type: "code", value: " 1.2 ,true, \"Text\""});
@@ -232,14 +232,21 @@ let ast = ASTParser.parse({ type: "code", value: "  let x = 1  " });
 // CallExpression
  //let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
 
+// let ast = ASTParser.parse({ type: "code", value: "{ {  1,2,3  } }" });
+//  let ast = ASTParser.parse({ type: "code", value: "{{let x = 1; var y; const z = 2}}" });
+//  let ast = ASTParser.parse({ type: "code", value: ' x = {1 : 2, "a":2}' });
+//  let ast = ASTParser.parse({ type: "code", value: ' ({z : 2}) ' });
+ let ast = ASTParser.parse({ type: "code", value: ' ({z : ()=>{}}) ' });
+
 console.table(toJson(ast))
 
-const generator = new SourceGenerator();
-const script = generator.toSource(ast);
+if(true) {
+    const generator = new SourceGenerator();
+    const script = generator.toSource(ast);
 
-console.info('-------')
-console.info(script)
-
+    console.info('-------')
+    console.info(script)
+}
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)
 export { } 

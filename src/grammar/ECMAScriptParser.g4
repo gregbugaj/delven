@@ -228,14 +228,14 @@ debuggerStatement
 
 functionDeclaration
     : Async? Function '*'? identifier '(' formalParameterList? ')' '{' functionBody '}'
-    ;
+    ;   
 
 classDeclaration
     : Class identifier classTail
     ;
 
 classTail
-    : (Extends singleExpression)? '{' classElement* '}'
+    : (Extends singleExpression)?  '{' classElement* '}'
     ;
 
 classElement
