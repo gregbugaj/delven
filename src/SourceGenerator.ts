@@ -98,12 +98,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.LabeledStatement: {
                 this.visitLabeledStatement(node as Node.LabeledStatement);
                 break;
+            } case Syntax.ReturnStatement: {
+                this.vistReturnStatement(node as Node.ReturnStatement);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + node.type)
         }
 
         this.write('\n', false, false)
+    }
+    vistReturnStatement(expression: Node.ReturnStatement): void {
+        this.write('return ', false, false)
     }
 
     visitLabeledStatement(expression: Node.LabeledStatement) {
@@ -260,7 +266,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             const args = expression.arguments;
             const callee = expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression);
             this.visitMemberExpression(callee)
-            this.visitParams(args)    
+            this.visitParams(args)
 
         } else {
             throw new TypeError("Not implemented : " + expression.type)
@@ -396,7 +402,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.Identifier: {
                 this.visitIdentifier(value as Node.Identifier)
                 break;
-            }case Syntax.FunctionDeclaration: {
+            } case Syntax.FunctionDeclaration: {
                 this.visitFunctionDeclaration(value as Node.FunctionDeclaration)
                 break;
             }
