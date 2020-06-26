@@ -250,7 +250,8 @@ console.info("---------------------");
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/class/001.syntax.js' });
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/arrowfunction/001.syntax.js' });
 
- let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/function/003.syntax.js' });
+//  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/function/005.syntax.js' });
+ let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/array/001.syntax.js' });
 
 console.table(toJson(ast))
 

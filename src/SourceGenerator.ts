@@ -79,7 +79,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visit(node: Node.Declaration | Node.Statement) {
-
         switch (node.type) {
             case Syntax.BlockStatement: {
                 this.visitBlockStatement(node as Node.BlockStatement);
@@ -103,6 +102,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             default:
                 throw new TypeError("Type not handled : " + node.type)
         }
+
+        this.write('\n', false, false)
     }
 
     visitLabeledStatement(expression: Node.LabeledStatement) {
@@ -285,7 +286,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitFunctionDeclaration(expression: Node.FunctionDeclaration): void {
-
         this.writeFunctionDefinition(expression)
     }
 
@@ -328,9 +328,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     vistSpreadElement(expression: Node.SpreadElement): void {
-        this.write('...(', false, false)
+        const wrap = !(expression.argument instanceof Node.Identifier)
+        this.write('...', false, false)
+        this.write(wrap ? '(' : '', false, false)
         this.visitExpression(expression.argument)
-        this.write(')', false, false)
+        this.write(wrap ? ')' : '', false, false)
     }
 
     vistiRestElement(expression: Node.RestElement): void {
@@ -421,13 +423,14 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.write(' async', false, false)
         }
 
-        if (expression.id != null) {
-            this.visitIdentifier(expression.id)
-        }
-        this.write(' function', false, false)
+        this.write(' function ', false, false)
 
         if (expression.generator) {
             this.write('*', false, false)
+        }
+
+        if (expression.id != null) {
+            this.visitIdentifier(expression.id)
         }
 
         this.visitParams(expression.params)
