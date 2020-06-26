@@ -110,6 +110,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
     vistReturnStatement(expression: Node.ReturnStatement): void {
         this.write('return ', false, false)
+
+        if(expression.argument != null){
+            this.visitExpression(expression.argument)
+        }
     }
 
     visitLabeledStatement(expression: Node.LabeledStatement) {
