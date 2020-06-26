@@ -165,12 +165,22 @@ export default abstract class ASTVisitor {
      * 
      * @param expression 
      */
-    abstract visitCallExpression(expression: Node.CallExpression): void  
-    
+    abstract visitCallExpression(expression: Node.CallExpression): void
+
     /**
      * 
      * @param expression 
      */
     abstract visitFunctionDeclaration(expression: Node.FunctionDeclaration): void
 
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitMemberExpression(expression: Node.StaticMemberExpression | Node.ComputedMemberExpression): void
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitThisExpression(expression: Node.ThisExpression): void
 }

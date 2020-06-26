@@ -1852,7 +1852,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitLogicalAndExpression(ctx);
         } else if (ctx instanceof ECMAScriptParser.LogicalOrExpressionContext) {
             return this.visitLogicalOrExpression(ctx);
+        } else if (ctx instanceof ECMAScriptParser.MemberDotExpressionContext) {
+            return this.visitMemberDotExpression(ctx);
         }
+
         this.throwInsanceError(this.dumpContext(ctx));
     }
 

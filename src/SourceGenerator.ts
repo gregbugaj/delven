@@ -158,16 +158,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         if (value instanceof Node.FunctionExpression) {
             this.visitFunctionExpression(value as Node.FunctionExpression)
         }
-
-        // if(expression.type == null)
-        /*if(expression.type == null){
-            throw new TypeError("Not implemented")
-        }else if(expression.type == Syntax.FunctionExpression){
-            
-        }else{
-            throw new TypeError("Not implemented")
-        }
-        */
     }
 
     visitBlockStatement(node: Node.BlockStatement): void {
@@ -249,28 +239,43 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.FunctionDeclaration: {
                 this.visitFunctionDeclaration(expression as Node.FunctionDeclaration);
                 break;
+            } case Syntax.MemberExpression: {
+                this.visitMemberExpression(expression as Node.StaticMemberExpression | Node.ComputedMemberExpression);
+                break;
+            } case Syntax.ThisExpression: {
+                this.visitThisExpression(expression as Node.ThisExpression);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
     }
 
+    visitThisExpression(expression: Node.ThisExpression) {
+        this.write('this', false, false);
+    }
+
     visitCallExpression(expression: Node.CallExpression) {
         if (expression.callee.type == Syntax.MemberExpression) {
-            const callee = expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression);
-            const object = callee.object;
-            const property = callee.property;
             const args = expression.arguments;
-
-            this.visitExpression(object)
-            this.write('.', false, false);
-            this.visitExpression(property)
-            this.visitParams(args)
+            const callee = expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression);
+            this.visitMemberExpression(callee)
+            this.visitParams(args)    
 
         } else {
             throw new TypeError("Not implemented : " + expression.type)
         }
     }
+
+    visitMemberExpression(expression: Node.StaticMemberExpression | Node.ComputedMemberExpression) {
+        const object = expression.object;
+        const property = expression.property;
+        this.visitExpression(object)
+        this.write('.', false, false);
+        this.visitExpression(property)
+    }
+
+
     visitParams(args: Node.ArgumentListElement[] | Node.FunctionParameter[]) {
         this.write('(', false, false);
         for (let i = 0; i < args.length; ++i) {
