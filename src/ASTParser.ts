@@ -678,15 +678,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#functionDeclaration.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#functionDeclaration.
+     * 
+     * ```
+     * functionDeclaration
+     *    : Async? Function '*'? identifier '(' formalParameterList? ')' '{' functionBody '}'
+     *    ;   
+     * ```
+     * @param ctx 
+     */
     visitFunctionDeclaration(ctx: RuleContext): Node.FunctionDeclaration | Node.AsyncFunctionDeclaration {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.FunctionDeclarationContext);
+
+        return this.functionDeclaration(ctx)
+    }
+    functionDeclaration(ctx: RuleContext): FunctionDeclaration | AsyncFunctionDeclaration {
         let async = false;
         let generator = false;
-        let identifier: Identifier;
-        let params;
-        let body;
+        let identifier: Identifier | null = null;
+        let params: FunctionParameter[] = []
+        let body:BlockStatement;
+
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i);
             if (node.symbol) {
@@ -707,9 +721,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
 
         if (async) {
-            return new Node.AsyncFunctionDeclaration(identifier, params, body, generator);
+            return new Node.AsyncFunctionDeclaration(identifier, params, body);
         } else {
-            //  constructor(id: Identifier | null, params: FunctionParameter[], body: BlockStatement, generator: boolean) {
             return new Node.FunctionDeclaration(identifier, params, body, generator);
         }
     }
@@ -790,13 +803,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.ElementListContext)
         const elements: Node.ArrayExpressionElement[] = [];
+
+        let lastTokenWasComma = false;
+
         for (const node of this.iterable(ctx)) {
             //ellison check
             if (node.symbol != null) {
                 // compliance: esprima compliane of returning `null` 
-                elements.push(null)
+                if (lastTokenWasComma) {
+                    elements.push(null)
+                }
+                lastTokenWasComma = true;
             } else {
                 elements.push(this.visitArrayElement(node));
+                lastTokenWasComma = false
             }
         }
         return elements;
@@ -988,7 +1008,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         this.dumpContextAllChildren(ctx)
         if (count == 0) { // literal
-            
+
             const symbol = node.symbol;
             const state = symbol.type;
             const raw = node.getText();
@@ -998,15 +1018,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 case ECMAScriptParser.StringLiteral:
                     return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw);
             }
-           // return this.visitLiteral(node);
+            // return this.visitLiteral(node);
 
 
         } else if (count == 1) {
             if (node instanceof ECMAScriptParser.IdentifierNameContext) {
                 return this.visitIdentifierName(node)
             } else if (node instanceof ECMAScriptParser.NumericLiteralContext) {
-               return this.visitNumericLiteral(node)
-            } 
+                return this.visitNumericLiteral(node)
+            }
         }
         this.throwInsanceError(this.dumpContext(node));
     }
@@ -1133,8 +1153,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitPreIncrementExpression(node);
         } else if (node instanceof ECMAScriptParser.ThisExpressionContext) {
             return this.visitThisExpression(node);
-        }else if (node instanceof ECMAScriptParser.ClassExpressionContext) {
+        } else if (node instanceof ECMAScriptParser.ClassExpressionContext) {
             return this.visitClassExpression(node);
+        } else if (node instanceof ECMAScriptParser.LogicalAndExpressionContext) {
+            return this.visitLogicalAndExpression(node);
+        } else if (node instanceof ECMAScriptParser.LogicalOrExpressionContext) {
+            return this.visitLogicalOrExpression(node);
         }
         this.throwInsanceError(this.dumpContext(node));
     }
@@ -1227,8 +1251,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
 
         return new Node.EmptyStatement()
-    }    
-    
+    }
+
     /**
      * Examples :
      * ```
@@ -1247,12 +1271,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.ClassExpressionContext);
 
-        if(ctx.getChildCount() == 2) {
-            const body = this.visitClassTail(ctx.getChild(1)); 
+        if (ctx.getChildCount() == 2) {
+            const body = this.visitClassTail(ctx.getChild(1));
             return new Node.ClassExpression(null, null, body);
         } else {
-            const identifier = this.visitIdentifier(ctx.getChild(1)); 
-            const body = this.visitClassTail(ctx.getChild(2)); 
+            const identifier = this.visitIdentifier(ctx.getChild(1));
+            const body = this.visitClassTail(ctx.getChild(2));
             return new Node.ClassExpression(identifier, null, body);
         }
     }
@@ -1288,9 +1312,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
             key = this.visitPropertyName(prop);
             const params: FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
             const body: BlockStatement = this.visitFunctionBody(ctx.functionBody());
-            if(isAsync){
+            if (isAsync) {
                 value = new AsyncFunctionExpression(null, params, body);
-            } else{
+            } else {
                 value = new FunctionExpression(null, params, body, isGenerator);
             }
         }
@@ -1301,7 +1325,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     hasToken(ctx: antlr4.ParserRuleContext, tokenType: number): boolean {
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const n = ctx.getChild(i);
-            if(n.symbol && tokenType === n.symbol.type) {
+            if (n.symbol && tokenType === n.symbol.type) {
                 return true;
             }
         }
@@ -1360,7 +1384,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else {
             const assignable = this.visitAssignable(ctx.getChild(0))
             const expression = this.singleExpression(ctx.getChild(2));
-
             return new AssignmentPattern(assignable, expression);
         }
     }
@@ -1410,9 +1433,47 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.trace('not implemented')
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#LogicalAndExpression.
-    visitLogicalAndExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#LogicalAndExpression.
+     * 
+     * ```
+     * singleExpression '&&' singleExpression    
+     * ```
+     * @param ctx 
+     */
+    visitLogicalAndExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.LogicalAndExpressionContext)
+        return this._binaryExpression(ctx);
+    }
+
+    /**
+    * Visit a parse tree produced by ECMAScriptParser#LogicalOrExpression.
+    * 
+    * ```
+    * singleExpression '||' singleExpression    
+    * ```
+    * @param ctx 
+    */
+
+    visitLogicalOrExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.LogicalOrExpressionContext)
+        return this._binaryExpression(ctx);
+    }
+
+    /**
+     * Evaluate binary expression.
+     * This applies to following types
+     * LogicalAndExpressionContext
+     * LogicalOrExpressionContext
+     * @param ctx 
+     */
+    _binaryExpression(ctx: RuleContext): Node.BinaryExpression {
+        let lhs = this._visitBinaryExpression(ctx.getChild(0));
+        let operator = ctx.getChild(1).getText();
+        let rhs = this._visitBinaryExpression(ctx.getChild(2));
+        return new Node.BinaryExpression(operator, lhs, rhs)
     }
 
     /**
@@ -1431,14 +1492,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.trace('not implemented')
 
     }
-
-
-    // Visit a parse tree produced by ECMAScriptParser#LogicalOrExpression.
-    visitLogicalOrExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-
-    }
-
 
     // Visit a parse tree produced by ECMAScriptParser#NotExpression.
     visitNotExpression(ctx: RuleContext) {
@@ -1501,6 +1554,37 @@ export class DelvenASTVisitor extends DelvenVisitor {
         // determinte if we are performing expression or declaration
         //  FunctionExpression | FunctionDeclaration
         const node = ctx.getChild(0);
+        let exp;
+        if (node instanceof ECMAScriptParser.FunctionDeclContext) {
+            exp = this.visitFunctionDecl(ctx.getChild(0));           
+        } else if (node instanceof ECMAScriptParser.AnoymousFunctionDeclContext) {
+            exp = this.visitAnoymousFunctionDecl(ctx.getChild(0));
+        } else if (node instanceof ECMAScriptParser.ArrowFunctionContext) {
+            exp = this.visitArrowFunction(ctx.getChild(0));
+        } else {
+            throw new TypeError("not implemented")
+        }
+
+        // unroll into an expression 
+        if (!isStatement) {
+            // FunctionDeclaration | AsyncFunctionDeclaration 
+            if (exp instanceof Node.AsyncFunctionDeclaration) {
+                return new Node.AsyncFunctionExpression(exp.id, exp.params, exp.body);
+            } else {
+                return new Node.FunctionExpression(exp.id, exp.params, exp.body, exp.generator);
+            }
+        }
+
+        return exp;
+    }
+
+
+    visitFunctionExpressionXXXX(ctx: RuleContext, isStatement = true): Node.FunctionExpression | Node.FunctionDeclaration {
+        this.log(ctx, Trace.frame());
+        this.assertType(ctx, ECMAScriptParser.FunctionExpressionContext);
+        // determinte if we are performing expression or declaration
+        //  FunctionExpression | FunctionDeclaration
+        const node = ctx.getChild(0);
         let functionExpression;
         if (node instanceof ECMAScriptParser.FunctionDeclContext) {
             const decl = this.visitFunctionDecl(ctx.getChild(0));
@@ -1513,7 +1597,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 } else {
                     functionExpression = new Node.FunctionExpression(decl.id, decl.params, decl.body, decl.generator);
                 }
-                // (id: Identifier | null, params: FunctionParameter[], body: BlockStatement, generator: boolean)
             }
         } else if (node instanceof ECMAScriptParser.AnoymousFunctionDeclContext) {
             functionExpression = this.visitAnoymousFunctionDecl(ctx.getChild(0));
@@ -1522,27 +1605,25 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else {
             throw new TypeError("not implemented")
         }
+        
         return functionExpression;
     }
-
     // Visit a parse tree produced by ECMAScriptParser#functionDecl
     visitAnoymousFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.AnoymousFunctionDeclContext);
-        throw new TypeError("Not implemented")
+        return this.functionDeclaration(ctx)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#functionDecl
     visitArrowFunction(ctx: RuleContext): Node.ArrowFunctionExpression {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.ArrowFunctionContext);
-        this.dumpContextAllChildren(ctx)
         const paramContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ArrowFunctionParametersContext);
         const bodyContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ArrowFunctionBodyContext);
         const params = this.visitArrowFunctionParameters(paramContext);
         const body = this.visitArrowFunctionBody(bodyContext);
         const expression = false;
-        // (params: FunctionParameter[], body: BlockStatement | Expression, expression: boolean) 
         return new Node.ArrowFunctionExpression(params, body, expression);
     }
 
@@ -1619,8 +1700,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             if (bodyContext.getChildCount() == 0) {
                 return new BlockStatement([]);
             }
-            const body = this.visitFunctionBody(bodyContext);
-            return new Node.BlockStatement(body);
+            return this.visitFunctionBody(bodyContext);
         } else {
             if (node instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
                 type ParenthesizedExpression = Node.ExpressionStatement | Node.SequenceExpression
@@ -1629,7 +1709,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 // unwinding ExpressionStatement to to simply return 
                 if (parametized instanceof Node.ExpressionStatement) {
                     return parametized.expression;
-                } else if (parametized instanceof Node.SequenceExpression) {
+                } else //if (parametized instanceof Node.SequenceExpression) 
+                {
                     return parametized;
                 }
             } else {
@@ -1703,13 +1784,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.EqualityExpressionContext);
         this.assertNodeCount(ctx, 3)
 
-        let left = ctx.getChild(0);
-        let operator = ctx.getChild(1).getText(); // No type ( +,- )
-        let right = ctx.getChild(2);
-        let lhs = this._visitBinaryExpression(left);
-        let rhs = this._visitBinaryExpression(right);
-
-        return this.decorate(new Node.BinaryExpression(operator, lhs, rhs), {});
+        return this._binaryExpression(ctx)
     }
 
 
@@ -1726,13 +1801,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.MultiplicativeExpressionContext);
         this.assertNodeCount(ctx, 3)
 
-        const left = ctx.getChild(0);
-        const operator = ctx.getChild(1).getText(); // No type ( +,- )
-        const right = ctx.getChild(2);
-        const lhs = this.visitBinaryExpression(left);
-        const rhs = this.visitBinaryExpression(right);
-
-        return new BinaryExpression(operator, lhs, rhs);
+        return this._binaryExpression(ctx)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#BitShiftExpression.
@@ -1764,17 +1833,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.AdditiveExpressionContext);
         this.assertNodeCount(ctx, 3)
 
-        const left = ctx.getChild(0);
-        const operator = ctx.getChild(1).getText(); // No type ( +,- )
-        const right = ctx.getChild(2);
-        const lhs = this._visitBinaryExpression(left);
-        const rhs = this._visitBinaryExpression(right);
-        // return this.decorate(new BinaryExpression(operator, lhs ,rhs), this.asMarker(this.asMetadata(ctx.symbol)));
-        return new Node.BinaryExpression(operator, lhs, rhs);
+        return this._binaryExpression(ctx)
     }
 
     _visitBinaryExpression(ctx: RuleContext) {
-        if (ctx instanceof ECMAScriptParser.IdentifierExpressionContext) {
+        if (ctx instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
+            return this.visitParenthesizedExpression(ctx);
+        } else if (ctx instanceof ECMAScriptParser.IdentifierExpressionContext) {
             return this.visitIdentifierExpression(ctx);
         } else if (ctx instanceof ECMAScriptParser.LiteralExpressionContext) {
             return this.visitLiteralExpression(ctx);
@@ -1784,6 +1849,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitMultiplicativeExpression(ctx);
         } else if (ctx instanceof ECMAScriptParser.RelationalExpressionContext) {
             return this.visitRelationalExpression(ctx);
+        } else if (ctx instanceof ECMAScriptParser.LogicalAndExpressionContext) {
+            return this.visitLogicalAndExpression(ctx);
+        } else if (ctx instanceof ECMAScriptParser.LogicalOrExpressionContext) {
+            return this.visitLogicalOrExpression(ctx);
         }
         this.throwInsanceError(this.dumpContext(ctx));
     }

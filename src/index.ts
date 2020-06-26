@@ -232,11 +232,25 @@ console.info("---------------------");
 // CallExpression
  //let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
 
+ // Code gen testing
 // let ast = ASTParser.parse({ type: "code", value: "{ {  1,2,3  } }" });
-//  let ast = ASTParser.parse({ type: "code", value: "{{let x = 1; var y; const z = 2}}" });
-//  let ast = ASTParser.parse({ type: "code", value: ' x = {1 : 2, "a":2}' });
-//  let ast = ASTParser.parse({ type: "code", value: ' ({z : 2}) ' });
- let ast = ASTParser.parse({ type: "code", value: ' ({z : ()=>{}}) ' });
+// let ast = ASTParser.parse({ type: "code", value: "{{let x = 1; var y; const z = 2}}" });
+// let ast = ASTParser.parse({ type: "code", value: ' x = {1 : 2, "a":2}' });
+// let ast = ASTParser.parse({ type: "code", value: ' ({z : 2}) ' });
+// let ast = ASTParser.parse({ type: "code", value: ' ({z : (a = 1, b)=>{}}) ' });
+// let ast = ASTParser.parse({ type: "code", value: ' ({z : (a = 1, b = [1,, 2, ...rest])=>{}}) ' });
+// let ast = ASTParser.parse({ type: "code", value: ' 1+2+(3+4) ' });
+// let ast = ASTParser.parse({ type: "code", value: ' 1+2 ' });
+// let ast = ASTParser.parse({ type: "code", value: ' 1 && 1 ' });
+// let ast = ASTParser.parse({ type: "code", value: ' (1 || 2) && (2 || 3) || 4' });
+// let ast = ASTParser.parse({ type: "code", value: ' ({z : (a = 1, b = [1,, 2, ...rest])=>{}}) ' });
+// let ast = ASTParser.parse({ type: "code", value: ' ({z : (a = 1, b = [1,, 2, ...(1 + 2)])=>{}}) ' });
+//  let ast = ASTParser.parse({ type: "code", value: '(class z {})' });
+//  let ast = ASTParser.parse({ type: "code", value: '((class  { constructor () {} }))' });
+//  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/class/001.syntax.js' });
+//  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/arrowfunction/001.syntax.js' });
+
+ let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/function/003.syntax.js' });
 
 console.table(toJson(ast))
 

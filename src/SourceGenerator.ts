@@ -1,4 +1,4 @@
-import ASTVisitor from "./ASTVisitor";
+import ASTVisitor, { Binding } from "./ASTVisitor";
 import * as Node from "./nodes";
 import { Syntax } from "./syntax";
 
@@ -93,22 +93,94 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.VariableDeclaration: {
                 this.visitVariableDeclaration(node as Node.VariableDeclaration);
                 break;
+            } case Syntax.ClassDeclaration: {
+                this.visitClassDeclaration(node as Node.ClassDeclaration);
+                break;
+            } case Syntax.LabeledStatement: {
+                this.visitLabeledStatement(node as Node.LabeledStatement);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + node.type)
         }
     }
 
-    visitBlockStatement(node: Node.BlockStatement): void {
-        this.write("{", true, true);
+    visitLabeledStatement(expression: Node.LabeledStatement) {
+        this.visitIdentifier(expression.label)
+        this.write(':', false, false)
+        if (expression.body) {
+            this.visit(expression.body)
+        }
+    }
 
-        for (const statement of node.body) {
-            this.indentIncease()
-            this.visit(statement);
-            this.write("\n", false, false)
-            this.indentDecrease()
+    visitClassDeclaration(expression: Node.ClassDeclaration): void {
+        this.classDefinition(expression)
+    }
+
+    visitClassExpression(expression: Node.ClassExpression): void {
+        this.write('(', false, true)
+        this.indentIncease()
+        this.classDefinition(expression)
+        this.write(')', false, true)
+    }
+
+
+    classDefinition(expression: Node.ClassDeclaration | Node.ClassExpression) {
+        this.write('class ', false, false)
+        if (expression.id != null) {
+            this.visitIdentifier(expression.id as Node.Identifier)
+            this.write('\n', false, false)
+        }
+        this.write('{ ', false, true)
+
+        const clzBody: Node.ClassBody = expression.body
+        for (let i = 0; i < clzBody.body.length; i++) {
+            const property = clzBody.body[i]
+            if (property.type == Syntax.MethodDefinition) {
+                this.visitMethodDefinition(property as Node.MethodDefinition)
+            } else {
+                throw new TypeError("Type not handled  : " + property.type)
+            }
+
+            this.write('\n', false, false)
+        }
+        this.write('}', false, false)
+    }
+
+    visitMethodDefinition(expression: Node.MethodDefinition) {
+        // AsyncFunctionExpression | FunctionExpression | null;
+        if (expression.key != null) {
+            this.visitExpression(expression.key as Node.Expression)
         }
 
+        const value = expression.value;
+        if (value instanceof Node.FunctionExpression) {
+            this.visitFunctionExpression(value as Node.FunctionExpression)
+        }
+
+        // if(expression.type == null)
+        /*if(expression.type == null){
+            throw new TypeError("Not implemented")
+        }else if(expression.type == Syntax.FunctionExpression){
+            
+        }else{
+            throw new TypeError("Not implemented")
+        }
+        */
+    }
+
+    visitBlockStatement(node: Node.BlockStatement): void {
+        this.write("{", true, true);
+        const body = node.body;
+        if (body != null) {
+            for (let i = 0; i < body.length; ++i) {
+                const statement = body[i]
+                this.indentIncease()
+                this.visit(statement);
+                this.write('\n', false, false)
+                this.indentDecrease()
+            }
+        }
         this.write("}", true, false);
     }
 
@@ -146,19 +218,130 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ObjectExpression: {
                 this.visitObjectExpression(expression as Node.ObjectExpression);
                 break;
+            } case Syntax.ArrayExpression: {
+                this.visitArrayExpression(expression as Node.ArrayExpression);
+                break;
+            } case Syntax.SpreadElement: {
+                this.vistSpreadElement(expression as Node.SpreadElement);
+                break;
+            } case Syntax.BinaryExpression: {
+                this.visitBinaryExpression(expression as Node.BinaryExpression);
+                break;
+            } case Syntax.LogicalExpression: {
+                this.visitLogicalExpression(expression as Node.BinaryExpression);
+                break;
+            } case Syntax.ClassExpression: {
+                this.visitClassExpression(expression as Node.ClassExpression);
+                break;
+            } case Syntax.ArrowFunctionExpression: {
+                this.visitArrowFunctionExpression(expression as Node.ArrowFunctionExpression);
+                break;
+            } case Syntax.FunctionExpression: {
+                this.visitFunctionExpression(expression as Node.FunctionExpression);
+                break;
+            } case Syntax.CallExpression: {
+                this.visitCallExpression(expression as Node.CallExpression);
+                break;
+            } case Syntax.BlockStatement: {
+                this.visitBlockStatement(expression as Node.BlockStatement);
+                break;
+            } case Syntax.FunctionDeclaration: {
+                this.visitFunctionDeclaration(expression as Node.FunctionDeclaration);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
     }
 
+    visitCallExpression(expression: Node.CallExpression) {
+        if (expression.callee.type == Syntax.MemberExpression) {
+            const callee = expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression);
+            const object = callee.object;
+            const property = callee.property;
+            const args = expression.arguments;
+
+            this.visitExpression(object)
+            this.write('.', false, false);
+            this.visitExpression(property)
+            this.visitParams(args)
+
+        } else {
+            throw new TypeError("Not implemented : " + expression.type)
+        }
+    }
+    visitParams(args: Node.ArgumentListElement[] | Node.FunctionParameter[]) {
+        this.write('(', false, false);
+        for (let i = 0; i < args.length; ++i) {
+            const arg = args[i];
+            if (arg instanceof Node.RestElement) {
+                this.vistiRestElement(arg as Node.RestElement)
+            } else {
+                this.visitExpression(arg as Node.Expression)
+            }
+            this.write(i < args.length - 1 ? ', ' : '', false, false);
+        }
+        this.write(')', false, false);
+    }
+
+    visitFunctionDeclaration(expression: Node.FunctionDeclaration): void {
+
+        this.writeFunctionDefinition(expression)
+    }
+
+    visitBinaryExpression(expression: Node.BinaryExpression): void {
+        this.binaryExpression(expression)
+    }
+
+    visitLogicalExpression(expression: Node.BinaryExpression): void {
+        this.binaryExpression(expression)
+    }
+
+    binaryExpression(expression: Node.BinaryExpression): void {
+        const leftParen = (expression.left.type == Syntax.LogicalExpression || expression.left.type == Syntax.BinaryExpression)
+        const rightParen = (expression.right.type == Syntax.LogicalExpression || expression.right.type == Syntax.BinaryExpression)
+
+        this.write(leftParen ? '(' : '', false, false)
+        this.visitExpression(expression.left)
+        this.write(leftParen ? ')' : '', false, false)
+        this.write(` ${expression.operator} `, false, false)
+        this.write(rightParen ? '(' : '', false, false)
+        this.visitExpression(expression.right)
+        this.write(rightParen ? ')' : '', false, false)
+    }
+
+    visitArrayExpression(expression: Node.ArrayExpression): void {
+        const elements: Node.ArrayExpressionElement[] = expression.elements;
+        this.write('[', false, false)
+        for (let i = 0; i < elements.length; ++i) {
+            const element: Node.ArrayExpressionElement = elements[i]//  Expression | SpreadElement | null;
+            if (element == null) {
+                this.write('null', false, false)
+            } else if (element instanceof Node.RestElement) {
+                this.vistiRestElement(element as Node.RestElement)
+            } else {
+                this.visitExpression(element as Node.Expression)
+            }
+            this.write(i < elements.length - 1 ? ', ' : '', false, false);
+        }
+        this.write(']', false, false)
+    }
+
+    vistSpreadElement(expression: Node.SpreadElement): void {
+        this.write('...(', false, false)
+        this.visitExpression(expression.argument)
+        this.write(')', false, false)
+    }
+
+    vistiRestElement(expression: Node.RestElement): void {
+        throw new Error("Method not implemented.");
+    }
+
     visitObjectExpression(expression: Node.ObjectExpression): void {
         const properties: Node.ObjectExpressionProperty[] = expression.properties;
-
         this.write('{', false, false)
         for (let i = 0; i < properties.length; ++i) {
-            const property = properties[i];
-            this.visitObjectExpressionProperty(property);
+            this.visitObjectExpressionProperty(properties[i]);
             this.write(i < properties.length - 1 ? ', ' : '', false, false);
         }
         this.write('}', false, false)
@@ -176,10 +359,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 this.write(':', false, false)
                 this.visitPropertyValue(value);
 
-                console.info(value)
                 break;
             } case Syntax.SpreadElement: {
                 this.write('SPREAD', false, false)
+                throw new Error("not implemented")
                 break;
             }
             default:
@@ -188,17 +371,16 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitPropertyValue(value: Node.PropertyValue) {
-
         switch (value.type) {
             case Syntax.AssignmentPattern: {
-                console.info('X AssignmentPattern')
+                this.visitAssignmentPattern(value as Node.AssignmentPattern)
                 break;
             }
             case Syntax.FunctionExpression: {
-                console.info('X FunctionExpression')
+                this.visitFunctionExpression(value as Node.FunctionExpression);
                 break;
             } case Syntax.ArrowFunctionExpression: {
-                console.info('X ArrowFunctionExpression')
+                this.visitArrowFunctionExpression(value as Node.AsyncFunctionExpression);
                 break;
             }
             case Syntax.Literal: {
@@ -209,14 +391,104 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             }
             case Syntax.ArrayPattern: {
-                console.info('X ArrayPattern')
+                this.visitArrayPattern(value as Node.ArrayPattern)
                 break;
             } case Syntax.ObjectPattern: {
-                console.info('X ObjectPattern')
+                this.visitObjectPattern(value as Node.ObjectPattern)
                 break;
             } default:
                 throw new TypeError("Type not handled : " + value.type)
         }
+    }
+
+    visitFunctionParameterArray(params: Node.FunctionParameter[]): void {
+        this.write('(', false, false);
+        for (let i = 0; i < params.length; ++i) {
+            this.visitFunctionParameter(params[i])
+            this.write(i < params.length - 1 ? ', ' : '', false, false)
+        }
+        this.write(')', false, false)
+    }
+
+    visitFunctionExpression(expression: Node.FunctionExpression): void {
+        this.write('(', false, false)
+        this.writeFunctionDefinition(expression);
+        this.write(')', false, false)
+    }
+
+    writeFunctionDefinition(expression: Node.FunctionExpression | Node.FunctionDeclaration) {
+        if (expression.async) {
+            this.write(' async', false, false)
+        }
+
+        if (expression.id != null) {
+            this.visitIdentifier(expression.id)
+        }
+        this.write(' function', false, false)
+
+        if (expression.generator) {
+            this.write('*', false, false)
+        }
+
+        this.visitParams(expression.params)
+        this.visit(expression.body)
+    }
+
+    visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
+        this.visitFunctionParameterArray(expression.params)
+        this.write('=>', false, false)
+        this.visitExpression(expression.body)
+    }
+
+    visitFunctionParameter(param: Node.FunctionParameter): void {
+        switch (param.type) {
+            case Syntax.AssignmentPattern: {
+                this.visitAssignmentPattern(param as Node.AssignmentPattern)
+                break;
+            }
+            case Syntax.Identifier: {
+                this.visitIdentifier(param as Node.Identifier)
+                break;
+            } case Syntax.ArrayPattern: {
+                break;
+            }
+            case Syntax.ObjectPattern: {
+                break;
+            }
+            default:
+                throw new TypeError("Type not handled : " + param.type)
+        }
+    }
+
+    visitAssignmentPattern(expression: Node.AssignmentPattern): void {
+        console.log(expression)
+        this.visitBinding(expression.left as Binding);
+        this.write(' = ', false, false);
+        this.visitExpression(expression.right)
+    }
+
+    visitBinding(binding: Binding) {
+        if (binding == undefined || binding == null) {
+            return;
+        }
+
+        if (binding instanceof Node.Identifier) {
+            this.visitIdentifier(binding as Node.Identifier)
+        } else if (binding instanceof Node.ArrayPattern) {
+            this.visitArrayPattern(binding as Node.ArrayPattern)
+        } else if (binding instanceof Node.ObjectPattern) {
+            this.visitObjectPattern(binding as Node.ObjectPattern)
+        } else {
+            throw new TypeError("")
+        }
+    }
+
+    visitObjectPattern(node: Node.ObjectPattern): void {
+        throw new Error("Method not implemented.");
+    }
+
+    visitArrayPattern(node: Node.ArrayPattern): void {
+        throw new Error("Method not implemented.");
     }
 
     visitPropertyKey(key: Node.PropertyKey) {
@@ -238,7 +510,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitVariableDeclaration(declaration: Node.VariableDeclaration): void {
         const kind = declaration.kind;
         const declarations = declaration.declarations;
-        this.write(kind, true, false);
+        this.write(`${kind} `, true, false);
 
         for (const declaration of declarations) {
             this.visitVariableDeclarator(declaration as Node.VariableDeclarator)
@@ -246,21 +518,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitVariableDeclarator(declarator: Node.VariableDeclarator) {
-        const ident = declarator.id as (Node.BindingIdentifier | Node.BindingPattern)
+        const ident = declarator.id as Binding
         const init = declarator.init as (Node.Expression | null)
-        let lhs = ''
-
-        if (ident instanceof Node.Identifier) {
-            lhs = (ident as Node.Identifier).name
-        } else {
-            throw new TypeError("Type not handled : " + ident.type)
+        if (ident != null) {
+            this.visitBinding(ident)
         }
 
         if (init != null) {
-            this.write(` ${lhs} = `, false, false);
+            this.write(' = ', false, false);
             this.visitExpression(init);
-        } else {
-            this.write(` ${lhs} `, false, false);
         }
     }
 
@@ -274,6 +540,5 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 }
-
 
 let toJson = (obj: any): string => JSON.stringify(obj, function replacer(key, value) { return value }, 2);

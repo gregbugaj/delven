@@ -1,5 +1,6 @@
 import * as Node from "./nodes";
 
+export type Binding = Node.BindingIdentifier | Node.BindingPattern
 
 /**
  * A visitor for abstract syntax tree.
@@ -75,5 +76,101 @@ export default abstract class ASTVisitor {
      * 
      * @param property 
      */
-    abstract visitObjectExpressionProperty(property: Node.ObjectExpressionProperty): void;
+    abstract visitObjectExpressionProperty(expression: Node.ObjectExpressionProperty): void;
+
+    /**
+     * @param expression 
+     */
+    abstract visitArrowFunctionExpression(expression: Node.AsyncFunctionExpression): void;
+
+    /**
+     * @param expression 
+     */
+    abstract visitFunctionExpression(expression: Node.FunctionExpression): void;
+
+    /**
+     * 
+     * @param param 
+     */
+    abstract visitFunctionParameter(param: Node.FunctionParameter): void;
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitAssignmentPattern(expression: Node.AssignmentPattern): void;
+
+    /**
+     * 
+     * @param node 
+     */
+    abstract visitObjectPattern(node: Node.ObjectPattern): void;
+
+    /**
+     * 
+     * @param node 
+     */
+    abstract visitArrayPattern(node: Node.ArrayPattern): void
+
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitArrayExpression(expression: Node.ArrayExpression): void
+
+    /**
+     * 
+     * @param binding 
+     */
+    abstract visitBinding(binding: Binding): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract vistiRestElement(expression: Node.RestElement): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract vistSpreadElement(expression: Node.SpreadElement): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitBinaryExpression(expression: Node.BinaryExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitLogicalExpression(expression: Node.BinaryExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitClassDeclaration(expression: Node.ClassDeclaration): void
+
+    /**
+     * 
+     * @param expression ]
+     */
+    abstract visitClassExpression(expression: Node.ClassExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitCallExpression(expression: Node.CallExpression): void  
+    
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitFunctionDeclaration(expression: Node.FunctionDeclaration): void
+
 }
