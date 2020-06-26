@@ -391,6 +391,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.Identifier: {
                 this.visitIdentifier(value as Node.Identifier)
                 break;
+            }case Syntax.FunctionDeclaration: {
+                this.visitFunctionDeclaration(value as Node.FunctionDeclaration)
+                break;
             }
             case Syntax.ArrayPattern: {
                 this.visitArrayPattern(value as Node.ArrayPattern)
