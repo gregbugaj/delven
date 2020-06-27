@@ -1890,17 +1890,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     private getUpdateExpression(ctx: RuleContext, prefix: boolean): Node.UpdateExpression {
-        const operator = ctx.getChild(1).getText()
+        const operator = ctx.getChild(prefix ? 0 : 1).getText()
         const argument = this.singleExpression(ctx.singleExpression())
         return new UpdateExpression(operator, argument, prefix);
     }
 
     // Visit a parse tree produced by ECMAScriptParser#PostIncrementExpression.
-    visitPostIncrementExpression(ctx: RuleContext): Node.UpdateExpression {
+    visitPostIncrementExpression(ctx: RuleContext): Node.UpdateExpression,{
         this.assertType(ctx, ECMAScriptParser.PostIncrementExpressionContext);
         this.assertNodeCount(ctx, 2)
         return this.getUpdateExpression(ctx, false);
-
     }
 
     // Visit a parse tree produced by ECMAScriptParser#PreIncrementExpression.

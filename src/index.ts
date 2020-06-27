@@ -253,8 +253,10 @@ console.info("---------------------");
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/function/006.syntax.js' });
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/array/001.syntax.js' });
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/002.syntax.js' });
- let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/003.syntax.js' });
+//  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/003.syntax.js' });
 
+
+let ast = ASTParser.parse({ type: "code", value: ' (++x)' });
 console.table(toJson(ast))
 
 if(true) {

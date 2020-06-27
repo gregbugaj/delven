@@ -183,4 +183,10 @@ export default abstract class ASTVisitor {
      * @param expression 
      */
     abstract visitThisExpression(expression: Node.ThisExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitUpdateExpression(expression: Node.UpdateExpression): void
 }

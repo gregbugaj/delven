@@ -53,6 +53,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
+    private writeConditional(condition:boolean, txt: string, useIndent: boolean, newline = false): void {
+        if(condition){
+            this.write(txt, useIndent, newline);
+        }
+    }
+
     private indentDecrease() {
         this.indentation--;
         this.updateIndent();
@@ -86,9 +92,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ExpressionStatement: {
                 this.visitExpressionStatement(node as Node.ExpressionStatement);
                 break;
-            } case Syntax.SequenceExpression: {
-                this.visitSequenceExpression(node as Node.SequenceExpression);
-                break;
             } case Syntax.VariableDeclaration: {
                 this.visitVariableDeclaration(node as Node.VariableDeclaration);
                 break;
@@ -108,6 +111,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         this.write('\n', false, false)
     }
+
+    visitUpdateExpression(expression: Node.UpdateExpression): void {
+        this.writeConditional(expression.prefix, expression.operator, false, false)
+        this.visitExpression(expression.argument)
+        this.writeConditional(!expression.prefix, expression.operator, false, false)
+    }
+
     vistReturnStatement(expression: Node.ReturnStatement): void {
         this.write('return ', false, false)
 
@@ -205,15 +215,25 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
+
     visitExpression(expression: Node.Expression): void {
         switch (expression.type) {
+            case Syntax.SequenceExpression: {
+                this.visitSequenceExpression(expression as Node.SequenceExpression);
+                break;
+            }
             case Syntax.Literal: {
                 this.visitLiteral(expression as Node.Literal)
                 break;
             } case Syntax.Identifier: {
                 this.visitIdentifier(expression as Node.Identifier);
                 break;
-            } case Syntax.AssignmentExpression: {
+            } 
+            case Syntax.SpreadElement: {
+                this.vistSpreadElement(expression as Node.SpreadElement);
+                break;
+            }
+            case Syntax.AssignmentExpression: {
                 this.visitAssignmentExpression(expression as Node.AssignmentExpression);
                 break;
             } case Syntax.ObjectExpression: {
@@ -222,10 +242,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ArrayExpression: {
                 this.visitArrayExpression(expression as Node.ArrayExpression);
                 break;
-            } case Syntax.SpreadElement: {
-                this.vistSpreadElement(expression as Node.SpreadElement);
-                break;
-            } case Syntax.BinaryExpression: {
+            }  case Syntax.BinaryExpression: {
                 this.visitBinaryExpression(expression as Node.BinaryExpression);
                 break;
             } case Syntax.LogicalExpression: {
@@ -246,6 +263,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.BlockStatement: {
                 this.visitBlockStatement(expression as Node.BlockStatement);
                 break;
+                // TODO : This should not be here but rather under the statements
             } case Syntax.FunctionDeclaration: {
                 this.visitFunctionDeclaration(expression as Node.FunctionDeclaration);
                 break;
@@ -254,6 +272,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             } case Syntax.ThisExpression: {
                 this.visitThisExpression(expression as Node.ThisExpression);
+                break;
+            }case Syntax.UpdateExpression: {
+                this.visitUpdateExpression(expression as Node.UpdateExpression);
                 break;
             }
             default:
