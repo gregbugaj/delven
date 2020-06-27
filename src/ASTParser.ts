@@ -608,7 +608,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     }
 
-
     // Visit a parse tree produced by ECMAScriptParser#switchStatement.
     visitSwitchStatement(ctx: RuleContext) {
         console.trace('not implemented')
@@ -636,11 +635,18 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     }
 
-
-    // Visit a parse tree produced by ECMAScriptParser#defaultClause.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#defaultClause.
+     * 
+     * ```
+     * defaultClause
+     *  : Default ':' statementList?
+     *  ;
+     * ```
+     * @param ctx 
+     */
     visitDefaultClause(ctx: RuleContext) {
         console.trace('not implemented')
-
     }
 
     /**
