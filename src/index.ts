@@ -255,8 +255,7 @@ console.info("---------------------");
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/002.syntax.js' });
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/003.syntax.js' });
 
-
-let ast = ASTParser.parse({ type: "code", value: ' (++x)' });
+let ast = ASTParser.parse({ type: "code", value: ' if (x || y) { let z = 1} else {let  w = 2}  ' });
 console.table(toJson(ast))
 
 if(true) {

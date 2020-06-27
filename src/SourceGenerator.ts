@@ -53,8 +53,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
-    private writeConditional(condition:boolean, txt: string, useIndent: boolean, newline = false): void {
-        if(condition){
+    private writeConditional(condition: boolean, txt: string, useIndent: boolean, newline = false): void {
+        if (condition) {
             this.write(txt, useIndent, newline);
         }
     }
@@ -78,38 +78,56 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitScript(node: Node.Script): void {
-        this.write(" // Generated code", false, true);
+        this.write("// Generated code", false, true);
         for (const stm of node.body) {
-            this.visit(stm);
+            this.visitStatement(stm);
         }
     }
 
-    visit(node: Node.Declaration | Node.Statement) {
-        switch (node.type) {
+    visitStatement(statement: Node.Declaration | Node.Statement) {
+
+        switch (statement.type) {
             case Syntax.BlockStatement: {
-                this.visitBlockStatement(node as Node.BlockStatement);
+                this.visitBlockStatement(statement as Node.BlockStatement);
                 break;
             } case Syntax.ExpressionStatement: {
-                this.visitExpressionStatement(node as Node.ExpressionStatement);
+                this.visitExpressionStatement(statement as Node.ExpressionStatement);
                 break;
             } case Syntax.VariableDeclaration: {
-                this.visitVariableDeclaration(node as Node.VariableDeclaration);
+                this.visitVariableDeclaration(statement as Node.VariableDeclaration);
                 break;
             } case Syntax.ClassDeclaration: {
-                this.visitClassDeclaration(node as Node.ClassDeclaration);
+                this.visitClassDeclaration(statement as Node.ClassDeclaration);
                 break;
             } case Syntax.LabeledStatement: {
-                this.visitLabeledStatement(node as Node.LabeledStatement);
+                this.visitLabeledStatement(statement as Node.LabeledStatement);
                 break;
             } case Syntax.ReturnStatement: {
-                this.vistReturnStatement(node as Node.ReturnStatement);
+                this.vistReturnStatement(statement as Node.ReturnStatement);
+                break;
+            } case Syntax.IfStatement: {
+                this.visitIfStatement(statement as Node.IfStatement);
+                break;
+            } case Syntax.FunctionDeclaration: {
+                this.visitFunctionDeclaration(statement as Node.FunctionDeclaration);
                 break;
             }
             default:
-                throw new TypeError("Type not handled : " + node.type)
+                throw new TypeError("Type not handled : " + statement.type)
         }
-
         this.write('\n', false, false)
+    }
+
+    visitIfStatement(node: Node.IfStatement) {
+        this.write('if', false, false)
+        this.write('(', false, false)
+        this.visitExpression(node.test)
+        this.write(') ', false, false)
+        this.visitStatement(node.consequent)
+        if(node.alternate) {
+            this.write('else ', false, false)
+            this.visitStatement(node.alternate)
+        }
     }
 
     visitUpdateExpression(expression: Node.UpdateExpression): void {
@@ -130,7 +148,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitIdentifier(expression.label)
         this.write(':', false, false)
         if (expression.body) {
-            this.visit(expression.body)
+            this.visitStatement(expression.body)
         }
     }
 
@@ -187,7 +205,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             for (let i = 0; i < body.length; ++i) {
                 const statement = body[i]
                 this.indentIncease()
-                this.visit(statement);
+                this.visitStatement(statement);
                 this.write(i < body.length - 1 ? '\n' : '', false, false)
                 this.indentDecrease()
             }
@@ -217,6 +235,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
 
     visitExpression(expression: Node.Expression): void {
+
         switch (expression.type) {
             case Syntax.SequenceExpression: {
                 this.visitSequenceExpression(expression as Node.SequenceExpression);
@@ -228,7 +247,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.Identifier: {
                 this.visitIdentifier(expression as Node.Identifier);
                 break;
-            } 
+            }
             case Syntax.SpreadElement: {
                 this.vistSpreadElement(expression as Node.SpreadElement);
                 break;
@@ -242,7 +261,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ArrayExpression: {
                 this.visitArrayExpression(expression as Node.ArrayExpression);
                 break;
-            }  case Syntax.BinaryExpression: {
+            } case Syntax.BinaryExpression: {
                 this.visitBinaryExpression(expression as Node.BinaryExpression);
                 break;
             } case Syntax.LogicalExpression: {
@@ -260,20 +279,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.CallExpression: {
                 this.visitCallExpression(expression as Node.CallExpression);
                 break;
-            } case Syntax.BlockStatement: {
-                this.visitBlockStatement(expression as Node.BlockStatement);
-                break;
-                // TODO : This should not be here but rather under the statements
-            } case Syntax.FunctionDeclaration: {
-                this.visitFunctionDeclaration(expression as Node.FunctionDeclaration);
-                break;
             } case Syntax.MemberExpression: {
                 this.visitMemberExpression(expression as Node.StaticMemberExpression | Node.ComputedMemberExpression);
                 break;
             } case Syntax.ThisExpression: {
                 this.visitThisExpression(expression as Node.ThisExpression);
                 break;
-            }case Syntax.UpdateExpression: {
+            } case Syntax.UpdateExpression: {
                 this.visitUpdateExpression(expression as Node.UpdateExpression);
                 break;
             }
@@ -393,15 +405,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 const value: Node.PropertyValue = property.value;
 
                 // This is mostl implemented, somewhat hacky
-                if(property.method) {
-                    this.write(property.computed? '[' : '', false, false)
+                if (property.method) {
+                    this.write(property.computed ? '[' : '', false, false)
                     this.visitPropertyKey(key);
-                    this.write(property.computed? ']' : '', false, false)
+                    this.write(property.computed ? ']' : '', false, false)
                     this.visitPropertyValue(value);
-                }else{
-                    this.write(property.computed? '[' : '', false, false)
+                } else {
+                    this.write(property.computed ? '[' : '', false, false)
                     this.visitPropertyKey(key);
-                    this.write(property.computed? ']' : '', false, false)
+                    this.write(property.computed ? ']' : '', false, false)
                     this.write(':', false, false)
                     this.visitPropertyValue(value);
                 }
@@ -452,7 +464,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             case Syntax.ObjectExpression: {
                 this.visitObjectExpression(value as Node.ObjectExpression);
                 break;
-            } 
+            }
             default:
                 throw new TypeError("Type not handled : " + value.type)
         }
@@ -537,7 +549,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         } else if (binding instanceof Node.ObjectPattern) {
             this.visitObjectPattern(binding as Node.ObjectPattern)
         } else {
-            throw new TypeError("")
+            throw new TypeError("Type not handled")
         }
     }
 
@@ -554,9 +566,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.visitIdentifier(key as Node.Identifier)
         } else if (key instanceof Node.Literal) {
             this.visitLiteral(key as Node.Literal)
-        }else if (key instanceof Node.BinaryExpression) {
+        } else if (key instanceof Node.BinaryExpression) {
             this.visitBinaryExpression(key as Node.BinaryExpression)
-        }else{
+        } else {
             throw new TypeError("Not implemented")
         }
     }
@@ -591,16 +603,4 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.visitExpression(init);
         }
     }
-
-    teamplate(node: Node.ExpressionStatement): void {
-        switch (node.expression.type) {
-            case Syntax.Identifier: {
-                break;
-            }
-            default:
-                throw new TypeError("Type not handled : " + node.type)
-        }
-    }
 }
-
-let toJson = (obj: any): string => JSON.stringify(obj, function replacer(key, value) { return value }, 2);

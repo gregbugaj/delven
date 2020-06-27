@@ -501,20 +501,33 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     *
      * ifStatement
+     * 
+     * Example 
+     * ```
+     *  if (x || y) {}
+     *  if (x || y) {} else {}
+     * ```
+     * Grammar
+     * ```
      *   : If '(' expressionSequence ')' statement ( Else statement )?
      *   ;
+     * ```
      */
     visitIfStatement(ctx: RuleContext): Node.IfStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.IfStatementContext)
-        const count = ctx.getChildCount();
-        const test = this.visitExpressionSequence(ctx.getChild(2));
-        const consequent = this.visitStatement(ctx.getChild(4));
-        const alternate = count == 7 ? this.visitStatement(ctx.getChild(6)) : undefined;
+        const count = ctx.getChildCount()
+        const sequence = this.visitExpressionSequence(ctx.getChild(2))
+        const consequent = this.visitStatement(ctx.getChild(4))
+        const alternate = count == 7 ? this.visitStatement(ctx.getChild(6)) : undefined
+        // compliance: espirma, espree
+        if(sequence instanceof Node.ExpressionStatement) {
+            const test = (sequence as Node.ExpressionStatement).expression
+            return new Node.IfStatement(test, consequent, alternate)
+        }
 
-        return new Node.IfStatement(test, consequent, alternate);
+        throw new TypeError("Unknown error")
     }
 
     // Visit a parse tree produced by ECMAScriptParser#DoStatement.
@@ -1195,6 +1208,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitPostIncrementExpression(node);
         } else if (node instanceof ECMAScriptParser.PreIncrementExpressionContext) {
             return this.visitPreIncrementExpression(node);
+        } else if (node instanceof ECMAScriptParser.PreDecreaseExpressionContext) {
+            return this.visitPreDecreaseExpression(node);
+        } else if (node instanceof ECMAScriptParser.PostDecreaseExpressionContext) {
+            return this.visitPostDecreaseExpression(node);
         } else if (node instanceof ECMAScriptParser.ThisExpressionContext) {
             return this.visitThisExpression(node);
         } else if (node instanceof ECMAScriptParser.ClassExpressionContext) {
@@ -1278,11 +1295,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#classElement.
      * 
+     * ```
      *  classElement
      *      : (Static | {this.n("static")}? identifier | Async)* (methodDefinition | assignable '=' objectLiteral ';')
      *      | emptyStatement
      *      | '#'? propertyName '=' singleExpression
      *      ;
+     * ```
      * @param ctx 
      */
     visitClassElement(ctx: ECMAScriptParser.ClassElementContext): Node.EmptyStatement {
@@ -1300,16 +1319,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Examples :
      * ```
-     * let x = class y {}
-     * let x = class {}
-     * let x = (class {})
+     *  let x = class y {}
+     *  let x = class {}
+     *  let x = (class {})
      * ```
+     * 
      * Grammar :
      * ```
-     * Class identifier? classTail    # ClassExpression
+     *  Class identifier? classTail    # ClassExpression
      * ```
      * @param ctx 
-     * 
      */
     visitClassExpression(ctx: RuleContext): Node.ClassExpression {
         this.log(ctx, Trace.frame());
@@ -1542,12 +1561,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.trace('not implemented')
     }
 
-
-    // Visit a parse tree produced by ECMAScriptParser#PreDecreaseExpression.
-    visitPreDecreaseExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-    }
-
     /**
      * Visit a parse tree produced by ECMAScriptParser#ArgumentsExpression.
      * 
@@ -1728,8 +1741,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 {
                     return parametized;
                 }
-            } else {
-                return this.singleExpression(node)
             }
         }
         throw new TypeError("Unknown type for : " + ctx);
@@ -1738,19 +1749,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
     // Visit a parse tree produced by ECMAScriptParser#UnaryMinusExpression.
     visitUnaryMinusExpression(ctx: RuleContext) {
         console.trace('not implemented')
-
-    }
-
-
-    // Visit a parse tree produced by ECMAScriptParser#PostDecreaseExpression.
-    visitPostDecreaseExpression(ctx: RuleContext) {
-        console.trace('not implemented')
     }
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#AssignmentExpression.
      * 
+     * ```
      * <assoc=right> singleExpression '=' singleExpression                   # AssignmentExpression
+     * ```
      * @param ctx 
      */
     visitAssignmentExpression(ctx: RuleContext): Node.AssignmentExpression {
@@ -1896,23 +1902,36 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#PostIncrementExpression.
-    visitPostIncrementExpression(ctx: RuleContext): Node.UpdateExpression,{
+    visitPostIncrementExpression(ctx: RuleContext): Node.UpdateExpression {
         this.assertType(ctx, ECMAScriptParser.PostIncrementExpressionContext);
         this.assertNodeCount(ctx, 2)
         return this.getUpdateExpression(ctx, false);
     }
 
     // Visit a parse tree produced by ECMAScriptParser#PreIncrementExpression.
-    visitPreIncrementExpression(ctx: RuleContext) {
+    visitPreIncrementExpression(ctx: RuleContext): Node.UpdateExpression {
         this.assertType(ctx, ECMAScriptParser.PreIncrementExpressionContext);
         this.assertNodeCount(ctx, 2)
         return this.getUpdateExpression(ctx, true);
     }
 
+    // Visit a parse tree produced by ECMAScriptParser#PreDecreaseExpression.
+    visitPreDecreaseExpression(ctx: RuleContext): Node.UpdateExpression {
+        this.assertType(ctx, ECMAScriptParser.PreDecreaseExpressionContext);
+        this.assertNodeCount(ctx, 2)
+        return this.getUpdateExpression(ctx, true);
+    }
+
+    // Visit a parse tree produced by ECMAScriptParser#PostDecreaseExpression.
+    visitPostDecreaseExpression(ctx: RuleContext): Node.UpdateExpression {
+        this.assertType(ctx, ECMAScriptParser.PostDecreaseExpressionContext);
+        this.assertNodeCount(ctx, 2)
+        return this.getUpdateExpression(ctx, false);
+    }
+
     // Visit a parse tree produced by ECMAScriptParser#BitNotExpression.
     visitBitNotExpression(ctx: RuleContext) {
         console.trace('not implemented')
-
     }
 
 
