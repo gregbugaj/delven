@@ -302,8 +302,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitBreakStatement(node);
         } else if (node instanceof ECMAScriptParser.ReturnStatementContext) {
             return this.visitReturnStatement(node);
-        } else if (node instanceof ECMAScriptParser.YieldStatementContext) {
-            return this.visitYieldStatement(node);
         } else if (node instanceof ECMAScriptParser.WithStatementContext) {
             return this.visitWithStatement(node);
         } else if (node instanceof ECMAScriptParser.LabelledStatementContext) {
@@ -480,9 +478,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#expressionStatement.
      * 
+     * ```
      * expressionStatement
      *  : {this.notOpenBraceAndNotFunction()}? expressionSequence eos
      *  ;
+     * ```
      * @param ctx 
      */
     visitExpressionStatement(ctx: RuleContext): Node.ExpressionStatement | undefined {
@@ -668,7 +668,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.CaseClausesContext)
         const switches: Node.SwitchCase[] = []
-        for (const i = 0; i < ctx.getChildCount(); ++i) {
+        for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
             if (node instanceof ECMAScriptParser.CaseClauseContext) {
                 switches.push(this.visitCaseClause(node));
@@ -690,10 +690,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitCaseClause(ctx: RuleContext): Node.SwitchCase {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.CaseClauseContext)   
-        let test Expression| null = null
-        // let consequent:Statement;
+        let test: Expression | null  = null
+        let consequent:Statement;
 
-        return new Node.SwitchCase(test, consequen)
+        return new Node.SwitchCase(test, consequent)
     }
 
     /**

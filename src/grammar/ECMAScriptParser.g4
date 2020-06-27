@@ -60,7 +60,7 @@ statement
  | continueStatement
  | breakStatement
  | returnStatement
- | yieldStatement
+ //| yieldStatement  // Footnote 1,6
  | withStatement
  | labelledStatement
  | switchStatement
@@ -175,7 +175,7 @@ returnStatement
     : Return ({this.notLineTerminator()}? expressionSequence)? eos
     ;
 
-yieldStatement
+yieldDeclaration
     : Yield ({this.notLineTerminator()}? expressionSequence)?
     //: Yield ({this.notLineTerminator()}? expressionSequence)? eos
     ;
@@ -322,7 +322,7 @@ singleExpression
     | singleExpression '?'? '.' '#'? identifierName                         # MemberDotExpression
     | New singleExpression arguments                                        # NewExpression      // GB:footnote 4
     | New singleExpression arguments?                                       # NewExpression      // GB:footnote 4
-    | New '.' identifier                                                    # MetaExpression // new.target
+    | New '.' identifier                                                    # MetaExpression     // new.target
     | singleExpression arguments                                            # ArgumentsExpression
     | singleExpression {this.notLineTerminator()}? '++'                     # PostIncrementExpression
     | singleExpression {this.notLineTerminator()}? '--'                     # PostDecreaseExpression
@@ -355,7 +355,7 @@ singleExpression
     | <assoc=right> singleExpression assignmentOperator singleExpression    # AssignmentOperatorExpression
     | Import '(' singleExpression ')'                                       # ImportExpression
     | singleExpression TemplateStringLiteral                                # TemplateStringExpression  // ECMAScript 6
-    | yieldStatement                                                        # YieldExpression // ECMAScript 6
+    | yieldDeclaration                                                      # YieldExpression           // ECMAScript 6 : GB Footnote 1, 6 
     | This                                                                  # ThisExpression
     | identifier                                                            # IdentifierExpression
     | Super                                                                 # SuperExpression

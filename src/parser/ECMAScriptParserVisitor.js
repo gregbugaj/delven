@@ -198,8 +198,8 @@ ECMAScriptParserVisitor.prototype.visitReturnStatement = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#yieldStatement.
-ECMAScriptParserVisitor.prototype.visitYieldStatement = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#yieldDeclaration.
+ECMAScriptParserVisitor.prototype.visitYieldDeclaration = function(ctx) {
   return this.visitChildren(ctx);
 };
 

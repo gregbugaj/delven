@@ -73,19 +73,54 @@ https://www.w3.org/TR/webdriver1
 
 ## Footnotes
 
+
+### 1 Grammar causing infinive loop
+
+Original 
+```
+yieldExpression
+    : Yield ({this.notLineTerminator()}? expressionSequence)? eos
+```
+
+Fixed by removing 'EOS' 
+
+```
+yieldExpression
+    : Yield ({this.notLineTerminator()}? expressionSequence)?
+    
+```
+
 ### 3. Order swapped for NewExpression and ArgumentsExpression
 
-This is necessary so the expression in form will be evaluated as `NewExpression` with 3 nodes(NEW singleExpression arguments?) an d not as `NewExpression` with 2 nodes(NEW singleExpression) where `singleExpression` is a `ArgumentsExpression` node.
+This is necessary so the expression in form will be evaluated as `NewExpression` with 3 nodes(NEW singleExpression arguments?) and not as `NewExpression` with 2 nodes(NEW singleExpression) where `singleExpression` is a `ArgumentsExpression` node.
 ```
 let x = new z(...k)
 ```
 
+### 4 `New` not resolving properly
 
 ```
     | New singleExpression arguments?                                       # NewExpression      // GB:footnote 4
     | New '.' identifier                                                    # MetaExpression // new.target
     | singleExpression arguments                                            # ArgumentsExpression
 ```
+
+### 5.  Arrow function 
+
+Issue  with `() => {}` resolving as object literal
+
+### 6. Yield
+
+YieldStatement moved to OI3U49
+izaizaizau 5jy bu86yuy6tr8rtiurbt ui55y 7err9 rt y7u  9944e878brgty bbuuuuuuuuuuuuuuu t8itrtr t 58558 89r8943b iza4w4rthkjhju['lopp-0izawyre7ew 7ytvwt]
+
+YieldExpression
+
+Reference : 
+[https://tc39.es/ecma262/#prod-YieldExpression]
+[https://tc39.es/ecma262/#sec-generator-function-definitions-runtime-semantics-evaluation]
+
+
 
 ## ERRORS
 
