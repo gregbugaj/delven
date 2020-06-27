@@ -486,15 +486,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * @param ctx 
      */
     visitExpressionStatement(ctx: RuleContext): Node.ExpressionStatement | undefined {
-        console.info("visitExpressionStatement [%s] : %s", ctx.getChildCount(), ctx.getText());
+        console.info("visitExpressionStatement [%s] : %s", ctx.getChildCount(), ctx.getText())
         this.assertType(ctx, ECMAScriptParser.ExpressionStatementContext)
         // visitExpressionStatement:>visitExpressionSequence
         const node: RuleContext = ctx.getChild(0); // visitExpressionSequence 
         let exp
         if (node instanceof ECMAScriptParser.ExpressionSequenceContext) {
-            exp = this.visitExpressionSequence(node);
+            exp = this.visitExpressionSequence(node)
         } else {
-            this.throwInsanceError(this.dumpContext(node));
+            this.throwInsanceError(this.dumpContext(node))
         }
 
         return exp //this.decorate(exp, this.asMarker(this.asMetadata(ctx.getSourceInterval())));
@@ -522,17 +522,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const consequent = this.visitStatement(ctx.getChild(4))
         const alternate = count == 7 ? this.visitStatement(ctx.getChild(6)) : undefined
         // compliance: espirma, espree
-        if(sequence instanceof Node.ExpressionStatement) {
+        if (sequence instanceof Node.ExpressionStatement) {
             const test = (sequence as Node.ExpressionStatement).expression
             return new Node.IfStatement(test, consequent, alternate)
         }
-
         throw new TypeError("Unknown error")
     }
 
     // Visit a parse tree produced by ECMAScriptParser#DoStatement.
     visitDoStatement(ctx: RuleContext) {
-        console.info("visitDoStatement: " + ctx.getText());
+        console.info("visitDoStatement: " + ctx.getText())
     }
 
     /**
@@ -544,14 +543,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitWhileStatement(ctx: RuleContext): Node.WhileStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.WhileStatementContext)
-        const test = this.unrollExpressionSequence(this.visitExpressionSequence(ctx.expressionSequence()));
-        const body = this.visitStatement(ctx.statement());
+        const test = this.unrollExpressionSequence(this.visitExpressionSequence(ctx.expressionSequence()))
+        const body = this.visitStatement(ctx.statement())
         return new Node.WhileStatement(test, body)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#ForStatement.
     visitForStatement(ctx: RuleContext) {
-        console.info("visitWhileStatement: " + ctx.getText());
+        console.info("visitWhileStatement: " + ctx.getText())
     }
 
     // Visit a parse tree produced by ECMAScriptParser#ForVarStatement.
@@ -605,34 +604,96 @@ export class DelvenASTVisitor extends DelvenVisitor {
     // Visit a parse tree produced by ECMAScriptParser#withStatement.
     visitWithStatement(ctx: RuleContext) {
         console.trace('not implemented')
-
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#switchStatement.
-    visitSwitchStatement(ctx: RuleContext) {
-        console.trace('not implemented')
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#switchStatement.
+     * 
+     * Grammar : 
+     * ```
+     * switchStatement
+     *   : Switch '(' expressionSequence ')' caseBlock
+         ;
+     * ```
+     * @param ctx 
+     */
+    visitSwitchStatement(ctx: RuleContext): Node.SwitchStatement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.SwitchStatementContext)
+        const sequence = this.visitExpressionSequence(ctx.expressionSequence())
+        let discriminant: Node.Expression
+        let cases: Node.SwitchCase[] = []
+        if (sequence instanceof Node.ExpressionStatement) {
+            discriminant = sequence.expression
+        } else {
+            throw new TypeError("Type not handled : " + sequence)
+        }
 
+        if (ctx.caseBlock()) {
+            cases = this.visitCaseBlock(ctx.caseBlock());
+        }
+        return new Node.SwitchStatement(discriminant, cases)
     }
 
-
-    // Visit a parse tree produced by ECMAScriptParser#caseBlock.
-    visitCaseBlock(ctx: RuleContext) {
-        console.trace('not implemented')
-
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#caseBlock.
+     * 
+     * ```
+     * caseBlock
+     *  : '{' caseClauses? (defaultClause caseClauses?)? '}'
+     *  ;
+     * ```
+     * @param ctx 
+     */
+    visitCaseBlock(ctx: RuleContext): Node.SwitchCase[] {
+        const casesCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.CaseClausesContext)
+        const defaultCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.DefaultClauseContext)
+        this.dumpContextAllChildren(casesCtx)
+        const switches: Node.SwitchCase[] = []
+        this.visitCaseClauses(casesCtx);
+        return switches
     }
 
-
-    // Visit a parse tree produced by ECMAScriptParser#caseClauses.
-    visitCaseClauses(ctx: RuleContext) {
-        console.trace('not implemented')
-
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#caseClauses.
+     * 
+     * ```
+     * caseClauses
+     *  : caseClause+
+     *  ;
+     * ```
+     * @param ctx 
+     */
+    visitCaseClauses(ctx: RuleContext): Node.SwitchCase[] {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.CaseClausesContext)
+        const switches: Node.SwitchCase[] = []
+        for (const i = 0; i < ctx.getChildCount(); ++i) {
+            const node = ctx.getChild(i)
+            if (node instanceof ECMAScriptParser.CaseClauseContext) {
+                switches.push(this.visitCaseClause(node));
+            }
+        }
+        return switches
     }
 
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#caseClause.
+     * 
+     * ```
+     * caseClause
+     *  : Case expressionSequence ':' statementList?
+     *  ;
+     * ```
+     * @param ctx 
+     */
+    visitCaseClause(ctx: RuleContext): Node.SwitchCase {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.CaseClauseContext)   
+        let test Expression| null = null
+        // let consequent:Statement;
 
-    // Visit a parse tree produced by ECMAScriptParser#caseClause.
-    visitCaseClause(ctx: RuleContext) {
-        console.trace('not implemented')
-
+        return new Node.SwitchCase(test, consequen)
     }
 
     /**
@@ -1016,7 +1077,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         if (propNode instanceof ECMAScriptParser.PropertyNameContext) {
             // should check for actuall `[expression]`
-            if(propNode.getChildCount() == 3){
+            if (propNode.getChildCount() == 3) {
                 computed = true
             }
             key = this.visitPropertyName(propNode);
@@ -1141,7 +1202,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#expressionSequence.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#expressionSequence.
+     * 
+     * ```
+     * expressionSequence
+     *   : singleExpression ( ',' singleExpression )*
+     *   ;
+     * ```
+     * @param ctx 
+     */
     visitExpressionSequence(ctx: RuleContext): Node.ExpressionStatement | Node.SequenceExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ExpressionSequenceContext);
@@ -2127,9 +2197,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertNodeCount(ctx, 1);
         const node: RuleContext = ctx.getChild(0);
         if (node.getChildCount() == 0) {
-            const symbol = node.symbol;
-            const state = symbol.type;
-            const raw = node.getText();
+            const symbol = node.symbol
+            const state = symbol.type
+            const raw = node.getText()
             switch (state) {
                 case ECMAScriptParser.NullLiteral:
                     return this.createLiteralValue(node, null, "null");

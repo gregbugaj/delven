@@ -28,7 +28,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  *
- * https://tc39.es/ecma262/#prod-YieldExpression
+ * https://tc39.es/ecma262/
+ * https://github.com/tc39/ecma262
+ * https://www.ecma-international.org/ecma-262/11.0/index.html#title
  */
 parser grammar ECMAScriptParser;
 

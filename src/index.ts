@@ -256,12 +256,12 @@ console.info("---------------------");
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/003.syntax.js' });
 
 // let ast = ASTParser.parse({ type: "code", value: ' if (x || y) { let z = 1} else {let  w = 2}  ' });
-let ast = ASTParser.parse({ type: "code", value: ' switch(x){}' });
+let ast = ASTParser.parse({ type: "code", value: ' switch(x){ case 1: {} case (1+2): {break;} default: {}} ' });
 console.table(toJson(ast))
 
 if(true) {
     const generator = new SourceGenerator();
-    const script = generator.toSource(ast);
+//     const script = generator.toSource(ast);
 
     console.info('-------')
     console.info(script)
