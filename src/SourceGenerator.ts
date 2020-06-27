@@ -285,7 +285,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitExpression(property)
     }
 
-
     visitParams(args: Node.ArgumentListElement[] | Node.FunctionParameter[]) {
         this.write('(', false, false);
         for (let i = 0; i < args.length; ++i) {
@@ -372,9 +371,19 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 const key: Node.PropertyKey = property.key;
                 const value: Node.PropertyValue = property.value;
 
-                this.visitPropertyKey(key);
-                this.write(':', false, false)
-                this.visitPropertyValue(value);
+                // This is mostl implemented, somewhat hacky
+                if(property.method) {
+                    this.write(property.computed? '[' : '', false, false)
+                    this.visitPropertyKey(key);
+                    this.write(property.computed? ']' : '', false, false)
+                    this.visitPropertyValue(value);
+                }else{
+                    this.write(property.computed? '[' : '', false, false)
+                    this.visitPropertyKey(key);
+                    this.write(property.computed? ']' : '', false, false)
+                    this.write(':', false, false)
+                    this.visitPropertyValue(value);
+                }
 
                 break;
             } case Syntax.SpreadElement: {
@@ -394,7 +403,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             }
             case Syntax.FunctionExpression: {
-                this.visitFunctionExpression(value as Node.FunctionExpression);
+                const expression = value as Node.FunctionExpression;
+                this.visitParams(expression.params)
+                this.visitBlockStatement(expression.body)
                 break;
             } case Syntax.ArrowFunctionExpression: {
                 this.visitArrowFunctionExpression(value as Node.AsyncFunctionExpression);
@@ -416,7 +427,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ObjectPattern: {
                 this.visitObjectPattern(value as Node.ObjectPattern)
                 break;
-            } default:
+            }
+            case Syntax.ObjectExpression: {
+                this.visitObjectExpression(value as Node.ObjectExpression);
+                break;
+            } 
+            default:
                 throw new TypeError("Type not handled : " + value.type)
         }
     }
@@ -517,6 +533,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.visitIdentifier(key as Node.Identifier)
         } else if (key instanceof Node.Literal) {
             this.visitLiteral(key as Node.Literal)
+        }else if (key instanceof Node.BinaryExpression) {
+            this.visitBinaryExpression(key as Node.BinaryExpression)
+        }else{
+            throw new TypeError("Not implemented")
         }
     }
 

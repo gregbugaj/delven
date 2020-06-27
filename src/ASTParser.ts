@@ -694,14 +694,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return this.functionDeclaration(ctx)
     }
 
-    functionDeclaration(ctx: RuleContext): FunctionDeclaration | AsyncFunctionDeclaration {
+
+    getFunctionAttributes(ctx: RuleContext): { async: boolean, generator: boolean } {
         let async = false;
         let generator = false;
-        let identifier: Identifier | null = null;
-        let params: FunctionParameter[] = []
-        let body:BlockStatement;
 
         for (let i = 0; i < ctx.getChildCount(); ++i) {
+
             const node = ctx.getChild(i);
             if (node.symbol) {
                 const txt = node.getText();
@@ -710,7 +709,21 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 } else if (txt == '*') {
                     generator = true
                 }
+
             }
+        }
+
+        return { async, generator }
+    }
+
+    functionDeclaration(ctx: RuleContext): FunctionDeclaration | AsyncFunctionDeclaration {
+        let identifier: Identifier | null = null;
+        let params: FunctionParameter[] = []
+        let body: BlockStatement;
+        const { async, generator } = this.getFunctionAttributes(ctx);
+
+        for (let i = 0; i < ctx.getChildCount(); ++i) {
+            const node = ctx.getChild(i);
             if (node instanceof ECMAScriptParser.IdentifierContext) {
                 identifier = this.visitIdentifier(node);
             } else if (node instanceof ECMAScriptParser.FormalParameterListContext) {
@@ -899,6 +912,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const shorthand = true;
         const value = this.singleExpression(ctx.getChild(0));
         const key: Node.PropertyKey = new Identifier(ctx.getText())
+        // unroll declaration in to an expression
 
         return new Node.Property("init", key, computed, value, method, shorthand);
     }
@@ -914,14 +928,30 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitFunctionProperty(ctx: RuleContext): Node.ObjectExpressionProperty {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.FunctionPropertyContext)
-        
+        const key = this.visitPropertyName(ctx.propertyName());
         const computed = false;
-        const method = false;
-        const shorthand = true;
-        const key: Node.PropertyKey = new Identifier(ctx.getText())
-        let value = this.functionDeclaration(ctx)
+        const method = true;
+        const shorthand = false;
+        let expression: FunctionExpression | AsyncFunctionExpression;
+        let params: FunctionParameter[] = []
+        let body: BlockStatement;
+        const { async, generator } = this.getFunctionAttributes(ctx);
+        for (let i = 0; i < ctx.getChildCount(); ++i) {
+            const node = ctx.getChild(i);
+            if (node instanceof ECMAScriptParser.FormalParameterListContext) {
+                params = this.visitFormalParameterList(node);
+            } else if (node instanceof ECMAScriptParser.FunctionBodyContext) {
+                body = this.visitFunctionBody(node);
+            }
+        }
 
-        return new Node.Property("init", key, computed, value, method, shorthand);
+        if (async) {
+            expression = new Node.AsyncFunctionExpression(null, params, body);
+        } else {
+            expression = new Node.FunctionExpression(null, params, body, generator);
+        }
+
+        return new Node.Property("init", key, computed, expression, method, shorthand);
     }
 
     /**
@@ -958,30 +988,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitPropertyExpressionAssignment(ctx: RuleContext): Node.ObjectExpressionProperty {
         this.log(ctx, Trace.frame());
         this.assertType(ctx, ECMAScriptParser.PropertyExpressionAssignmentContext);
-        let node = ctx.getChild(0);
-
-        this.dumpContextAllChildren(ctx)
-
-        let n0 = ctx.getChild(0); // PropertyName
-
+        const propNode: RuleContext = ctx.getChild(0); // PropertyName
         let key: PropertyKey;
         let value;
-        const computed = false;
+        let computed = false;
         const method = false;
         const shorthand = false;
 
-        if (n0 instanceof ECMAScriptParser.PropertyNameContext) {
-            key = this.visitPropertyName(n0);
-            value = this.singleExpression(ctx.getChild(2));
-        } else if (n0 instanceof ECMAScriptParser.ComputedPropertyExpressionAssignmentContext) {
+        if (propNode instanceof ECMAScriptParser.PropertyNameContext) {
+            // should check for actuall `[expression]`
+            if(propNode.getChildCount() == 3){
+                computed = true
+            }
+            key = this.visitPropertyName(propNode);
+            value = this.singleExpression(ctx.getChild(2), false);
+        } else if (propNode instanceof ECMAScriptParser.ComputedPropertyExpressionAssignmentContext) {
             throw new TypeError("Not implemented : ComputedPropertyExpressionAssignmentContext")
-        } else if (n0 instanceof ECMAScriptParser.FunctionPropertyContext) {
+        } else if (propNode instanceof ECMAScriptParser.FunctionPropertyContext) {
             throw new TypeError("Not implemented : FunctionPropertyContext")
-        } else if (n0 instanceof ECMAScriptParser.PropertyGetterContext) {
+        } else if (propNode instanceof ECMAScriptParser.PropertyGetterContext) {
             throw new TypeError("Not implemented : PropertyGetterContext")
-        } else if (n0 instanceof ECMAScriptParser.PropertySetterContext) {
+        } else if (propNode instanceof ECMAScriptParser.PropertySetterContext) {
             throw new TypeError("Not implemented : PropertySetterContext")
-        } else if (n0 instanceof ECMAScriptParser.PropertyShorthandContext) {
+        } else if (propNode instanceof ECMAScriptParser.PropertyShorthandContext) {
             throw new TypeError("Not implemented : PropertyShorthandContext")
         }
 
@@ -1016,30 +1045,31 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitPropertyName(ctx: RuleContext): Node.PropertyKey {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.PropertyNameContext);
-        this.assertNodeCount(ctx, 1);
-        const node = ctx.getChild(0);
-        const count = node.getChildCount();
+        let count = ctx.getChildCount();
+        if (count == 3) {
+            const node = ctx.getChild(1);
+            return this.singleExpression(node);
+        } else {
+            const node = ctx.getChild(0);
+            count = node.getChildCount();
 
-        this.dumpContextAllChildren(ctx)
-        if (count == 0) { // literal
+            if (count == 0) { // literal
+                const symbol = node.symbol;
+                const state = symbol.type;
+                const raw = node.getText();
+                switch (state) {
+                    case ECMAScriptParser.BooleanLiteral:
+                        return this.createLiteralValue(node, raw === 'true', raw);
+                    case ECMAScriptParser.StringLiteral:
+                        return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw);
+                }
 
-            const symbol = node.symbol;
-            const state = symbol.type;
-            const raw = node.getText();
-            switch (state) {
-                case ECMAScriptParser.BooleanLiteral:
-                    return this.createLiteralValue(node, raw === 'true', raw);
-                case ECMAScriptParser.StringLiteral:
-                    return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw);
-            }
-            // return this.visitLiteral(node);
-
-
-        } else if (count == 1) {
-            if (node instanceof ECMAScriptParser.IdentifierNameContext) {
-                return this.visitIdentifierName(node)
-            } else if (node instanceof ECMAScriptParser.NumericLiteralContext) {
-                return this.visitNumericLiteral(node)
+            } else if (count == 1) {
+                if (node instanceof ECMAScriptParser.IdentifierNameContext) {
+                    return this.visitIdentifierName(node)
+                } else if (node instanceof ECMAScriptParser.NumericLiteralContext) {
+                    return this.visitNumericLiteral(node)
+                }
             }
         }
         this.throwInsanceError(this.dumpContext(node));
@@ -1209,14 +1239,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let identifier: Node.Identifier;
         let body: Node.ClassBody;
 
-        console.info('Body = ' + count);
-
         if (count == 2) {
             identifier = this.visitIdentifier(ctx.getChild(1));
             body = this.visitClassTail(ctx.getChild(2))
         } else if (count == 3) {
             identifier = this.visitIdentifier(ctx.getChild(1));
             body = this.visitClassTail(ctx.getChild(2))
+        } else {
+            throw new TypeError("Unhandled type")
         }
 
         return new Node.ClassDeclaration(identifier, null, body);
@@ -1570,7 +1600,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const node = ctx.getChild(0);
         let exp;
         if (node instanceof ECMAScriptParser.FunctionDeclContext) {
-            exp = this.visitFunctionDecl(ctx.getChild(0));           
+            exp = this.visitFunctionDecl(ctx.getChild(0));
         } else if (node instanceof ECMAScriptParser.AnoymousFunctionDeclContext) {
             exp = this.visitAnoymousFunctionDecl(ctx.getChild(0));
         } else if (node instanceof ECMAScriptParser.ArrowFunctionContext) {
@@ -2045,6 +2075,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     // Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
     visitAssignmentOperator(ctx: RuleContext) {
         console.info("visitAssignmentOperator [%s] : [%s]", ctx.getChildCount(), ctx.getText());
+        throw new Error("not implemented")
     }
 
     /**
