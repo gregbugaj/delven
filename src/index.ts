@@ -261,7 +261,7 @@ console.table(toJson(ast))
 
 if(true) {
     const generator = new SourceGenerator();
-//     const script = generator.toSource(ast);
+    const script = generator.toSource(ast);
 
     console.info('-------')
     console.info(script)
