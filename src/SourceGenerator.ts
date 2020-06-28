@@ -111,11 +111,68 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.FunctionDeclaration: {
                 this.visitFunctionDeclaration(statement as Node.FunctionDeclaration);
                 break;
-            }
+            } case Syntax.SwitchStatement: {
+                this.visitSwitchStatement(statement as Node.SwitchStatement);
+                break;
+            } case Syntax.BreakStatement: {
+                this.visitBreakStatement(statement as Node.BreakStatement);
+                break;
+            }  case Syntax.EmptyStatement: {
+                this.visitEmptyStatement(statement as Node.EmptyStatement);
+                break;
+            } 
             default:
                 throw new TypeError("Type not handled : " + statement.type)
         }
         this.write('\n', false, false)
+    }
+
+
+    visitEmptyStatement(statement: Node.EmptyStatement): void {
+        this.write(';', false, false)
+    }
+
+    visitBreakStatement(statement: Node.BreakStatement): void {
+        this.write('break ', false, false)
+        if (statement.label != null) {
+            this.visitIdentifier(statement.label)
+        }
+    }
+
+    visitSwitchStatement(statement: Node.SwitchStatement): void {
+        this.write('switch', false, false)
+        this.write('(', false, false)
+        this.visitExpression(statement.discriminant)
+        this.write(') ', false, false)
+        this.write('{', false, true)
+
+        if (statement.cases) {
+            for (const _case of statement.cases) {
+                this.visitSwitchCase(_case)
+            }
+        }
+
+        this.write('}', false, true)
+    }
+
+    visitSwitchCase(_case: Node.SwitchCase) {
+        const isDefault = _case.test == null
+
+        if (isDefault) {
+            this.write('default : ', false, false)
+        } else {
+            this.write('case ', false, false)
+            if (_case.test != null) {
+                this.visitExpression(_case.test)
+            }
+            this.write(' : ', false, false)
+        }
+
+        if (_case.consequent) {
+            for (const statement of _case.consequent) {
+                this.visitStatement(statement)
+            }
+        }
     }
 
     visitIfStatement(node: Node.IfStatement) {
@@ -124,7 +181,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitExpression(node.test)
         this.write(') ', false, false)
         this.visitStatement(node.consequent)
-        if(node.alternate) {
+        if (node.alternate) {
             this.write('else ', false, false)
             this.visitStatement(node.alternate)
         }
@@ -288,7 +345,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.UpdateExpression: {
                 this.visitUpdateExpression(expression as Node.UpdateExpression);
                 break;
-            }
+            } 
             default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
@@ -507,7 +564,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
         this.visitFunctionParameterArray(expression.params)
         this.write('=>', false, false)
-        this.visitExpression(expression.body)
+        if(expression.body instanceof Node.BlockStatement){
+            this.visitBlockStatement(expression.body as Node.BlockStatement)
+        }else {
+            this.visitExpression(expression.body)
+        }
     }
 
     visitFunctionParameter(param: Node.FunctionParameter): void {
@@ -531,7 +592,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitAssignmentPattern(expression: Node.AssignmentPattern): void {
-        console.log(expression)
         this.visitBinding(expression.left as Binding);
         this.write(' = ', false, false);
         this.visitExpression(expression.right)

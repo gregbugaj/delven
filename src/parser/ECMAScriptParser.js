@@ -177,12 +177,12 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u0002\u00a0\u00b4\u0005\b\u0005\u0002\u00a1\u00b4\u0005 \u0011",
     "\u0002\u00a2\u00b4\u0005\f\u0007\u0002\u00a3\u00b4\u0005\u001a\u000e",
     "\u0002\u00a4\u00b4\u0005&\u0014\u0002\u00a5\u00b4\u0005R*\u0002\u00a6",
-    "\u00b4\u0005(\u0015\u0002\u00a7\u00b4\u0005*\u0016\u0002\u00a8\u00b4",
-    "\u0005,\u0017\u0002\u00a9\u00b4\u00050\u0019\u0002\u00aa\u00b4\u0005",
-    "2\u001a\u0002\u00ab\u00b4\u00054\u001b\u0002\u00ac\u00b4\u00058\u001d",
-    "\u0002\u00ad\u00b4\u0005D#\u0002\u00ae\u00b4\u0005:\u001e\u0002\u00af",
-    "\u00b4\u0005F$\u0002\u00b0\u00b4\u0005H%\u0002\u00b1\u00b4\u0005N(\u0002",
-    "\u00b2\u00b4\u0005P)\u0002\u00b3\u00a0\u0003\u0002\u0002\u0002\u00b3",
+    "\u00b4\u0005P)\u0002\u00a7\u00b4\u0005(\u0015\u0002\u00a8\u00b4\u0005",
+    "*\u0016\u0002\u00a9\u00b4\u0005,\u0017\u0002\u00aa\u00b4\u00050\u0019",
+    "\u0002\u00ab\u00b4\u00052\u001a\u0002\u00ac\u00b4\u00054\u001b\u0002",
+    "\u00ad\u00b4\u00058\u001d\u0002\u00ae\u00b4\u0005D#\u0002\u00af\u00b4",
+    "\u0005:\u001e\u0002\u00b0\u00b4\u0005F$\u0002\u00b1\u00b4\u0005H%\u0002",
+    "\u00b2\u00b4\u0005N(\u0002\u00b3\u00a0\u0003\u0002\u0002\u0002\u00b3",
     "\u00a1\u0003\u0002\u0002\u0002\u00b3\u00a2\u0003\u0002\u0002\u0002\u00b3",
     "\u00a3\u0003\u0002\u0002\u0002\u00b3\u00a4\u0003\u0002\u0002\u0002\u00b3",
     "\u00a5\u0003\u0002\u0002\u0002\u00b3\u00a6\u0003\u0002\u0002\u0002\u00b3",
@@ -1140,6 +1140,10 @@ StatementContext.prototype.classDeclaration = function() {
     return this.getTypedRuleContext(ClassDeclarationContext,0);
 };
 
+StatementContext.prototype.functionDeclaration = function() {
+    return this.getTypedRuleContext(FunctionDeclarationContext,0);
+};
+
 StatementContext.prototype.expressionStatement = function() {
     return this.getTypedRuleContext(ExpressionStatementContext,0);
 };
@@ -1186,10 +1190,6 @@ StatementContext.prototype.tryStatement = function() {
 
 StatementContext.prototype.debuggerStatement = function() {
     return this.getTypedRuleContext(DebuggerStatementContext,0);
-};
-
-StatementContext.prototype.functionDeclaration = function() {
-    return this.getTypedRuleContext(FunctionDeclarationContext,0);
 };
 
 StatementContext.prototype.accept = function(visitor) {
@@ -1253,79 +1253,79 @@ ECMAScriptParser.prototype.statement = function() {
         case 7:
             this.enterOuterAlt(localctx, 7);
             this.state = 164;
-            this.expressionStatement();
+            this.functionDeclaration();
             break;
 
         case 8:
             this.enterOuterAlt(localctx, 8);
             this.state = 165;
-            this.ifStatement();
+            this.expressionStatement();
             break;
 
         case 9:
             this.enterOuterAlt(localctx, 9);
             this.state = 166;
-            this.iterationStatement();
+            this.ifStatement();
             break;
 
         case 10:
             this.enterOuterAlt(localctx, 10);
             this.state = 167;
-            this.continueStatement();
+            this.iterationStatement();
             break;
 
         case 11:
             this.enterOuterAlt(localctx, 11);
             this.state = 168;
-            this.breakStatement();
+            this.continueStatement();
             break;
 
         case 12:
             this.enterOuterAlt(localctx, 12);
             this.state = 169;
-            this.returnStatement();
+            this.breakStatement();
             break;
 
         case 13:
             this.enterOuterAlt(localctx, 13);
             this.state = 170;
-            this.withStatement();
+            this.returnStatement();
             break;
 
         case 14:
             this.enterOuterAlt(localctx, 14);
             this.state = 171;
-            this.labelledStatement();
+            this.withStatement();
             break;
 
         case 15:
             this.enterOuterAlt(localctx, 15);
             this.state = 172;
-            this.switchStatement();
+            this.labelledStatement();
             break;
 
         case 16:
             this.enterOuterAlt(localctx, 16);
             this.state = 173;
-            this.throwStatement();
+            this.switchStatement();
             break;
 
         case 17:
             this.enterOuterAlt(localctx, 17);
             this.state = 174;
-            this.tryStatement();
+            this.throwStatement();
             break;
 
         case 18:
             this.enterOuterAlt(localctx, 18);
             this.state = 175;
-            this.debuggerStatement();
+            this.tryStatement();
             break;
 
         case 19:
             this.enterOuterAlt(localctx, 19);
             this.state = 176;
-            this.functionDeclaration();
+            this.debuggerStatement();
             break;
 
         }

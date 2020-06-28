@@ -278,6 +278,9 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public ClassDeclarationContext classDeclaration() {
 			return getRuleContext(ClassDeclarationContext.class,0);
 		}
+		public FunctionDeclarationContext functionDeclaration() {
+			return getRuleContext(FunctionDeclarationContext.class,0);
+		}
 		public ExpressionStatementContext expressionStatement() {
 			return getRuleContext(ExpressionStatementContext.class,0);
 		}
@@ -313,9 +316,6 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		}
 		public DebuggerStatementContext debuggerStatement() {
 			return getRuleContext(DebuggerStatementContext.class,0);
-		}
-		public FunctionDeclarationContext functionDeclaration() {
-			return getRuleContext(FunctionDeclarationContext.class,0);
 		}
 		public StatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -376,91 +376,91 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(164);
-				expressionStatement();
+				functionDeclaration();
 				}
 				break;
 			case 8:
 				enterOuterAlt(_localctx, 8);
 				{
 				setState(165);
-				ifStatement();
+				expressionStatement();
 				}
 				break;
 			case 9:
 				enterOuterAlt(_localctx, 9);
 				{
 				setState(166);
-				iterationStatement();
+				ifStatement();
 				}
 				break;
 			case 10:
 				enterOuterAlt(_localctx, 10);
 				{
 				setState(167);
-				continueStatement();
+				iterationStatement();
 				}
 				break;
 			case 11:
 				enterOuterAlt(_localctx, 11);
 				{
 				setState(168);
-				breakStatement();
+				continueStatement();
 				}
 				break;
 			case 12:
 				enterOuterAlt(_localctx, 12);
 				{
 				setState(169);
-				returnStatement();
+				breakStatement();
 				}
 				break;
 			case 13:
 				enterOuterAlt(_localctx, 13);
 				{
 				setState(170);
-				withStatement();
+				returnStatement();
 				}
 				break;
 			case 14:
 				enterOuterAlt(_localctx, 14);
 				{
 				setState(171);
-				labelledStatement();
+				withStatement();
 				}
 				break;
 			case 15:
 				enterOuterAlt(_localctx, 15);
 				{
 				setState(172);
-				switchStatement();
+				labelledStatement();
 				}
 				break;
 			case 16:
 				enterOuterAlt(_localctx, 16);
 				{
 				setState(173);
-				throwStatement();
+				switchStatement();
 				}
 				break;
 			case 17:
 				enterOuterAlt(_localctx, 17);
 				{
 				setState(174);
-				tryStatement();
+				throwStatement();
 				}
 				break;
 			case 18:
 				enterOuterAlt(_localctx, 18);
 				{
 				setState(175);
-				debuggerStatement();
+				tryStatement();
 				}
 				break;
 			case 19:
 				enterOuterAlt(_localctx, 19);
 				{
 				setState(176);
-				functionDeclaration();
+				debuggerStatement();
 				}
 				break;
 			}
@@ -6688,11 +6688,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		"\u009c\3\2\2\2\u009c\u009d\7\2\2\3\u009d\3\3\2\2\2\u009e\u009f\5\6\4\2"+
 		"\u009f\5\3\2\2\2\u00a0\u00b4\5\b\5\2\u00a1\u00b4\5 \21\2\u00a2\u00b4\5"+
 		"\f\7\2\u00a3\u00b4\5\32\16\2\u00a4\u00b4\5&\24\2\u00a5\u00b4\5R*\2\u00a6"+
-		"\u00b4\5(\25\2\u00a7\u00b4\5*\26\2\u00a8\u00b4\5,\27\2\u00a9\u00b4\5\60"+
-		"\31\2\u00aa\u00b4\5\62\32\2\u00ab\u00b4\5\64\33\2\u00ac\u00b4\58\35\2"+
-		"\u00ad\u00b4\5D#\2\u00ae\u00b4\5:\36\2\u00af\u00b4\5F$\2\u00b0\u00b4\5"+
-		"H%\2\u00b1\u00b4\5N(\2\u00b2\u00b4\5P)\2\u00b3\u00a0\3\2\2\2\u00b3\u00a1"+
-		"\3\2\2\2\u00b3\u00a2\3\2\2\2\u00b3\u00a3\3\2\2\2\u00b3\u00a4\3\2\2\2\u00b3"+
+		"\u00b4\5P)\2\u00a7\u00b4\5(\25\2\u00a8\u00b4\5*\26\2\u00a9\u00b4\5,\27"+
+		"\2\u00aa\u00b4\5\60\31\2\u00ab\u00b4\5\62\32\2\u00ac\u00b4\5\64\33\2\u00ad"+
+		"\u00b4\58\35\2\u00ae\u00b4\5D#\2\u00af\u00b4\5:\36\2\u00b0\u00b4\5F$\2"+
+		"\u00b1\u00b4\5H%\2\u00b2\u00b4\5N(\2\u00b3\u00a0\3\2\2\2\u00b3\u00a1\3"+
+		"\2\2\2\u00b3\u00a2\3\2\2\2\u00b3\u00a3\3\2\2\2\u00b3\u00a4\3\2\2\2\u00b3"+
 		"\u00a5\3\2\2\2\u00b3\u00a6\3\2\2\2\u00b3\u00a7\3\2\2\2\u00b3\u00a8\3\2"+
 		"\2\2\u00b3\u00a9\3\2\2\2\u00b3\u00aa\3\2\2\2\u00b3\u00ab\3\2\2\2\u00b3"+
 		"\u00ac\3\2\2\2\u00b3\u00ad\3\2\2\2\u00b3\u00ae\3\2\2\2\u00b3\u00af\3\2"+

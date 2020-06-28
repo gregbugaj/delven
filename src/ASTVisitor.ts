@@ -195,4 +195,28 @@ export default abstract class ASTVisitor {
      * @param node 
      */
     abstract visitIfStatement(node: Node.IfStatement): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitSwitchStatement(statement: Node.SwitchStatement): void
+
+    /**
+     * 
+     * @param _case 
+     */
+    abstract visitSwitchCase(_case: Node.SwitchCase): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitBreakStatement(statement: Node.BreakStatement): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitEmptyStatement(statement: Node.EmptyStatement): void
 }

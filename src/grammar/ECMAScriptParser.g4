@@ -31,6 +31,7 @@
  * https://tc39.es/ecma262/
  * https://github.com/tc39/ecma262
  * https://www.ecma-international.org/ecma-262/11.0/index.html#title
+ * https://kangax.github.io/nfe/  Named function expressions demystified
  */
 parser grammar ECMAScriptParser;
 
@@ -54,6 +55,7 @@ statement
  | exportStatement
  | emptyStatement
  | classDeclaration
+ | functionDeclaration // Footnote 7 Declaration switched to be be before the expressionStatement so function is detemined before the expression statement
  | expressionStatement
  | ifStatement
  | iterationStatement
@@ -67,7 +69,7 @@ statement
  | throwStatement
  | tryStatement
  | debuggerStatement
- | functionDeclaration
+
  ;
 
 block

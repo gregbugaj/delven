@@ -256,7 +256,18 @@ console.info("---------------------");
 //  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/003.syntax.js' });
 
 // let ast = ASTParser.parse({ type: "code", value: ' if (x || y) { let z = 1} else {let  w = 2}  ' });
-let ast = ASTParser.parse({ type: "code", value: ' switch(x){ case 1: {} case (1+2): {break;} default: {}} ' });
+// let ast = ASTParser.parse({ type: "code", value: ' switch(x){ case 1: {} case (1+2): {break;} default: {}} ' });
+// let ast = ASTParser.parse({ type: "code", value: ' switch(x, y){ case 1: {} case (1+2): {break _label;} default: {}}  ' });
+// let ast = ASTParser.parse({ type: "code", value: ' switch(x==2){ case "x" : {} case (1+2): {break;}  default: { let z =1}}  ' });
+// let ast = ASTParser.parse({ type: "code", value: ' switch(x==2){ case (z, x)=>{} : {} case "x" : {} }   ' });
+// let ast = ASTParser.parse({ type: "code", value: ' switch(x==2){ default: {let z = 1} } ' });
+// let ast = ASTParser.parse({ type: "code", value: '  (z, x)=>{}  ' });
+// let ast = ASTParser.parse({ type: "code", value: ' { function x() { } function y() { }  function z() { } } ' });
+// let ast = ASTParser.parse({ type: "code", value: ' { function x() { }  } ' });
+// let ast = ASTParser.parse({ type: "code", value: ' ()=>{} ' }); //ExpressionStatement > ArrowFunctionExpression
+// let ast = ASTParser.parse({ type: "code", value: ' ()=>{}, ()=>{} ' }); // ExpressionStatement > SequenceExpression >ArrowFunctionExpression
+// let ast = ASTParser.parse({ type: "code", value: ' function x (){}; ' }); // ExpressionStatement > SequenceExpression >ArrowFunctionExpression
+let ast = ASTParser.parse({ type: "code", value: ' let x = [1, 2,...x] ' }); // ExpressionStatement > SequenceExpression >ArrowFunctionExpression
 console.table(toJson(ast))
 
 if(true) {
