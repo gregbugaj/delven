@@ -27,11 +27,12 @@ npx eslint ./src/
 ```
 
 ## Reference
-
 ANTL$ linux setup
+
 http://www.cs.sjsu.edu/~mak/tutorials/InstallANTLR4.pdf
 
-antlr-4.8-complete.jar
+Language infor
+https://tomassetti.me/category/language-engineering/
 
 
 ## Tests based on 
@@ -63,13 +64,14 @@ https://github.com/jquery/esprima/
 
 
 https://helpx.adobe.com/experience-manager/6-5/sites/developing/using/reference-materials/javadoc/org/mozilla/javascript/ast/AstNode.html#debugPrint--
+
 ### Webdriver
 
 https://webdriver.io/
 https://github.com/webdriverio/webdriverio
 https://docs.microsoft.com/en-us/azure/data-lake-analytics/data-lake-analytics-u-sql-get-started
 https://www.w3.org/TR/webdriver1
-
+ 
 
 ## Footnotes
 

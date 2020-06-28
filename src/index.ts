@@ -267,7 +267,16 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' { function x() { }  } ' });
 // let ast = ASTParser.parse({ type: "code", value: ' ()=>{} ' }); //ExpressionStatement > ArrowFunctionExpression
 // let ast = ASTParser.parse({ type: "code", value: ' x = function(){}' }); // ExpressionStatement > AssignmentExpression >FunctionExpression
-let ast = ASTParser.parse({ type: "code", value: ' ()=> (1+2 !=1) ' }); // ExpressionStatement > ArrowFunctionExpression > BinaryExpression
+// let ast = ASTParser.parse({ type: "code", value: ' ()=> (1+2 !=1) ' });
+// let ast = ASTParser.parse({ type: "code", value: ' tips.forEach((tip, i) => console.log("Tip ${i}:" + tip)); ' }); 
+
+
+// let ast = ASTParser.parse({ type: "code", value: " import defaultExport from 'module_name'; " });
+let ast = ASTParser.parse({ type: "code", value: " import defaultExport, { contentA, contentB } from 'module_name';" });
+// let ast = ASTParser.parse({ type: "code", value: " import * as importeModule from 'module_name'; " });
+// let ast = ASTParser.parse({ type: "code", value: " import { content as zz, yy, www } from 'module_name'; " });
+
+
 console.table(toJson(ast))
 
 if(true) {

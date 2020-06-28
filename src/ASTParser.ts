@@ -2,7 +2,7 @@
 import * as antlr4 from "antlr4"
 import { ECMAScriptParserVisitor as DelvenVisitor } from "./parser/ECMAScriptParserVisitor"
 import { ECMAScriptParser as DelvenParser, ECMAScriptParser } from "./parser/ECMAScriptParser"
-import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
+import { ECMAScriptLexer as DelvenLexer, ECMAScriptLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
 import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement, ArrayPattern, ObjectPattern, CallExpression, TemplateLiteral, RegexLiteral, TemplateElement } from "./nodes";
@@ -11,6 +11,7 @@ import { type } from "os"
 import * as fs from "fs"
 import { Interval } from "antlr4"
 import Trace, { CallSite } from "./trace"
+import { threadId } from "worker_threads"
 
 /**
  * Version that we generate the AST for. 
@@ -293,7 +294,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else if (node instanceof ECMAScriptParser.ExportStatementContext) {
             return this.visitExportStatement(node)
         } else if (node instanceof ECMAScriptParser.EmptyStatementContext) {
-           return this.visitEmptyStatement(node)
+            return this.visitEmptyStatement(node)
         } else if (node instanceof ECMAScriptParser.ClassDeclarationContext) {
             return this.visitClassDeclaration(node)
         } else if (node instanceof ECMAScriptParser.ExpressionStatementContext) {
@@ -314,8 +315,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitLabelledStatement(node)
         } else if (node instanceof ECMAScriptParser.SwitchStatementContext) {
             return this.visitSwitchStatement(node)
-        // } else if (node instanceof ECMAScriptParser.FunctionExpressionContext) {
-        //     return this.visitFunctionExpression(node, true)
+            // } else if (node instanceof ECMAScriptParser.FunctionExpressionContext) {
+            //     return this.visitFunctionExpression(node, true)
         } else if (node instanceof ECMAScriptParser.ThrowStatementContext) {
             return this.visitThrowStatement(node)
         } else if (node instanceof ECMAScriptParser.TryStatementContext) {
@@ -329,16 +330,132 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
     }
 
-    visitImportStatement(ctx: RuleContext): any {
+    /**
+     * 
+     * ```
+     * importStatement
+     *   : Import importFromBlock
+     *   ;
+     * ```
+     * @param ctx 
+     */
+    visitImportStatement(ctx: RuleContext): Node.ImportDeclaration {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportStatementContext)
-        throw new TypeError("not implemented")
+        return this.visitImportFromBlock(ctx.getChild(1))
+    }
+
+    /**
+     * 
+     * ```
+     * importFromBlock
+     *   : importDefault? (importNamespace | moduleItems) importFrom eos
+     *   | StringLiteral eos
+     *   ;
+     * ```
+     * @param ctx 
+     */
+    visitImportFromBlock(ctx: RuleContext): Node.ImportDeclaration {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ImportFromBlockContext)
+        // source
+        const source: Literal = this.visitImportFrom(this.getTypedRuleContext(ctx, ECMAScriptParser.ImportFromContext))
+
+        // specifiers
+        let specifiers: Node.ImportDeclarationSpecifier[] = []
+        const importDefaultContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ImportDefaultContext);
+        const importNamespaceContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ImportNamespaceContext);
+        const moduleItemsContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ModuleItemsContext);
+
+        if (importDefaultContext) {
+            specifiers.push(this.visitImportDefault(importDefaultContext))
+        }
+
+        if (importNamespaceContext) {
+            specifiers.push(this.visitImportNamespace(importNamespaceContext))
+        }
+
+        if (moduleItemsContext) {
+            specifiers = [...specifiers, this.visitModuleItems(moduleItemsContext)]
+        }
+
+        return new Node.ImportDeclaration(specifiers, source);
+    }
+
+    /**
+     * 
+     * ```
+     * moduleItems
+     *   : '{' (aliasName ',')* (aliasName ','?)? '}'
+     *   ;
+     * ```
+     * @param ctx 
+     */
+    visitModuleItems(ctx: RuleContext): Node.ImportSpecifier[] {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ModuleItemsContext)
+        const aliases = this.getTypedRuleContexts(ctx, ECMAScriptParser.AliasNameContext)
+        const specifiers: Node.ImportSpecifier[] = []
+
+        for (let i = 0; i < aliases.length; ++i) {
+            const alias = aliases[i]
+            const local: Node.Identifier = this.visitIdentifierName(alias.getChild(0))
+            const imported: Node.Identifier = (alias.getChildCount == 2) ? this.visitIdentifierName(alias.getChild(1)) : local
+            const specifier = new Node.ImportSpecifier(local, imported)
+            specifiers.push(specifier)
+        }
+        return specifiers
+    }
+
+    /**
+     * Examples :
+     * 
+     * ```
+     *   import defaultExport from 'module_name'; // 1 node
+     *   import * as name from 'module_name';  // 3 nodes
+     * ```
+     * 
+     * ```
+     * importNamespace
+     *    : ('*' | identifierName) (As identifierName)?
+     *    ;
+     * ```
+     * @param ctx 
+     */
+    visitImportNamespace(ctx: RuleContext): Node.ImportDefaultSpecifier {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ImportNamespaceContext)
+        const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
+        const ident = this.visitIdentifierName(identifierNameContext)
+        return new Node.ImportDefaultSpecifier(ident)
+    }
+
+    visitImportDefault(ctx: RuleContext): Node.ImportDefaultSpecifier {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ImportDefaultContext)
+        const identifierNameContext = this.getTypedRuleContext(ctx.aliasName(), ECMAScriptParser.IdentifierNameContext)
+        const ident = this.visitIdentifierName(identifierNameContext)
+        return new Node.ImportDefaultSpecifier(ident)
+    }
+
+    /**
+     * 
+     * ```
+     * importFrom
+     *   : From StringLiteral
+     *   ;
+     * ```
+     * @param ctx 
+     */
+    visitImportFrom(ctx: RuleContext): Node.Literal {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ImportFromContext)
+        const node = ctx.getChild(1)
+        return this.createStringLiteral(node)
     }
 
     visitExportStatement(ctx: RuleContext): any {
-        this.log(ctx, Trace.frame())
-        this.assertType(ctx, ECMAScriptParser.ExportStatementContext)
-        throw new TypeError("not implemented")
+        console.trace('not implemented')
     }
 
     /**
@@ -432,6 +549,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
      */
     private getTypedRuleContext(ctx: RuleContext, type: any, index = 0): any {
         return ctx.getTypedRuleContext(type, index)
+    }
+
+    /**
+     * Get all typed rules
+     *  
+     * @param ctx 
+     * @param type 
+     */
+    private getTypedRuleContexts(ctx: RuleContext, type: any): any[] {
+        return ctx.getTypedRuleContexts(type)
     }
 
     /**
@@ -1164,7 +1291,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                     case ECMAScriptParser.BooleanLiteral:
                         return this.createLiteralValue(node, raw === 'true', raw)
                     case ECMAScriptParser.StringLiteral:
-                        return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw)
+                        return this.createStringLiteral(node)
                 }
 
             } else if (count == 1) {
@@ -1176,6 +1303,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
             }
         }
         this.throwInsanceError(this.dumpContext(node))
+    }
+
+    createStringLiteral(node: RuleContext): Node.Literal {
+        const raw = node.getText()
+        return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw)
     }
 
     /**
@@ -1777,7 +1909,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (ctx.getChildCount() == 2) {
             return [];
         }
-        
+
         let params = [];
         for (const node of this.iterable(ctx)) {
             if (node instanceof ECMAScriptParser.IdentifierContext) {
@@ -2101,7 +2233,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MemberDotExpressionContext)
         this.assertNodeCount(ctx, 3)
-       
+
         const expr = this.singleExpression(ctx.getChild(0))
         const property = this.visitIdentifierName(ctx.getChild(2))
         return new Node.StaticMemberExpression(expr, property)
@@ -2308,7 +2440,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
     // Visit a parse tree produced by ECMAScriptParser#keyword.
     visitKeyword(ctx: RuleContext) {
         console.info("visitKeyword: " + ctx.getText())
-
     }
 
     // Visit a parse tree produced by ECMAScriptParser#futureReservedWord.
