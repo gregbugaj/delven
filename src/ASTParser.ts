@@ -946,9 +946,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#arrayElement.
      * 
+     * ```
      * arrayElement
      *  : Ellipsis? singleExpression
      *  ;
+     * ```
      * @param ctx 
      */
     visitArrayElement(ctx: RuleContext): Node.ArrayExpressionElement {
@@ -965,6 +967,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#objectLiteral.
+     * 
      * ```
      * objectLiteral
      *  : '{' (propertyAssignment (',' propertyAssignment)*)? ','? '}'
@@ -982,7 +985,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const nodes = this.filterSymbols(ctx)
         const properties: Node.ObjectExpressionProperty[] = [];
         for (const node of nodes) {
-            let property: Node.ObjectExpressionProperty = undefined;
+            let property: Node.ObjectExpressionProperty = null;
             if (node instanceof ECMAScriptParser.PropertyExpressionAssignmentContext) {
                 property = this.visitPropertyExpressionAssignment(node)
             } else if (node instanceof ECMAScriptParser.PropertyShorthandContext) {
@@ -1691,7 +1694,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * @param ctx 
      * @param isStatement 
      */
-    visitFunctionExpression(ctx: RuleContext, isStatement = true)
+    visitFunctionExpression(ctx: RuleContext)
         : Node.FunctionExpression
         | Node.AsyncFunctionExpression
         | Node.ArrowFunctionExpression
@@ -1715,27 +1718,34 @@ export class DelvenASTVisitor extends DelvenVisitor {
             throw new TypeError("not implemented")
         }
 
-        // unroll into an expression 
-        if (!isStatement) {
-            // FunctionDeclaration | AsyncFunctionDeclaration  
-            if (exp instanceof Node.AsyncFunctionDeclaration) {
-                return new Node.AsyncFunctionExpression(exp.id, exp.params, exp.body)
-            } else if (exp instanceof Node.FunctionDeclaration) {
-                return new Node.FunctionExpression(exp.id, exp.params, exp.body, exp.generator)
-            }
+        // FunctionDeclaration | AsyncFunctionDeclaration  
+        if (exp instanceof Node.AsyncFunctionDeclaration) {
+            return new Node.AsyncFunctionExpression(exp.id, exp.params, exp.body)
+        } else if (exp instanceof Node.FunctionDeclaration) {
+            return new Node.FunctionExpression(exp.id, exp.params, exp.body, exp.generator)
         }
         return exp;
     }
 
-
-    // Visit a parse tree produced by ECMAScriptParser#functionDecl
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#functionDecl
+     * ```
+     * functionDeclaration
+     *   : Async? Function '*'? identifier '(' formalParameterList? ')' '{' functionBody '}'
+     *   ;   
+     * ```
+     * @param ctx 
+     */
     visitAnoymousFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.AnoymousFunctionDeclContext)
         return this.functionDeclaration(ctx)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#functionDecl
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#functionDecl
+     * @param ctx 
+     */
     visitArrowFunction(ctx: RuleContext): Node.ArrowFunctionExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ArrowFunctionContext)
@@ -1744,16 +1754,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const bodyContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ArrowFunctionBodyContext)
         const params = this.visitArrowFunctionParameters(paramContext)
         const body = this.visitArrowFunctionBody(bodyContext)
-        const expression = false;
+        const expression = !(body instanceof Node.BlockStatement);
 
         return new Node.ArrowFunctionExpression(params, body, expression)
     }
 
     /**
+     * Visit a parse tree produced by ECMAScriptParser#arrowFunctionParameters
+     * 
+     * ```
      * arrowFunctionParameters
      *  : identifier
      *  | '(' formalParameterList? ')'
      *  ;
+     * ```
      * @param ctx 
      */
     visitArrowFunctionParameters(ctx: RuleContext): Node.FunctionParameter[] {
@@ -1763,37 +1777,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (ctx.getChildCount() == 2) {
             return [];
         }
-        /*
-        let async = false;
-        let generator = false;
-        let identifier: Identifier;
-        let params;
-        let body;
-
-        for (let i = 0; i < ctx.getChildCount(); ++i) {
-            const node = ctx.getChild(i)
-            if (node.symbol) {
-                const txt = node.getText()
-                if (txt == 'async') {
-                    async = true
-                } else if (txt == '*') {
-                    generator = true
-                }
-            }
-            if (node instanceof ECMAScriptParser.IdentifierContext) {
-                identifier = this.visitIdentifier(node)
-            } else if (node instanceof ECMAScriptParser.FormalParameterListContext) {
-                params = this.visitFormalParameterList(node)
-            } else if (node instanceof ECMAScriptParser.FunctionBodyContext) {
-                // body = this.visitFunctionBody(node)
-                console.info("ECMAScriptParser ;; FormalParameterListContext")
-            }
-            this.dumpContextAllChildren(node)
-        }
-
-        console.info('async  = ' + async)
-        console.info('generator  = ' + generator)
-        */
+        
         let params = [];
         for (const node of this.iterable(ctx)) {
             if (node instanceof ECMAScriptParser.IdentifierContext) {
@@ -1806,11 +1790,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     *
+     * Visit a parse tree produced by ECMAScriptParser#arrowFunctionBody
+     * 
+     *```
      *  arrowFunctionBody
      *   : '{' functionBody '}' 
      *   | singleExpression
      *   ;
+     * ```
      * @param ctx 
      */
     visitArrowFunctionBody(ctx: RuleContext): Node.BlockStatement | Node.Expression {
@@ -1825,19 +1812,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitFunctionBody(bodyContext)
         } else {
             if (node instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
-                type ParenthesizedExpression = Node.ExpressionStatement | Node.SequenceExpression
-                const parametized: ParenthesizedExpression = this.visitParenthesizedExpression(node)
-                // compliance espree : this function returns ExpressionStatement or ExpressionSequenceContext
-                // unwinding ExpressionStatement to to simply return 
-                if (parametized instanceof Node.ExpressionStatement) {
-                    return parametized.expression;
-                } else //if (parametized instanceof Node.SequenceExpression) 
-                {
-                    return parametized;
-                }
+                return this.coerceToExpressionOrSequence(this.visitParenthesizedExpression(node))
             }
+            return this.singleExpression(node)
         }
-        throw new TypeError("Unknown type for : " + ctx)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#UnaryMinusExpression.
@@ -1894,7 +1872,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     // Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
     visitEqualityExpression(ctx: RuleContext): Node.BinaryExpression {
-        console.info("visitEqualityExpression [%s] : %s", ctx.getChildCount(), ctx.getText())
+        this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.EqualityExpressionContext)
         this.assertNodeCount(ctx, 3)
 
@@ -2113,23 +2091,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     * // computed = false `x.z`
-     * // computed = true `y[1]`
-     * // Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
+     * Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
+     * 
+     * computed = false `x.z`
+     * computed = true `y[1]`
+     * 
      */
     visitMemberDotExpression(ctx: RuleContext): Node.StaticMemberExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MemberDotExpressionContext)
         this.assertNodeCount(ctx, 3)
+       
         const expr = this.singleExpression(ctx.getChild(0))
         const property = this.visitIdentifierName(ctx.getChild(2))
         return new Node.StaticMemberExpression(expr, property)
-    }
-
-    print(ctx: RuleContext): void {
-        console.info(" *****  ")
-        const visitor = new PrintVisitor()
-        ctx.accept(visitor)
     }
 
     /**

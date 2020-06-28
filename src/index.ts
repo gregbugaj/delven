@@ -263,11 +263,11 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' switch(x==2){ default: {let z = 1} } ' });
 // let ast = ASTParser.parse({ type: "code", value: '  (z, x)=>{}  ' });
 // let ast = ASTParser.parse({ type: "code", value: ' { function x() { } function y() { }  function z() { } } ' });
+// let ast = ASTParser.parse({ type: "code", value: ' function x() { } function y() { }  function z() { } ' });
 // let ast = ASTParser.parse({ type: "code", value: ' { function x() { }  } ' });
 // let ast = ASTParser.parse({ type: "code", value: ' ()=>{} ' }); //ExpressionStatement > ArrowFunctionExpression
-// let ast = ASTParser.parse({ type: "code", value: ' ()=>{}, ()=>{} ' }); // ExpressionStatement > SequenceExpression >ArrowFunctionExpression
-// let ast = ASTParser.parse({ type: "code", value: ' function x (){}; ' }); // ExpressionStatement > SequenceExpression >ArrowFunctionExpression
-let ast = ASTParser.parse({ type: "code", value: ' let x = [1, 2,...x] ' }); // ExpressionStatement > SequenceExpression >ArrowFunctionExpression
+// let ast = ASTParser.parse({ type: "code", value: ' x = function(){}' }); // ExpressionStatement > AssignmentExpression >FunctionExpression
+let ast = ASTParser.parse({ type: "code", value: ' ()=> (1+2 !=1) ' }); // ExpressionStatement > ArrowFunctionExpression > BinaryExpression
 console.table(toJson(ast))
 
 if(true) {

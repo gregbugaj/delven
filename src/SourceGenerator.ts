@@ -17,7 +17,7 @@ export default class SourceGenerator {
      * 
      * @param node 
      */
-    toSource(node: Node.Script): string {
+    toSource(node: Node.Script | Node.Module): string {
         const visitor = new ExplicitASTNodeVisitor();
         visitor.visitScript(node);
         return visitor.buffer;
@@ -117,10 +117,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.BreakStatement: {
                 this.visitBreakStatement(statement as Node.BreakStatement);
                 break;
-            }  case Syntax.EmptyStatement: {
+            } case Syntax.EmptyStatement: {
                 this.visitEmptyStatement(statement as Node.EmptyStatement);
                 break;
-            } 
+            }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
         }
@@ -345,7 +345,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.UpdateExpression: {
                 this.visitUpdateExpression(expression as Node.UpdateExpression);
                 break;
-            } 
+            }
             default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
@@ -564,10 +564,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
         this.visitFunctionParameterArray(expression.params)
         this.write('=>', false, false)
-        if(expression.body instanceof Node.BlockStatement){
+        if (expression.body instanceof Node.BlockStatement) {
             this.visitBlockStatement(expression.body as Node.BlockStatement)
-        }else {
+        } else {
+            this.write('(', false, false)
             this.visitExpression(expression.body)
+            this.write(')', false, false)
         }
     }
 
