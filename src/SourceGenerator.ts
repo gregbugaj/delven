@@ -133,6 +133,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.WhileStatement: {
                 this.visitWhileStatement(statement as Node.WhileStatement);
                 break;
+            } case Syntax.DoWhileStatement: {
+                this.visitDoWhileStatement(statement as Node.DoWhileStatement);
+                break;
+            } case Syntax.Literal: {
+                this.visitLiteral(statement as Node.Literal);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
@@ -141,7 +147,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('\n', false, false)
     
     }
-    
+
+    visitDoWhileStatement(statement: Node.DoWhileStatement) {
+         this.write('do', false, false)
+        this.visitStatement(statement.body)
+        this.write('while', false, false)
+        this.write('(', false, false)
+        this.visitExpression(statement.test)
+        this.write(')', false, false)
+
+
+    }
+
     visitWhileStatement(statement: Node.WhileStatement): void {
         this.write('while', false, false)
         this.write('(', false, false)

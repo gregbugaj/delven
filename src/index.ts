@@ -292,7 +292,8 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: "  let z = (3 in val)  " });
 
 // Iteration
-let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/001.syntax.js' });
+// let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/001.syntax.js' }); // WhileStatement
+let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/002.syntax.js' }); // DoWhileStatement
 console.table(toJson(ast))
 
 if(true) {

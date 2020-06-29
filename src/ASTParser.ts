@@ -493,6 +493,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         if (ctx instanceof ECMAScriptParser.WhileStatementContext) {
             return this.visitWhileStatement(ctx)
+        } else if (ctx instanceof ECMAScriptParser.DoStatementContext) {
+            return this.visitDoStatement(ctx)
         }
 
         this.throwInsanceError(this.dumpContext(ctx))
@@ -682,9 +684,22 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.IfStatement(test, consequent, alternate)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#DoStatement.
-    visitDoStatement(ctx: RuleContext) {
-        console.info("visitDoStatement: " + ctx.getText())
+    
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#DoStatement.
+     * 
+     * ```
+     * : Do statement While '(' expressionSequence ')' eos                                                                       # DoStatement
+     * ```
+     * @param ctx 
+     */
+    visitDoStatement(ctx: RuleContext): Node.DoWhileStatement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.DoStatementContext)
+        const body: Node.Statement = this.visitStatement(ctx.statement())
+        const test: Node.Expression = this.coerceToExpressionOrSequence(this.visitExpressionSequence(ctx.expressionSequence()))
+
+        return new Node.DoWhileStatement(body, test)
     }
 
     /**
