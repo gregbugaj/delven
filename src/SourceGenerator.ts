@@ -130,12 +130,24 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ThrowStatement: {
                 this.visitThrowStatement(statement as Node.ThrowStatement);
                 break;
+            } case Syntax.WhileStatement: {
+                this.visitWhileStatement(statement as Node.WhileStatement);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
         }
 
         this.write('\n', false, false)
+    
+    }
+    
+    visitWhileStatement(statement: Node.WhileStatement): void {
+        this.write('while', false, false)
+        this.write('(', false, false)
+        this.visitExpression(statement.test)
+        this.write(')', false, false)
+        this.visitStatement(statement.body)
     }
 
     visitThrowStatement(statement: Node.ThrowStatement): void {
