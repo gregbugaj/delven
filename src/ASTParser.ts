@@ -733,7 +733,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ReturnStatementContext)
         let expression = null;
         if (ctx.expressionSequence()) {
-            expression = this.unrollExpressionSequence(this.visitExpressionSequence(ctx.expressionSequence()))
+            expression = this.coerceToExpressionOrSequence(this.visitExpressionSequence(ctx.expressionSequence()))
         }
         return new Node.ReturnStatement(expression)
     }
@@ -868,10 +868,21 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.LabeledStatement(identifier, statement)
     }
 
-
-    // Visit a parse tree produced by ECMAScriptParser#throwStatement.
-    visitThrowStatement(ctx: RuleContext) {
-        console.trace('not implemented')
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#throwStatement.
+     * ```
+     * throwStatement
+     *   : Throw {this.notLineTerminator()}? expressionSequence eos
+     *   ;
+     * ```
+     * @param ctx 
+     */
+    visitThrowStatement(ctx: RuleContext): Node.ThrowStatement{
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ThrowStatementContext)
+        const exp = this.getTypedRuleContext(ctx, ECMAScriptParser.ExpressionSequenceContext)
+        const argument: Expression = this.coerceToExpressionOrSequence(this.visitExpressionSequence(exp))
+        return new Node.ThrowStatement(argument)
     }
 
     /**

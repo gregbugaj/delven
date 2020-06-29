@@ -89,7 +89,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitStatement(statement: Node.Declaration | Node.Statement) {
-
+        
         switch (statement.type) {
             case Syntax.BlockStatement: {
                 this.visitBlockStatement(statement as Node.BlockStatement);
@@ -127,11 +127,20 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.TryStatement: {
                 this.visitTryStatement(statement as Node.TryStatement);
                 break;
+            } case Syntax.ThrowStatement: {
+                this.visitThrowStatement(statement as Node.ThrowStatement);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
         }
+
         this.write('\n', false, false)
+    }
+
+    visitThrowStatement(statement: Node.ThrowStatement): void {
+        this.write('throw ', false, false)
+        this.visitExpression(statement.argument)
     }
 
     visitTryStatement(statement: Node.TryStatement): void {
@@ -326,7 +335,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitExpression(expression: Node.Expression): void {
-
         switch (expression.type) {
             case Syntax.SequenceExpression: {
                 this.visitSequenceExpression(expression as Node.SequenceExpression);
@@ -379,10 +387,26 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.UpdateExpression: {
                 this.visitUpdateExpression(expression as Node.UpdateExpression);
                 break;
+            } case Syntax.NewExpression: {
+                this.visitNewExpression(expression as Node.NewExpression);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
+    }
+
+
+    visitNewExpression(expression: Node.NewExpression): void {
+        console.info(expression)
+        const callee = expression.callee;
+        const args = expression.arguments;
+
+        this.write('new ', false, false)
+        this.visitExpression(callee)
+        this.visitParams(args)
+
+        // (callee: Expression, args: ArgumentListElement[])
     }
 
     visitThisExpression(expression: Node.ThisExpression) {
@@ -390,23 +414,30 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitCallExpression(expression: Node.CallExpression) {
-        if (expression.callee.type == Syntax.MemberExpression) {
+
+        console.info(expression)
+        if (expression.callee.type == Syntax.FunctionExpression) {
+            const args = expression.arguments;
+            this.write('(', false, false);
+            this.visitFunctionExpression(expression.callee as Node.FunctionExpression)
+            this.write(')', false, false);
+            this.visitParams(args)
+        }
+        else if (expression.callee.type == Syntax.MemberExpression) {
             const args = expression.arguments;
             const callee = expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression);
+
             this.visitMemberExpression(callee)
             this.visitParams(args)
-
         } else {
             throw new TypeError("Not implemented : " + expression.type)
         }
     }
 
     visitMemberExpression(expression: Node.StaticMemberExpression | Node.ComputedMemberExpression) {
-        const object = expression.object;
-        const property = expression.property;
-        this.visitExpression(object)
+        this.visitExpression(expression.object)
         this.write('.', false, false);
-        this.visitExpression(property)
+        this.visitExpression(expression.property)
     }
 
     visitParams(args: Node.ArgumentListElement[] | Node.FunctionParameter[]) {
@@ -521,18 +552,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitPropertyValue(value: Node.PropertyValue) {
+        //AssignmentPattern | AsyncFunctionExpression | BindingIdentifier | BindingPattern | FunctionExpression;
         switch (value.type) {
             case Syntax.AssignmentPattern: {
                 this.visitAssignmentPattern(value as Node.AssignmentPattern)
                 break;
             }
             case Syntax.FunctionExpression: {
-                const expression = value as Node.FunctionExpression;
-                this.visitParams(expression.params)
-                this.visitBlockStatement(expression.body)
+                this.visitFunctionExpression(value as Node.FunctionExpression)
                 break;
-            } case Syntax.ArrowFunctionExpression: {
-                this.visitArrowFunctionExpression(value as Node.AsyncFunctionExpression);
+            }
+            case Syntax.ArrowFunctionExpression: {
+                this.visitArrowFunctionExpression(value as Node.ArrowFunctionExpression);
                 break;
             }
             case Syntax.Literal: {
@@ -540,9 +571,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             } case Syntax.Identifier: {
                 this.visitIdentifier(value as Node.Identifier)
-                break;
-            } case Syntax.FunctionDeclaration: {
-                this.visitFunctionDeclaration(value as Node.FunctionDeclaration)
                 break;
             }
             case Syntax.ArrayPattern: {
@@ -571,12 +599,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitFunctionExpression(expression: Node.FunctionExpression): void {
-        this.write('(', false, false)
+        /*         this.write('(', false, false)
+                this.writeFunctionDefinition(expression);
+                this.write(')', false, false) */
+
         this.writeFunctionDefinition(expression);
-        this.write(')', false, false)
     }
 
     writeFunctionDefinition(expression: Node.FunctionExpression | Node.FunctionDeclaration) {
+
         if (expression.async) {
             this.write(' async', false, false)
         }

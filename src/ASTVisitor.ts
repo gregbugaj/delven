@@ -231,4 +231,15 @@ export default abstract class ASTVisitor {
      * @param handler 
      */
     abstract visitCatchClause(handler: Node.CatchClause | null): void
+
+    /**
+     * 
+     */
+    abstract visitThrowStatement(statement: Node.ThrowStatement): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitNewExpression(expression: Node.NewExpression): void
 }

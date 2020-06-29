@@ -278,7 +278,13 @@ console.info("---------------------");
 
 
 // Try-Catch
-let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/try-catch/001.syntax.js' });
+let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/try-catch/006.syntax.js' });
+
+//ObjectExpression
+//  let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/object/001.syntax.js' });
+// let ast = ASTParser.parse({ type: "code", value: " let  z = {fullName: function(){}} " });
+// let ast = ASTParser.parse({ type: "code", value: " let z = {fullName: (x, u)=>{}} " });
+// let ast = ASTParser.parse({ type: "code", value: " x = function(){} " });
 
 console.table(toJson(ast))
 
