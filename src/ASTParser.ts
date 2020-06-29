@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import * as antlr4 from "antlr4"
+//import * as antlr4 from "antlr4"
+import  {CommonTokenStream, InputStream, Token, error}  from "antlr4"
 import { ECMAScriptParserVisitor as DelvenVisitor } from "./parser/ECMAScriptParserVisitor"
 import { ECMAScriptParser as DelvenParser, ECMAScriptParser } from "./parser/ECMAScriptParser"
-import { ECMAScriptLexer as DelvenLexer, ECMAScriptLexer } from "./parser/ECMAScriptLexer"
+import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
 import { PrintVisitor } from "./PrintVisitor"
 import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement, ArrayPattern, ObjectPattern, CallExpression, TemplateLiteral, RegexLiteral, TemplateElement } from "./nodes";
@@ -11,7 +12,6 @@ import { type } from "os"
 import * as fs from "fs"
 import { Interval } from "antlr4"
 import Trace, { CallSite } from "./trace"
-import { threadId } from "worker_threads"
 
 /**
  * Version that we generate the AST for. 
@@ -32,6 +32,13 @@ export interface Marker {
     line: number;
     column: number;
 }
+
+class MyErrorListener extends error.ErrorListener {
+    syntaxError(recognizer, offendingSymbol, line, column, msg, e) {
+        console.log("ERROR " + msg);
+    }
+}
+
 
 export default abstract class ASTParser {
     private visitor: (typeof DelvenVisitor | null)
