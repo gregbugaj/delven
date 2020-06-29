@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-//import * as antlr4 from "antlr4"
-import  {CommonTokenStream, InputStream, Token, error}  from "antlr4"
+import * as antlr4 from "antlr4"
 import { ECMAScriptParserVisitor as DelvenVisitor } from "./parser/ECMAScriptParserVisitor"
 import { ECMAScriptParser as DelvenParser, ECMAScriptParser } from "./parser/ECMAScriptParser"
 import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
@@ -10,8 +9,11 @@ import { ExpressionStatement, Literal, Script, BlockStatement, Statement, Sequen
 import * as Node from "./nodes";
 import { type } from "os"
 import * as fs from "fs"
-import { Interval } from "antlr4"
+import { Interval, Recognizer, Token } from "antlr4"
 import Trace, { CallSite } from "./trace"
+import ASTNode from "./ASTNode"
+import { ErrorListener } from "antlr4/error/ErrorListener"
+import { ErrorNode } from "antlr4/tree/Tree"
 
 /**
  * Version that we generate the AST for. 
@@ -32,13 +34,11 @@ export interface Marker {
     line: number;
     column: number;
 }
-
-class MyErrorListener extends error.ErrorListener {
-    syntaxError(recognizer, offendingSymbol, line, column, msg, e) {
-        console.log("ERROR " + msg);
+export class MyErrorListener extends ErrorListener {
+    syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
+        console.log(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`);
     }
 }
-
 
 export default abstract class ASTParser {
     private visitor: (typeof DelvenVisitor | null)
@@ -58,16 +58,23 @@ export default abstract class ASTParser {
                 break;
         }
 
-        let chars = new antlr4.InputStream(code)
-        let lexer = new DelvenLexer(chars)
-        let tokens = new antlr4.CommonTokenStream(lexer)
-        let parser = new DelvenParser(tokens)
-        let tree = parser.program()
-        // console.info(tree.toStringTree())
-        tree.accept(new PrintVisitor())
+        const chars = new antlr4.InputStream(code)
+        const lexer = new DelvenLexer(chars)
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(new MyErrorListener());
+
+        const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
+        parser.setTrace(true)
+
+        parser.removeErrorListeners();
+        parser.addErrorListener(new MyErrorListener());
+
+        const tree = parser.program()
+        console.info(tree.toStringTree(parser.ruleNames))
+
+        // tree.accept(new PrintVisitor())
         console.info("---------------------")
-        let result = tree.accept(this.visitor)
-        return result;
+        return tree.accept(this.visitor)        
     }
 
     /**
@@ -234,6 +241,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
     }
 
+    visitErrorNode(node: ErrorNode): any {
+        console.info("node  " + node)
+        //   syntaxError(recognizer, offendingSymbol, line, column, msg, e) 
+        // console.log("ERROR " + msg);
+    }
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#program.

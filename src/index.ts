@@ -286,7 +286,8 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: " let z = {fullName: (x, u)=>{}} " });
 // let ast = ASTParser.parse({ type: "code", value: " x = function(){} " });
 
-let ast = ASTParser.parse({ type: "code", value: " xx /dx = function(){} " });d
+let ast = ASTParser.parse({ type: "code", value: " fu ()" });
+// let ast = ASTParser.parse({ type: "code", value: " xx'x2' " });
 
 console.table(toJson(ast))
 

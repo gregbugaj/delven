@@ -414,22 +414,20 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitCallExpression(expression: Node.CallExpression) {
-
-        console.info(expression)
+        const args = expression.arguments;
         if (expression.callee.type == Syntax.FunctionExpression) {
-            const args = expression.arguments;
             this.write('(', false, false);
             this.visitFunctionExpression(expression.callee as Node.FunctionExpression)
             this.write(')', false, false);
             this.visitParams(args)
-        }
-        else if (expression.callee.type == Syntax.MemberExpression) {
-            const args = expression.arguments;
-            const callee = expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression);
-
-            this.visitMemberExpression(callee)
+        } else if (expression.callee.type == Syntax.MemberExpression) {
+            this.visitMemberExpression(expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression))
+            this.visitParams(args)
+        } else if (expression.callee.type == Syntax.Identifier) {
+            this.visitIdentifier(expression.callee as Node.Identifier)
             this.visitParams(args)
         } else {
+            console.info(expression)
             throw new TypeError("Not implemented : " + expression.type)
         }
     }

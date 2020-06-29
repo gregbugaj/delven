@@ -27,15 +27,17 @@ npx eslint ./src/
 ```
 
 ## Reference
+
 ANTL$ linux setup
 
 http://www.cs.sjsu.edu/~mak/tutorials/InstallANTLR4.pdf
 
-Language infor
+Language information
 https://tomassetti.me/category/language-engineering/
+https://tomassetti.me/writing-a-browser-based-editor-using-monaco-and-antlr/
 
 
-## Tests based on 
+## Tests based  
 
 https://github.com/jquery/esprima
 
