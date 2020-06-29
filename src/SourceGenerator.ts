@@ -264,7 +264,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write(')', false, true)
     }
 
-
     classDefinition(expression: Node.ClassDeclaration | Node.ClassExpression) {
         this.write('class ', false, false)
         if (expression.id != null) {
@@ -319,7 +318,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitAssignmentExpression(expression: Node.AssignmentExpression): void {
-
         this.visitExpression(expression.left);
         this.write(" " + expression.operator + " ", false, false)
         this.visitExpression(expression.right);
@@ -339,19 +337,16 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             case Syntax.SequenceExpression: {
                 this.visitSequenceExpression(expression as Node.SequenceExpression);
                 break;
-            }
-            case Syntax.Literal: {
+            } case Syntax.Literal: {
                 this.visitLiteral(expression as Node.Literal)
                 break;
             } case Syntax.Identifier: {
                 this.visitIdentifier(expression as Node.Identifier);
                 break;
-            }
-            case Syntax.SpreadElement: {
+            } case Syntax.SpreadElement: {
                 this.vistSpreadElement(expression as Node.SpreadElement);
                 break;
-            }
-            case Syntax.AssignmentExpression: {
+            } case Syntax.AssignmentExpression: {
                 this.visitAssignmentExpression(expression as Node.AssignmentExpression);
                 break;
             } case Syntax.ObjectExpression: {
@@ -390,23 +385,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.NewExpression: {
                 this.visitNewExpression(expression as Node.NewExpression);
                 break;
-            }
-            default:
+            } default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
     }
 
-
     visitNewExpression(expression: Node.NewExpression): void {
-        console.info(expression)
         const callee = expression.callee;
         const args = expression.arguments;
 
         this.write('new ', false, false)
         this.visitExpression(callee)
         this.visitParams(args)
-
-        // (callee: Expression, args: ArgumentListElement[])
     }
 
     visitThisExpression(expression: Node.ThisExpression) {
