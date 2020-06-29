@@ -136,6 +136,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.DoWhileStatement: {
                 this.visitDoWhileStatement(statement as Node.DoWhileStatement);
                 break;
+            }  case Syntax.ForOfStatement: {
+                this.visitForOfStatement(statement as Node.ForOfStatement);
+                break;
             }  
             default:
                 throw new TypeError("Type not handled : " + statement.type)
@@ -143,6 +146,16 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         this.write('\n', false, false)
     
+    }
+
+    visitForOfStatement(statement: Node.ForOfStatement) {
+        this.write('for', false, false)
+        this.write('(', false, false)
+        this.visitExpression(statement.left)
+        this.write(' of ', false, false)
+        this.visitExpression(statement.right)
+        this.write(')', false, false)
+        this.visitStatement(statement.body)
     }
 
     visitDoWhileStatement(statement: Node.DoWhileStatement) {
@@ -410,6 +423,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             } case Syntax.NewExpression: {
                 this.visitNewExpression(expression as Node.NewExpression);
+                break;
+                // VariableDeclaration
+            } case Syntax.VariableDeclaration: {
+                this.visitVariableDeclaration(expression as Node.VariableDeclaration);
                 break;
             } default:
                 throw new TypeError("Type not handled : " + expression.type)

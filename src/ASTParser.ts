@@ -721,6 +721,43 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.WhileStatement(test, body)
     }
 
+    /**
+     * 
+     * ```
+     *    | For Await? '(' (singleExpression | variableDeclarationList) identifier{this.p("of")}? expressionSequence ')' statement  # ForOfStatement
+     * ```
+     * @param ctx 
+     */
+    visitForOfStatement(ctx: RuleContext): Node.ForOfStatement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ForOfStatementContext)
+       
+        let await_ = false
+        for (let i = 0; i < ctx.getChildCount(); ++i) {
+            const node = ctx.getChild(i)
+            if (node.symbol) {
+                const txt = node.getText()
+                if (txt == 'await') {
+                    await_ = true
+                }
+            }
+        }
+
+        let lhs: Node.Expression
+        const identifierContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext)
+        const iVariableDeclarationListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.VariableDeclarationListContext)
+
+        if(identifierContext) {
+            lhs = this.coerceToExpressionOrSequence(this.singleExpression(identifierContext))
+        } else  if(iVariableDeclarationListContext){
+            lhs = this.visitVariableDeclarationList(iVariableDeclarationListContext)
+        }
+
+        const rhs: Node.Expression = this.coerceToExpressionOrSequence(this.visitExpressionSequence(ctx.expressionSequence()))
+        const body: Node.Statement = this.visitStatement(ctx.statement())
+        return new Node.ForOfStatement(lhs, rhs, body)
+    }
+
     // Visit a parse tree produced by ECMAScriptParser#ForStatement.
     visitForStatement(ctx: RuleContext) {
         console.info("visitWhileStatement: " + ctx.getText())
@@ -1521,6 +1558,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitLogicalOrExpression(node)
         }else if (node instanceof ECMAScriptParser.InExpressionContext) {
             return this.visitInExpression(node)
+        }else if (node instanceof ECMAScriptParser.IdentifierContext) {
+            return this.visitIdentifier(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))

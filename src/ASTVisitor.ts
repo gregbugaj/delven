@@ -242,4 +242,21 @@ export default abstract class ASTVisitor {
      * @param expression 
      */
     abstract visitNewExpression(expression: Node.NewExpression): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitWhileStatement(statement: Node.WhileStatement): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitDoWhileStatement(statement: Node.DoWhileStatement): void
+
+    /**
+     * 
+     */
+    abstract visitForOfStatement(statement: Node.ForOfStatement): void
 }
