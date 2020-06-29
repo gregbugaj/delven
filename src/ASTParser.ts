@@ -178,7 +178,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             console.info(pad + marker + nodes)
         }
         for (let i = 0; i < ctx.getChildCount(); ++i) {
-            let child = ctx?.getChild(i)
+            const child = ctx?.getChild(i)
             if (child) {
                 this.dumpContextAllChildren(child, ++indent)
                 --indent;
@@ -1448,7 +1448,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * @param node 
      * @param isStatement 
      */
-    singleExpression(node: RuleContext, isStatement = true): Node.Expression {
+    singleExpression(node: RuleContext): Node.Expression {
 
         if (node instanceof ECMAScriptParser.LiteralExpressionContext) {
             return this.visitLiteralExpression(node)
@@ -1477,7 +1477,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else if (node instanceof ECMAScriptParser.AssignmentOperatorExpressionContext) {
             return this.visitAssignmentOperatorExpression(node)
         } else if (node instanceof ECMAScriptParser.FunctionExpressionContext) {
-            return this.visitFunctionExpression(node, isStatement)
+            return this.visitFunctionExpression(node)
         } else if (node instanceof ECMAScriptParser.NewExpressionContext) {
             return this.visitNewExpression(node)
         } else if (node instanceof ECMAScriptParser.ArgumentsExpressionContext) {
