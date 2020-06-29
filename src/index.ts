@@ -286,8 +286,10 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: " let z = {fullName: (x, u)=>{}} " });
 // let ast = ASTParser.parse({ type: "code", value: " x = function(){} " });
 
-let ast = ASTParser.parse({ type: "code", value: " fu ()" });
-// let ast = ASTParser.parse({ type: "code", value: " xx'x2' " });
+// let ast = ASTParser.parse({ type: "code", value: " let x = fu.x()" });
+
+// InExpression
+let ast = ASTParser.parse({ type: "code", value: "  let z = (3 in val)  " });
 
 console.table(toJson(ast))
 
