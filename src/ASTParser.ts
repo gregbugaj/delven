@@ -784,7 +784,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const cases: Node.SwitchCase[] = casesCtx ? this.visitCaseClauses(casesCtx) : []
         switches = [...cases]
         if (defaultCtx) {
-            switches.push(this.visitDefaultClause(defaultCtx))
+            switches = [...switches, this.visitDefaultClause(defaultCtx)]
         }
         return switches
     }
@@ -919,12 +919,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
 
+    /**
+     * Get funciton attribues 
+     * @param ctx 
+     */
     getFunctionAttributes(ctx: RuleContext): { async: boolean, generator: boolean } {
         let async = false;
         let generator = false;
-
         for (let i = 0; i < ctx.getChildCount(); ++i) {
-
             const node = ctx.getChild(i)
             if (node.symbol) {
                 const txt = node.getText()
@@ -933,10 +935,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 } else if (txt == '*') {
                     generator = true
                 }
-
             }
         }
-
         return { async, generator }
     }
 
