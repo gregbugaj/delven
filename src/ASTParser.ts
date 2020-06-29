@@ -495,6 +495,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitWhileStatement(ctx)
         } else if (ctx instanceof ECMAScriptParser.DoStatementContext) {
             return this.visitDoStatement(ctx)
+        } else if (ctx instanceof ECMAScriptParser.ForOfStatementContext) {
+            return this.visitForOfStatement(ctx)
         }
 
         this.throwInsanceError(this.dumpContext(ctx))

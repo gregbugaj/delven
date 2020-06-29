@@ -293,7 +293,8 @@ console.info("---------------------");
 
 // Iteration
 // let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/001.syntax.js' }); // WhileStatement
-let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/002.syntax.js' }); // DoWhileStatement
+// let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/002.syntax.js' }); // DoWhileStatement
+let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/003.syntax.js' }); // ForOfStatement
 console.table(toJson(ast))
 
 if(true) {

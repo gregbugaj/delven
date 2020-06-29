@@ -136,10 +136,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.DoWhileStatement: {
                 this.visitDoWhileStatement(statement as Node.DoWhileStatement);
                 break;
-            } case Syntax.Literal: {
-                this.visitLiteral(statement as Node.Literal);
-                break;
-            }
+            }  
             default:
                 throw new TypeError("Type not handled : " + statement.type)
         }
