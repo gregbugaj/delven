@@ -219,4 +219,16 @@ export default abstract class ASTVisitor {
      * @param statement 
      */
     abstract visitEmptyStatement(statement: Node.EmptyStatement): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitTryStatement(statement: Node.TryStatement): void
+
+    /**
+     * 
+     * @param handler 
+     */
+    abstract visitCatchClause(handler: Node.CatchClause | null): void
 }

@@ -272,10 +272,13 @@ console.info("---------------------");
 
 
 // let ast = ASTParser.parse({ type: "code", value: " import defaultExport from 'module_name'; " });
-let ast = ASTParser.parse({ type: "code", value: " import defaultExport, { contentA, contentB } from 'module_name';" });
+// let ast = ASTParser.parse({ type: "code", value: " import defaultExport, { contentA, contentB } from 'module_name';" });
 // let ast = ASTParser.parse({ type: "code", value: " import * as importeModule from 'module_name'; " });
 // let ast = ASTParser.parse({ type: "code", value: " import { content as zz, yy, www } from 'module_name'; " });
 
+
+// Try-Catch
+let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/try-catch/001.syntax.js' });
 
 console.table(toJson(ast))
 

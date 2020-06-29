@@ -874,31 +874,64 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.trace('not implemented')
     }
 
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#tryStatement.
+     * 
+     * ```
+     * tryStatement
+     *   : Try block (catchProduction finallyProduction? | finallyProduction)
+     *   ;
+     * ```
+     * @param ctx 
+     */
+    visitTryStatement(ctx: RuleContext): Node.TryStatement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.TryStatementContext)
 
-    // Visit a parse tree produced by ECMAScriptParser#tryStatement.
-    visitTryStatement(ctx: RuleContext) {
-        console.trace('not implemented')
+        const finallyCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.FinallyProductionContext)
+        const catchCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.CatchProductionContext)
 
+        const block: Node.BlockStatement = this.visitBlock(this.getTypedRuleContext(ctx, ECMAScriptParser.BlockContext))
+        const handler: Node.CatchClause | null = (catchCtx == null) ? null : this.visitCatchProduction(catchCtx)
+        const finalizer: Node.BlockStatement | null = (finallyCtx == null) ? null : this.visitFinallyProduction(finallyCtx)
+
+        return new Node.TryStatement(block, handler, finalizer)
     }
 
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#catchProduction.
+     * Node count
+     * 2 = `catch {}`
+     * 5 = `catch (e) {}`
+     * 
+     * ```
+     * catchProduction
+     *  : Catch ('(' assignable? ')')? block
+     *  ;
+     * ```
+     * @param ctx 
+     */
+    visitCatchProduction(ctx: RuleContext): Node.CatchClause {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.CatchProductionContext)
 
-    // Visit a parse tree produced by ECMAScriptParser#catchProduction.
-    visitCatchProduction(ctx: RuleContext) {
-        console.trace('not implemented')
+        const assignableCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.AssignableContext)
+        const param: Node.BindingIdentifier | Node.BindingPattern | null = (assignableCtx == null) ? null : this.visitAssignable(assignableCtx)
+        const body: Node.BlockStatement = this.visitBlock(this.getTypedRuleContext(ctx, ECMAScriptParser.BlockContext))
 
+        return new Node.CatchClause(param, body)
     }
-
 
     // Visit a parse tree produced by ECMAScriptParser#finallyProduction.
-    visitFinallyProduction(ctx: RuleContext) {
-        console.trace('not implemented')
-
+    visitFinallyProduction(ctx: RuleContext): Node.BlockStatement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.FinallyProductionContext)
+        return this.visitBlock(this.getTypedRuleContext(ctx, ECMAScriptParser.BlockContext))
     }
 
     // Visit a parse tree produced by ECMAScriptParser#debuggerStatement.
     visitDebuggerStatement(ctx: RuleContext) {
-        console.trace('not implemented')
-
+        throw new TypeError("Not implemented")
     }
 
     /**

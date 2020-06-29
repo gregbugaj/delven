@@ -53,6 +53,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
+    private writeNewLine() {
+        this.write('\n', false, false)
+    }
+
     private writeConditional(condition: boolean, txt: string, useIndent: boolean, newline = false): void {
         if (condition) {
             this.write(txt, useIndent, newline);
@@ -120,6 +124,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.EmptyStatement: {
                 this.visitEmptyStatement(statement as Node.EmptyStatement);
                 break;
+            } case Syntax.TryStatement: {
+                this.visitTryStatement(statement as Node.TryStatement);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
@@ -127,14 +134,42 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('\n', false, false)
     }
 
+    visitTryStatement(statement: Node.TryStatement): void {
+        this.write('try', false, true)
+        this.visitBlockStatement(statement.block)
+
+        if (statement.handler) {
+            this.write('\n', false, false)
+            this.visitCatchClause(statement.handler)
+        }
+
+        if (statement.finalizer) {
+            this.write('\n', false, false)
+            this.write('finally', false, true)
+            this.visitBlockStatement(statement.finalizer)
+        }
+    }
+
+    visitCatchClause(clause: Node.CatchClause): void {
+        this.write('catch', false, false)
+        if (clause.param) {
+            this.write('(', false, false)
+            this.visitBinding(clause.param as Binding)
+            this.write(')', false, false)
+        }
+
+        this.writeNewLine();
+        this.visitBlockStatement(clause.body)
+    }
 
     visitEmptyStatement(statement: Node.EmptyStatement): void {
         this.write(';', false, false)
     }
 
     visitBreakStatement(statement: Node.BreakStatement): void {
-        this.write('break ', false, false)
-        if (statement.label != null) {
+        this.write('break', false, false)
+        if (statement.label) {
+            this.write(' ', false, false)
             this.visitIdentifier(statement.label)
         }
     }
@@ -289,7 +324,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             }
         }
     }
-
 
     visitExpression(expression: Node.Expression): void {
 
@@ -647,7 +681,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         const kind = declaration.kind;
         const declarations = declaration.declarations;
         this.write(`${kind} `, true, false);
-
         for (const declaration of declarations) {
             this.visitVariableDeclarator(declaration as Node.VariableDeclarator)
         }
