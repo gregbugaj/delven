@@ -289,8 +289,10 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: " let x = fu.x()" });
 
 // InExpression
-let ast = ASTParser.parse({ type: "code", value: "  let z = (3 in val)  " });
+// let ast = ASTParser.parse({ type: "code", value: "  let z = (3 in val)  " });
 
+// Iteration
+let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/001.syntax.js' });
 console.table(toJson(ast))
 
 if(true) {
