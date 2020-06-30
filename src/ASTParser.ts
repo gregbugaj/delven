@@ -4,7 +4,6 @@ import { ECMAScriptParserVisitor as DelvenVisitor } from "./parser/ECMAScriptPar
 import { ECMAScriptParser as DelvenParser, ECMAScriptParser } from "./parser/ECMAScriptParser"
 import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 import { RuleContext } from "antlr4/RuleContext"
-import { PrintVisitor } from "./PrintVisitor"
 import { ExpressionStatement, Literal, Script, BlockStatement, Statement, SequenceExpression, ThrowStatement, AssignmentExpression, Identifier, BinaryExpression, ArrayExpression, ObjectExpression, ObjectExpressionProperty, Property, PropertyKey, VariableDeclaration, VariableDeclarator, Expression, IfStatement, ComputedMemberExpression, StaticMemberExpression, ClassDeclaration, ClassBody, FunctionDeclaration, FunctionParameter, AsyncFunctionDeclaration, AssignmentPattern, BindingPattern, BindingIdentifier, ArrayExpressionElement, SpreadElement, ArrowFunctionExpression, LabeledStatement, RestElement, NewExpression, ArgumentListElement, ThisExpression, FunctionExpression, AsyncFunctionExpression, UnaryExpression, UpdateExpression, WhileStatement, DoWhileStatement, ContinueStatement, BreakStatement, ReturnStatement, ArrayPattern, ObjectPattern, CallExpression, TemplateLiteral, RegexLiteral, TemplateElement } from "./nodes";
 import * as Node from "./nodes";
 import { type } from "os"
@@ -566,10 +565,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Get the type rule context
+     * 
      * Example
-     * <code>
+     * ```
      *   const node = this.getTypedRuleContext(ctx, ECMAScriptParser.VariableDeclarationListContext)
-     * </code>
+     * ```
      * @param ctx 
      * @param type 
      * @param index 
@@ -1530,7 +1530,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.throwInsanceError(this.dumpContext(node))
     }
 
-    createStringLiteral(node: RuleContext): Node.Literal {
+    private createStringLiteral(node: RuleContext): Node.Literal {
         const raw = node.getText()
         return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw)
     }
