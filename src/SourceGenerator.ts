@@ -472,21 +472,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.Property: {
                 this.visitProperty(expression as Node.Property);
                 break;
+            } case Syntax.ArrayPattern: {
+                this.visitArrayPattern(expression as Node.ArrayPattern);
+                break;
             } default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
     }
 
     visitProperty(expression: Node.Property): void {
-        /**
-            readonly type: string;
-            readonly key: PropertyKey;
-            readonly computed: boolean;
-            readonly value: PropertyValue | null;
-            readonly kind: string;
-            readonly method: boolean;
-            readonly shorthand: boolean;
-         */
         const key = expression.key
         const value = expression.value
 

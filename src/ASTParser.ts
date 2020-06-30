@@ -1355,7 +1355,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         Node.ObjectPattern,
         Node.FunctionExpression,
         Node.ArrowFunctionExpression]
-        
+
         for (const type of types) {
             if (expression instanceof type) {
                 return true
@@ -2215,8 +2215,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const initialiser = ctx.getChild(0)
         const operator = ctx.getChild(1).getText()
         const expression = ctx.getChild(2)
-        const lhs = this.singleExpression(initialiser)
+        let lhs = this.singleExpression(initialiser)
         const rhs = this.singleExpression(expression)
+
+        // [a , b] = 1// ArrayPattern
+        if (lhs instanceof Node.ArrayExpression) {
+            const tmp = lhs as Node.ArrayPattern
+            lhs = new Node.ArrayPattern(tmp.elements)
+        }
 
         return new AssignmentExpression(operator, lhs, rhs)
     }
@@ -2563,6 +2569,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const expression = ctx.getChild(2)
         const lhs = this.singleExpression(initialiser)
         const rhs = this.singleExpression(expression)
+
+        // | <assoc=right> singleExpression '=' singleExpression                   # AssignmentExpression
+
+
 
         return new Node.AssignmentExpression(operator, lhs, rhs)
     }
