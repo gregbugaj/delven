@@ -825,6 +825,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             const pattern: Node.ArrayPatternElement = elements[i]
             if (pattern) {
                 this.visitExpression(pattern)
+            }else {
+                this.write(', ', false, false)
+                continue;
             }
             this.writeConditional(i < elements.length - 1, ', ', false, false)
         }

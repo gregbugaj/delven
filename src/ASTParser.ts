@@ -1188,23 +1188,31 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#elementList.
+     * compliance: esprima compliane of returning `null` 
+     * `[,,]` should have 2 null values
      * 
+     * ```
      * elementList
      *  : ','* arrayElement? (','+ arrayElement)* ','* // Yes, everything is optional
      *  ;
+     * ```
      * @param ctx 
      */
     visitElementList(ctx: RuleContext): Node.ArrayExpressionElement[] {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ElementListContext)
         const elements: Node.ArrayExpressionElement[] = [];
+        const iterable = this.iterable(ctx)
+        let lastTokenWasComma = false;        
+        if(iterable.length > 0){
+            if(iterable[0].symbol != null){
+                lastTokenWasComma = true;
+            }
+        }
 
-        let lastTokenWasComma = false;
-
-        for (const node of this.iterable(ctx)) {
+        for (const node of iterable) {
             //ellison check
             if (node.symbol != null) {
-                // compliance: esprima compliane of returning `null` 
                 if (lastTokenWasComma) {
                     elements.push(null)
                 }

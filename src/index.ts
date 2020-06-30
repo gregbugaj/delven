@@ -310,9 +310,12 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: " ({b=2}) => 0 " });    // ObjectPattern
 // let ast = ASTParser.parse({ type: "code", value: " ({b=2, c=3}) => 0 " });    // ObjectPattern
 // let ast = ASTParser.parse({ type: "code", value: " ([{a=1}, {b=2}]) => 0 " });    // ArrayPattern
-let ast = ASTParser.parse({ type: "code", value: " [a , b] = 1 " });    // ArrayPattern
+// let ast = ASTParser.parse({ type: "code", value: " [a , b] = 1 " });    // ArrayPattern
+// let ast = ASTParser.parse({ type: "code", value: " [a, b, ...rest] = [10, 20, 30, 40, 50];" });    // ArrayPattern : Expressions - Destructuring assignment
 // let ast = ASTParser.parse({ type: "code", value: " z = [a , b] = 1 " });    // ArrayPattern
 // let ast = ASTParser.parse({ type: "code", value: " z = [a , b] " });    // ArrayExpression
+let ast = ASTParser.parse({ type: "code", value: " [,,a,,] = f(); " });    // ArrayExpression
+
 
 console.table(toJson(ast))
 
