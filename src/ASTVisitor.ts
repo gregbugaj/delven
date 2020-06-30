@@ -112,7 +112,6 @@ export default abstract class ASTVisitor {
      */
     abstract visitArrayPattern(node: Node.ArrayPattern): void
 
-
     /**
      * 
      * @param expression 

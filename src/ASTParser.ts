@@ -1277,6 +1277,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             } else {
                 this.throwInsanceError(this.dumpContext(node))
             }
+
             if (property != undefined) {
                 properties.push(property)
             }
@@ -1286,7 +1287,25 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#propertyShorthand.
-     *  | Ellipsis? singleExpression                                                    # PropertyShorthand
+     * AssignmentExpression unrolling into ExpressionStatement > ArrowFunctionExpression> ObjectPattern
+     * 
+     * Added Identifier to NOde.PropertyType so we can handle both cases
+     * ```
+     * ({b=2}) => 0 this will have the right type as Literal
+     * ({b=z}) => 0 this will have the right type as Identifier
+     * ```
+     * Shorthand
+     * 
+     * ```
+     * ({b:z}) => 0
+     * ({c=z}) => 0
+     * ({c}) => 0 
+     * ```
+     * 
+     * Grammar
+     *  ```
+     * | Ellipsis? singleExpression                                                    # PropertyShorthand
+     * ```
      * @param ctx 
      */
     visitPropertyShorthand(ctx: RuleContext): Node.ObjectExpressionProperty {
@@ -1295,11 +1314,54 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const computed = false;
         const method = false;
         const shorthand = true;
-        const value = this.singleExpression(ctx.getChild(0))
-        const key: Node.PropertyKey = new Identifier(ctx.getText())
-        // unroll declaration in to an expression
+
+        let key: Node.PropertyKey
+        let value: Node.PropertyValue | null = null
+        const expression: Node.Expression = this.singleExpression(ctx.getChild(0))
+
+        if (expression instanceof Node.AssignmentExpression) {
+            const assignable: Node.AssignmentExpression = expression as Node.AssignmentExpression
+            key = assignable.left as Node.PropertyKey
+            value = this.isPropertyValue(assignable.right) ? assignable.right : null
+        } else {
+            if (ctx.getChildCount()) {
+                key = new Identifier(ctx.getText())
+            } else {
+                key = new Identifier(ctx.getText())
+                const expression = this.singleExpression(ctx.getChild(0))
+                value = this.isPropertyValue(expression) ? expression : null
+            }
+        }
 
         return new Node.Property("init", key, computed, value, method, shorthand)
+    }
+
+    /**
+     * Type Guard for Node.PropertyValue 
+     *  
+     * @param expression
+     */
+    isPropertyValue(expression: Node.Expression): expression is Node.PropertyValue {
+        console.info(expression)
+        // Added Node.Literal
+        //export type BindingPattern = ArrayPattern | ObjectPattern;
+        //export type BindingIdentifier = Identifier;
+        // PropertyValue = AssignmentPattern | AsyncFunctionExpression | BindingIdentifier | BindingPattern | FunctionExpression;
+        const types = [Node.Literal,
+        Node.AssignmentPattern,
+        Node.AsyncFunctionExpression,
+        Node.Identifier,
+        Node.ArrayPattern,
+        Node.ObjectPattern,
+        Node.FunctionExpression,
+        Node.ArrowFunctionExpression]
+        
+        for (const type of types) {
+            if (expression instanceof type) {
+                return true
+            }
+        }
+        throw new TypeError('Not a valid PropertyValue type got : ' + expression?.constructor)
     }
 
     /**
@@ -1600,7 +1662,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitIdentifier(node)
         } else if (node instanceof ECMAScriptParser.PowerExpressionContext) {
             return this.visitPowerExpression(node)
-        }else if (node instanceof ECMAScriptParser.DeleteExpressionContext) {
+        } else if (node instanceof ECMAScriptParser.DeleteExpressionContext) {
             return this.visitDeleteExpression(node)
         }
 
@@ -1834,12 +1896,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
     }
     /**
-     * 
+     * ```
      *  assignable
      *    : identifier
      *    | arrayLiteral
      *    | objectLiteral
      *    ; 
+     * ```
      * @param ctx  AssignableContext
      */
     visitAssignable(ctx: RuleContext): Node.BindingIdentifier | Node.BindingPattern {
@@ -1852,10 +1915,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
             const elements = this.visitArrayLiteral(assignable)
             return new ArrayPattern(elements)
         } else if (assignable instanceof ECMAScriptParser.ObjectLiteralContext) {
+            // Unroll expression into ObjectPattern
             const elements = this.visitObjectLiteral(assignable)
             const properties: Node.ObjectPatternProperty[] = elements.properties;
             return new Node.ObjectPattern(properties)
         }
+
         this.throwInsanceError(this.dumpContext(ctx))
     }
 
@@ -1905,8 +1970,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.LogicalOrExpressionContext)
         return this._binaryExpression(ctx)
-    }   
-    
+    }
+
 
     visitPowerExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
@@ -2150,8 +2215,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const initialiser = ctx.getChild(0)
         const operator = ctx.getChild(1).getText()
         const expression = ctx.getChild(2)
-        const lhs = this.singleExpression(initialiser, false)
-        const rhs = this.singleExpression(expression, false)
+        const lhs = this.singleExpression(initialiser)
+        const rhs = this.singleExpression(expression)
 
         return new AssignmentExpression(operator, lhs, rhs)
     }
@@ -2183,9 +2248,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitDeleteExpression(ctx: RuleContext): Node.UnaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.DeleteExpressionContext)
-        this.assertNodeCount(ctx, 2)    
+        this.assertNodeCount(ctx, 2)
         const argument: Node.Expression = this.singleExpression(ctx.singleExpression())
-        
+
         return new Node.UnaryExpression("delete", argument)
     }
 

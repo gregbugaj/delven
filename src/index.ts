@@ -306,7 +306,13 @@ console.info("---------------------");
 
 // let ast = ASTParser.parse({ type: "code", value: " let o = {fun(){}, b, c, [z]:()=> 1+(2+3)} " });  
 // let ast = ASTParser.parse({ type: "code", value: " {delete trees[3];} " });  
-let ast = ASTParser.parse({ type: "code", value: " arrval[1] " });  
+// let ast = ASTParser.parse({ type: "code", value: " ({c=()=>1}) => 0 " });    // ObjectPattern
+// let ast = ASTParser.parse({ type: "code", value: " ({b=2}) => 0 " });    // ObjectPattern
+// let ast = ASTParser.parse({ type: "code", value: " ({b=2, c=3}) => 0 " });    // ObjectPattern
+// let ast = ASTParser.parse({ type: "code", value: " ([{a=1}, {b=2}]) => 0 " });    // ArrayPattern
+let ast = ASTParser.parse({ type: "code", value: " [a , b] = 1 " });    // ArrayPattern
+// let ast = ASTParser.parse({ type: "code", value: " z = [a , b] = 1 " });    // ArrayPattern
+// let ast = ASTParser.parse({ type: "code", value: " z = [a , b] " });    // ArrayExpression
 
 console.table(toJson(ast))
 

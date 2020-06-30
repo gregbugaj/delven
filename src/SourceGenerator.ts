@@ -466,14 +466,49 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.NewExpression: {
                 this.visitNewExpression(expression as Node.NewExpression);
                 break;
-                // VariableDeclaration
             } case Syntax.VariableDeclaration: {
                 this.visitVariableDeclaration(expression as Node.VariableDeclaration);
+                break;
+            } case Syntax.Property: {
+                this.visitProperty(expression as Node.Property);
                 break;
             } default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
     }
+
+    visitProperty(expression: Node.Property): void {
+        /**
+            readonly type: string;
+            readonly key: PropertyKey;
+            readonly computed: boolean;
+            readonly value: PropertyValue | null;
+            readonly kind: string;
+            readonly method: boolean;
+            readonly shorthand: boolean;
+         */
+        const key = expression.key
+        const value = expression.value
+
+        if (expression.shorthand) {
+            // ({c=z}) => 0 // ShortHand
+            // ({c}) => 0 // ShortHand
+            this.visitExpression(key)
+            if (value) {
+                this.write(' = ', false, false)
+                this.visitExpression(value)
+            }
+        } else {
+            //({b:z}) => 0 //
+            //({b}) => 0 //
+            this.visitExpression(key)
+            if (value) {
+                this.write(' : ', false, false)
+                this.visitExpression(value)
+            }
+        }
+    }
+
 
     visitUnaryExpression(expression: Node.UnaryExpression): void {
         this.write('delete ', false, false)
@@ -722,6 +757,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
         this.visitFunctionParameterArray(expression.params)
         this.write('=>', false, false)
+        // body: BlockStatement | Expression;
         if (expression.body instanceof Node.BlockStatement) {
             this.visitBlockStatement(expression.body as Node.BlockStatement)
         } else {
@@ -741,9 +777,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 this.visitIdentifier(param as Node.Identifier)
                 break;
             } case Syntax.ArrayPattern: {
+                this.visitArrayPattern(param as Node.ArrayPattern)
                 break;
             }
             case Syntax.ObjectPattern: {
+                this.visitObjectPattern(param as Node.ObjectPattern)
                 break;
             }
             default:
@@ -774,11 +812,29 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitObjectPattern(node: Node.ObjectPattern): void {
-        throw new Error("Method not implemented.");
+        this.write('{', false, false);
+        const elements = node.properties
+        for (let i = 0; i < elements.length; ++i) {
+            const pattern: Node.ObjectPatternProperty = elements[i]
+            if (pattern) {
+                this.visitExpression(pattern)
+            }
+            this.writeConditional(i < elements.length - 1, ', ', false, false)
+        }
+        this.write('}', false, false);
     }
 
     visitArrayPattern(node: Node.ArrayPattern): void {
-        throw new Error("Method not implemented.");
+        this.write('[', false, false);
+        const elements = node.elements
+        for (let i = 0; i < elements.length; ++i) {
+            const pattern: Node.ArrayPatternElement = elements[i]
+            if (pattern) {
+                this.visitExpression(pattern)
+            }
+            this.writeConditional(i < elements.length - 1, ', ', false, false)
+        }
+        this.write(']', false, false);
     }
 
     visitPropertyKey(key: Node.PropertyKey) {
