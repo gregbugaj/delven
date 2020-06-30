@@ -460,6 +460,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.UpdateExpression: {
                 this.visitUpdateExpression(expression as Node.UpdateExpression);
                 break;
+            }  case Syntax.UnaryExpression: {
+                this.visitUnaryExpression(expression as Node.UnaryExpression);
+                break;
             } case Syntax.NewExpression: {
                 this.visitNewExpression(expression as Node.NewExpression);
                 break;
@@ -470,6 +473,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
+    }
+
+    visitUnaryExpression(expression: Node.UnaryExpression):void {
+        this.write('delete ', false, false)
+        this.visitExpression(expression.argument)
     }
 
     visitNewExpression(expression: Node.NewExpression): void {

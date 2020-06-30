@@ -266,4 +266,10 @@ export default abstract class ASTVisitor {
      * @param statement 
      */
     abstract visitForStatement(statement: Node.ForStatement): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitUnaryExpression(expression: Node.UnaryExpression): void
 }

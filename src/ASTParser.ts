@@ -1600,6 +1600,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitIdentifier(node)
         } else if (node instanceof ECMAScriptParser.PowerExpressionContext) {
             return this.visitPowerExpression(node)
+        }else if (node instanceof ECMAScriptParser.DeleteExpressionContext) {
+            return this.visitDeleteExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -2171,9 +2173,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#DeleteExpression.
-    visitDeleteExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#DeleteExpression.
+     * ```
+     *     | Delete singleExpression                                               # DeleteExpression
+     * ```
+     * @param ctx 
+     */
+    visitDeleteExpression(ctx: RuleContext): Node.UnaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.DeleteExpressionContext)
+        this.assertNodeCount(ctx, 2)    
+        const argument: Node.Expression = this.singleExpression(ctx.singleExpression())
+        
+        return new Node.UnaryExpression("delete", argument)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
