@@ -294,7 +294,18 @@ console.info("---------------------");
 // Iteration
 // let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/001.syntax.js' }); // WhileStatement
 // let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/002.syntax.js' }); // DoWhileStatement
-let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/004.syntax.js' }); // ForOfStatement
+// let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/004.syntax.js' });    // ForOfStatement
+// let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/iteration/006.syntax.js' });    // ForInStatement
+
+
+//let ast = ASTParser.parse({ type: "filename", value: './tests/codegen/function/007.syntax.js' });
+
+//Precedence And Associativity
+// let ast = ASTParser.parse({ type: "code", value: 'console.log(echo("left", 6) / echo("right", 2));' });  // Division Operator
+// let ast = ASTParser.parse({ type: "code", value: ' console.log(echo("left", 2) ** echo("right", 3));' });  // Exponentiation  Operator
+
+let ast = ASTParser.parse({ type: "code", value: " let o = {fun(){}, b, c, [z]:()=> 1+(2+3)} " });  
+
 console.table(toJson(ast))
 
 if(true) {

@@ -1,4 +1,4 @@
 async function z(){
-  for ( k of xyz) {
+  for await (let k of xyz) {
   }
 }

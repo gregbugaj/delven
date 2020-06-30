@@ -89,7 +89,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitStatement(statement: Node.Declaration | Node.Statement) {
-        
+
         switch (statement.type) {
             case Syntax.BlockStatement: {
                 this.visitBlockStatement(statement as Node.BlockStatement);
@@ -136,17 +136,46 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.DoWhileStatement: {
                 this.visitDoWhileStatement(statement as Node.DoWhileStatement);
                 break;
-            }  case Syntax.ForOfStatement: {
+            } case Syntax.ForOfStatement: {
                 this.visitForOfStatement(statement as Node.ForOfStatement);
                 break;
-            }  
+            } case Syntax.ForInStatement: {
+                this.visitForInStatement(statement as Node.ForInStatement);
+                break;
+            } case Syntax.ForStatement: {
+                this.visitForStatement(statement as Node.ForStatement);
+                break;
+            }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
         }
 
         this.write('\n', false, false)
-    
+
     }
+
+    visitForStatement(statement: Node.ForStatement):void {
+        this.write('for', false, false)
+        this.write('(', false, false)
+
+        if (statement.init) {
+            this.visitExpression(statement.init)
+        } 
+        this.write(';', false, false)
+
+        if (statement.test) {
+            this.visitExpression(statement.test)
+        } 
+        this.write(';', false, false)
+
+        if (statement.update) {
+            this.visitExpression(statement.update)
+        } 
+        this.write(';', false, false)
+        this.write(')', false, false)
+        this.visitStatement(statement.body)
+    }
+
 
     visitForOfStatement(statement: Node.ForOfStatement) {
         this.write('for', false, false)
@@ -158,8 +187,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitStatement(statement.body)
     }
 
+    visitForInStatement(statement: Node.ForInStatement) {
+        this.write('for', false, false)
+        this.write('(', false, false)
+        this.visitExpression(statement.left)
+        this.write(' in ', false, false)
+        this.visitExpression(statement.right)
+        this.write(')', false, false)
+        this.visitStatement(statement.body)
+    }
+
     visitDoWhileStatement(statement: Node.DoWhileStatement) {
-         this.write('do', false, false)
+        this.write('do', false, false)
         this.visitStatement(statement.body)
         this.write('while', false, false)
         this.write('(', false, false)
@@ -564,11 +603,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                     this.write(property.computed ? ']' : '', false, false)
                     this.visitPropertyValue(value);
                 } else {
+                    if(property.shorthand){
+                        this.visitPropertyKey(key);
+                    }else {
                     this.write(property.computed ? '[' : '', false, false)
                     this.visitPropertyKey(key);
                     this.write(property.computed ? ']' : '', false, false)
                     this.write(':', false, false)
                     this.visitPropertyValue(value);
+                }
                 }
 
                 break;
@@ -743,8 +786,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         const kind = declaration.kind;
         const declarations = declaration.declarations;
         this.write(`${kind} `, true, false);
-        for (const declaration of declarations) {
-            this.visitVariableDeclarator(declaration as Node.VariableDeclarator)
+        for (let i = 0; i < declarations.length;++i) {
+            this.visitVariableDeclarator(declarations[i] as Node.VariableDeclarator)
+            this.writeConditional(i < declarations.length -1 , ', ', false, false)
         }
     }
 
