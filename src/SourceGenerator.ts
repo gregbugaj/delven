@@ -154,23 +154,23 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     }
 
-    visitForStatement(statement: Node.ForStatement):void {
+    visitForStatement(statement: Node.ForStatement): void {
         this.write('for', false, false)
         this.write('(', false, false)
 
         if (statement.init) {
             this.visitExpression(statement.init)
-        } 
+        }
         this.write(';', false, false)
 
         if (statement.test) {
             this.visitExpression(statement.test)
-        } 
+        }
         this.write(';', false, false)
 
         if (statement.update) {
             this.visitExpression(statement.update)
-        } 
+        }
         this.write(';', false, false)
         this.write(')', false, false)
         this.visitStatement(statement.body)
@@ -460,7 +460,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.UpdateExpression: {
                 this.visitUpdateExpression(expression as Node.UpdateExpression);
                 break;
-            }  case Syntax.UnaryExpression: {
+            } case Syntax.UnaryExpression: {
                 this.visitUnaryExpression(expression as Node.UnaryExpression);
                 break;
             } case Syntax.NewExpression: {
@@ -475,7 +475,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
-    visitUnaryExpression(expression: Node.UnaryExpression):void {
+    visitUnaryExpression(expression: Node.UnaryExpression): void {
         this.write('delete ', false, false)
         this.visitExpression(expression.argument)
     }
@@ -513,9 +513,20 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitMemberExpression(expression: Node.StaticMemberExpression | Node.ComputedMemberExpression) {
-        this.visitExpression(expression.object)
-        this.write('.', false, false);
-        this.visitExpression(expression.property)
+
+        if (expression instanceof Node.StaticMemberExpression) {
+            this.visitExpression(expression.object)
+            this.write('.', false, false);
+            this.visitExpression(expression.property)
+        } else if (expression instanceof Node.ComputedMemberExpression) {
+            this.visitExpression(expression.object)
+            this.write('[', false, false);
+            this.visitExpression(expression.property)
+            this.write(']', false, false);
+        } else {
+            throw new TypeError("Unhandled type : " + expression)
+        }
+
     }
 
     visitParams(args: Node.ArgumentListElement[] | Node.FunctionParameter[]) {
@@ -611,15 +622,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                     this.write(property.computed ? ']' : '', false, false)
                     this.visitPropertyValue(value);
                 } else {
-                    if(property.shorthand){
+                    if (property.shorthand) {
                         this.visitPropertyKey(key);
-                    }else {
-                    this.write(property.computed ? '[' : '', false, false)
-                    this.visitPropertyKey(key);
-                    this.write(property.computed ? ']' : '', false, false)
-                    this.write(':', false, false)
-                    this.visitPropertyValue(value);
-                }
+                    } else {
+                        this.write(property.computed ? '[' : '', false, false)
+                        this.visitPropertyKey(key);
+                        this.write(property.computed ? ']' : '', false, false)
+                        this.write(':', false, false)
+                        this.visitPropertyValue(value);
+                    }
                 }
 
                 break;
@@ -794,9 +805,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         const kind = declaration.kind;
         const declarations = declaration.declarations;
         this.write(`${kind} `, true, false);
-        for (let i = 0; i < declarations.length;++i) {
+        for (let i = 0; i < declarations.length; ++i) {
             this.visitVariableDeclarator(declarations[i] as Node.VariableDeclarator)
-            this.writeConditional(i < declarations.length -1 , ', ', false, false)
+            this.writeConditional(i < declarations.length - 1, ', ', false, false)
         }
     }
 

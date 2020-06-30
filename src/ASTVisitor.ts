@@ -260,7 +260,6 @@ export default abstract class ASTVisitor {
      */
     abstract visitForOfStatement(statement: Node.ForOfStatement): void
 
-
     /**
      * 
      * @param statement 
