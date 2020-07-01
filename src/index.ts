@@ -314,8 +314,10 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: " [a, b, ...rest] = [10, 20, 30, 40, 50];" });    // ArrayPattern : Expressions - Destructuring assignment
 // let ast = ASTParser.parse({ type: "code", value: " z = [a , b] = 1 " });    // ArrayPattern
 // let ast = ASTParser.parse({ type: "code", value: " z = [a , b] " });    // ArrayExpression
-let ast = ASTParser.parse({ type: "code", value: '(e) => "test"'});    
+// let ast = ASTParser.parse({ type: "code", value: '(e) => "test"'});    
 
+// UnaryExpression
+let ast = ASTParser.parse({ type: "code", value: '!1'});    
 
 console.table(toJson(ast))
 

@@ -505,7 +505,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
 
     visitUnaryExpression(expression: Node.UnaryExpression): void {
-        this.write('delete ', false, false)
+        this.write(expression.operator, false, false)
         this.visitExpression(expression.argument)
     }
 

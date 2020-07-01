@@ -1672,6 +1672,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitPowerExpression(node)
         } else if (node instanceof ECMAScriptParser.DeleteExpressionContext) {
             return this.visitDeleteExpression(node)
+        } else if (node instanceof ECMAScriptParser.UnaryPlusExpressionContext) {
+            return this.visitUnaryPlusExpression(node)
+        } else if (node instanceof ECMAScriptParser.UnaryMinusExpressionContext) {
+            return this.visitUnaryMinusExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitNotExpressionContext) {
+            return this.visitBitNotExpression(node)
+        } else if (node instanceof ECMAScriptParser.NotExpressionContext) {
+            return this.visitNotExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -2029,11 +2037,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return this._binaryExpression(ctx)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#NotExpression.
-    visitNotExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-    }
-
     /**
      * Visit a parse tree produced by ECMAScriptParser#ArgumentsExpression.
      * 
@@ -2202,11 +2205,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#UnaryMinusExpression.
-    visitUnaryMinusExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-    }
-
     /**
      * Visit a parse tree produced by ECMAScriptParser#AssignmentExpression.
      * 
@@ -2247,9 +2245,33 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#UnaryPlusExpression.
-    visitUnaryPlusExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    visitUnaryPlusExpression(ctx: RuleContext): Node.UnaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.UnaryPlusExpressionContext)
+        const expression  = this.singleExpression(ctx.singleExpression())
+        return new Node.UnaryExpression('+', this.singleExpression(ctx.singleExpression()))
+    }
 
+    // Visit a parse tree produced by ECMAScriptParser#UnaryMinusExpression.
+    visitUnaryMinusExpression(ctx: RuleContext): Node.UnaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.UnaryMinusExpressionContext)
+        return new Node.UnaryExpression('-', this.singleExpression(ctx.singleExpression()))
+    }
+
+    // Visit a parse tree produced by ECMAScriptParser#BitNotExpression.
+    visitBitNotExpression(ctx: RuleContext): Node.UnaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.BitNotExpressionContext)
+        return new Node.UnaryExpression('~', this.singleExpression(ctx.singleExpression()))
+    }
+
+
+    // Visit a parse tree produced by ECMAScriptParser#NotExpression.
+    visitNotExpression(ctx: RuleContext): Node.UnaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.NotExpressionContext)
+        return new Node.UnaryExpression('!', this.singleExpression(ctx.singleExpression()))
     }
 
     /**
@@ -2412,10 +2434,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return this.getUpdateExpression(ctx, false)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#BitNotExpression.
-    visitBitNotExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-    }
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#NewExpression.
@@ -2578,10 +2596,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const lhs = this.singleExpression(initialiser)
         const rhs = this.singleExpression(expression)
 
-        // | <assoc=right> singleExpression '=' singleExpression                   # AssignmentExpression
-
-
-
         return new Node.AssignmentExpression(operator, lhs, rhs)
     }
 
@@ -2707,26 +2721,31 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     // Visit a parse tree produced by ECMAScriptParser#reservedWord.
     visitReservedWord(ctx: RuleContext) {
-        console.info("visitReservedWord: " + ctx.getText())
+        this.log(ctx, Trace.frame())
+        throw new Error('Not implemented')
     }
 
     // Visit a parse tree produced by ECMAScriptParser#keyword.
     visitKeyword(ctx: RuleContext) {
-        console.info("visitKeyword: " + ctx.getText())
+        this.log(ctx, Trace.frame())
+        throw new Error('Not implemented')
     }
 
     // Visit a parse tree produced by ECMAScriptParser#futureReservedWord.
     visitFutureReservedWord(ctx: RuleContext) {
-        console.trace('not implemented')
+        this.log(ctx, Trace.frame())
+        throw new Error('Not implemented')
     }
 
     // Visit a parse tree produced by ECMAScriptParser#getter.
     visitGetter(ctx: RuleContext) {
-        console.trace('not implemented')
+        this.log(ctx, Trace.frame())
+        throw new Error('Not implemented')
     }
     // Visit a parse tree produced by ECMAScriptParser#setter.
     visitSetter(ctx: RuleContext) {
-        console.trace('not implemented')
+        this.log(ctx, Trace.frame())
+        throw new Error('Not implemented')
     }
 
     // Visit a parse tree produced by ECMAScriptParser#eos.
