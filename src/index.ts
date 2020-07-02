@@ -316,8 +316,19 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: " z = [a , b] " });    // ArrayExpression
 // let ast = ASTParser.parse({ type: "code", value: '(e) => "test"'});    
 
-// UnaryExpression
-let ast = ASTParser.parse({ type: "code", value: '!1'});    
+// ExportDeclaration
+// Exporting individual features
+// let ast = ASTParser.parse({ type: "code", value: 'export let name1, name2'});    
+// let ast = ASTParser.parse({ type: "code", value: 'export function test(){}'});    
+// let ast = ASTParser.parse({ type: "code", value: 'export class ClassName {}'});    
+// let ast = ASTParser.parse({ type: "code", value: 'export { name1, name2,  nameN as x};'}); // [ExportNamedDeclaration] Export list
+// let ast = ASTParser.parse({ type: "code", value: 'export let x = Math.sqrt(2), y'}); //G [ExportNamedDeclaration] Export list
+// let ast = ASTParser.parse({ type: "code", value: 'export const { name1, name2: bar } = o; '}); //G [ExportNamedDeclaration] Renaming exports
+// let ast = ASTParser.parse({ type: "code", value: 'export { variable1 as name1, variable2 as name2};'}); // Renaming exports
+
+// // Default exports
+let ast = ASTParser.parse({ type: "code", value: 'export default function () { } '}); // Renaming exports
+
 
 console.table(toJson(ast))
 

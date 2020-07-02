@@ -33,6 +33,16 @@ export interface Marker {
     line: number;
     column: number;
 }
+
+export class ModuleSpecifier {
+    readonly lhs: Identifier;
+    readonly rhs: Identifier;
+    constructor(lhs: Identifier, rhs: Identifier) {
+        this.lhs = lhs;
+        this.rhs = rhs;
+    }
+}
+
 export class MyErrorListener extends ErrorListener {
     syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
         console.log(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`);
@@ -401,6 +411,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
+     * This could be called from Import or Export statement 
      * 
      * ```
      * moduleItems
@@ -409,19 +420,19 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx 
      */
-    visitModuleItems(ctx: RuleContext): Node.ImportSpecifier[] {
+    visitModuleItems(ctx: RuleContext): ModuleSpecifier[] {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ModuleItemsContext)
         const aliases = this.getTypedRuleContexts(ctx, ECMAScriptParser.AliasNameContext)
-        const specifiers: Node.ImportSpecifier[] = []
-
+        const specifiers: ModuleSpecifier[] = []
         for (let i = 0; i < aliases.length; ++i) {
             const alias = aliases[i]
-            const local: Node.Identifier = this.visitIdentifierName(alias.getChild(0))
-            const imported: Node.Identifier = (alias.getChildCount == 2) ? this.visitIdentifierName(alias.getChild(1)) : local
-            const specifier = new Node.ImportSpecifier(local, imported)
-            specifiers.push(specifier)
+            console.info(alias.getChildCount())
+            const lhs: Node.Identifier = this.visitIdentifierName(alias.getChild(0))
+            const rhs: Node.Identifier = (alias.getChildCount() == 3) ? this.visitIdentifierName(alias.getChild(2)) : null
+            specifiers.push(new ModuleSpecifier(lhs, rhs))
         }
+
         return specifiers
     }
 
@@ -472,11 +483,130 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return this.createStringLiteral(node)
     }
 
-    visitExportStatement(ctx: RuleContext): any {
-        console.trace('not implemented')
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#iterationStatement.
+     * There are two different types of export, named and default. 
+     * You can have multiple named exports per module but only one default export.
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export
+     * 
+     * We currently do not implement `Aggregating modules`
+     * 
+     * ```
+     * exportStatement
+     *  : Export (exportFromBlock | declaration) eos    # ExportDeclaration
+     *  | Export Default singleExpression eos           # ExportDefaultDeclaration
+     *  ;
+     * ```
+     * @param ctx 
+     */
+    visitExportStatement(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportDefaultDeclaration {
+        this.log(ctx, Trace.frame())
+        if (ctx instanceof ECMAScriptParser.ExportDeclarationContext) {
+            return this.visitExportDeclaration(ctx)
+        } else if (ctx instanceof ECMAScriptParser.ExportDefaultDeclarationContext) {
+            return this.visitExportDefaultDeclaration(ctx)
+        }
+
+        throw new TypeError('Unhandled type')
+    }
+
+
+    /**
+     * 
+     * ```
+     * | Export Default singleExpression eos           # ExportDefaultDeclaration
+     * ```
+     * @param ctx 
+     */
+    visitExportDefaultDeclaration(ctx: RuleContext): Node.ExportDefaultDeclaration {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ExportDefaultDeclarationContext)
+        this.dumpContextAllChildren(ctx)
+        const declaration: Node.ExportableDefaultDeclaration = this.singleExpression(ctx.singleExpression())
+        return new Node.ExportDefaultDeclaration(declaration)
     }
 
     /**
+     * 
+     * ```
+     *     : Export (exportFromBlock | declaration) eos    # ExportDeclaration
+     * ```
+     * @param ctx 
+     */
+    visitExportDeclaration(ctx: RuleContext): Node.ExportNamedDeclaration {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ExportDeclarationContext)
+        this.dumpContextAllChildren(ctx)
+
+        let declaration: Node.ExportableNamedDeclaration | null = null
+        let specifiers: Node.ExportSpecifier[] = []
+
+        const declarationContext = this.getTypedRuleContext(ctx, ECMAScriptParser.DeclarationContext)
+        if (declarationContext) {
+            declaration = this.visitDeclaration(declarationContext)
+        }
+
+        const exportFromBlockContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ExportFromBlockContext)
+        if (exportFromBlockContext) {
+            specifiers = [...this.visitExportFromBlock(exportFromBlockContext)]
+        }
+
+        // declaration: ExportableNamedDeclaration | null, specifiers: ExportSpecifier[], source: Literal | null
+        return new Node.ExportNamedDeclaration(declaration, specifiers, null)
+    }
+
+    /**
+     * 
+     * ```
+     * exportFromBlock
+     *  : importNamespace importFrom eos
+     *  | moduleItems importFrom? eos
+     *  ;
+     * ```
+     * 
+     * @param ctx 
+     */
+    visitExportFromBlock(ctx: RuleContext): Node.ExportSpecifier[] {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ExportFromBlockContext)
+        const specifiers: Node.ExportSpecifier[] = []
+        const moduleItemsContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ModuleItemsContext)
+        if (moduleItemsContext) {
+            const moduleItems: ModuleSpecifier[] = this.visitModuleItems(moduleItemsContext);
+            for (const spec of moduleItems) {
+                specifiers.push(new Node.ExportSpecifier(spec.lhs, spec.rhs))
+            }
+        }
+        return specifiers
+    }
+
+    /**
+     * 
+     * ```
+     * declaration
+     *  : variableStatement
+     *  | classDeclaration
+     *  | functionDeclaration
+     *  ;
+     * ```
+     */
+    visitDeclaration(ctx: RuleContext): Node.ExportableNamedDeclaration {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.DeclarationContext)
+        if (ctx.variableStatement()) {
+            return this.visitVariableStatement(ctx.variableStatement())
+        } else if (ctx.classDeclaration()) {
+            return this.visitClassDeclaration(ctx.classDeclaration())
+        } else if (ctx.functionDeclaration()) {
+            return this.visitFunctionDeclaration(ctx.functionDeclaration())
+        }
+
+        this.throwInsanceError(this.dumpContext(ctx))
+    }
+
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#iterationStatement.
+     * 
      * iterationStatement
      *    : Do statement While '(' expressionSequence ')' eos                                                                       # DoStatement
      *    | While '(' expressionSequence ')' statement                                                                              # WhileStatement
@@ -1203,9 +1333,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ElementListContext)
         const elements: Node.ArrayExpressionElement[] = [];
         const iterable = this.iterable(ctx)
-        let lastTokenWasComma = false;        
-        if(iterable.length > 0){
-            if(iterable[0].symbol != null){
+        let lastTokenWasComma = false;
+        if (iterable.length > 0) {
+            if (iterable[0].symbol != null) {
                 lastTokenWasComma = true;
             }
         }
@@ -1346,23 +1476,24 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Type Guard for Node.PropertyValue 
-     *  
+     * @TODO remove TypeError and return false
      * @param expression
      */
     isPropertyValue(expression: Node.Expression): expression is Node.PropertyValue {
-        console.info(expression)
         // Added Node.Literal
         //export type BindingPattern = ArrayPattern | ObjectPattern;
         //export type BindingIdentifier = Identifier;
         // PropertyValue = AssignmentPattern | AsyncFunctionExpression | BindingIdentifier | BindingPattern | FunctionExpression;
-        const types = [Node.Literal,
-        Node.AssignmentPattern,
-        Node.AsyncFunctionExpression,
-        Node.Identifier,
-        Node.ArrayPattern,
-        Node.ObjectPattern,
-        Node.FunctionExpression,
-        Node.ArrowFunctionExpression]
+        const types = [
+            Node.Literal,
+            Node.AssignmentPattern,
+            Node.AsyncFunctionExpression,
+            Node.Identifier,
+            Node.ArrayPattern,
+            Node.ObjectPattern,
+            Node.FunctionExpression,
+            Node.ArrowFunctionExpression
+        ]
 
         for (const type of types) {
             if (expression instanceof type) {
@@ -2248,7 +2379,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitUnaryPlusExpression(ctx: RuleContext): Node.UnaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.UnaryPlusExpressionContext)
-        const expression  = this.singleExpression(ctx.singleExpression())
+        const expression = this.singleExpression(ctx.singleExpression())
         return new Node.UnaryExpression('+', this.singleExpression(ctx.singleExpression()))
     }
 

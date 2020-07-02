@@ -145,6 +145,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ForStatement: {
                 this.visitForStatement(statement as Node.ForStatement);
                 break;
+            } case Syntax.ExportNamedDeclaration: {
+                this.visitExportNamedDeclaration(statement as Node.ExportNamedDeclaration);
+                break;
+            } case Syntax.ExportDefaultDeclaration: {
+                this.visitExportDefaultDeclaration(statement as Node.ExportDefaultDeclaration);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
@@ -152,6 +158,32 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         this.write('\n', false, false)
 
+    }
+    visitExportDefaultDeclaration(statement: Node.ExportDefaultDeclaration) {
+        this.write('export default ', false, false)
+        this.visitExpression(statement.declaration)
+    }
+
+    visitExportNamedDeclaration(statement: Node.ExportNamedDeclaration) {
+        this.write('export ', false, false)
+        if (statement.declaration) {
+            this.visitStatement(statement.declaration)
+        } else if (statement.specifiers && statement.specifiers.length > 0) {
+            this.write('{', false, false)
+            const specifiers: Node.ExportSpecifier[] = statement.specifiers
+            for (let i = 0; i < specifiers.length; ++i) {
+                const specifier: Node.ExportSpecifier = specifiers[i]
+                this.visitIdentifier(specifier.local)
+                if (specifier.exported) {
+                    this.write(' as ', false, false)
+                    this.visitIdentifier(specifier.exported)
+                }
+                this.write(i < specifiers.length - 1 ? ' ,' : '', false, false)
+            }
+            this.write('}', false, false)
+        } else {
+            throw new Error("No 'export's to emit")
+        }
     }
 
     visitForStatement(statement: Node.ForStatement): void {
@@ -825,7 +857,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             const pattern: Node.ArrayPatternElement = elements[i]
             if (pattern) {
                 this.visitExpression(pattern)
-            }else {
+            } else {
                 this.write(', ', false, false)
                 continue;
             }
