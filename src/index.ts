@@ -333,6 +333,9 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: 'export default class Z { } '}); // [ExportDefaultDeclaration > ClassDeclaration]
 // let ast = ASTParser.parse({ type: "code", value: ' export default { a:1 }  '}); // [ExportDefaultDeclaration > ObjectExpression]
 // let ast = ASTParser.parse({ type: "code", value: ' export default x = 1  '}); // [ExportDefaultDeclaration > AssignmentExpression]
+// let ast = ASTParser.parse({ type: "code", value: " export { myClass } from 'module'; "});  
+// let ast = ASTParser.parse({ type: "code", value: " export { myClass as ZZ } from 'module'; "});  
+let ast = ASTParser.parse({ type: "code", value: " export * from 'module' "});  // ExportAllDeclaration
 
 // CoalesceExpressionContext
 // let ast = ASTParser.parse({ type: "code", value: ' x = param ?? 2 '});    
@@ -347,8 +350,6 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' x = true ? x : z '});  
 // let ast = ASTParser.parse({ type: "code", value: ' x = (1, 2, {a:1}) ? x : z'});  
 // let ast = ASTParser.parse({ type: "code", value: ' x = 1, 2, {a:1} ? x : z ?? 3'});  
-
-let ast = ASTParser.parse({ type: "code", value: "export { myClass } from 'childModule2.js';"});  
 
 console.table(toJson(ast))
 

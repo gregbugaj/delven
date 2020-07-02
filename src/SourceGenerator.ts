@@ -151,6 +151,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ExportDefaultDeclaration: {
                 this.visitExportDefaultDeclaration(statement as Node.ExportDefaultDeclaration);
                 break;
+            }case Syntax.ExportAllDeclaration: {
+                this.visitExportAllDeclaration(statement as Node.ExportAllDeclaration);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
@@ -159,13 +162,21 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('\n', false, false)
 
     }
+
+    visitExportAllDeclaration(statement: Node.ExportAllDeclaration) {
+        this.write('export * ', false, false)
+        this.write('from ', false, false)
+        this.visitLiteral(statement.source)
+    }
+
     visitExportDefaultDeclaration(statement: Node.ExportDefaultDeclaration) {
         this.write('export default ', false, false)
         this.visitExpression(statement.declaration)
     }
 
     visitExportNamedDeclaration(statement: Node.ExportNamedDeclaration) {
-        this.write('export ', false, false)
+        this.write('export', false, false)
+        this.write(' ', false, false)
         if (statement.declaration) {
             this.visitStatement(statement.declaration)
         } else if (statement.specifiers && statement.specifiers.length > 0) {
@@ -183,6 +194,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.write('}', false, false)
         } else {
             throw new Error("No 'export's to emit")
+        }
+
+        if (statement.source) {
+            this.write(' ', false, false)
+            this.write('from', false, false)
+            this.write(' ', false, false)
+            this.visitLiteral(statement.source)
         }
     }
 

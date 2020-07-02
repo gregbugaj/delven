@@ -282,4 +282,16 @@ export default abstract class ASTVisitor {
      * @param expression 
      */
     abstract visitAwaitExpression(expression: Node.AwaitExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitConditionalExpression(expression: Node.ConditionalExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitExportAllDeclaration(statement: Node.ExportAllDeclaration): void
 }

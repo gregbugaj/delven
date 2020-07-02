@@ -42,6 +42,13 @@ export class ModuleSpecifier {
     }
 }
 
+interface ExportFromBlock {
+    tag: "namespace" | "module"
+    source: Node.Literal | null,
+    specifiers: Node.ExportSpecifier[],
+    namespace: Node.ImportDefaultSpecifier | null
+}
+
 export class MyErrorListener extends ErrorListener {
     syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
         console.log(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`);
@@ -445,7 +452,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportNamespaceContext)
         const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
-        const ident = this.visitIdentifierName(identifierNameContext)
+        let ident: Node.Identifier = new Node.Identifier("*")
+        if (identifierNameContext) {
+            ident = this.visitIdentifierName(identifierNameContext)
+        }
         return new Node.ImportDefaultSpecifier(ident)
     }
 
@@ -528,9 +538,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ExportDefaultDeclarationContext)
 
-        this.dumpContextAllChildren(ctx)
         let declaration: Node.ExportableDefaultDeclaration
-
         if (ctx.classDeclaration()) {
             declaration = this.visitClassDeclaration(ctx.classDeclaration())
         } else if (ctx.functionDeclaration()) {
@@ -543,19 +551,26 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
+     * Example 
      * 
+     * ```
+     *  export { myClass as ZZ } from 'module';
+     *  export {myClass} from 'module'
+     * ```
+     * 
+     * Grammar fragment
      * ```
      *     : Export (exportFromBlock | declaration) eos    # ExportDeclaration
      * ```
      * @param ctx 
      */
-    visitExportDeclaration(ctx: RuleContext): Node.ExportNamedDeclaration {
+    visitExportDeclaration(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportAllDeclaration {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ExportDeclarationContext)
-        this.dumpContextAllChildren(ctx)
 
         let declaration: Node.ExportableNamedDeclaration | null = null
         let specifiers: Node.ExportSpecifier[] = []
+        let source: Literal | null = null
 
         const declarationContext = this.getTypedRuleContext(ctx, ECMAScriptParser.DeclarationContext)
         if (declarationContext) {
@@ -564,15 +579,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         const exportFromBlockContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ExportFromBlockContext)
         if (exportFromBlockContext) {
-            specifiers = [...this.visitExportFromBlock(exportFromBlockContext)]
+            const exports: ExportFromBlock = this.visitExportFromBlock(exportFromBlockContext)
+            if (exports.tag == "namespace") {
+                if (exports.source == null) {
+                    throw new TypeError('Source is expected')
+                }
+                return new Node.ExportAllDeclaration(exports.source)
+            } else if (exports.tag == "module") {
+                source = exports.source
+                specifiers = [...exports.specifiers]
+            }
         }
 
-        // declaration: ExportableNamedDeclaration | null, specifiers: ExportSpecifier[], source: Literal | null
-        return new Node.ExportNamedDeclaration(declaration, specifiers, null)
+        return new Node.ExportNamedDeclaration(declaration, specifiers, source)
     }
 
     /**
+     * Example 
      * 
+     * ```
+     * export { classA, classB } from 'module';
+     * ```
+     * 
+     * Grammar
      * ```
      * exportFromBlock
      *  : importNamespace importFrom eos
@@ -582,10 +611,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * 
      * @param ctx 
      */
-    visitExportFromBlock(ctx: RuleContext): Node.ExportSpecifier[] {
+    visitExportFromBlock(ctx: RuleContext): ExportFromBlock {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ExportFromBlockContext)
+
+        let tag: 'namespace' | 'module' = 'module'
+        let source: Node.Literal | null = null
+        let namespace: Node.ImportDefaultSpecifier | null = null
         const specifiers: Node.ExportSpecifier[] = []
+
         const moduleItemsContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ModuleItemsContext)
         if (moduleItemsContext) {
             const moduleItems: ModuleSpecifier[] = this.visitModuleItems(moduleItemsContext);
@@ -593,7 +627,19 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 specifiers.push(new Node.ExportSpecifier(spec.lhs, spec.rhs))
             }
         }
-        return specifiers
+
+        const importNamespaceContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ImportNamespaceContext)
+        if (importNamespaceContext) {
+            namespace = this.visitImportNamespace(importNamespaceContext)
+            tag = 'namespace'
+        }
+
+        const importFromContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ImportFromContext)
+        if (importFromContext) {
+            source = this.visitImportFrom(importFromContext)
+        }
+
+        return { tag, source, specifiers, namespace }
     }
 
     /**
@@ -1843,7 +1889,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitInstanceofExpression(node)
         } else if (node instanceof ECMAScriptParser.TypeofExpressionContext) {
             return this.visitTypeofExpression(node)
-        }else if (node instanceof ECMAScriptParser.TernaryExpressionContext) {
+        } else if (node instanceof ECMAScriptParser.TernaryExpressionContext) {
             return this.visitTernaryExpression(node)
         }
 
@@ -2148,7 +2194,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx 
      */
-    visitTernaryExpression(ctx: RuleContext): Node.ConditionalExpression{
+    visitTernaryExpression(ctx: RuleContext): Node.ConditionalExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.TernaryExpressionContext)
 
