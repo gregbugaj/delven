@@ -1909,6 +1909,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitTypeofExpression(node)
         } else if (node instanceof ECMAScriptParser.TernaryExpressionContext) {
             return this.visitTernaryExpression(node)
+        } else if (node instanceof ECMAScriptParser.SuperExpressionContext) {
+            return this.visitSuperExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -1932,6 +1934,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.AwaitExpressionContext)
         const epression: Node.Expression = this.coerceToExpressionOrSequence(this.singleExpression(ctx.singleExpression()))
         return new Node.AwaitExpression(epression)
+    }
+
+    visitSuperExpression(ctx: RuleContext): Node.Super {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.SuperExpressionContext)
+        return new Node.Super()
     }
 
     /**
@@ -2334,6 +2342,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const arg = ctx.arguments()
         const callee = this.singleExpression(ctx.singleExpression())
         const args: Node.ArgumentListElement[] = arg ? this.visitArguments(arg) : [];
+        
         return new Node.CallExpression(callee, args)
     }
 

@@ -534,6 +534,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.AssignmentPattern: {
                 this.visitAssignmentPattern(expression as Node.AssignmentPattern)
                 break;
+            }case Syntax.Super: {
+                this.visitSuper(expression as Node.Super)
+                break;
             }
 
             default:
@@ -541,6 +544,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
+    visitSuper(expression: Node.Super) {
+        this.write('super', false, false)
+    }
 
     visitConditionalExpression(expression: Node.ConditionalExpression): void {
         this.visitExpression(expression.test)

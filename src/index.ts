@@ -353,7 +353,10 @@ console.info("---------------------");
 
 // let ast = ASTParser.parse({ type: "code", value: " [a, b, c] = (['a', 'b', 'c']) "});   // ArrayPattern vs ArrayExpression
 // let ast = ASTParser.parse({ type: "code", value: " function x([a, b, c] = (['a', 'b', 'c'])){} "});   // FunctionDeclaration > AssignmentPattern
-let ast = ASTParser.parse({ type: "code", value: " function name(x, y, ...z){} "});  
+// let ast = ASTParser.parse({ type: "code", value: " function name(x, y, ...z){} "});  
+
+let ast = ASTParser.parse({ type: "code", value: " ()=> {super.name(x, [...z])} "}); // Super
+// let ast = ASTParser.parse({ type: "code", value: " ()=> {name()} "}); // Super
 
 console.table(toJson(ast))
 
