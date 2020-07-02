@@ -1565,6 +1565,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
         throw new TypeError('Not a valid PropertyValue type got : ' + expression?.constructor)
     }
 
+    isPropertyKey(expression: Node.Expression): expression is Node.PropertyKey {
+        const types = [Node.Literal, Node.Identifier]
+        for (const type of types) {
+            if (expression instanceof type) {
+                return true
+            }
+        }
+        throw new TypeError('Not a valid PropertyKey type got : ' + expression?.constructor)
+    }
+
     /**
      * 
      * Visit a parse tree produced by ECMAScriptParser#propertyAssignment.
@@ -1696,11 +1706,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let count = ctx.getChildCount()
         if (count == 3) {
             const node = ctx.getChild(1)
-            return this.singleExpression(node)
+            const key: Node.Expression = this.singleExpression(node)
+            if (this.isPropertyKey(key)) {
+                return key
+            } else {
+                throw new TypeError('Invalid type')
+            }
         } else {
             const node = ctx.getChild(0)
             count = node.getChildCount()
-
             if (count == 0) { // literal
                 const symbol = node.symbol;
                 const state = symbol.type;
@@ -1711,7 +1725,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
                     case ECMAScriptParser.StringLiteral:
                         return this.createStringLiteral(node)
                 }
-
             } else if (count == 1) {
                 if (node instanceof ECMAScriptParser.IdentifierNameContext) {
                     return this.visitIdentifierName(node)
@@ -1720,7 +1733,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 }
             }
         }
-        this.throwInsanceError(this.dumpContext(node))
+
+        throw new TypeError("Unhandled type")
     }
 
     private createStringLiteral(node: RuleContext): Node.Literal {
@@ -1731,11 +1745,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
       * Visit a parse tree produced by ECMAScriptParser#arguments.
       * 
+      * ```
       * arguments
       *   : '('(argument (',' argument)* ','?)?')'
       *   ;
+      * ```
       * @param ctx 
-      * @returns ArgumentListElement[]
       */
     visitArguments(ctx: RuleContext): Node.ArgumentListElement[] {
         this.log(ctx, Trace.frame())
@@ -1743,7 +1758,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const elems: Node.ArgumentListElement[] = []
         const args = ctx.argument()
         if (args) {
-            for (let node of args) {
+            for (const node of args) {
                 elems.push(this.visitArgument(node))
             }
         }
@@ -1752,9 +1767,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#argument.
+     * 
+     * ```
      * argument
      *   : Ellipsis? (singleExpression | identifier)
      *   ;
+     * ```
      * @param ctx 
      */
     visitArgument(ctx: RuleContext): Node.ArgumentListElement {
