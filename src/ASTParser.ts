@@ -529,13 +529,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ExportDefaultDeclarationContext)
 
         this.dumpContextAllChildren(ctx)
-        let declaration: Node.ExportableDefaultDeclaration 
+        let declaration: Node.ExportableDefaultDeclaration
 
-        if(ctx.classDeclaration()){
+        if (ctx.classDeclaration()) {
             declaration = this.visitClassDeclaration(ctx.classDeclaration())
-        }else if(ctx.functionDeclaration()){
+        } else if (ctx.functionDeclaration()) {
             declaration = this.visitFunctionDeclaration(ctx.functionDeclaration())
-        }else {
+        } else {
             declaration = this.singleExpression(ctx.singleExpression())
         }
 
@@ -1827,8 +1827,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitBitNotExpression(node)
         } else if (node instanceof ECMAScriptParser.NotExpressionContext) {
             return this.visitNotExpression(node)
-        }else if (node instanceof ECMAScriptParser.CoalesceExpressionContext) {
+        } else if (node instanceof ECMAScriptParser.CoalesceExpressionContext) {
             return this.visitCoalesceExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitShiftExpressionContext) {
+            return this.visitBitShiftExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitXOrExpressionContext) {
+            return this.visitBitXOrExpression(node)
+        }else if (node instanceof ECMAScriptParser.BitAndExpressionContext) {
+            return this.visitBitAndExpression(node)
+        }else if (node instanceof ECMAScriptParser.BitOrExpressionContext) {
+            return this.visitBitOrExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -2469,8 +2477,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#BitXOrExpression.
-    visitBitXOrExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    visitBitXOrExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.BitXOrExpressionContext)
+        this.assertNodeCount(ctx, 3)
+
+        return this._binaryExpression(ctx)
+    }
+
+    // Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
+    visitBitAndExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.BitAndExpressionContext)
+        this.assertNodeCount(ctx, 3)
+
+        return this._binaryExpression(ctx)    
+    }
+
+    // Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
+    visitBitOrExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.BitOrExpressionContext)
+        this.assertNodeCount(ctx, 3)
+        return this._binaryExpression(ctx)     
     }
 
     // Visit a parse tree produced by ECMAScriptParser#MultiplicativeExpression.
@@ -2483,8 +2512,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#BitShiftExpression.
-    visitBitShiftExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    visitBitShiftExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.BitShiftExpressionContext)
+        this.assertNodeCount(ctx, 3)
+
+        return this._binaryExpression(ctx)
     }
 
     /**
@@ -2737,15 +2770,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.Identifier(ctx.getChild(0).getText())
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
-    visitBitAndExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-    }
-
-    // Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
-    visitBitOrExpression(ctx: RuleContext) {
-        console.trace('not implemented')
-    }
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#AssignmentOperatorExpression.
