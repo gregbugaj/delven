@@ -151,7 +151,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ExportDefaultDeclaration: {
                 this.visitExportDefaultDeclaration(statement as Node.ExportDefaultDeclaration);
                 break;
-            }case Syntax.ExportAllDeclaration: {
+            } case Syntax.ExportAllDeclaration: {
                 this.visitExportAllDeclaration(statement as Node.ExportAllDeclaration);
                 break;
             }
@@ -531,7 +531,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ConditionalExpression: {
                 this.visitConditionalExpression(expression as Node.ConditionalExpression);
                 break;
-            } default:
+            } case Syntax.AssignmentPattern: {
+                this.visitAssignmentPattern(expression as Node.AssignmentPattern)
+                break;
+            }
+
+            default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
     }
