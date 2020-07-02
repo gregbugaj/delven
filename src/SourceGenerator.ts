@@ -700,7 +700,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     vistiRestElement(expression: Node.RestElement): void {
-        throw new Error("Method not implemented.");
+        this.write('...', false, false)
+        this.visitExpression(expression.argument)
     }
 
     visitObjectExpression(expression: Node.ObjectExpression): void {

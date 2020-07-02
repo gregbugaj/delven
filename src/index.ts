@@ -352,7 +352,8 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' x = 1, 2, {a:1} ? x : z ?? 3'});  
 
 // let ast = ASTParser.parse({ type: "code", value: " [a, b, c] = (['a', 'b', 'c']) "});   // ArrayPattern vs ArrayExpression
-let ast = ASTParser.parse({ type: "code", value: " function x([a, b, c] = (['a', 'b', 'c'])){} "});   // FunctionDeclaration > AssignmentPattern
+// let ast = ASTParser.parse({ type: "code", value: " function x([a, b, c] = (['a', 'b', 'c'])){} "});   // FunctionDeclaration > AssignmentPattern
+let ast = ASTParser.parse({ type: "code", value: " function name(x, y, ...z){} "});  
 
 console.table(toJson(ast))
 
