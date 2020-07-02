@@ -337,8 +337,9 @@ console.info("---------------------");
 // CoalesceExpressionContext
 // let ast = ASTParser.parse({ type: "code", value: ' x = param ?? 2 '});    
 
-// Bit op
-let ast = ASTParser.parse({ type: "code", value: ' x = param ?? 2 '});    
+// AwaitExpressionContext 
+// let ast = ASTParser.parse({ type: "code", value: ' async ()=> await (1, 2)  '});    
+let ast = ASTParser.parse({ type: "code", value: ' async ()=> 1  '});    
 
 console.table(toJson(ast))
 

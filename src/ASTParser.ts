@@ -1833,13 +1833,35 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitBitShiftExpression(node)
         } else if (node instanceof ECMAScriptParser.BitXOrExpressionContext) {
             return this.visitBitXOrExpression(node)
-        }else if (node instanceof ECMAScriptParser.BitAndExpressionContext) {
+        } else if (node instanceof ECMAScriptParser.BitAndExpressionContext) {
             return this.visitBitAndExpression(node)
-        }else if (node instanceof ECMAScriptParser.BitOrExpressionContext) {
+        } else if (node instanceof ECMAScriptParser.BitOrExpressionContext) {
             return this.visitBitOrExpression(node)
+        } else if (node instanceof ECMAScriptParser.AwaitExpressionContext) {
+            return this.visitAwaitExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
+    }
+
+    /**
+     * 
+     * Example :
+     * ```
+     * async ()=> await 1
+     * async ()=> await (1, 2)
+     * ```
+     * Grammar fragment
+     * ```
+     * | Await singleExpression                                                # AwaitExpression
+     * ```
+     * @param ctx 
+     */
+    visitAwaitExpression(ctx: RuleContext): Node.AwaitExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.AwaitExpressionContext)
+        const epression: Node.Expression = this.coerceToExpressionOrSequence(this.singleExpression(ctx.singleExpression()))
+        return new Node.AwaitExpression(epression)
     }
 
     /**
@@ -2308,6 +2330,23 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#functionDecl
+     * 
+     * https://stackoverflow.com/questions/27661306/can-i-use-es6s-arrow-function-syntax-with-generators-arrow-notation
+     * 
+     * Example 
+     * ```
+     * async ()=> (await 1, 2)
+     * ()=> 1
+     * ```
+     * 
+     * Grammar fragment
+     * ```
+     * anoymousFunction
+     *   : functionDeclaration                                                       # FunctionDecl
+     *   | Async? Function '*'? '(' formalParameterList? ')' '{' functionBody '}'    # AnoymousFunctionDecl
+     *   | Async? arrowFunctionParameters '=>' arrowFunctionBody                     # ArrowFunction
+     *   ;
+     * ```
      * @param ctx 
      */
     visitArrowFunction(ctx: RuleContext): Node.ArrowFunctionExpression {
@@ -2319,8 +2358,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const params = this.visitArrowFunctionParameters(paramContext)
         const body = this.visitArrowFunctionBody(bodyContext)
         const expression = !(body instanceof Node.BlockStatement);
+        const { async } = this.getFunctionAttributes(ctx)
 
-        return new Node.ArrowFunctionExpression(params, body, expression)
+        if (async) {
+            return new Node.AsyncArrowFunctionExpression(params, body, expression)
+        } else {
+            return new Node.ArrowFunctionExpression(params, body, expression)
+        }
     }
 
     /**
@@ -2491,7 +2535,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.BitAndExpressionContext)
         this.assertNodeCount(ctx, 3)
 
-        return this._binaryExpression(ctx)    
+        return this._binaryExpression(ctx)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
@@ -2499,7 +2543,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BitOrExpressionContext)
         this.assertNodeCount(ctx, 3)
-        return this._binaryExpression(ctx)     
+        return this._binaryExpression(ctx)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#MultiplicativeExpression.

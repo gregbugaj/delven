@@ -276,4 +276,10 @@ export default abstract class ASTVisitor {
      * @param statement 
      */
     abstract visitExportNamedDeclaration(statement: Node.ExportNamedDeclaration): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitAwaitExpression(expression: Node.AwaitExpression): void
 }

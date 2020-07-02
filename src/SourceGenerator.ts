@@ -507,9 +507,19 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ArrayPattern: {
                 this.visitArrayPattern(expression as Node.ArrayPattern);
                 break;
+            } case Syntax.AwaitExpression: {
+                this.visitAwaitExpression(expression as Node.AwaitExpression);
+                break;
             } default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
+    }
+
+
+    visitAwaitExpression(expression: Node.AwaitExpression) {
+        this.write('await', false, false)
+        this.write(' ', false, false)
+        this.visitExpression(expression.argument)
     }
 
     visitProperty(expression: Node.Property): void {
@@ -781,6 +791,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
+
+        if(expression.async){
+            this.write('async', false, false)    
+            this.write(' ', false, false)    
+        }
 
         this.visitFunctionParameterArray(expression.params)
         this.write('=>', false, false)
