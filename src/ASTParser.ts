@@ -1827,6 +1827,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitBitNotExpression(node)
         } else if (node instanceof ECMAScriptParser.NotExpressionContext) {
             return this.visitNotExpression(node)
+        }else if (node instanceof ECMAScriptParser.CoalesceExpressionContext) {
+            return this.visitCoalesceExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -2136,9 +2138,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
 
+
     visitPowerExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.PowerExpressionContext)
+        return this._binaryExpression(ctx)
+    }
+
+    /**
+     * Nullish Coalescing Operator
+     * 
+     * ```
+     * x = param ?? 1
+     * ```
+     * 
+     * Grammar fragment
+     * ```
+     * | singleExpression '??' singleExpression                                # CoalesceExpression
+     * ```
+     * @param ctx 
+     */
+    visitCoalesceExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.CoalesceExpressionContext)
         return this._binaryExpression(ctx)
     }
 

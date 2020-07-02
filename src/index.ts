@@ -334,7 +334,8 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' export default { a:1 }  '}); // [ExportDefaultDeclaration > ObjectExpression]
 // let ast = ASTParser.parse({ type: "code", value: ' export default x = 1  '}); // [ExportDefaultDeclaration > AssignmentExpression]
 
-let ast = ASTParser.parse({ type: "code", value: '(e) => "test"'});    
+// CoalesceExpressionContext
+let ast = ASTParser.parse({ type: "code", value: '  x = param ?? 1 '});    
 
 console.table(toJson(ast))
 
