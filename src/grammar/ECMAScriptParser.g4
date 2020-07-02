@@ -50,6 +50,7 @@ sourceElement
 
 statement
  : block
+ | sqlStatement
  | variableStatement
  | importStatement
  | exportStatement
@@ -69,7 +70,6 @@ statement
  | throwStatement
  | tryStatement
  | debuggerStatement
-
  ;
 
 block
@@ -318,7 +318,8 @@ expressionSequence
  ;
 
 singleExpression
-    : anoymousFunction                                                      # FunctionExpression  // GB: footnote 5
+    : select_expression                                                     # SqlSelectExpression // GB: footnote 9
+    | anoymousFunction                                                      # FunctionExpression  // GB: footnote 5
     | Class identifier? classTail                                           # ClassExpression
     | singleExpression '[' expressionSequence ']'                           # MemberIndexExpression
     | singleExpression '?'? '.' '#'? identifierName                         # MemberDotExpression
@@ -522,3 +523,29 @@ eos
     | {this.lineTerminatorAhead()}?
     | {this.closeBrace()}?
     ;
+
+// Extension
+sqlStatement
+    : select_expression
+    ;
+
+select_expression
+	: Select select_list fromClause         
+	;
+
+select_list
+    : '*'
+    | columnSelectionList
+    ;
+
+columnSelectionList
+	:  value_expression (',' value_expression)*
+	;
+
+fromClause
+	: From ( Url | Identifier) eos
+    ;
+
+value_expression
+	:  singleExpression As identifier
+	;

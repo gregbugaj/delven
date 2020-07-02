@@ -3,5 +3,9 @@ lib
 *.log
 DS_Store
 dist
-src/grammar/.antlr
 docs/.antlr
+src/grammar/.antlr/
+src/grammar/.antlr
+
+src/grammar/.idea/
+src/grammar/grammar.iml

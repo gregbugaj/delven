@@ -350,6 +350,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitDebuggerStatement(node)
         } else if (node instanceof ECMAScriptParser.FunctionDeclarationContext) {
             return this.visitFunctionDeclaration(node)
+        } else if (node instanceof ECMAScriptParser.SqlStatementContext) {
+            return this.visitSqlStatement(node)
         } else {
             this.throwInsanceError(this.dumpContext(node))
         }
@@ -3082,4 +3084,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitEof(ctx: RuleContext) {
         console.trace('not implemented')
     }
+
+
+    visitSqlStatement(ctx: RuleContext)  {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.SqlStatementContext)
+        this.dumpContextAllChildren(ctx)
+    }
 }
+
