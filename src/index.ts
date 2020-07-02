@@ -339,7 +339,9 @@ console.info("---------------------");
 
 // AwaitExpressionContext 
 // let ast = ASTParser.parse({ type: "code", value: ' async ()=> await (1, 2)  '});    
-let ast = ASTParser.parse({ type: "code", value: ' async ()=> 1  '});    
+//let ast = ASTParser.parse({ type: "code", value: ' async ()=> 1  '});    
+
+let ast = ASTParser.parse({ type: "code", value: ' x = a instanceof b && z '});  
 
 console.table(toJson(ast))
 

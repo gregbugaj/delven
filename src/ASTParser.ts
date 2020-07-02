@@ -1839,6 +1839,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitBitOrExpression(node)
         } else if (node instanceof ECMAScriptParser.AwaitExpressionContext) {
             return this.visitAwaitExpression(node)
+        }else if (node instanceof ECMAScriptParser.InstanceofExpressionContext) {
+            return this.visitInstanceofExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -2461,15 +2463,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#InstanceofExpression.
-    visitInstanceofExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    visitInstanceofExpression(ctx: RuleContext): Node.BinaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.InstanceofExpressionContext)
+        this.assertNodeCount(ctx, 3)
+        return this._binaryExpression(ctx)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#UnaryPlusExpression.
     visitUnaryPlusExpression(ctx: RuleContext): Node.UnaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.UnaryPlusExpressionContext)
-        const expression = this.singleExpression(ctx.singleExpression())
         return new Node.UnaryExpression('+', this.singleExpression(ctx.singleExpression()))
     }
 
@@ -2606,6 +2610,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     _visitBinaryExpression(ctx: RuleContext) {
+        
         if (ctx instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
             return this.visitParenthesizedExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.IdentifierExpressionContext) {
@@ -2626,6 +2631,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitMemberDotExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.ArgumentsExpressionContext) {
             return this.visitArgumentsExpression(ctx)
+        }else if (ctx instanceof ECMAScriptParser.InstanceofExpressionContext) {
+            return this.visitInstanceofExpression(ctx)
         }
 
         this.throwInsanceError(this.dumpContext(ctx))
