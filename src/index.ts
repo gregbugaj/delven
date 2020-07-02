@@ -346,7 +346,9 @@ console.info("---------------------");
 // ConditionalExpression
 // let ast = ASTParser.parse({ type: "code", value: ' x = true ? x : z '});  
 // let ast = ASTParser.parse({ type: "code", value: ' x = (1, 2, {a:1}) ? x : z'});  
-let ast = ASTParser.parse({ type: "code", value: ' x = 1, 2, {a:1} ? x : z ?? 3'});  
+// let ast = ASTParser.parse({ type: "code", value: ' x = 1, 2, {a:1} ? x : z ?? 3'});  
+
+let ast = ASTParser.parse({ type: "code", value: "export { myClass } from 'childModule2.js';"});  
 
 console.table(toJson(ast))
 
