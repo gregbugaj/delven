@@ -1839,8 +1839,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitBitOrExpression(node)
         } else if (node instanceof ECMAScriptParser.AwaitExpressionContext) {
             return this.visitAwaitExpression(node)
-        }else if (node instanceof ECMAScriptParser.InstanceofExpressionContext) {
+        } else if (node instanceof ECMAScriptParser.InstanceofExpressionContext) {
             return this.visitInstanceofExpression(node)
+        } else if (node instanceof ECMAScriptParser.TypeofExpressionContext) {
+            return this.visitTypeofExpression(node)
+        }else if (node instanceof ECMAScriptParser.TernaryExpressionContext) {
+            return this.visitTernaryExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -2136,9 +2140,23 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.RestElement(expression)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#TernaryExpression.
-    visitTernaryExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#TernaryExpression.
+     * 
+     * ```
+     * | singleExpression '?' singleExpression ':' singleExpression            # TernaryExpression
+     * ```
+     * @param ctx 
+     */
+    visitTernaryExpression(ctx: RuleContext): Node.ConditionalExpression{
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.TernaryExpressionContext)
+
+        const test: Node.Expression = this.coerceToExpressionOrSequence(this.singleExpression(ctx.singleExpression(0)))
+        const consequent: Node.Expression = this.coerceToExpressionOrSequence(this.singleExpression(ctx.singleExpression(1)))
+        const alternate: Node.Expression = this.coerceToExpressionOrSequence(this.singleExpression(ctx.singleExpression(2)))
+
+        return new Node.ConditionalExpression(test, consequent, alternate)
     }
 
     /**
@@ -2456,10 +2474,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new AssignmentExpression(operator, lhs, rhs)
     }
 
-
     // Visit a parse tree produced by ECMAScriptParser#TypeofExpression.
-    visitTypeofExpression(ctx: RuleContext) {
-        console.trace('not implemented')
+    visitTypeofExpression(ctx: RuleContext): Node.UnaryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.TypeofExpressionContext)
+        return new Node.UnaryExpression('typeof', this.singleExpression(ctx.singleExpression()))
     }
 
     // Visit a parse tree produced by ECMAScriptParser#InstanceofExpression.
@@ -2610,7 +2629,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     _visitBinaryExpression(ctx: RuleContext) {
-        
+
         if (ctx instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
             return this.visitParenthesizedExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.IdentifierExpressionContext) {
@@ -2631,8 +2650,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitMemberDotExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.ArgumentsExpressionContext) {
             return this.visitArgumentsExpression(ctx)
-        }else if (ctx instanceof ECMAScriptParser.InstanceofExpressionContext) {
+        } else if (ctx instanceof ECMAScriptParser.InstanceofExpressionContext) {
             return this.visitInstanceofExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.TypeofExpressionContext) {
+            return this.visitTypeofExpression(ctx)
         }
 
         this.throwInsanceError(this.dumpContext(ctx))

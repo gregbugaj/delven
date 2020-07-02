@@ -510,9 +510,21 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.AwaitExpression: {
                 this.visitAwaitExpression(expression as Node.AwaitExpression);
                 break;
+            } case Syntax.ConditionalExpression: {
+                this.visitConditionalExpression(expression as Node.ConditionalExpression);
+                break;
             } default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
+    }
+
+
+    visitConditionalExpression(expression: Node.ConditionalExpression): void {
+        this.visitExpression(expression.test)
+        this.write('?', false, false)
+        this.visitExpression(expression.consequent)
+        this.write(':', false, false)
+        this.visitExpression(expression.alternate)
     }
 
 
@@ -545,9 +557,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
-
     visitUnaryExpression(expression: Node.UnaryExpression): void {
         this.write(expression.operator, false, false)
+        this.writeConditional(expression.operator === 'typeof', ' ', false, false)// 
         this.visitExpression(expression.argument)
     }
 
@@ -792,9 +804,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
 
-        if(expression.async){
-            this.write('async', false, false)    
-            this.write(' ', false, false)    
+        if (expression.async) {
+            this.write('async', false, false)
+            this.write(' ', false, false)
         }
 
         this.visitFunctionParameterArray(expression.params)

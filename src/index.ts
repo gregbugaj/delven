@@ -341,7 +341,12 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' async ()=> await (1, 2)  '});    
 //let ast = ASTParser.parse({ type: "code", value: ' async ()=> 1  '});    
 
-let ast = ASTParser.parse({ type: "code", value: ' x = a instanceof b && z '});  
+// let ast = ASTParser.parse({ type: "code", value: ' x = typeof b + z '});  
+
+// ConditionalExpression
+// let ast = ASTParser.parse({ type: "code", value: ' x = true ? x : z '});  
+// let ast = ASTParser.parse({ type: "code", value: ' x = (1, 2, {a:1}) ? x : z'});  
+let ast = ASTParser.parse({ type: "code", value: ' x = 1, 2, {a:1} ? x : z ?? 3'});  
 
 console.table(toJson(ast))
 
