@@ -12,7 +12,6 @@ import { Interval, Recognizer, Token } from "antlr4"
 import Trace, { CallSite } from "./trace"
 import ASTNode from "./ASTNode"
 import { ErrorListener } from "antlr4/error/ErrorListener"
-import { ErrorNode } from "antlr4/tree/Tree"
 
 /**
  * Version that we generate the AST for. 
@@ -238,9 +237,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * @param type 
      */
     private throwInsanceError(type: any): void {
-        /*         if (type == undefined || type == "") {
-                   return;
-                } */
         throw new TypeError("Unhandled instance type : " + type)
     }
 
@@ -248,12 +244,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (!(ctx instanceof type)) {
             throw new TypeError("Invalid type expected : '" + type.name + "' received '" + this.dumpContext(ctx)); + "'";
         }
-    }
-
-    visitErrorNode(node: ErrorNode): any {
-        console.info("node  " + node)
-        //   syntaxError(recognizer, offendingSymbol, line, column, msg, e) 
-        // console.log("ERROR " + msg);
     }
 
     /**
@@ -510,19 +500,45 @@ export class DelvenASTVisitor extends DelvenVisitor {
         throw new TypeError('Unhandled type')
     }
 
-
     /**
+     * FIXME : This is not fully working for FunctionDeclaration
+     * Visit a parse tree produced by ECMAScriptParser#exportStatement.
      * 
+     * 
+     * Examples 
      * ```
-     * | Export Default singleExpression eos           # ExportDefaultDeclaration
+     * export default class { }           // ClassDeclaration
+     * export default (class { })         // ClassExpression
+     * 
+     * export default function () { }     // FunctionDeclaration 
+     * export default (function () { })   // FunctionExpression
      * ```
+     * 
+     * Grammar
+     * ```
+     * exportStatement
+     *  : Export (exportFromBlock | declaration) eos    # ExportDeclaration
+     *  | Export Default (classDeclaration | functionDeclaration | singleExpression) eos           # ExportDefaultDeclaration  // GB Footnote 7
+     *  ;
+     * ```
+     * 
      * @param ctx 
      */
     visitExportDefaultDeclaration(ctx: RuleContext): Node.ExportDefaultDeclaration {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ExportDefaultDeclarationContext)
+
         this.dumpContextAllChildren(ctx)
-        const declaration: Node.ExportableDefaultDeclaration = this.singleExpression(ctx.singleExpression())
+        let declaration: Node.ExportableDefaultDeclaration 
+
+        if(ctx.classDeclaration()){
+            declaration = this.visitClassDeclaration(ctx.classDeclaration())
+        }else if(ctx.functionDeclaration()){
+            declaration = this.visitFunctionDeclaration(ctx.functionDeclaration())
+        }else {
+            declaration = this.singleExpression(ctx.singleExpression())
+        }
+
         return new Node.ExportDefaultDeclaration(declaration)
     }
 
@@ -1836,8 +1852,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * 
      * ```
      *  classDeclaration
-     *      : Class identifier classTail
-     *      ;
+     *    : Class identifier classTail
+     *    ;
      * ```
      */
     visitClassDeclaration(ctx: RuleContext): Node.ClassDeclaration {

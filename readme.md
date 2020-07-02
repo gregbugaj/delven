@@ -125,6 +125,28 @@ Reference :
 [https://tc39.es/ecma262/#sec-generator-function-definitions-runtime-semantics-evaluation]
 
 
+### 7. Export Declaration evaluating Funcion and Class Declarations as Expressions
+
+In original grammar `singleExpression` evaluates `export default function (){}` as  `ExportDefaultDeclaration > FunctionExpression` instead of an `ExportDefaultDeclaration > FunctionDeclaration`. This same thing goes for Class `export default class{}`
+
+Original EBNF
+
+```ebnf
+exportStatement
+    : Export (exportFromBlock | declaration) eos    # ExportDeclaration
+    | Export Default singleExpression eos           # ExportDefaultDeclaration  // GB Footnote 7
+    ;
+```
+
+Updated EBNF
+
+```ebnf
+exportStatement
+    : Export (exportFromBlock | declaration) eos    # ExportDeclaration
+    | Export Default (classDeclaration | functionDeclaration | singleExpression) eos           # ExportDefaultDeclaration  // GB Footnote 7
+    ;
+```
+
 
 ## ERRORS
 

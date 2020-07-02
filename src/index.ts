@@ -327,8 +327,14 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: 'export { variable1 as name1, variable2 as name2};'}); // Renaming exports
 
 // // Default exports
-let ast = ASTParser.parse({ type: "code", value: 'export default function () { } '}); // Renaming exports
+// let ast = ASTParser.parse({ type: "code", value: ' export default function() { }  '}); // [ExportDefaultDeclaration > FunctionDeclaration]
+// let ast = ASTParser.parse({ type: "code", value: ' export default class xx { }  '}); // [ExportDefaultDeclaration > ClassDeclaration]
+// let ast = ASTParser.parse({ type: "code", value: 'export default class {  } '}); // [ExportDefaultDeclaration > ClassDeclaration]
+// let ast = ASTParser.parse({ type: "code", value: 'export default class Z { } '}); // [ExportDefaultDeclaration > ClassDeclaration]
+// let ast = ASTParser.parse({ type: "code", value: ' export default { a:1 }  '}); // [ExportDefaultDeclaration > ObjectExpression]
+// let ast = ASTParser.parse({ type: "code", value: ' export default x = 1  '}); // [ExportDefaultDeclaration > AssignmentExpression]
 
+let ast = ASTParser.parse({ type: "code", value: '(e) => "test"'});    
 
 console.table(toJson(ast))
 

@@ -781,9 +781,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
+
         this.visitFunctionParameterArray(expression.params)
         this.write('=>', false, false)
-        // body: BlockStatement | Expression;
+
         if (expression.body instanceof Node.BlockStatement) {
             this.visitBlockStatement(expression.body as Node.BlockStatement)
         } else {
@@ -822,7 +823,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitBinding(binding: Binding) {
-        if (binding == undefined || binding == null) {
+        if (binding == undefined || binding === null) {
             return;
         }
 
