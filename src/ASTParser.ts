@@ -1790,7 +1790,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ExpressionSequenceContext)
         const expressions: Node.Expression[] = []
         for (const node of this.filterSymbols(ctx)) {
-            expressions.push(this.singleExpression(node, false))
+            expressions.push(this.singleExpression(node))
         }
         return this.decorate(new Node.SequenceExpression(expressions), this.asMarker(this.asMetadata(ctx.getSourceInterval())))
     }
@@ -2922,19 +2922,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.VoidExpressionContext)
         return new Node.UnaryExpression("void", this.singleExpression(ctx.singleExpression()))
-    }
-
-    /**
-     * Visit a parse tree produced by ECMAScriptParser#assignmentOperator.
-     * 
-     * ```
-     * | <assoc=right> singleExpression assignmentOperator singleExpression    # AssignmentOperatorExpression
-     * ```
-     * @param ctx 
-     */
-    visitAssignmentOperator(ctx: RuleContext) {
-        console.info("visitAssignmentOperator [%s] : [%s]", ctx.getChildCount(), ctx.getText())
-        throw new Error("not implemented")
     }
 
     /**
