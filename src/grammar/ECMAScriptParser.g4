@@ -524,25 +524,83 @@ eos
     ;
 
 // Extension
+// I like to name this properly to limit confusion
+//https://stackoverflow.com/questions/34131071/sql-clause-vs-expression-terms
+
 select_statement
-    : select_expression                 # SqlSelectExpression
+    : query_expression                                                # QueryExpression
     ;
 
-select_expression
-	: Select select_list fromClause         
-	;
+query_expression
+    : (query_specification | '(' query_expression ')') sql_union*
+    ;
+
+sql_union
+    : Union (query_specification | ('(' query_expression ')'))
+    ;
+
+query_specification
+  : Select select_list
+    from_clause? where_clause? produce_clause?                    # QuerySelectExpression
+  ;
 
 select_list
-    : select_list_elem (',' select_list_elem)*
+    : select_list_elem (',' select_list_elem)*                    # QuerySelectListExpression
     ;
 
 select_list_elem
     : '*'
     | identifier
-    | identifier As identifier
+    | singleExpression argument
 	;
 
-fromClause
-	: From ( Url | Identifier) eos
+from_clause
+	: From table_sources
+  ;
+
+where_clause
+  : Where '('? expressionSequence ')'?
+  ;
+
+table_sources
+    : table_source (',' table_source)*
     ;
 
+table_source
+    : table_source_item_joined
+    | '(' table_source_item_joined ')'
+    ;
+
+table_source_item_joined
+    : table_source_item using_clause join_clause*
+    ;
+
+table_source_item
+    : Url
+    | identifier
+    | anoymousFunction
+    | arrayLiteral
+    ;
+
+// https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/join-clause
+join_clause
+   : Join table_source                                                       # QueryJoinCrossApplyExpression // This should be equivalent to SQL Cross Apply
+   | Join table_source  On singleExpression ('==' | '===') singleExpression  # QueryJoinExpression // only support for equijoin
+   ;
+
+produce_clause
+   : Produce singleExpression                                                # QueryProduceExpression
+   ;
+
+using_clause
+   : Using queryObjectLiteral                                                # QueryUsingExpression
+   | Using New singleExpression arguments                                    # QueryUsingNewDirectiveExpression
+   ;
+
+queryObjectLiteral
+   : '{' (queryPropertyAssignment (',' queryPropertyAssignment)*)? ','? '}'
+   ;
+
+queryPropertyAssignment
+   : propertyName ':' singleExpression
+   ;

@@ -9,3 +9,4 @@ src/grammar/.antlr
 
 src/grammar/.idea/
 src/grammar/grammar.iml
+src/grammar/gen

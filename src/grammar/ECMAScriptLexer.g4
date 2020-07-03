@@ -169,8 +169,13 @@ Await:                          'await';
 
 /// SQL Extension
 Url:                              ('http')('s')?('://')('a'..'z'|'A'..'Z'|'0'..'9')('a'..'z'|'A'..'Z'|'0'..'9'|'.'|'_'|'-'|'/'|'%'|'&')+;
-Select:                          'select';
-
+Select:                           'select';
+Union:                            'union';
+Where:                            'where';
+Join:                             'join';
+On:                               'on';
+Produce:                          'produce';
+Using:                            'using';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode

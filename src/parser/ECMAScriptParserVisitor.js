@@ -798,20 +798,32 @@ ECMAScriptParserVisitor.prototype.visitEos = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#SqlSelectExpression.
-ECMAScriptParserVisitor.prototype.visitSqlSelectExpression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryExpression.
+ECMAScriptParserVisitor.prototype.visitQueryExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#select_expression.
-ECMAScriptParserVisitor.prototype.visitSelect_expression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#query_expression.
+ECMAScriptParserVisitor.prototype.visitQuery_expression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#select_list.
-ECMAScriptParserVisitor.prototype.visitSelect_list = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#sql_union.
+ECMAScriptParserVisitor.prototype.visitSql_union = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QuerySelectExpression.
+ECMAScriptParserVisitor.prototype.visitQuerySelectExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QuerySelectItemExpression.
+ECMAScriptParserVisitor.prototype.visitQuerySelectItemExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -822,8 +834,38 @@ ECMAScriptParserVisitor.prototype.visitSelect_list_elem = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#fromClause.
-ECMAScriptParserVisitor.prototype.visitFromClause = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#from_clause.
+ECMAScriptParserVisitor.prototype.visitFrom_clause = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#where_clause.
+ECMAScriptParserVisitor.prototype.visitWhere_clause = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#table_sources.
+ECMAScriptParserVisitor.prototype.visitTable_sources = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#table_source.
+ECMAScriptParserVisitor.prototype.visitTable_source = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#table_source_item_joined.
+ECMAScriptParserVisitor.prototype.visitTable_source_item_joined = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#table_source_item.
+ECMAScriptParserVisitor.prototype.visitTable_source_item = function(ctx) {
   return this.visitChildren(ctx);
 };
 

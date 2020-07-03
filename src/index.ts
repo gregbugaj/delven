@@ -360,7 +360,7 @@ console.info("---------------------");
 
 
 // SQL
-let ast = ASTParser.parse({ type: "code", value: "select css('') as x from z"}); 
+let ast = ASTParser.parse({ type: "code", value: "select x, z from esx where (x==1)"}); 
 // let ast = ASTParser.parse({ type: "code", value: "select css('') as x from val()"});  // ?? SqlSelectExpressionContext
 
 console.table(toJson(ast))
