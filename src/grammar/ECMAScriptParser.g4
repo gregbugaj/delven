@@ -50,7 +50,7 @@ sourceElement
 
 statement
  : block
- | sqlStatement
+ | select_statement
  | variableStatement
  | importStatement
  | exportStatement
@@ -318,8 +318,7 @@ expressionSequence
  ;
 
 singleExpression
-    : select_expression                                                     # SqlSelectExpression // GB: footnote 9
-    | anoymousFunction                                                      # FunctionExpression  // GB: footnote 5
+    : anoymousFunction                                                      # FunctionExpression  // GB: footnote 5
     | Class identifier? classTail                                           # ClassExpression
     | singleExpression '[' expressionSequence ']'                           # MemberIndexExpression
     | singleExpression '?'? '.' '#'? identifierName                         # MemberDotExpression
@@ -525,8 +524,8 @@ eos
     ;
 
 // Extension
-sqlStatement
-    : select_expression
+select_statement
+    : select_expression                 # SqlSelectExpression
     ;
 
 select_expression
@@ -534,18 +533,16 @@ select_expression
 	;
 
 select_list
-    : '*'
-    | columnSelectionList
+    : select_list_elem (',' select_list_elem)*
     ;
 
-columnSelectionList
-	:  value_expression (',' value_expression)*
+select_list_elem
+    : '*'
+    | identifier
+    | identifier As identifier
 	;
 
 fromClause
 	: From ( Url | Identifier) eos
     ;
 
-value_expression
-	:  singleExpression As identifier
-	;

@@ -480,12 +480,6 @@ ECMAScriptParserVisitor.prototype.visitPreDecreaseExpression = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#SqlSelectExpression.
-ECMAScriptParserVisitor.prototype.visitSqlSelectExpression = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
 // Visit a parse tree produced by ECMAScriptParser#ArgumentsExpression.
 ECMAScriptParserVisitor.prototype.visitArgumentsExpression = function(ctx) {
   return this.visitChildren(ctx);
@@ -804,8 +798,8 @@ ECMAScriptParserVisitor.prototype.visitEos = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#sqlStatement.
-ECMAScriptParserVisitor.prototype.visitSqlStatement = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#SqlSelectExpression.
+ECMAScriptParserVisitor.prototype.visitSqlSelectExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -822,20 +816,14 @@ ECMAScriptParserVisitor.prototype.visitSelect_list = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#columnSelectionList.
-ECMAScriptParserVisitor.prototype.visitColumnSelectionList = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#select_list_elem.
+ECMAScriptParserVisitor.prototype.visitSelect_list_elem = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
 // Visit a parse tree produced by ECMAScriptParser#fromClause.
 ECMAScriptParserVisitor.prototype.visitFromClause = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by ECMAScriptParser#value_expression.
-ECMAScriptParserVisitor.prototype.visitValue_expression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
