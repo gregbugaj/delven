@@ -25,6 +25,8 @@ produce {x , z}
 ```
 
 ## Using keyword : Reducers
+https://docs.microsoft.com/en-us/u-sql/statements-and-expressions/process-expression
+https://docs.microsoft.com/en-us/u-sql/statements-and-expressions/reduce-expression
 
 ```sql
 select css('#sel1'), css('#sel2') 
@@ -39,4 +41,11 @@ from SourceA using {'reducer': (row)=>{}}
 ```sql
 select css('#sel1'), css('#sel2') 
 from SourceA using new Reducer()
+```
+
+## 
+
+```sql
+select css('#sel1'), css('#sel2') 
+from SourceA join SourceB 
 ```

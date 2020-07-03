@@ -536,7 +536,8 @@ query_expression
     ;
 
 sql_union
-    : Union (query_specification | ('(' query_expression ')'))
+    : (Union All?) (query_specification | ('(' query_expression ')'))
+//    : (Union All? | EXCEPT | INTERSECT) (query_specification | ('(' query_expression ')'))
     ;
 
 query_specification

@@ -822,8 +822,8 @@ ECMAScriptParserVisitor.prototype.visitQuerySelectExpression = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#QuerySelectItemExpression.
-ECMAScriptParserVisitor.prototype.visitQuerySelectItemExpression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QuerySelectListExpression.
+ECMAScriptParserVisitor.prototype.visitQuerySelectListExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -866,6 +866,48 @@ ECMAScriptParserVisitor.prototype.visitTable_source_item_joined = function(ctx) 
 
 // Visit a parse tree produced by ECMAScriptParser#table_source_item.
 ECMAScriptParserVisitor.prototype.visitTable_source_item = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryJoinCrossApplyExpression.
+ECMAScriptParserVisitor.prototype.visitQueryJoinCrossApplyExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryJoinExpression.
+ECMAScriptParserVisitor.prototype.visitQueryJoinExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryProduceExpression.
+ECMAScriptParserVisitor.prototype.visitQueryProduceExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryUsingExpression.
+ECMAScriptParserVisitor.prototype.visitQueryUsingExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryUsingNewDirectiveExpression.
+ECMAScriptParserVisitor.prototype.visitQueryUsingNewDirectiveExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#queryObjectLiteral.
+ECMAScriptParserVisitor.prototype.visitQueryObjectLiteral = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#queryPropertyAssignment.
+ECMAScriptParserVisitor.prototype.visitQueryPropertyAssignment = function(ctx) {
   return this.visitChildren(ctx);
 };
 
