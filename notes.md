@@ -47,3 +47,17 @@ https://www.codementor.io/@michaelumanah/how-to-set-up-babel-7-and-nodemon-with-
 https://developer.chrome.com/extensions/webRequest
 https://developer.chrome.com/extensions/management
 https://github.com/babel/example-node-server
+
+
+ USQL Optimzation 
+https://www.slideshare.net/MichaelRys/best-practices-and-performance-tuning-of-usql-in-azure-data-lake-sql-konferenz-2018
+
+Spark SQL Programming Guide
+https://spark.apache.org/docs/1.2.1/sql-programming-guide.html
+
+
+Oracle Database SQL Language Reference
+https://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_5002.htm#SQLRF01202
+
+Multiset
+https://docs.oracle.com/cd/B28359_01/server.111/b28286/operators006.htm#SQLRF0032 

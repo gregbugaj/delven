@@ -586,7 +586,8 @@ table_source_item
 // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/join-clause
 join_clause
    : Join table_source                                                       # QueryJoinCrossApplyExpression // This should be equivalent to SQL Cross Apply
-   | Join table_source  On singleExpression ('==' | '===') singleExpression  # QueryJoinExpression // only support for equijoin
+   | Join table_source On singleExpression ('==' | '===') singleExpression   # QueryJoinOnExpression // only support for equijoin
+   | Join table_source using_clause                                          # QueryJoinUsingExpression // Combiner
    ;
 
 produce_clause
