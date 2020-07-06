@@ -528,7 +528,7 @@ eos
 //https://stackoverflow.com/questions/34131071/sql-clause-vs-expression-terms
 
 select_statement
-    : query_expression                                                # QueryExpression
+    : query_expression                                                              # QueryExpression
     ;
 
 query_expression
@@ -536,17 +536,16 @@ query_expression
     ;
 
 sql_union
-    : (Union All?) (query_specification | ('(' query_expression ')'))
-//    : (Union All? | EXCEPT | INTERSECT) (query_specification | ('(' query_expression ')'))
+    : (Union All?) (query_specification | ('(' query_expression ')'))               # QueryUnionExpression
     ;
 
 query_specification
   : Select select_list
-    from_clause? where_clause? produce_clause?                    # QuerySelectExpression
+    from_clause? where_clause? produce_clause?                                      # QuerySelectExpression
   ;
 
 select_list
-    : select_list_elem (',' select_list_elem)*                    # QuerySelectListExpression
+    : select_list_elem (',' select_list_elem)*                                      # QuerySelectListExpression
     ;
 
 select_list_elem
@@ -556,15 +555,15 @@ select_list_elem
 	;
 
 from_clause
-	: From table_sources
+	: From table_sources                                                              # QueryFromExpression
   ;
 
 where_clause
-  : Where '('? expressionSequence ')'?
+  : Where expressionSequence                                                        # QueryWhereExpression
   ;
 
 table_sources
-    : table_source (',' table_source)*
+    : table_source (',' table_source)*                                              # QueryDataSourcesExpression
     ;
 
 table_source
@@ -573,21 +572,22 @@ table_source
     ;
 
 table_source_item_joined
-    : table_source_item using_clause join_clause*
+    : table_source_item using_clause? join_clause*                                  # QueryDataSourceExpression
     ;
 
 table_source_item
-    : Url
-    | identifier
-    | anoymousFunction
-    | arrayLiteral
+    : Url                                                                           # QueryDataSourceItemUrlExpression
+    | singleExpression arguments (As StringLiteral)?                                # QueryDataSourceItemArgumentsExpression
+    //| anoymousFunction
+    //| arrayLiteral
+//  | Url
     ;
 
 // https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/join-clause
 join_clause
    : Join table_source                                                       # QueryJoinCrossApplyExpression // This should be equivalent to SQL Cross Apply
    | Join table_source On singleExpression ('==' | '===') singleExpression   # QueryJoinOnExpression // only support for equijoin
-   | Join table_source using_clause                                          # QueryJoinUsingExpression // Combiner
+//    | Join table_source using_clause                                          # QueryJoinUsingExpression // Combiner
    ;
 
 produce_clause

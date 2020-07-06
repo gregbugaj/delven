@@ -810,8 +810,8 @@ ECMAScriptParserVisitor.prototype.visitQuery_expression = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#sql_union.
-ECMAScriptParserVisitor.prototype.visitSql_union = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryUnionExpression.
+ECMAScriptParserVisitor.prototype.visitQueryUnionExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -834,20 +834,20 @@ ECMAScriptParserVisitor.prototype.visitSelect_list_elem = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#from_clause.
-ECMAScriptParserVisitor.prototype.visitFrom_clause = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryFromExpression.
+ECMAScriptParserVisitor.prototype.visitQueryFromExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#where_clause.
-ECMAScriptParserVisitor.prototype.visitWhere_clause = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryWhereExpression.
+ECMAScriptParserVisitor.prototype.visitQueryWhereExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#table_sources.
-ECMAScriptParserVisitor.prototype.visitTable_sources = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryDataSourcesExpression.
+ECMAScriptParserVisitor.prototype.visitQueryDataSourcesExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -858,8 +858,8 @@ ECMAScriptParserVisitor.prototype.visitTable_source = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#table_source_item_joined.
-ECMAScriptParserVisitor.prototype.visitTable_source_item_joined = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryDataSourceExpression.
+ECMAScriptParserVisitor.prototype.visitQueryDataSourceExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -876,8 +876,8 @@ ECMAScriptParserVisitor.prototype.visitQueryJoinCrossApplyExpression = function(
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#QueryJoinExpression.
-ECMAScriptParserVisitor.prototype.visitQueryJoinExpression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryJoinOnExpression.
+ECMAScriptParserVisitor.prototype.visitQueryJoinOnExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
