@@ -49,7 +49,12 @@ https://developer.chrome.com/extensions/management
 https://github.com/babel/example-node-server
 
 
- USQL Optimzation 
+### Expression Trees
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/
+https://www.tutorialsteacher.com/linq/expression-tree
+
+
+### USQL Optimzation 
 https://www.slideshare.net/MichaelRys/best-practices-and-performance-tuning-of-usql-in-azure-data-lake-sql-konferenz-2018
 
 Spark SQL Programming Guide
@@ -68,6 +73,6 @@ JSR-114  JSR-000114 JDBC RowSet Implementations
 https://docs.oracle.com/cd/B28359_01/java.111/b31227/blangfea.htm#i1005585
 
 
-
-https://www.tutorialsteacher.com/linq/expression-tree
 https://docs.oracle.com/en/database/oracle/oracle-database/19/olapi/oracle/olapi/syntax/Query.html
+
+
