@@ -876,3 +876,86 @@ export class YieldExpression {
         this.delegate = delegate;
     }
 }
+
+
+export class QueryStatement {
+    readonly type: string;
+    readonly body: Expression;
+    constructor(body: Expression) {
+        this.type = Syntax.QueryStatement;
+        this.body = body;
+    }
+}
+
+export class SelectStatement {
+    readonly type: string;
+    readonly body: SelectExpression;
+    constructor(body: SelectExpression) {
+        this.type = Syntax.QueryStatement;
+        this.body = body;
+    }
+}
+
+export class SelectExpression {
+    readonly type: string;
+    readonly projections: SelectItemExpression[];
+    readonly from: Expression;
+    readonly selection: Expression;
+
+    /**
+     * 
+     * @param projections Projections
+     * @param from        From Clause
+     * @param selection   Where Clause
+     */
+    constructor(projections: SelectItemExpression[], from: FromClause, selection: WhereClause) {
+        this.type = Syntax.SelectExpression;
+        this.projections = projections;
+        this.from = from;
+        this.selection = selection;
+    }
+}
+
+
+/**
+ *  A FromClause has one or more FromClauseElement, each of which has an associated QueryDatasource
+ */
+export class FromClause {
+    readonly type: string;
+    readonly expressions: FromClauseElement[];
+
+    constructor(expressions: FromClauseElement[]) {
+        this.type = Syntax.FromClause;
+        this.expressions = expressions;
+    }
+}
+
+export class FromClauseElement {
+    readonly type: string;
+    readonly expression: Expression;
+    readonly alias: Literal | null;
+
+    constructor(expression: Expression, alias: Literal | null) {
+        this.type = Syntax.FromClauseElement;
+        this.expression = expression;
+        this.alias = alias
+    }
+}
+
+export class WhereClause {
+    readonly type: string;
+    readonly expression: Expression;
+    constructor(expression: Expression) {
+        this.type = Syntax.WhereClause;
+        this.expression = expression;
+    }
+}
+
+export class SelectItemExpression {
+    readonly type: string;
+    readonly expression: Expression;
+    constructor(expression: Expression) {
+        this.type = Syntax.SelectExpression;
+        this.expression = expression;
+    }
+}

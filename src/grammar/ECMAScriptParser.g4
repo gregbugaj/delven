@@ -366,7 +366,7 @@ singleExpression
     | arrayLiteral                                                          # ArrayLiteralExpression
     | objectLiteral                                                         # ObjectLiteralExpression
     | '(' expressionSequence ')'                                            # ParenthesizedExpression
-    | query_expression                                                      # InlinedQueryExpression
+    | queryExpression                                                       # InlinedQueryExpression
     ;
 
 assignable
@@ -530,25 +530,25 @@ eos
 //https://stackoverflow.com/questions/34131071/sql-clause-vs-expression-terms
 
 selectStatement
-  : query_expression                                                                                # QuerySelectStatement
+  : queryExpression                                                                                # QuerySelectStatement
   ;
 
-query_expression
+queryExpression
   : bind_clause? query_expression_spec                                                              # QueryBindableExpression
   | bind_clause '{' query_expression_spec '}'                                                       # QueryBindableScopedExpression
   ;
 
 query_expression_spec
-  :  (query_specification | '(' query_expression ')') sql_union*                                    # QuerySpecExpression
+  :  (querySpecification | '(' queryExpression ')') sql_union*                                    # QuerySpecExpression
   ;
 
 sql_union
-  : (Union All?) (query_specification | ('(' query_expression ')'))                                 # QueryUnionExpression
+  : (Union All?) (querySpecification | ('(' queryExpression ')'))                                 # QueryUnionExpression
   ;
 
-query_specification
+querySpecification
   : Select select_list
-    within_clause? from_clause? where_clause? produce_clause?                                       # QuerySelectExpression
+    withinClause? fromClause? whereClause? produce_clause?                                       # QuerySelectExpression
   ;
 
 select_list
@@ -561,19 +561,19 @@ select_list_elem
   | singleExpression argument (As identifierName)?
 	;
 
-from_clause
-	: From data_sources                                                                               # QueryFromExpression
+fromClause
+	: From dataSources                                                                                # QueryFromExpression
   ;
 
-where_clause
+whereClause
   : Where expressionSequence                                                                        # QueryWhereExpression
   ;
 
-data_sources
-  : data_source (',' data_source)*                                                                  # QueryDataSourcesExpression
+dataSources
+  : dataSource (',' dataSource)*                                                                    # QueryDataSourcesExpression
   ;
 
-data_source
+dataSource
   : data_source_item_joined
   | '(' data_source_item_joined ')'
   ;
@@ -593,8 +593,8 @@ data_source_item
   ;
 
 join_clause
-  : Join data_source                                                                                # QueryJoinCrossApplyExpression // This should be equivalent to SQL Cross Apply
-  | Join data_source On singleExpression ('==' | '===') singleExpression                            # QueryJoinOnExpression // only support for equijoin
+  : Join dataSources                                                                                # QueryJoinCrossApplyExpression // This should be equivalent to SQL Cross Apply
+  | Join dataSources On singleExpression ('==' | '===') singleExpression                            # QueryJoinOnExpression // only support for equijoin
 //    | Join data_source using_clause                                          # QueryJoinUsingExpression // Combiner
   ;
 
@@ -611,7 +611,7 @@ bind_clause
   : Using singleExpression                                                                          # QueryBindExpression
   ;
 
-within_clause
+withinClause
   : Within singleExpression (',' singleExpression)*                                                 # QueryWithinExpression
   ;
 

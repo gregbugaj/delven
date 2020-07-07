@@ -870,8 +870,8 @@ ECMAScriptParserVisitor.prototype.visitQueryDataSourcesExpression = function(ctx
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#data_source.
-ECMAScriptParserVisitor.prototype.visitData_source = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#dataSource.
+ECMAScriptParserVisitor.prototype.visitDataSource = function(ctx) {
   return this.visitChildren(ctx);
 };
 

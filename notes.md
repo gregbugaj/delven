@@ -70,3 +70,4 @@ https://docs.oracle.com/cd/B28359_01/java.111/b31227/blangfea.htm#i1005585
 
 
 https://www.tutorialsteacher.com/linq/expression-tree
+https://docs.oracle.com/en/database/oracle/oracle-database/19/olapi/oracle/olapi/syntax/Query.html

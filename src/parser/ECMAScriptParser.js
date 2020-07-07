@@ -757,8 +757,8 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u046d\u0464\u0003\u0002\u0002\u0002\u046d\u0465\u0003\u0002\u0002",
     "\u0002\u046d\u0468\u0003\u0002\u0002\u0002\u046d\u0469\u0003\u0002\u0002",
     "\u0002\u046e\u00af\u0003\u0002\u0002\u0002\u046f\u0470\u0007r\u0002",
-    "\u0002\u0470\u0479\u0005\u00aaV\u0002\u0471\u0472\u0007r\u0002\u0002",
-    "\u0472\u0473\u0005\u00aaV\u0002\u0473\u0474\u0007s\u0002\u0002\u0474",
+    "\u0002\u0470\u0479\u0005\u00a8U\u0002\u0471\u0472\u0007r\u0002\u0002",
+    "\u0472\u0473\u0005\u00a8U\u0002\u0473\u0474\u0007s\u0002\u0002\u0474",
     "\u0475\u0005t;\u0002\u0475\u0476\t\r\u0002\u0002\u0476\u0477\u0005t",
     ";\u0002\u0477\u0479\u0003\u0002\u0002\u0002\u0478\u046f\u0003\u0002",
     "\u0002\u0002\u0478\u0471\u0003\u0002\u0002\u0002\u0479\u00b1\u0003\u0002",
@@ -880,12 +880,12 @@ var ruleNames =  [ "program", "sourceElement", "statement", "block", "statementL
                    "arrowFunctionBody", "assignmentOperator", "literal", 
                    "numericLiteral", "bigintLiteral", "getter", "setter", 
                    "identifierName", "identifier", "reservedWord", "keyword", 
-                   "eos", "selectStatement", "query_expression", "query_expression_spec", 
-                   "sql_union", "query_specification", "select_list", "select_list_elem", 
-                   "from_clause", "where_clause", "data_sources", "data_source", 
+                   "eos", "selectStatement", "queryExpression", "query_expression_spec", 
+                   "sql_union", "querySpecification", "select_list", "select_list_elem", 
+                   "fromClause", "whereClause", "dataSources", "dataSource", 
                    "data_source_item_joined", "data_source_item", "join_clause", 
                    "using_source_clause", "produce_clause", "bind_clause", 
-                   "within_clause", "queryObjectLiteral", "queryPropertyAssignment" ];
+                   "withinClause", "queryObjectLiteral", "queryPropertyAssignment" ];
 
 function ECMAScriptParser (input) {
 	ECMAScriptParserBase.call(this, input);
@@ -1117,23 +1117,23 @@ ECMAScriptParser.RULE_reservedWord = 71;
 ECMAScriptParser.RULE_keyword = 72;
 ECMAScriptParser.RULE_eos = 73;
 ECMAScriptParser.RULE_selectStatement = 74;
-ECMAScriptParser.RULE_query_expression = 75;
+ECMAScriptParser.RULE_queryExpression = 75;
 ECMAScriptParser.RULE_query_expression_spec = 76;
 ECMAScriptParser.RULE_sql_union = 77;
-ECMAScriptParser.RULE_query_specification = 78;
+ECMAScriptParser.RULE_querySpecification = 78;
 ECMAScriptParser.RULE_select_list = 79;
 ECMAScriptParser.RULE_select_list_elem = 80;
-ECMAScriptParser.RULE_from_clause = 81;
-ECMAScriptParser.RULE_where_clause = 82;
-ECMAScriptParser.RULE_data_sources = 83;
-ECMAScriptParser.RULE_data_source = 84;
+ECMAScriptParser.RULE_fromClause = 81;
+ECMAScriptParser.RULE_whereClause = 82;
+ECMAScriptParser.RULE_dataSources = 83;
+ECMAScriptParser.RULE_dataSource = 84;
 ECMAScriptParser.RULE_data_source_item_joined = 85;
 ECMAScriptParser.RULE_data_source_item = 86;
 ECMAScriptParser.RULE_join_clause = 87;
 ECMAScriptParser.RULE_using_source_clause = 88;
 ECMAScriptParser.RULE_produce_clause = 89;
 ECMAScriptParser.RULE_bind_clause = 90;
-ECMAScriptParser.RULE_within_clause = 91;
+ECMAScriptParser.RULE_withinClause = 91;
 ECMAScriptParser.RULE_queryObjectLiteral = 92;
 ECMAScriptParser.RULE_queryPropertyAssignment = 93;
 
@@ -8103,8 +8103,8 @@ InlinedQueryExpressionContext.prototype.constructor = InlinedQueryExpressionCont
 
 ECMAScriptParser.InlinedQueryExpressionContext = InlinedQueryExpressionContext;
 
-InlinedQueryExpressionContext.prototype.query_expression = function() {
-    return this.getTypedRuleContext(Query_expressionContext,0);
+InlinedQueryExpressionContext.prototype.queryExpression = function() {
+    return this.getTypedRuleContext(QueryExpressionContext,0);
 };
 InlinedQueryExpressionContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ECMAScriptParserVisitor ) {
@@ -9171,7 +9171,7 @@ ECMAScriptParser.prototype.singleExpression = function(_p) {
             this._ctx = localctx;
             _prevctx = localctx;
             this.state = 827;
-            this.query_expression();
+            this.queryExpression();
             break;
 
         }
@@ -11388,8 +11388,8 @@ QuerySelectStatementContext.prototype.constructor = QuerySelectStatementContext;
 
 ECMAScriptParser.QuerySelectStatementContext = QuerySelectStatementContext;
 
-QuerySelectStatementContext.prototype.query_expression = function() {
-    return this.getTypedRuleContext(Query_expressionContext,0);
+QuerySelectStatementContext.prototype.queryExpression = function() {
+    return this.getTypedRuleContext(QueryExpressionContext,0);
 };
 QuerySelectStatementContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ECMAScriptParserVisitor ) {
@@ -11411,7 +11411,7 @@ ECMAScriptParser.prototype.selectStatement = function() {
         localctx = new QuerySelectStatementContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
         this.state = 1018;
-        this.query_expression();
+        this.queryExpression();
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -11427,7 +11427,7 @@ ECMAScriptParser.prototype.selectStatement = function() {
 };
 
 
-function Query_expressionContext(parser, parent, invokingState) {
+function QueryExpressionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -11436,27 +11436,27 @@ function Query_expressionContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ECMAScriptParser.RULE_query_expression;
+    this.ruleIndex = ECMAScriptParser.RULE_queryExpression;
     return this;
 }
 
-Query_expressionContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-Query_expressionContext.prototype.constructor = Query_expressionContext;
+QueryExpressionContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+QueryExpressionContext.prototype.constructor = QueryExpressionContext;
 
 
  
-Query_expressionContext.prototype.copyFrom = function(ctx) {
+QueryExpressionContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
 
 
 function QueryBindableScopedExpressionContext(parser, ctx) {
-	Query_expressionContext.call(this, parser);
-    Query_expressionContext.prototype.copyFrom.call(this, ctx);
+	QueryExpressionContext.call(this, parser);
+    QueryExpressionContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-QueryBindableScopedExpressionContext.prototype = Object.create(Query_expressionContext.prototype);
+QueryBindableScopedExpressionContext.prototype = Object.create(QueryExpressionContext.prototype);
 QueryBindableScopedExpressionContext.prototype.constructor = QueryBindableScopedExpressionContext;
 
 ECMAScriptParser.QueryBindableScopedExpressionContext = QueryBindableScopedExpressionContext;
@@ -11486,12 +11486,12 @@ QueryBindableScopedExpressionContext.prototype.accept = function(visitor) {
 
 
 function QueryBindableExpressionContext(parser, ctx) {
-	Query_expressionContext.call(this, parser);
-    Query_expressionContext.prototype.copyFrom.call(this, ctx);
+	QueryExpressionContext.call(this, parser);
+    QueryExpressionContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-QueryBindableExpressionContext.prototype = Object.create(Query_expressionContext.prototype);
+QueryBindableExpressionContext.prototype = Object.create(QueryExpressionContext.prototype);
 QueryBindableExpressionContext.prototype.constructor = QueryBindableExpressionContext;
 
 ECMAScriptParser.QueryBindableExpressionContext = QueryBindableExpressionContext;
@@ -11513,12 +11513,12 @@ QueryBindableExpressionContext.prototype.accept = function(visitor) {
 
 
 
-ECMAScriptParser.Query_expressionContext = Query_expressionContext;
+ECMAScriptParser.QueryExpressionContext = QueryExpressionContext;
 
-ECMAScriptParser.prototype.query_expression = function() {
+ECMAScriptParser.prototype.queryExpression = function() {
 
-    var localctx = new Query_expressionContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 150, ECMAScriptParser.RULE_query_expression);
+    var localctx = new QueryExpressionContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 150, ECMAScriptParser.RULE_queryExpression);
     var _la = 0; // Token type
     try {
         this.state = 1029;
@@ -11603,16 +11603,16 @@ QuerySpecExpressionContext.prototype.constructor = QuerySpecExpressionContext;
 
 ECMAScriptParser.QuerySpecExpressionContext = QuerySpecExpressionContext;
 
-QuerySpecExpressionContext.prototype.query_specification = function() {
-    return this.getTypedRuleContext(Query_specificationContext,0);
+QuerySpecExpressionContext.prototype.querySpecification = function() {
+    return this.getTypedRuleContext(QuerySpecificationContext,0);
 };
 
 QuerySpecExpressionContext.prototype.OpenParen = function() {
     return this.getToken(ECMAScriptParser.OpenParen, 0);
 };
 
-QuerySpecExpressionContext.prototype.query_expression = function() {
-    return this.getTypedRuleContext(Query_expressionContext,0);
+QuerySpecExpressionContext.prototype.queryExpression = function() {
+    return this.getTypedRuleContext(QueryExpressionContext,0);
 };
 
 QuerySpecExpressionContext.prototype.CloseParen = function() {
@@ -11653,13 +11653,13 @@ ECMAScriptParser.prototype.query_expression_spec = function() {
         switch(this._input.LA(1)) {
         case ECMAScriptParser.Select:
             this.state = 1031;
-            this.query_specification();
+            this.querySpecification();
             break;
         case ECMAScriptParser.OpenParen:
             this.state = 1032;
             this.match(ECMAScriptParser.OpenParen);
             this.state = 1033;
-            this.query_expression();
+            this.queryExpression();
             this.state = 1034;
             this.match(ECMAScriptParser.CloseParen);
             break;
@@ -11732,16 +11732,16 @@ QueryUnionExpressionContext.prototype.Union = function() {
     return this.getToken(ECMAScriptParser.Union, 0);
 };
 
-QueryUnionExpressionContext.prototype.query_specification = function() {
-    return this.getTypedRuleContext(Query_specificationContext,0);
+QueryUnionExpressionContext.prototype.querySpecification = function() {
+    return this.getTypedRuleContext(QuerySpecificationContext,0);
 };
 
 QueryUnionExpressionContext.prototype.OpenParen = function() {
     return this.getToken(ECMAScriptParser.OpenParen, 0);
 };
 
-QueryUnionExpressionContext.prototype.query_expression = function() {
-    return this.getTypedRuleContext(Query_expressionContext,0);
+QueryUnionExpressionContext.prototype.queryExpression = function() {
+    return this.getTypedRuleContext(QueryExpressionContext,0);
 };
 
 QueryUnionExpressionContext.prototype.CloseParen = function() {
@@ -11786,13 +11786,13 @@ ECMAScriptParser.prototype.sql_union = function() {
         switch(this._input.LA(1)) {
         case ECMAScriptParser.Select:
             this.state = 1048;
-            this.query_specification();
+            this.querySpecification();
             break;
         case ECMAScriptParser.OpenParen:
             this.state = 1049;
             this.match(ECMAScriptParser.OpenParen);
             this.state = 1050;
-            this.query_expression();
+            this.queryExpression();
             this.state = 1051;
             this.match(ECMAScriptParser.CloseParen);
             break;
@@ -11814,7 +11814,7 @@ ECMAScriptParser.prototype.sql_union = function() {
 };
 
 
-function Query_specificationContext(parser, parent, invokingState) {
+function QuerySpecificationContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -11823,27 +11823,27 @@ function Query_specificationContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ECMAScriptParser.RULE_query_specification;
+    this.ruleIndex = ECMAScriptParser.RULE_querySpecification;
     return this;
 }
 
-Query_specificationContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-Query_specificationContext.prototype.constructor = Query_specificationContext;
+QuerySpecificationContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+QuerySpecificationContext.prototype.constructor = QuerySpecificationContext;
 
 
  
-Query_specificationContext.prototype.copyFrom = function(ctx) {
+QuerySpecificationContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
 
 
 function QuerySelectExpressionContext(parser, ctx) {
-	Query_specificationContext.call(this, parser);
-    Query_specificationContext.prototype.copyFrom.call(this, ctx);
+	QuerySpecificationContext.call(this, parser);
+    QuerySpecificationContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-QuerySelectExpressionContext.prototype = Object.create(Query_specificationContext.prototype);
+QuerySelectExpressionContext.prototype = Object.create(QuerySpecificationContext.prototype);
 QuerySelectExpressionContext.prototype.constructor = QuerySelectExpressionContext;
 
 ECMAScriptParser.QuerySelectExpressionContext = QuerySelectExpressionContext;
@@ -11856,16 +11856,16 @@ QuerySelectExpressionContext.prototype.select_list = function() {
     return this.getTypedRuleContext(Select_listContext,0);
 };
 
-QuerySelectExpressionContext.prototype.within_clause = function() {
-    return this.getTypedRuleContext(Within_clauseContext,0);
+QuerySelectExpressionContext.prototype.withinClause = function() {
+    return this.getTypedRuleContext(WithinClauseContext,0);
 };
 
-QuerySelectExpressionContext.prototype.from_clause = function() {
-    return this.getTypedRuleContext(From_clauseContext,0);
+QuerySelectExpressionContext.prototype.fromClause = function() {
+    return this.getTypedRuleContext(FromClauseContext,0);
 };
 
-QuerySelectExpressionContext.prototype.where_clause = function() {
-    return this.getTypedRuleContext(Where_clauseContext,0);
+QuerySelectExpressionContext.prototype.whereClause = function() {
+    return this.getTypedRuleContext(WhereClauseContext,0);
 };
 
 QuerySelectExpressionContext.prototype.produce_clause = function() {
@@ -11881,12 +11881,12 @@ QuerySelectExpressionContext.prototype.accept = function(visitor) {
 
 
 
-ECMAScriptParser.Query_specificationContext = Query_specificationContext;
+ECMAScriptParser.QuerySpecificationContext = QuerySpecificationContext;
 
-ECMAScriptParser.prototype.query_specification = function() {
+ECMAScriptParser.prototype.querySpecification = function() {
 
-    var localctx = new Query_specificationContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 156, ECMAScriptParser.RULE_query_specification);
+    var localctx = new QuerySpecificationContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 156, ECMAScriptParser.RULE_querySpecification);
     try {
         localctx = new QuerySelectExpressionContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
@@ -11899,7 +11899,7 @@ ECMAScriptParser.prototype.query_specification = function() {
         var la_ = this._interp.adaptivePredict(this._input,116,this._ctx);
         if(la_===1) {
             this.state = 1057;
-            this.within_clause();
+            this.withinClause();
 
         }
         this.state = 1061;
@@ -11907,7 +11907,7 @@ ECMAScriptParser.prototype.query_specification = function() {
         var la_ = this._interp.adaptivePredict(this._input,117,this._ctx);
         if(la_===1) {
             this.state = 1060;
-            this.from_clause();
+            this.fromClause();
 
         }
         this.state = 1064;
@@ -11915,7 +11915,7 @@ ECMAScriptParser.prototype.query_specification = function() {
         var la_ = this._interp.adaptivePredict(this._input,118,this._ctx);
         if(la_===1) {
             this.state = 1063;
-            this.where_clause();
+            this.whereClause();
 
         }
         this.state = 1067;
@@ -12166,7 +12166,7 @@ ECMAScriptParser.prototype.select_list_elem = function() {
 };
 
 
-function From_clauseContext(parser, parent, invokingState) {
+function FromClauseContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -12175,27 +12175,27 @@ function From_clauseContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ECMAScriptParser.RULE_from_clause;
+    this.ruleIndex = ECMAScriptParser.RULE_fromClause;
     return this;
 }
 
-From_clauseContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-From_clauseContext.prototype.constructor = From_clauseContext;
+FromClauseContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+FromClauseContext.prototype.constructor = FromClauseContext;
 
 
  
-From_clauseContext.prototype.copyFrom = function(ctx) {
+FromClauseContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
 
 
 function QueryFromExpressionContext(parser, ctx) {
-	From_clauseContext.call(this, parser);
-    From_clauseContext.prototype.copyFrom.call(this, ctx);
+	FromClauseContext.call(this, parser);
+    FromClauseContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-QueryFromExpressionContext.prototype = Object.create(From_clauseContext.prototype);
+QueryFromExpressionContext.prototype = Object.create(FromClauseContext.prototype);
 QueryFromExpressionContext.prototype.constructor = QueryFromExpressionContext;
 
 ECMAScriptParser.QueryFromExpressionContext = QueryFromExpressionContext;
@@ -12204,8 +12204,8 @@ QueryFromExpressionContext.prototype.From = function() {
     return this.getToken(ECMAScriptParser.From, 0);
 };
 
-QueryFromExpressionContext.prototype.data_sources = function() {
-    return this.getTypedRuleContext(Data_sourcesContext,0);
+QueryFromExpressionContext.prototype.dataSources = function() {
+    return this.getTypedRuleContext(DataSourcesContext,0);
 };
 QueryFromExpressionContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ECMAScriptParserVisitor ) {
@@ -12217,19 +12217,19 @@ QueryFromExpressionContext.prototype.accept = function(visitor) {
 
 
 
-ECMAScriptParser.From_clauseContext = From_clauseContext;
+ECMAScriptParser.FromClauseContext = FromClauseContext;
 
-ECMAScriptParser.prototype.from_clause = function() {
+ECMAScriptParser.prototype.fromClause = function() {
 
-    var localctx = new From_clauseContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 162, ECMAScriptParser.RULE_from_clause);
+    var localctx = new FromClauseContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 162, ECMAScriptParser.RULE_fromClause);
     try {
         localctx = new QueryFromExpressionContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
         this.state = 1091;
         this.match(ECMAScriptParser.From);
         this.state = 1092;
-        this.data_sources();
+        this.dataSources();
     } catch (re) {
     	if(re instanceof antlr4.error.RecognitionException) {
 	        localctx.exception = re;
@@ -12245,7 +12245,7 @@ ECMAScriptParser.prototype.from_clause = function() {
 };
 
 
-function Where_clauseContext(parser, parent, invokingState) {
+function WhereClauseContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -12254,27 +12254,27 @@ function Where_clauseContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ECMAScriptParser.RULE_where_clause;
+    this.ruleIndex = ECMAScriptParser.RULE_whereClause;
     return this;
 }
 
-Where_clauseContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-Where_clauseContext.prototype.constructor = Where_clauseContext;
+WhereClauseContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+WhereClauseContext.prototype.constructor = WhereClauseContext;
 
 
  
-Where_clauseContext.prototype.copyFrom = function(ctx) {
+WhereClauseContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
 
 
 function QueryWhereExpressionContext(parser, ctx) {
-	Where_clauseContext.call(this, parser);
-    Where_clauseContext.prototype.copyFrom.call(this, ctx);
+	WhereClauseContext.call(this, parser);
+    WhereClauseContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-QueryWhereExpressionContext.prototype = Object.create(Where_clauseContext.prototype);
+QueryWhereExpressionContext.prototype = Object.create(WhereClauseContext.prototype);
 QueryWhereExpressionContext.prototype.constructor = QueryWhereExpressionContext;
 
 ECMAScriptParser.QueryWhereExpressionContext = QueryWhereExpressionContext;
@@ -12296,12 +12296,12 @@ QueryWhereExpressionContext.prototype.accept = function(visitor) {
 
 
 
-ECMAScriptParser.Where_clauseContext = Where_clauseContext;
+ECMAScriptParser.WhereClauseContext = WhereClauseContext;
 
-ECMAScriptParser.prototype.where_clause = function() {
+ECMAScriptParser.prototype.whereClause = function() {
 
-    var localctx = new Where_clauseContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 164, ECMAScriptParser.RULE_where_clause);
+    var localctx = new WhereClauseContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 164, ECMAScriptParser.RULE_whereClause);
     try {
         localctx = new QueryWhereExpressionContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
@@ -12324,7 +12324,7 @@ ECMAScriptParser.prototype.where_clause = function() {
 };
 
 
-function Data_sourcesContext(parser, parent, invokingState) {
+function DataSourcesContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -12333,39 +12333,39 @@ function Data_sourcesContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ECMAScriptParser.RULE_data_sources;
+    this.ruleIndex = ECMAScriptParser.RULE_dataSources;
     return this;
 }
 
-Data_sourcesContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-Data_sourcesContext.prototype.constructor = Data_sourcesContext;
+DataSourcesContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+DataSourcesContext.prototype.constructor = DataSourcesContext;
 
 
  
-Data_sourcesContext.prototype.copyFrom = function(ctx) {
+DataSourcesContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
 
 
 function QueryDataSourcesExpressionContext(parser, ctx) {
-	Data_sourcesContext.call(this, parser);
-    Data_sourcesContext.prototype.copyFrom.call(this, ctx);
+	DataSourcesContext.call(this, parser);
+    DataSourcesContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-QueryDataSourcesExpressionContext.prototype = Object.create(Data_sourcesContext.prototype);
+QueryDataSourcesExpressionContext.prototype = Object.create(DataSourcesContext.prototype);
 QueryDataSourcesExpressionContext.prototype.constructor = QueryDataSourcesExpressionContext;
 
 ECMAScriptParser.QueryDataSourcesExpressionContext = QueryDataSourcesExpressionContext;
 
-QueryDataSourcesExpressionContext.prototype.data_source = function(i) {
+QueryDataSourcesExpressionContext.prototype.dataSource = function(i) {
     if(i===undefined) {
         i = null;
     }
     if(i===null) {
-        return this.getTypedRuleContexts(Data_sourceContext);
+        return this.getTypedRuleContexts(DataSourceContext);
     } else {
-        return this.getTypedRuleContext(Data_sourceContext,i);
+        return this.getTypedRuleContext(DataSourceContext,i);
     }
 };
 
@@ -12390,17 +12390,17 @@ QueryDataSourcesExpressionContext.prototype.accept = function(visitor) {
 
 
 
-ECMAScriptParser.Data_sourcesContext = Data_sourcesContext;
+ECMAScriptParser.DataSourcesContext = DataSourcesContext;
 
-ECMAScriptParser.prototype.data_sources = function() {
+ECMAScriptParser.prototype.dataSources = function() {
 
-    var localctx = new Data_sourcesContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 166, ECMAScriptParser.RULE_data_sources);
+    var localctx = new DataSourcesContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 166, ECMAScriptParser.RULE_dataSources);
     try {
         localctx = new QueryDataSourcesExpressionContext(this, localctx);
         this.enterOuterAlt(localctx, 1);
         this.state = 1097;
-        this.data_source();
+        this.dataSource();
         this.state = 1102;
         this._errHandler.sync(this);
         var _alt = this._interp.adaptivePredict(this._input,124,this._ctx)
@@ -12409,7 +12409,7 @@ ECMAScriptParser.prototype.data_sources = function() {
                 this.state = 1098;
                 this.match(ECMAScriptParser.Comma);
                 this.state = 1099;
-                this.data_source(); 
+                this.dataSource(); 
             }
             this.state = 1104;
             this._errHandler.sync(this);
@@ -12431,7 +12431,7 @@ ECMAScriptParser.prototype.data_sources = function() {
 };
 
 
-function Data_sourceContext(parser, parent, invokingState) {
+function DataSourceContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -12440,28 +12440,28 @@ function Data_sourceContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ECMAScriptParser.RULE_data_source;
+    this.ruleIndex = ECMAScriptParser.RULE_dataSource;
     return this;
 }
 
-Data_sourceContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-Data_sourceContext.prototype.constructor = Data_sourceContext;
+DataSourceContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+DataSourceContext.prototype.constructor = DataSourceContext;
 
-Data_sourceContext.prototype.data_source_item_joined = function() {
+DataSourceContext.prototype.data_source_item_joined = function() {
     return this.getTypedRuleContext(Data_source_item_joinedContext,0);
 };
 
-Data_sourceContext.prototype.OpenParen = function() {
+DataSourceContext.prototype.OpenParen = function() {
     return this.getToken(ECMAScriptParser.OpenParen, 0);
 };
 
-Data_sourceContext.prototype.CloseParen = function() {
+DataSourceContext.prototype.CloseParen = function() {
     return this.getToken(ECMAScriptParser.CloseParen, 0);
 };
 
-Data_sourceContext.prototype.accept = function(visitor) {
+DataSourceContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ECMAScriptParserVisitor ) {
-        return visitor.visitData_source(this);
+        return visitor.visitDataSource(this);
     } else {
         return visitor.visitChildren(this);
     }
@@ -12470,12 +12470,12 @@ Data_sourceContext.prototype.accept = function(visitor) {
 
 
 
-ECMAScriptParser.Data_sourceContext = Data_sourceContext;
+ECMAScriptParser.DataSourceContext = DataSourceContext;
 
-ECMAScriptParser.prototype.data_source = function() {
+ECMAScriptParser.prototype.dataSource = function() {
 
-    var localctx = new Data_sourceContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 168, ECMAScriptParser.RULE_data_source);
+    var localctx = new DataSourceContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 168, ECMAScriptParser.RULE_dataSource);
     try {
         this.state = 1110;
         this._errHandler.sync(this);
@@ -12849,8 +12849,8 @@ QueryJoinCrossApplyExpressionContext.prototype.Join = function() {
     return this.getToken(ECMAScriptParser.Join, 0);
 };
 
-QueryJoinCrossApplyExpressionContext.prototype.data_source = function() {
-    return this.getTypedRuleContext(Data_sourceContext,0);
+QueryJoinCrossApplyExpressionContext.prototype.dataSources = function() {
+    return this.getTypedRuleContext(DataSourcesContext,0);
 };
 QueryJoinCrossApplyExpressionContext.prototype.accept = function(visitor) {
     if ( visitor instanceof ECMAScriptParserVisitor ) {
@@ -12876,8 +12876,8 @@ QueryJoinOnExpressionContext.prototype.Join = function() {
     return this.getToken(ECMAScriptParser.Join, 0);
 };
 
-QueryJoinOnExpressionContext.prototype.data_source = function() {
-    return this.getTypedRuleContext(Data_sourceContext,0);
+QueryJoinOnExpressionContext.prototype.dataSources = function() {
+    return this.getTypedRuleContext(DataSourcesContext,0);
 };
 
 QueryJoinOnExpressionContext.prototype.On = function() {
@@ -12930,7 +12930,7 @@ ECMAScriptParser.prototype.join_clause = function() {
             this.state = 1133;
             this.match(ECMAScriptParser.Join);
             this.state = 1134;
-            this.data_source();
+            this.dataSources();
             break;
 
         case 2:
@@ -12939,7 +12939,7 @@ ECMAScriptParser.prototype.join_clause = function() {
             this.state = 1135;
             this.match(ECMAScriptParser.Join);
             this.state = 1136;
-            this.data_source();
+            this.dataSources();
             this.state = 1137;
             this.match(ECMAScriptParser.On);
             this.state = 1138;
@@ -13254,7 +13254,7 @@ ECMAScriptParser.prototype.bind_clause = function() {
 };
 
 
-function Within_clauseContext(parser, parent, invokingState) {
+function WithinClauseContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -13263,27 +13263,27 @@ function Within_clauseContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = ECMAScriptParser.RULE_within_clause;
+    this.ruleIndex = ECMAScriptParser.RULE_withinClause;
     return this;
 }
 
-Within_clauseContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-Within_clauseContext.prototype.constructor = Within_clauseContext;
+WithinClauseContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+WithinClauseContext.prototype.constructor = WithinClauseContext;
 
 
  
-Within_clauseContext.prototype.copyFrom = function(ctx) {
+WithinClauseContext.prototype.copyFrom = function(ctx) {
     antlr4.ParserRuleContext.prototype.copyFrom.call(this, ctx);
 };
 
 
 function QueryWithinExpressionContext(parser, ctx) {
-	Within_clauseContext.call(this, parser);
-    Within_clauseContext.prototype.copyFrom.call(this, ctx);
+	WithinClauseContext.call(this, parser);
+    WithinClauseContext.prototype.copyFrom.call(this, ctx);
     return this;
 }
 
-QueryWithinExpressionContext.prototype = Object.create(Within_clauseContext.prototype);
+QueryWithinExpressionContext.prototype = Object.create(WithinClauseContext.prototype);
 QueryWithinExpressionContext.prototype.constructor = QueryWithinExpressionContext;
 
 ECMAScriptParser.QueryWithinExpressionContext = QueryWithinExpressionContext;
@@ -13324,12 +13324,12 @@ QueryWithinExpressionContext.prototype.accept = function(visitor) {
 
 
 
-ECMAScriptParser.Within_clauseContext = Within_clauseContext;
+ECMAScriptParser.WithinClauseContext = WithinClauseContext;
 
-ECMAScriptParser.prototype.within_clause = function() {
+ECMAScriptParser.prototype.withinClause = function() {
 
-    var localctx = new Within_clauseContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 182, ECMAScriptParser.RULE_within_clause);
+    var localctx = new WithinClauseContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 182, ECMAScriptParser.RULE_withinClause);
     try {
         localctx = new QueryWithinExpressionContext(this, localctx);
         this.enterOuterAlt(localctx, 1);

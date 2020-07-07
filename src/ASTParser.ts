@@ -350,9 +350,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitDebuggerStatement(node)
         } else if (node instanceof ECMAScriptParser.FunctionDeclarationContext) {
             return this.visitFunctionDeclaration(node)
-        }/*  else if (node instanceof ECMAScriptParser.SqlStatementContext) {
-            return this.visitSqlStatement(node)
-        } */ else {
+        } else if (node instanceof ECMAScriptParser.QuerySelectStatementContext) {
+            return this.visitQuerySelectStatementContext(node)
+        } else {
             this.throwInsanceError(this.dumpContext(node))
         }
     }
@@ -1266,7 +1266,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         return this.functionDeclaration(ctx)
     }
-
 
     /**
      * Get funciton attribues 
@@ -2344,7 +2343,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const arg = ctx.arguments()
         const callee = this.singleExpression(ctx.singleExpression())
         const args: Node.ArgumentListElement[] = arg ? this.visitArguments(arg) : [];
-        
+
         return new Node.CallExpression(callee, args)
     }
 
@@ -3085,11 +3084,108 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.trace('not implemented')
     }
 
-
-    visitSqlStatement(ctx: RuleContext)  {
+    visitQuerySelectStatementContext(ctx: RuleContext): Node.QueryStatement {
         this.log(ctx, Trace.frame())
-        this.assertType(ctx, ECMAScriptParser.SqlStatementContext)
-        this.dumpContextAllChildren(ctx)
+        this.assertType(ctx, ECMAScriptParser.QuerySelectStatementContext)
+        const bindable = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryBindableExpressionContext)
+        const spec = this.getTypedRuleContext(bindable, ECMAScriptParser.QuerySpecExpressionContext)
+
+        this.visitQuerySpecExpressionContext(spec)
+        const query = new Node.QueryStatement()
+        console.info(query)
+        return query;
+    }
+
+    visitQuerySpecExpressionContext(ctx: RuleContext) {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QuerySpecExpressionContext)
+        const selectContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QuerySelectExpressionContext)
+        const select: Node.SelectExpression = this.visitQuerySelectExpression(selectContext)
+
+        console.info('::')
+        console.info(select)
+        return select;
+    }
+
+    visitQuerySelectExpression(ctx: RuleContext): Node.SelectExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QuerySelectExpressionContext)
+
+        const selectListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QuerySelectListExpressionContext)
+        const fromContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryFromExpressionContext)
+        const whereContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryWhereExpressionContext)
+
+        const projections = this.visitQuerySelectListExpression(selectListContext)
+        const fromClause = this.visitQueryFromExpression(fromContext)
+        const WhereClause = this.visitQueryWhereExpression(whereContext)
+
+        return new Node.SelectExpression(projections, fromClause, WhereClause)
+    }
+
+    visitQuerySelectListExpression(ctx: RuleContext): Node.SelectItemExpression[] {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QuerySelectListExpressionContext)
+
+        const itema = new Node.SelectItemExpression(new Node.Identifier("a"))
+        const itemb = new Node.SelectItemExpression(new Node.Identifier("b"))
+
+        return [itema, itemb]
+    }
+
+    visitQueryFromExpression(ctx: RuleContext): Node.FromClause {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QueryFromExpressionContext)
+        const elems: Node.FromClauseElement[] = this.visitQueryDataSourcesExpression(ctx.dataSources())
+        return new Node.FromClause(elems)
+    }
+
+    visitQueryDataSourcesExpression(ctx: RuleContext): Node.FromClauseElement[] {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QueryDataSourcesExpressionContext)
+        const elems: Node.FromClauseElement[] = []
+        for (const node of this.filterSymbols(ctx)) {
+            if (node instanceof ECMAScriptParser.DataSourceContext) {
+                elems.push(this.visitDataSource(node))
+            } else {
+                throw new TypeError("Type not handled : " + node)
+            }
+        }
+        return elems
+    }
+
+    visitDataSource(ctx: RuleContext): Node.FromClauseElement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.DataSourceContext)
+        const expression = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryDataSourceExpressionContext)
+        const node = expression.getChild(0)
+        if (node instanceof ECMAScriptParser.QueryDataSourceItemArgumentsExpressionContext) {
+            return this.visitQueryDataSourceItemArgumentsExpression(node)
+        }
+
+        throw new TypeError("Type not handled")
+    }
+
+
+    visitQueryDataSourceItemArgumentsExpression(ctx: RuleContext): Node.FromClauseElement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QueryDataSourceItemArgumentsExpressionContext)
+
+        const arg = ctx.arguments()
+        const callee = this.singleExpression(ctx.singleExpression())
+        const args: Node.ArgumentListElement[] = arg ? this.visitArguments(arg) : [];
+
+        const call = new Node.CallExpression(callee, args)
+        return new Node.FromClauseElement(call, null)
+    }
+
+
+    visitQueryWhereExpression(ctx: RuleContext): Node.WhereClause {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QueryWhereExpressionContext)
+
+        const sequence = this.visitExpressionSequence(ctx.expressionSequence())
+        const expression = this.coerceToExpressionOrSequence(sequence)
+
+        return new Node.WhereClause(expression)
     }
 }
-

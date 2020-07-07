@@ -68,5 +68,13 @@ export const Syntax = {
     VariableDeclarator: 'VariableDeclarator',
     WhileStatement: 'WhileStatement',
     WithStatement: 'WithStatement',
-    YieldExpression: 'YieldExpression'
+    YieldExpression: 'YieldExpression',
+
+    QueryStatement: 'QueryStatement',
+    SelectStatement: 'SelectStatement',
+    SelectExpression: 'SelectExpression',
+    SelectItemExpression: 'SelectItemExpression',
+    FromClause: 'FromClause',
+    FromClauseElement: 'FromClauseElement',
+    WhereClause: 'WhereClause',
 };
