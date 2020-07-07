@@ -61,3 +61,12 @@ https://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_5002.htm#SQLRF
 
 Multiset
 https://docs.oracle.com/cd/B28359_01/server.111/b28286/operators006.htm#SQLRF0032 
+
+
+JSR-114  JSR-000114 JDBC RowSet Implementations 
+
+https://docs.oracle.com/cd/B28359_01/java.111/b31227/blangfea.htm#i1005585
+
+
+
+https://www.tutorialsteacher.com/linq/expression-tree

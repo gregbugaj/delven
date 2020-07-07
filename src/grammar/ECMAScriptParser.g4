@@ -50,7 +50,7 @@ sourceElement
 
 statement
  : block
- | select_statement
+ | selectStatement
  | variableStatement
  | importStatement
  | exportStatement
@@ -135,6 +135,7 @@ variableDeclarationList
 
 variableDeclaration
     : assignable ('=' singleExpression)? // ECMAScript 6: Array & Object Matching
+//    | assignable ('='  query_expression)?
     ;
 
 emptyStatement
@@ -365,6 +366,7 @@ singleExpression
     | arrayLiteral                                                          # ArrayLiteralExpression
     | objectLiteral                                                         # ObjectLiteralExpression
     | '(' expressionSequence ')'                                            # ParenthesizedExpression
+    | query_expression                                                      # InlinedQueryExpression
     ;
 
 assignable
@@ -527,82 +529,96 @@ eos
 // I like to name this properly to limit confusion
 //https://stackoverflow.com/questions/34131071/sql-clause-vs-expression-terms
 
-select_statement
-    : query_expression                                                              # QueryExpression
-    ;
+selectStatement
+  : query_expression                                                                                # QuerySelectStatement
+  ;
 
 query_expression
-    : (query_specification | '(' query_expression ')') sql_union*
-    ;
+  : bind_clause? query_expression_spec                                                              # QueryBindableExpression
+  | bind_clause '{' query_expression_spec '}'                                                       # QueryBindableScopedExpression
+  ;
+
+query_expression_spec
+  :  (query_specification | '(' query_expression ')') sql_union*                                    # QuerySpecExpression
+  ;
 
 sql_union
-    : (Union All?) (query_specification | ('(' query_expression ')'))               # QueryUnionExpression
-    ;
+  : (Union All?) (query_specification | ('(' query_expression ')'))                                 # QueryUnionExpression
+  ;
 
 query_specification
   : Select select_list
-    from_clause? where_clause? produce_clause?                                      # QuerySelectExpression
+    within_clause? from_clause? where_clause? produce_clause?                                       # QuerySelectExpression
   ;
 
 select_list
-    : select_list_elem (',' select_list_elem)*                                      # QuerySelectListExpression
-    ;
+  : select_list_elem (',' select_list_elem)*                                                        # QuerySelectListExpression
+  ;
 
 select_list_elem
-    : '*'
-    | identifier
-    | singleExpression argument
+  : '*'
+  | identifier (As identifierName)?
+  | singleExpression argument (As identifierName)?
 	;
 
 from_clause
-	: From table_sources                                                              # QueryFromExpression
+	: From data_sources                                                                               # QueryFromExpression
   ;
 
 where_clause
-  : Where expressionSequence                                                        # QueryWhereExpression
+  : Where expressionSequence                                                                        # QueryWhereExpression
   ;
 
-table_sources
-    : table_source (',' table_source)*                                              # QueryDataSourcesExpression
-    ;
+data_sources
+  : data_source (',' data_source)*                                                                  # QueryDataSourcesExpression
+  ;
 
-table_source
-    : table_source_item_joined
-    | '(' table_source_item_joined ')'
-    ;
+data_source
+  : data_source_item_joined
+  | '(' data_source_item_joined ')'
+  ;
 
-table_source_item_joined
-    : table_source_item using_clause? join_clause*                                  # QueryDataSourceExpression
-    ;
+data_source_item_joined
+  : data_source_item using_source_clause? join_clause*                                               # QueryDataSourceExpression
+  ;
 
-table_source_item
-    : Url                                                                           # QueryDataSourceItemUrlExpression
-    | singleExpression arguments (As StringLiteral)?                                # QueryDataSourceItemArgumentsExpression
+data_source_item
+  : Url                                                                                             # QueryDataSourceItemUrlExpression
+  | singleExpression arguments                                                                      # QueryDataSourceItemArgumentsExpression
+  | identifier                                                                                      # QueryDataSourceItemIdentifierExpression
+  | '(' query_expression_spec ')'                                                                   # QueryDataSourceItemSubqueryExpression
     //| anoymousFunction
     //| arrayLiteral
 //  | Url
-    ;
+  ;
 
-// https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/join-clause
 join_clause
-   : Join table_source                                                       # QueryJoinCrossApplyExpression // This should be equivalent to SQL Cross Apply
-   | Join table_source On singleExpression ('==' | '===') singleExpression   # QueryJoinOnExpression // only support for equijoin
-//    | Join table_source using_clause                                          # QueryJoinUsingExpression // Combiner
-   ;
+  : Join data_source                                                                                # QueryJoinCrossApplyExpression // This should be equivalent to SQL Cross Apply
+  | Join data_source On singleExpression ('==' | '===') singleExpression                            # QueryJoinOnExpression // only support for equijoin
+//    | Join data_source using_clause                                          # QueryJoinUsingExpression // Combiner
+  ;
+
+using_source_clause
+  : Using queryObjectLiteral                                                                        # QuerySourceUsingLiteralExpression
+  | Using singleExpression                                                                          # QuerySourceUsingSingleExpression
+  ;
 
 produce_clause
-   : Produce singleExpression                                                # QueryProduceExpression
-   ;
+  : Produce singleExpression                                                                        # QueryProduceExpression
+  ;
 
-using_clause
-   : Using queryObjectLiteral                                                # QueryUsingExpression
-   | Using New singleExpression arguments                                    # QueryUsingNewDirectiveExpression
-   ;
+bind_clause
+  : Using singleExpression                                                                          # QueryBindExpression
+  ;
+
+within_clause
+  : Within singleExpression (',' singleExpression)*                                                 # QueryWithinExpression
+  ;
 
 queryObjectLiteral
-   : '{' (queryPropertyAssignment (',' queryPropertyAssignment)*)? ','? '}'
-   ;
+  : '{' (queryPropertyAssignment (',' queryPropertyAssignment)*)? ','? '}'
+  ;
 
 queryPropertyAssignment
-   : propertyName ':' singleExpression
-   ;
+  : propertyName ':' singleExpression
+  ;

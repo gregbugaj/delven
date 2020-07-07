@@ -360,12 +360,14 @@ console.info("---------------------");
 
 
 // SQL
-let ast = ASTParser.parse({ type: "code", value: "select css('#test') from source() where (x == 1 || true)"}); 
+// let ast = ASTParser.parse({ type: "code", value: "let x = select css('#a'), z from esx() where (x==1)"}); 
+// let ast = ASTParser.parse({ type: "code", value: "select css('#a') , z from (select css('#a') from zz) where (x==1)"}); 
+let ast = ASTParser.parse({ type: "code", value: " select css('#a') from source() where (x==1) "}); 
 // let ast = ASTParser.parse({ type: "code", value: "select css('') as x from val()"});  // ?? SqlSelectExpressionContext
 
 console.table(toJson(ast))
 
-if(true) {
+if(false) {
     const generator = new SourceGenerator();
     const script = generator.toSource(ast);
 

@@ -350,9 +350,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitDebuggerStatement(node)
         } else if (node instanceof ECMAScriptParser.FunctionDeclarationContext) {
             return this.visitFunctionDeclaration(node)
-        } else if (node instanceof ECMAScriptParser.SqlStatementContext) {
+        }/*  else if (node instanceof ECMAScriptParser.SqlStatementContext) {
             return this.visitSqlStatement(node)
-        } else {
+        } */ else {
             this.throwInsanceError(this.dumpContext(node))
         }
     }

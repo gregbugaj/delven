@@ -546,6 +546,12 @@ ECMAScriptParserVisitor.prototype.visitDeleteExpression = function(ctx) {
 };
 
 
+// Visit a parse tree produced by ECMAScriptParser#InlinedQueryExpression.
+ECMAScriptParserVisitor.prototype.visitInlinedQueryExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by ECMAScriptParser#ImportExpression.
 ECMAScriptParserVisitor.prototype.visitImportExpression = function(ctx) {
   return this.visitChildren(ctx);
@@ -798,14 +804,26 @@ ECMAScriptParserVisitor.prototype.visitEos = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#QueryExpression.
-ECMAScriptParserVisitor.prototype.visitQueryExpression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QuerySelectStatement.
+ECMAScriptParserVisitor.prototype.visitQuerySelectStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#query_expression.
-ECMAScriptParserVisitor.prototype.visitQuery_expression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryBindableExpression.
+ECMAScriptParserVisitor.prototype.visitQueryBindableExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryBindableScopedExpression.
+ECMAScriptParserVisitor.prototype.visitQueryBindableScopedExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QuerySpecExpression.
+ECMAScriptParserVisitor.prototype.visitQuerySpecExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -852,8 +870,8 @@ ECMAScriptParserVisitor.prototype.visitQueryDataSourcesExpression = function(ctx
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#table_source.
-ECMAScriptParserVisitor.prototype.visitTable_source = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#data_source.
+ECMAScriptParserVisitor.prototype.visitData_source = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -864,8 +882,26 @@ ECMAScriptParserVisitor.prototype.visitQueryDataSourceExpression = function(ctx)
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#table_source_item.
-ECMAScriptParserVisitor.prototype.visitTable_source_item = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryDataSourceItemUrlExpression.
+ECMAScriptParserVisitor.prototype.visitQueryDataSourceItemUrlExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryDataSourceItemArgumentsExpression.
+ECMAScriptParserVisitor.prototype.visitQueryDataSourceItemArgumentsExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryDataSourceItemIdentifierExpression.
+ECMAScriptParserVisitor.prototype.visitQueryDataSourceItemIdentifierExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QueryDataSourceItemSubqueryExpression.
+ECMAScriptParserVisitor.prototype.visitQueryDataSourceItemSubqueryExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
@@ -882,20 +918,32 @@ ECMAScriptParserVisitor.prototype.visitQueryJoinOnExpression = function(ctx) {
 };
 
 
+// Visit a parse tree produced by ECMAScriptParser#QuerySourceUsingLiteralExpression.
+ECMAScriptParserVisitor.prototype.visitQuerySourceUsingLiteralExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by ECMAScriptParser#QuerySourceUsingSingleExpression.
+ECMAScriptParserVisitor.prototype.visitQuerySourceUsingSingleExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by ECMAScriptParser#QueryProduceExpression.
 ECMAScriptParserVisitor.prototype.visitQueryProduceExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#QueryUsingExpression.
-ECMAScriptParserVisitor.prototype.visitQueryUsingExpression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryBindExpression.
+ECMAScriptParserVisitor.prototype.visitQueryBindExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#QueryUsingNewDirectiveExpression.
-ECMAScriptParserVisitor.prototype.visitQueryUsingNewDirectiveExpression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#QueryWithinExpression.
+ECMAScriptParserVisitor.prototype.visitQueryWithinExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 

@@ -177,6 +177,7 @@ On:                               'on';
 Produce:                          'produce';
 Using:                            'using';
 All:                              'all';
+Within:                           'within';
 
 /// The following tokens are also considered to be FutureReservedWords
 /// when parsing strict mode
