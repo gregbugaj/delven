@@ -804,26 +804,14 @@ ECMAScriptParserVisitor.prototype.visitEos = function(ctx) {
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#QuerySelectStatement.
+// Visit a parse tree produced by ECMAScriptParser#querySelectStatement.
 ECMAScriptParserVisitor.prototype.visitQuerySelectStatement = function(ctx) {
   return this.visitChildren(ctx);
 };
 
 
-// Visit a parse tree produced by ECMAScriptParser#QueryBindableExpression.
-ECMAScriptParserVisitor.prototype.visitQueryBindableExpression = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by ECMAScriptParser#QueryBindableScopedExpression.
-ECMAScriptParserVisitor.prototype.visitQueryBindableScopedExpression = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by ECMAScriptParser#QuerySpecExpression.
-ECMAScriptParserVisitor.prototype.visitQuerySpecExpression = function(ctx) {
+// Visit a parse tree produced by ECMAScriptParser#queryExpression.
+ECMAScriptParserVisitor.prototype.visitQueryExpression = function(ctx) {
   return this.visitChildren(ctx);
 };
 

@@ -351,7 +351,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else if (node instanceof ECMAScriptParser.FunctionDeclarationContext) {
             return this.visitFunctionDeclaration(node)
         } else if (node instanceof ECMAScriptParser.QuerySelectStatementContext) {
-            return this.visitQuerySelectStatementContext(node)
+            return this.visitQuerySelectStatement(node)
         } else {
             this.throwInsanceError(this.dumpContext(node))
         }
@@ -1912,6 +1912,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitTernaryExpression(node)
         } else if (node instanceof ECMAScriptParser.SuperExpressionContext) {
             return this.visitSuperExpression(node)
+        } else if (node instanceof ECMAScriptParser.InlinedQueryExpressionContext) {
+            return this.visitInlinedQueryExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -3084,52 +3086,56 @@ export class DelvenASTVisitor extends DelvenVisitor {
         console.trace('not implemented')
     }
 
-    visitQuerySelectStatementContext(ctx: RuleContext): Node.QueryStatement {
+    visitInlinedQueryExpression(ctx: RuleContext): Node.QueryExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.InlinedQueryExpressionContext)
+        const bindable = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryExpressionContext)
+        return this.visitQueryExpression(bindable)
+    }
+
+    visitQuerySelectStatement(ctx: RuleContext): Node.SelectStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.QuerySelectStatementContext)
-        const bindable = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryBindableExpressionContext)
-        const spec = this.getTypedRuleContext(bindable, ECMAScriptParser.QuerySpecExpressionContext)
+        const bindable = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryExpressionContext)
+        const expression = this.visitQueryExpression(bindable)
 
-        this.visitQuerySpecExpressionContext(spec)
-        const query = new Node.QueryStatement()
-        console.info(query)
-        return query;
+        return new Node.SelectStatement(expression)
     }
 
-    visitQuerySpecExpressionContext(ctx: RuleContext) {
+
+    visitQueryExpression(ctx: RuleContext): Node.QueryExpression {
         this.log(ctx, Trace.frame())
-        this.assertType(ctx, ECMAScriptParser.QuerySpecExpressionContext)
-        const selectContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QuerySelectExpressionContext)
-        const select: Node.SelectExpression = this.visitQuerySelectExpression(selectContext)
-
-        console.info('::')
-        console.info(select)
-        return select;
+        this.assertType(ctx, ECMAScriptParser.QueryExpressionContext)
+        const bindable = this.getTypedRuleContext(ctx, ECMAScriptParser.QuerySelectExpressionContext)
+        const expression = this.visitQuerySelectExpression(bindable)
+        return expression
     }
 
-    visitQuerySelectExpression(ctx: RuleContext): Node.SelectExpression {
+    visitQuerySelectExpression(ctx: RuleContext): Node.QueryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.QuerySelectExpressionContext)
 
-        const selectListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QuerySelectListExpressionContext)
         const fromContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryFromExpressionContext)
+        const fromClause = this.visitQueryFromExpression(fromContext)
+
+        const selectListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QuerySelectListExpressionContext)
         const whereContext = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryWhereExpressionContext)
 
-        const projections = this.visitQuerySelectListExpression(selectListContext)
-        const fromClause = this.visitQueryFromExpression(fromContext)
-        const WhereClause = this.visitQueryWhereExpression(whereContext)
+        const selectClause = this.visitQuerySelectListExpression(selectListContext)
+        const whereClause = whereContext != null ? this.visitQueryWhereExpression(whereContext) : null
 
-        return new Node.SelectExpression(projections, fromClause, WhereClause)
+        return new Node.QueryExpression(selectClause, fromClause, whereClause)
     }
 
-    visitQuerySelectListExpression(ctx: RuleContext): Node.SelectItemExpression[] {
+    visitQuerySelectListExpression(ctx: RuleContext): Node.SelectClause {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.QuerySelectListExpressionContext)
 
         const itema = new Node.SelectItemExpression(new Node.Identifier("a"))
         const itemb = new Node.SelectItemExpression(new Node.Identifier("b"))
 
-        return [itema, itemb]
+        const selectClause: Node.SelectClause = new Node.SelectClause([itema, itemb])
+        return selectClause
     }
 
     visitQueryFromExpression(ctx: RuleContext): Node.FromClause {

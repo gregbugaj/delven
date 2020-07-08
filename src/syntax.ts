@@ -70,9 +70,11 @@ export const Syntax = {
     WithStatement: 'WithStatement',
     YieldExpression: 'YieldExpression',
 
-    QueryStatement: 'QueryStatement',
+    // Extension
     SelectStatement: 'SelectStatement',
-    SelectExpression: 'SelectExpression',
+    QueryBindingExpression: 'QueryBindingExpression',
+    QueryExpression: 'QueryExpression',
+    SelectClause: 'SelectClause',
     SelectItemExpression: 'SelectItemExpression',
     FromClause: 'FromClause',
     FromClauseElement: 'FromClauseElement',

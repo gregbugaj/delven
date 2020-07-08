@@ -6,6 +6,8 @@ import ASTParser, { ParserType } from "./ASTParser"
 import SourceGenerator from "./SourceGenerator";
 import * as fs from 'fs'
 
+import { MockQueryable } from "./query/IQueryable";
+
 let toJson = (obj: any): string => JSON.stringify(obj, function replacer(key, value) { return value }, 2);
 
 function writeJson(outputFilename: string, obj: any): void {
@@ -45,7 +47,7 @@ console.info("---------------------");
         }
  */
 
- // literals
+// literals
 
 //  let ast = ASTParser.parse({ type: "code", value: ' 1 '}); //NumericLiteral
 //  let ast = ASTParser.parse({ type: "code", value: ' 1,2,3,4 '}); 
@@ -230,9 +232,9 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: ' function a(x, y){}'});  // default parameters 
 
 // CallExpression
- //let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
+//let ast = ASTParser.parse({ type: "code", value: 'method(x, y);'}); 
 
- // Code gen testing
+// Code gen testing
 // let ast = ASTParser.parse({ type: "code", value: "{ {  1,2,3  } }" });
 // let ast = ASTParser.parse({ type: "code", value: "{{let x = 1; var y; const z = 2}}" });
 // let ast = ASTParser.parse({ type: "code", value: ' x = {1 : 2, "a":2}' });
@@ -363,17 +365,31 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: "let x = select css('#a'), z from esx() where (x==1)"}); 
 // let ast = ASTParser.parse({ type: "code", value: "select css('#a') , z from (select css('#a') from zz) where (x==1)"}); 
 // let ast = ASTParser.parse({ type: "code", value: " select css('#a') from source() where (x==1) "}); 
-let ast = ASTParser.parse({ type: "code", value: " select css('#a') from source(), s2() where (x==1) "}); 
+// let ast = ASTParser.parse({ type: "code", value: " let x= select css('#a') from source(), s2() where (x==1) "}); 
+
 // let ast = ASTParser.parse({ type: "code", value: "select css('') as x from val()"});  // ?? SqlSelectExpressionContext
 
-console.table(toJson(ast))
 
-if(false) {
-    const generator = new SourceGenerator();
-    const script = generator.toSource(ast);
 
-    console.info('-------')
-    console.info(script)
+(async function f() {
+        const gen = new MockQueryable()
+        const iter = gen.iter()
+        console.info(iter)
+        for await (const x of  iter) {
+                console.log(x);
+        }
+})()
+
+
+if (false) {
+        let ast = ASTParser.parse({ type: "code", value: " select css('#a') from s1(), s2() " });
+        console.table(toJson(ast))
+
+        const generator = new SourceGenerator();
+        const script = generator.toSource(ast);
+
+        console.info('-------')
+        console.info(script)
 }
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

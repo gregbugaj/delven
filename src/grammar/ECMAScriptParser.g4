@@ -50,7 +50,7 @@ sourceElement
 
 statement
  : block
- | selectStatement
+ | querySelectStatement
  | variableStatement
  | importStatement
  | exportStatement
@@ -529,26 +529,21 @@ eos
 // I like to name this properly to limit confusion
 //https://stackoverflow.com/questions/34131071/sql-clause-vs-expression-terms
 
-selectStatement
-  : queryExpression                                                                                # QuerySelectStatement
+querySelectStatement
+  : queryExpression
   ;
 
 queryExpression
-  : bind_clause? query_expression_spec                                                              # QueryBindableExpression
-  | bind_clause '{' query_expression_spec '}'                                                       # QueryBindableScopedExpression
-  ;
-
-query_expression_spec
-  :  (querySpecification | '(' queryExpression ')') sql_union*                                    # QuerySpecExpression
+  :  (querySpecification | '(' queryExpression ')') sql_union*
   ;
 
 sql_union
-  : (Union All?) (querySpecification | ('(' queryExpression ')'))                                 # QueryUnionExpression
+  : (Union All?) (querySpecification | ('(' queryExpression ')'))                                    # QueryUnionExpression
   ;
 
 querySpecification
-  : Select select_list
-    withinClause? fromClause? whereClause? produce_clause?                                       # QuerySelectExpression
+  : bind_clause? Select select_list
+    withinClause? fromClause? whereClause? produce_clause?                                          # QuerySelectExpression // This shoudl producte Node.QueryExpression
   ;
 
 select_list
@@ -586,7 +581,7 @@ data_source_item
   : Url                                                                                             # QueryDataSourceItemUrlExpression
   | singleExpression arguments                                                                      # QueryDataSourceItemArgumentsExpression
   | identifier                                                                                      # QueryDataSourceItemIdentifierExpression
-  | '(' query_expression_spec ')'                                                                   # QueryDataSourceItemSubqueryExpression
+  | '(' queryExpression ')'                                                                         # QueryDataSourceItemSubqueryExpression
     //| anoymousFunction
     //| arrayLiteral
 //  | Url

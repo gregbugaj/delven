@@ -877,48 +877,45 @@ export class YieldExpression {
     }
 }
 
-
-export class QueryStatement {
+export class QueryExpression {
     readonly type: string;
-    readonly body: Expression;
-    constructor(body: Expression) {
-        this.type = Syntax.QueryStatement;
-        this.body = body;
-    }
-}
 
+    readonly select: SelectClause;
+    readonly from: FromClause;
+    readonly where: WhereClause | null;
+
+    constructor(selectClause: SelectClause, fromClause: FromClause,  whereClause: WhereClause | null) {
+        this.type = Syntax.QueryExpression;
+        this.from = fromClause;
+        this.select = selectClause;
+        this.where = whereClause;
+    }
+} 
 export class SelectStatement {
     readonly type: string;
-    readonly body: SelectExpression;
-    constructor(body: SelectExpression) {
-        this.type = Syntax.QueryStatement;
+    readonly body: QueryExpression;
+    constructor(body: QueryExpression) {
+        this.type = Syntax.SelectStatement;
         this.body = body;
     }
 }
 
-export class SelectExpression {
+/**
+ * The SELECT clause defines the projection of the SELECT expression. 
+ * The result has at least one column.
+ */
+export class SelectClause {
     readonly type: string;
     readonly projections: SelectItemExpression[];
-    readonly from: Expression;
-    readonly selection: Expression;
 
-    /**
-     * 
-     * @param projections Projections
-     * @param from        From Clause
-     * @param selection   Where Clause
-     */
-    constructor(projections: SelectItemExpression[], from: FromClause, selection: WhereClause) {
-        this.type = Syntax.SelectExpression;
+    constructor(projections: SelectItemExpression[]) {
+        this.type = Syntax.SelectClause;
         this.projections = projections;
-        this.from = from;
-        this.selection = selection;
     }
 }
 
-
 /**
- *  A FromClause has one or more FromClauseElement, each of which has an associated QueryDatasource
+ *  A FromClause has one or more FromClauseElement
  */
 export class FromClause {
     readonly type: string;
@@ -955,7 +952,7 @@ export class SelectItemExpression {
     readonly type: string;
     readonly expression: Expression;
     constructor(expression: Expression) {
-        this.type = Syntax.SelectExpression;
+        this.type = Syntax.SelectItemExpression;
         this.expression = expression;
     }
 }

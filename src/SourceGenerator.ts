@@ -154,6 +154,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ExportAllDeclaration: {
                 this.visitExportAllDeclaration(statement as Node.ExportAllDeclaration);
                 break;
+            } case Syntax.SelectStatement: {
+                this.visitSelectStatement(statement as Node.SelectStatement);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
@@ -162,7 +165,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('\n', false, false)
 
     }
-
+    
+    visitSelectStatement(statement: Node.SelectStatement) {
+        console.info(statement)
+    }
+    
     visitExportAllDeclaration(statement: Node.ExportAllDeclaration) {
         this.write('export * ', false, false)
         this.write('from ', false, false)
