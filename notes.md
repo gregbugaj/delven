@@ -11,7 +11,7 @@ https://github.com/microsoft/TypeScript-Node-Starter
 
 https://stackoverflow.com/questions/33440405/babel-file-is-copied-without-being-transformed#33440848
 
-https://babeljs.io/setup.html#installation
+https://babeljs.io/setup.html#installation 
 
 https://babeljs.io/docs/en/usage
 
