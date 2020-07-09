@@ -11,13 +11,13 @@ import { MockQueryable } from "./query/IQueryable";
 let toJson = (obj: any): string => JSON.stringify(obj, function replacer(key, value) { return value }, 2);
 
 function writeJson(outputFilename: string, obj: any): void {
-        fs.writeFile(outputFilename, toJson(obj), function (err) {
-                if (err) {
-                        console.log(err);
-                } else {
-                        console.log("JSON saved to " + outputFilename);
-                }
-        });
+fs.writeFile(outputFilename, toJson(obj), function (err) {
+        if (err) {
+                console.log(err);
+        } else {
+                console.log("JSON saved to " + outputFilename);
+        }
+});
 }
 
 console.info('Transpiller');
@@ -25,28 +25,7 @@ let input1 = "1"
 let input2 = "var x = function(y, z) { console.info('this is a string') ; }"
 let input3 = "var x =  2 + 4"
 
-/* 
-const input = "1";
-const chars = new antlr4.InputStream(input);
-const lexer = new DelvenLexer(chars);
-lexer.strictMode = false;
-const tokens = new antlr4.CommonTokenStream(lexer);
-const parser = new DelvenParser(tokens);
-parser.buildParseTrees = true;
-const tree = parser.program(); */
-
 console.info("---------------------");
-//let result = tree.accept(this.visitor);
-
-
-/*
-        {
-        true 
-        false
-        "true"
-        }
- */
-
 // literals
 
 //  let ast = ASTParser.parse({ type: "code", value: ' 1 '}); //NumericLiteral
@@ -371,11 +350,19 @@ console.info("---------------------");
 
 
 
-(async function f() {
+(async () => {
         const gen = new MockQueryable()
-        const iter = gen.iter()
+        
+        /* const iter = gen.iter()
         console.info(iter)
-        for await (const x of  iter) {
+        for await (const x of iter) {
+                console.log(x);
+        }
+ */
+
+        const iter = gen.iterOfIter()
+        console.info(iter)
+        for await (const x of iter) {
                 console.log(x);
         }
 })()

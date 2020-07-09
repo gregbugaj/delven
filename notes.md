@@ -30,6 +30,14 @@ npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/polyfill 
 
 npm install babel-preset-es2015  --save-dev 
 
+## JEST Setup
+https://basarat.gitbook.io/typescript/intro-1/jest
+
+```
+npm i jest @types/jest ts-jest -D
+
+```
+
 
 
 ## Setup v2

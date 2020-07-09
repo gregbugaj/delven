@@ -1,21 +1,30 @@
 export interface CallSite {
     function: string | undefined,
     filename: string,
-    line: string,
-    column: string
+    line: number,
+    column: number
 }
 
 export default class Trace {
-
     static frame(): CallSite {
         const stack = (new Error().stack);
+
+        if (stack === undefined) {
+            return {
+                function: 'undefined',
+                filename: 'undefined',
+                line: 0,
+                column: 0,
+            }
+        }
+
         const frame = stack.split("at ")[2];
         // /PrintVisitor.js:15:32
         // xyz (/PrintVisitor.js:17:32)
         // Object.<anonymous> (/PrintVisitor.js:21:30)
         let fname;
         let data;
-        if (frame.indexOf("(") >-1) {
+        if (frame.indexOf("(") > -1) {
             fname = frame.substring(0, frame.indexOf("(")).trim();
             data = frame.substring(frame.indexOf("(") + 1, frame.indexOf(")")).split(":");
         } else {
@@ -25,8 +34,8 @@ export default class Trace {
         return {
             function: fname,
             filename: data[0],
-            line: data[1].trim(),
-            column: data[2].trim(),
+            line: parseInt(data[1].trim()),
+            column: parseInt(data[2].trim()),
         }
     }
 

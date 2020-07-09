@@ -193,7 +193,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             console.info(pad + marker + nodes)
         }
         for (let i = 0; i < ctx.getChildCount(); ++i) {
-            const child = ctx?.getChild(i)
+            const child = ctx.getChild(i)
             if (child) {
                 this.dumpContextAllChildren(child, ++indent)
                 --indent;
@@ -819,7 +819,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const assignable = this.visitAssignable(assignableContext)
         let init = null;
         if (ctx.getChildCount() == 3) {
-            init = this.singleExpression(ctx.getChild(2), false)
+            init = this.singleExpression(ctx.getChild(2))
         }
         return new VariableDeclarator(assignable, init)
     }
@@ -1563,7 +1563,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 return true
             }
         }
-        throw new TypeError('Not a valid PropertyValue type got : ' + expression?.constructor)
+        throw new TypeError('Not a valid PropertyValue type got : ' + expression.constructor)
     }
 
     isPropertyKey(expression: Node.Expression): expression is Node.PropertyKey {
@@ -1573,7 +1573,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 return true
             }
         }
-        throw new TypeError('Not a valid PropertyKey type got : ' + expression?.constructor)
+        throw new TypeError('Not a valid PropertyKey type got : ' + expression.constructor)
     }
 
     /**
@@ -1660,7 +1660,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 computed = true
             }
             key = this.visitPropertyName(propNode)
-            value = this.singleExpression(ctx.getChild(2), false)
+            value = this.singleExpression(ctx.getChild(2))
         } else if (propNode instanceof ECMAScriptParser.ComputedPropertyExpressionAssignmentContext) {
             throw new TypeError("Not implemented : ComputedPropertyExpressionAssignmentContext")
         } else if (propNode instanceof ECMAScriptParser.FunctionPropertyContext) {

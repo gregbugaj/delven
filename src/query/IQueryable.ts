@@ -14,6 +14,8 @@
 export abstract class IQueryable<T> {
     // abstract iterator(): IterableIterator<string>;
     abstract iter(): AsyncGenerator<T, unknown, T | unknown>
+
+    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>
 }
 
 function sleep(ms: number) {
@@ -24,10 +26,19 @@ export class MockQueryable implements IQueryable<number> {
 
     constructor() {
         console.info("entry")
+        Symbol.iterator
+    }
+
+    async * iterOfIter(): AsyncGenerator<number, unknown, unknown> {
+        for (let i = 0; i < 5; ++i) {
+            await sleep(100);
+            yield* this.iter()
+        }
+        return;
     }
 
     async * iter(): AsyncGenerator<number, unknown, unknown> {
-        for (let i = 0; i < 10; ++i) {
+        for (let i = 0; i < 5; ++i) {
             await sleep(100);
             yield i;
         }
