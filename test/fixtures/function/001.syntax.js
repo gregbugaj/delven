@@ -1,0 +1,6 @@
+// FunctionExpression
+
+(
+    async function () {
+    }
+)

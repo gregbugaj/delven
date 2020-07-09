@@ -1,0 +1,4 @@
+// FunctionDeclaration
+
+function test(){
+}
