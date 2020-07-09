@@ -22,7 +22,7 @@ import { ErrorListener } from "antlr4/error/ErrorListener"
  * https://github.com/estree/estree
  */
 export enum ParserType { ECMAScript }
-export type SourceType = "code" | "filename";
+export type SourceType = "code" | "filename"
 export type SourceCode = {
     type: SourceType,
     value: string
@@ -49,13 +49,51 @@ interface ExportFromBlock {
     namespace: Node.ImportDefaultSpecifier | null
 }
 
-export class MyErrorListener extends ErrorListener {
+export type ErrorInfo = {
+    line: number,
+    column: number,
+    msg: string,
+}
+
+export class DelvenErrorListener extends ErrorListener {
+    errors: ErrorInfo[] = []
     syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
-        console.log(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`);
+        console.error(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`);
+        const error: ErrorInfo = {
+            line: line,
+            column: column,
+            msg: msg
+        }
+
+        this.errors.push(error)
+        throw new Error('Parsing error')
+    }
+
+    hasErrors = () => this.errors.length > 0
+
+    getErrors = () => this.errors
+}
+
+class ErrorNode extends ASTNode{
+
+    constructor(private errror: ErrorInfo){
+        super()
+        this.errror = errror
     }
 }
 
 export default abstract class ASTParser {
+    static _trace = true
+
+    /**
+     * Enable trace messages 
+     * 
+     * @param trace 
+     */
+    static trace(trace: boolean) {
+        ASTParser._trace = trace
+    }
+
     private visitor: (typeof DelvenVisitor | null)
 
     constructor(visitor?: DelvenASTVisitor) {
@@ -73,23 +111,27 @@ export default abstract class ASTParser {
                 break;
         }
 
+        const errorHandler = new DelvenErrorListener()
         const chars = new antlr4.InputStream(code)
         const lexer = new DelvenLexer(chars)
         lexer.removeErrorListeners();
-        lexer.addErrorListener(new MyErrorListener());
+        lexer.addErrorListener(errorHandler);
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-        parser.setTrace(true)
+        parser.setTrace(false)
 
         parser.removeErrorListeners();
-        parser.addErrorListener(new MyErrorListener());
+        parser.addErrorListener(errorHandler);
 
-        const tree = parser.program()
-        console.info(tree.toStringTree(parser.ruleNames))
-
-        // tree.accept(new PrintVisitor())
-        console.info("---------------------")
-        return tree.accept(this.visitor)
+        try {
+            const tree = parser.program()
+            return tree.accept(this.visitor)
+        } catch (e) {
+            if (errorHandler.hasErrors()) {
+                return new ErrorNode(errorHandler.getErrors()[0])                       
+            }
+            throw e
+        }
     }
 
     /**
@@ -135,7 +177,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     private log(ctx: RuleContext, frame: CallSite) {
-        console.info("%s [%s] : %s", frame.function, ctx.getChildCount(), ctx.getText())
+        if (ASTParser._trace) {
+            console.info("%s [%s] : %s", frame.function, ctx.getChildCount(), ctx.getText())
+        }
     }
 
     private dumpContext(ctx: RuleContext) {

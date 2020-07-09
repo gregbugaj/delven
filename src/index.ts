@@ -341,15 +341,12 @@ console.info("---------------------");
 
 
 // SQL
-// let ast = ASTParser.parse({ type: "code", value: "let x = select css('#a'), z from esx() where (x==1)"}); 
+//  let ast = ASTParser.parse({ type: "code", value: "let x = select css('#a'), z from esx() where (x==1)"}); 
 // let ast = ASTParser.parse({ type: "code", value: "select css('#a') , z from (select css('#a') from zz) where (x==1)"}); 
 // let ast = ASTParser.parse({ type: "code", value: " select css('#a') from source() where (x==1) "}); 
 // let ast = ASTParser.parse({ type: "code", value: " let x= select css('#a') from source(), s2() where (x==1) "}); 
 
 // let ast = ASTParser.parse({ type: "code", value: "select css('') as x from val()"});  // ?? SqlSelectExpressionContext
-
-
-
 (async () => {
         const gen = new MockQueryable()
         
@@ -365,11 +362,12 @@ console.info("---------------------");
         for await (const x of iter) {
                 console.log(x);
         }
-})()
+})
 
 
-if (false) {
-        let ast = ASTParser.parse({ type: "code", value: " select css('#a') from s1(), s2() " });
+if (true) {
+        // let ast = ASTParser.parse({ type: "code", value: " select css('#a') from s1(), s2() " });
+        let ast = ASTParser.parse({ type: "code", value: " for (let in x) {} " });
         console.table(toJson(ast))
 
         const generator = new SourceGenerator();

@@ -46,6 +46,7 @@
     "@types/antlr4": "^4.7.1",
     "@types/node": "^14.0.12",
     "glob": "^7.1.6",
+    "json-diff": "^0.5.4",
     "typescript": "^3.9.5"
   }
 }
