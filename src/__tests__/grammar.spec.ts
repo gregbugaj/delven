@@ -1,7 +1,6 @@
 import ASTParser from "../ASTParser"
 import ASTNode from "../ASTNode"
 //import SourceGenerator from "../SourceGenerator";
-import Utils from '../util'
 import glob from 'glob'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -28,11 +27,10 @@ function discover(): TestCase[] {
         const name = path.basename(filePath)
         const dir = path.dirname(filePath)
         const chunks = name.split('.')
-        if (chunks.length != 3) {
-            throw new Error("Expected name in format label.module|program.js")
-        }
+
         const content = fs.readFileSync(filePath, 'utf-8')
         const label = chunks[0]
+
         for (const assetPath of glob(`${dir}/**/${label}.*.json`, { sync: true })) {
             const assetName = path.basename(assetPath)
             cases.push({

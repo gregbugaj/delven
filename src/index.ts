@@ -1,31 +1,15 @@
 import * as antlr4 from "antlr4"
-import { ECMAScriptParser as DelvenParser } from "./parser/ECMAScriptParser"
 import { ECMAScriptLexer as DelvenLexer } from "./parser/ECMAScriptLexer"
 
 import ASTParser, { ParserType } from "./ASTParser"
 import SourceGenerator from "./SourceGenerator";
-import * as fs from 'fs'
+import Utils from './util'
+
+import { resolve } from "path"
+import * as fs from "fs"
 
 import { MockQueryable } from "./query/IQueryable";
-
-let toJson = (obj: any): string => JSON.stringify(obj, function replacer(key, value) { return value }, 2);
-
-function writeJson(outputFilename: string, obj: any): void {
-fs.writeFile(outputFilename, toJson(obj), function (err) {
-        if (err) {
-                console.log(err);
-        } else {
-                console.log("JSON saved to " + outputFilename);
-        }
-});
-}
-
 console.info('Transpiller');
-let input1 = "1"
-let input2 = "var x = function(y, z) { console.info('this is a string') ; }"
-let input3 = "var x =  2 + 4"
-
-console.info("---------------------");
 // literals
 
 //  let ast = ASTParser.parse({ type: "code", value: ' 1 '}); //NumericLiteral
@@ -347,34 +331,67 @@ console.info("---------------------");
 // let ast = ASTParser.parse({ type: "code", value: " let x= select css('#a') from source(), s2() where (x==1) "}); 
 
 // let ast = ASTParser.parse({ type: "code", value: "select css('') as x from val()"});  // ?? SqlSelectExpressionContext
-(async () => {
-        const gen = new MockQueryable()
-        
-        /* const iter = gen.iter()
-        console.info(iter)
-        for await (const x of iter) {
-                console.log(x);
-        }
+
+/**
+       // const code = '({b = c})=>0;'
+        // const code = '({b})=>0;'
+        // const code = '({b=c})=>0; ({b})=>0; ({b:c})=>0;'
+        //const code = '({b = fun()})=>0;'
+
+        //const code = '({[a]:[d]}) => 0;'
+        // const code = '({[a]:{}}) => 0;'
+        //  const code = '({[a]:{ x, y}}) => 0;'
+        //  const code = '([[[[[[[[[[[[[[[[[[[[{a=b}]]]]]]]]]]]]]]]]]]]])=>0;'
+        //  const code = '({a,b=b,a:c,[a]:[d]})=>0;'
+        // const code = 'x = {[a]:[d]}'
+        // const code = '(x=[...b])=>0;'
+        // const code = '(...args) => 0'
+        // const code = '([...b])=>0'
+        // const code = '[a , b, ...rest] = 1'
+        // const code = 'x = [a , b, ...rest]'
  */
+if (false) {
+        (async () => {
+                const gen = new MockQueryable()
 
-        const iter = gen.iterOfIter()
-        console.info(iter)
-        for await (const x of iter) {
-                console.log(x);
-        }
-})
+                /* const iter = gen.iter()
+                console.info(iter)
+                for await (const x of iter) {
+                        console.log(x);
+                }
+                 */
 
+                const iter = gen.iterOfIter()
+                console.info(iter)
+                for await (const x of iter) {
+                        console.log(x);
+                }
+        })
+}
 
 if (true) {
+        const code = '() => { x = 0 }'
+        const name = 'concise-body-in'
+        const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'arrow-function')
+
         // let ast = ASTParser.parse({ type: "code", value: " select css('#a') from s1(), s2() " });
-        let ast = ASTParser.parse({ type: "code", value: " for (let in x) {} " });
-        console.table(toJson(ast))
+        const ast = ASTParser.parse({ type: "code", value: code });
+        console.table(Utils.toJson(ast))
 
         const generator = new SourceGenerator();
         const script = generator.toSource(ast);
 
         console.info('-------')
         console.info(script)
+        const jsFile = resolve(dir, `${name}.js`)
+        const jsonFile = resolve(dir, `${name}.tree.json`)
+ 
+     /*    if (fs.existsSync(jsFile)) {
+           throw new Error('File exists')
+        }
+
+        Utils.write(jsFile, code)
+        Utils.write(jsonFile, ast)   */
 }
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

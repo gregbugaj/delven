@@ -1,8 +1,0 @@
-try {
-    // 
-} catch (e){
-    //
-} finally{
-
-    
-}

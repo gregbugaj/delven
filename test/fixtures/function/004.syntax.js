@@ -1,4 +1,0 @@
-// FunctionDeclaration
-
-function test(){
-}

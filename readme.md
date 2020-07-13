@@ -8,27 +8,44 @@ https://github.com/doczjs/docz/
 
 
 ```bash
-nvm use v12.18.0
+nvm cache clear
+nvm ls
+nvm ls-remote
+nvm install v14.5.0
+nvm use v14.5.0
+
 npm install --save-dev babel-loader @babel/core
 ```
+
 
 ## Start publishing changes 
 
 ```bash
  ./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts'  --source-maps inline
 
-
  antlr4 -Dlanguage=JavaScript *.g4 -o ../parser -visitor -no-listener
 ```
 
-Run ESLint 
+## Run ESLint 
+
 ```bash
 npx eslint ./src/
 ```
 
+## Run
+
+Enable / Disable trace warnings [https://www.xiaoru.li/post/disabling-node-warnings/]
+`Warning: Accessing non-existent property 'INVALID_ALT_NUMBER' of module exports inside circular dependency`
+
+```bash
+node --trace-warnings ./dist/index
+node --no-warnings  ./dist/index
+```
+
+
 ## Reference
 
-ANTL$ linux setup
+ANTLR linux setup
 
 http://www.cs.sjsu.edu/~mak/tutorials/InstallANTLR4.pdf
 

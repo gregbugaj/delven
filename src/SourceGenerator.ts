@@ -165,11 +165,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('\n', false, false)
 
     }
-    
+
     visitSelectStatement(statement: Node.SelectStatement) {
         console.info(statement)
     }
-    
+
     visitExportAllDeclaration(statement: Node.ExportAllDeclaration) {
         this.write('export * ', false, false)
         this.write('from ', false, false)
@@ -532,6 +532,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ArrayPattern: {
                 this.visitArrayPattern(expression as Node.ArrayPattern);
                 break;
+            } case Syntax.ObjectPattern: {
+                this.visitObjectPattern(expression as Node.ObjectPattern);
+                break;
             } case Syntax.AwaitExpression: {
                 this.visitAwaitExpression(expression as Node.AwaitExpression);
                 break;
@@ -541,8 +544,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.AssignmentPattern: {
                 this.visitAssignmentPattern(expression as Node.AssignmentPattern)
                 break;
-            }case Syntax.Super: {
+            } case Syntax.Super: {
                 this.visitSuper(expression as Node.Super)
+                break;
+            } case Syntax.RestElement: {
+                this.vistiRestElement(expression as Node.RestElement)
                 break;
             }
 
@@ -573,19 +579,22 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitProperty(expression: Node.Property): void {
         const key = expression.key
         const value = expression.value
-
         if (expression.shorthand) {
-            // ({c=z}) => 0 // ShortHand
-            // ({c}) => 0 // ShortHand
-            this.visitExpression(key)
-            if (value) {
-                this.write(' = ', false, false)
-                this.visitExpression(value)
+            // ({c=z}) => 0 // shorthand
+            // ({c}) => 0 // shorthand
+            if (value instanceof Node.AssignmentPattern) {
+                this.visitAssignmentPattern(value)
+            } else {
+                this.visitExpression(key)
+                if (value) {
+                    this.visitExpression(value)
+                }
             }
         } else {
-            //({b:z}) => 0 //
-            //({b}) => 0 //
+            this.writeConditional(expression.computed, '[', false, false)
             this.visitExpression(key)
+            this.writeConditional(expression.computed, ']', false, false)
+
             if (value) {
                 this.write(' : ', false, false)
                 this.visitExpression(value)
@@ -595,7 +604,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitUnaryExpression(expression: Node.UnaryExpression): void {
         this.write(expression.operator, false, false)
-        this.writeConditional(expression.operator === 'typeof', ' ', false, false)// 
+        this.writeConditional((expression.operator === 'typeof' || expression.operator === 'void'), ' ', false, false)
         this.visitExpression(expression.argument)
     }
 
@@ -796,6 +805,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             case Syntax.ObjectExpression: {
                 this.visitObjectExpression(value as Node.ObjectExpression);
                 break;
+            } case Syntax.ArrayExpression: {
+                this.visitArrayExpression(value as Node.ArrayExpression);
+                break;
             }
             default:
                 throw new TypeError("Type not handled : " + value.type)
@@ -812,10 +824,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitFunctionExpression(expression: Node.FunctionExpression): void {
-        /*         this.write('(', false, false)
-                this.writeFunctionDefinition(expression);
-                this.write(')', false, false) */
-
         this.writeFunctionDefinition(expression);
     }
 
@@ -873,6 +881,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             }
             case Syntax.ObjectPattern: {
                 this.visitObjectPattern(param as Node.ObjectPattern)
+                break;
+            }
+            case Syntax.RestElement: {
+                this.vistiRestElement(param as Node.RestElement)
                 break;
             }
             default:

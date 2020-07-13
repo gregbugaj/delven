@@ -74,9 +74,9 @@ export class DelvenErrorListener extends ErrorListener {
     getErrors = () => this.errors
 }
 
-class ErrorNode extends ASTNode{
+class ErrorNode extends ASTNode {
 
-    constructor(private errror: ErrorInfo){
+    constructor(private errror: ErrorInfo) {
         super()
         this.errror = errror
     }
@@ -118,17 +118,17 @@ export default abstract class ASTParser {
         lexer.addErrorListener(errorHandler);
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-        parser.setTrace(false)
+        parser.setTrace(true)
 
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorHandler);
+        // parser.removeErrorListeners();
+        // parser.addErrorListener(errorHandler);
 
         try {
             const tree = parser.program()
             return tree.accept(this.visitor)
         } catch (e) {
             if (errorHandler.hasErrors()) {
-                return new ErrorNode(errorHandler.getErrors()[0])                       
+                return new ErrorNode(errorHandler.getErrors()[0])
             }
             throw e
         }
@@ -470,7 +470,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const specifiers: ModuleSpecifier[] = []
         for (let i = 0; i < aliases.length; ++i) {
             const alias = aliases[i]
-            console.info(alias.getChildCount())
             const lhs: Node.Identifier = this.visitIdentifierName(alias.getChild(0))
             const rhs: Node.Identifier = (alias.getChildCount() == 3) ? this.visitIdentifierName(alias.getChild(2)) : null
             specifiers.push(new ModuleSpecifier(lhs, rhs))
@@ -1335,7 +1334,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     private functionDeclaration(ctx: RuleContext): FunctionDeclaration | AsyncFunctionDeclaration {
         let identifier: Identifier | null = null;
         let params: FunctionParameter[] = []
-        let body: BlockStatement;
+        let body: BlockStatement = new Node.BlockStatement(null);
         const { async, generator } = this.getFunctionAttributes(ctx)
 
         for (let i = 0; i < ctx.getChildCount(); ++i) {
@@ -1420,6 +1419,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ArrayLiteralContext)
         const elementListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ElementListContext)
+
         return this.visitElementList(elementListContext)
     }
 
@@ -1428,6 +1428,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * compliance: esprima compliane of returning `null` 
      * `[,,]` should have 2 null values
      * 
+     * ```
+     * let x  = [a,...b]  // ArrayExpression > SpreadElement
+     * ([...b])=>0;       // ArrayPattern > RestElement
+     * ```
      * ```
      * elementList
      *  : ','* arrayElement? (','+ arrayElement)* ','* // Yes, everything is optional
@@ -1438,7 +1442,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitElementList(ctx: RuleContext): Node.ArrayExpressionElement[] {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ElementListContext)
-        const elements: Node.ArrayExpressionElement[] = [];
+        const elements: Node.ArrayExpressionElement[] = []
         const iterable = this.iterable(ctx)
         let lastTokenWasComma = false;
         if (iterable.length > 0) {
@@ -1446,7 +1450,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 lastTokenWasComma = true;
             }
         }
-
         for (const node of iterable) {
             //ellison check
             if (node.symbol != null) {
@@ -1462,6 +1465,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return elements;
     }
 
+    /**
+     * Convert context child nodes into a 
+     * @param ctx 
+     */
     private iterable(ctx: RuleContext) {
         const nodes = [];
         for (let i = 0; i < ctx.getChildCount(); ++i) {
@@ -1495,6 +1502,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#objectLiteral.
      * 
+     * Sample
+     * ```
+     * ({[a]:[d]}) => 0; // ArrowFunctionExpression > ObjectPattern > ArrayPattern
+     * x = {[a]:[d]}     // AssignmentExpression > ObjectExpression > ArrayExpression[computed = true]
+     * ```
+     * 
+     * Grammar :
      * ```
      * objectLiteral
      *  : '{' (propertyAssignment (',' propertyAssignment)*)? ','? '}'
@@ -1512,7 +1526,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const nodes = this.filterSymbols(ctx)
         const properties: Node.ObjectExpressionProperty[] = [];
         for (const node of nodes) {
-            let property: Node.ObjectExpressionProperty = null;
+            let property: Node.ObjectExpressionProperty | null = null;
             if (node instanceof ECMAScriptParser.PropertyExpressionAssignmentContext) {
                 property = this.visitPropertyExpressionAssignment(node)
             } else if (node instanceof ECMAScriptParser.PropertyShorthandContext) {
@@ -1523,10 +1537,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 this.throwInsanceError(this.dumpContext(node))
             }
 
-            if (property != undefined) {
+            if (property != null) {
                 properties.push(property)
             }
         }
+
         return new Node.ObjectExpression(properties)
     }
 
@@ -1547,6 +1562,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * ({c}) => 0 
      * ```
      * 
+     * AssignmentPattern
+     * ```
+     *  ({b = c})=>0; 
+     * ```
+     * 
+     * 
      * Grammar
      *  ```
      * | Ellipsis? singleExpression                                                    # PropertyShorthand
@@ -1564,10 +1585,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let value: Node.PropertyValue | null = null
         const expression: Node.Expression = this.singleExpression(ctx.getChild(0))
 
+        // Convert AssignmentExpression to AssignmentPattern
         if (expression instanceof Node.AssignmentExpression) {
             const assignable: Node.AssignmentExpression = expression as Node.AssignmentExpression
             key = assignable.left as Node.PropertyKey
-            value = this.isPropertyValue(assignable.right) ? assignable.right : null
+            if (this.isPropertyValue(assignable.right)) {
+                value = new Node.AssignmentPattern(key, assignable.right)
+            } else {
+                throw new TypeError("Unable to convert property shorthand")
+            }
         } else {
             if (ctx.getChildCount()) {
                 key = new Identifier(ctx.getText())
@@ -1602,22 +1628,32 @@ export class DelvenASTVisitor extends DelvenVisitor {
             Node.ArrowFunctionExpression
         ]
 
-        for (const type of types) {
-            if (expression instanceof type) {
-                return true
-            }
+        if (this.isInstanceOfAny(expression, types)) {
+            return true
         }
         throw new TypeError('Not a valid PropertyValue type got : ' + expression.constructor)
     }
 
     isPropertyKey(expression: Node.Expression): expression is Node.PropertyKey {
         const types = [Node.Literal, Node.Identifier]
+        if (this.isInstanceOfAny(expression, types)) {
+            return true
+        }
+        throw new TypeError('Not a valid PropertyKey type got : ' + expression.constructor)
+    }
+
+    /**
+     * Type guard  
+     * @param val 
+     * @param types 
+     */
+    isInstanceOfAny(val: unknown, types: any[]): boolean {
         for (const type of types) {
-            if (expression instanceof type) {
+            if (val instanceof type) {
                 return true
             }
         }
-        throw new TypeError('Not a valid PropertyKey type got : ' + expression.constructor)
+        return false
     }
 
     /**
@@ -1691,18 +1727,19 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitPropertyExpressionAssignment(ctx: RuleContext): Node.ObjectExpressionProperty {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.PropertyExpressionAssignmentContext)
-        const propNode: RuleContext = ctx.getChild(0) // PropertyName
-        let key: PropertyKey;
-        let value;
-        let computed = false;
-        const method = false;
-        const shorthand = false;
+        const propNode: RuleContext = ctx.getChild(0)
+        let key: Node.PropertyKey
+        let value: Node.Expression
+        let computed = false
+        const method = false
+        const shorthand = false
 
         if (propNode instanceof ECMAScriptParser.PropertyNameContext) {
             // should check for actuall `[expression]`
             if (propNode.getChildCount() == 3) {
                 computed = true
             }
+
             key = this.visitPropertyName(propNode)
             value = this.singleExpression(ctx.getChild(2))
         } else if (propNode instanceof ECMAScriptParser.ComputedPropertyExpressionAssignmentContext) {
@@ -2215,7 +2252,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return new AssignmentPattern(assignable, expression)
         }
     }
+
     /**
+     * We have to perform converions here for the ArrayLiteral and ObjectLiteral
+     * 
+     * Code :
+     * ```
+     *  ([...b]) => 0;  //ArrayPattern > RestElement
+     *  ( x = [...b]) => 0;  // AssignmentPattern  ArrayExpression > SpreadElement
+     *  (...args) => 0  // ArrowFunctionExpression > RestElement
+     * ```
+     * Grammar : 
      * ```
      *  assignable
      *    : identifier
@@ -2229,33 +2276,46 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.AssignableContext)
         const assignable = ctx.getChild(0)
-        if (assignable instanceof ECMAScriptParser.IdentifierContext) {
-            return this.visitIdentifier(assignable)
-        } else if (assignable instanceof ECMAScriptParser.ArrayLiteralContext) {
+        if (assignable instanceof ECMAScriptParser.ArrayLiteralContext) {
             const elements = this.visitArrayLiteral(assignable)
-            return new ArrayPattern(elements)
+            const converted = this.convertToArrayPatternElements(elements)
+            return new ArrayPattern(converted)
         } else if (assignable instanceof ECMAScriptParser.ObjectLiteralContext) {
-            // Unroll expression into ObjectPattern
             const elements = this.visitObjectLiteral(assignable)
-            const properties: Node.ObjectPatternProperty[] = elements.properties;
-            return new Node.ObjectPattern(properties)
+            const converted = this.convertToObjectPatternProperty(elements.properties)
+            return new Node.ObjectPattern(converted)
+        } else {
+            return this.visitIdentifier(assignable)
         }
-
-        this.throwInsanceError(this.dumpContext(ctx))
     }
 
+
+
     /**
-     * Visit a parse tree produced by ECMAScriptParser#lastFormalParameterArg.
-     * 
-     * lastFormalParameterArg                        // ECMAScript 6: Rest Parameter
-     *   : Ellipsis singleExpression
-     *   ;
+     * Convert SpreadElement to RestElement
+     * @param element 
      */
+    convertToRestElement(element: Node.SpreadElement): Node.RestElement {
+        if (!(element instanceof Node.Identifier || element instanceof Node.ArrayPattern || element instanceof Node.ObjectPattern)) {
+            throw new TypeError("Unable to convert to RestElement")
+        }
+        return new RestElement(element)
+    }
+
+
+    /**
+         * Visit a parse tree produced by ECMAScriptParser#lastFormalParameterArg.
+         * 
+         * lastFormalParameterArg                        // ECMAScript 6: Rest Parameter
+         *   : Ellipsis singleExpression
+         *   ;
+         */
     visitLastFormalParameterArg(ctx: RuleContext): Node.RestElement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.LastFormalParameterArgContext)
         const expression = this.singleExpression(ctx.getChild(1))
 
+        //Identifier | ArrayPattern  
         return new Node.RestElement(expression)
     }
 
@@ -2305,8 +2365,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.LogicalOrExpressionContext)
         return this._binaryExpression(ctx)
     }
-
-
 
     visitPowerExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
@@ -2569,6 +2627,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#AssignmentExpression.
      * 
+     * Example :
+     * ```
+     * [a , b] = 1          // ExpressionStatement > AssignmentExpression > ArrayPattern
+     * [a , b,...rest] = 1  // ExpressionStatement > AssignmentExpression > ArrayPattern > RestElement
+     * ```
+     * 
+     * Grammar :
      * ```
      * <assoc=right> singleExpression '=' singleExpression                   # AssignmentExpression
      * ```
@@ -2585,14 +2650,95 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let lhs = this.singleExpression(initialiser)
         const rhs = this.singleExpression(expression)
 
-        // [a , b] = 1// ArrayPattern
         if (lhs instanceof Node.ArrayExpression) {
-            const tmp = lhs as Node.ArrayPattern
-            lhs = new Node.ArrayPattern(tmp.elements)
+            lhs = this.convertToArrayPattern(lhs)
         }
 
         return new AssignmentExpression(operator, lhs, rhs)
     }
+
+    /**
+     * Convert ArrayExpression into ArrayPattern subsequently modifying the underlying nodes.     
+     * 
+     * @param expression 
+     */
+    convertToArrayPattern(expression: Node.ArrayExpression): Node.ArrayPattern {
+        if (!(expression instanceof Node.ArrayExpression)) {
+            throw new TypeError("Expected ArrayExpression")
+        }
+        return new Node.ArrayPattern(this.convertToArrayPatternElements(expression.elements))
+    }
+
+    /**
+     * Convert ArrayExpressionElement[] into ArrayPatternElement[]
+     * SpreadElement will be converted to RestElement 
+     * @param elements 
+     */
+    convertToArrayPatternElements(elements: ArrayExpressionElement[]): Node.ArrayPatternElement[] {
+        const conversion: Node.ArrayPatternElement[] = []
+        for (const node of elements) {
+            if (node == null) {
+                conversion.push(null)
+            } else if (node instanceof Node.SpreadElement) {
+                const arg = node.argument
+                if (arg instanceof Node.Identifier || arg instanceof Node.ArrayPattern || arg instanceof Node.ObjectPattern) {
+                    conversion.push(new RestElement(arg))
+                }
+            } else { // Expression
+                //bindingPattern = ArrayPattern | ObjectPattern;
+                if (node instanceof Node.Identifier || node instanceof Node.ArrayPattern || node instanceof Node.ObjectPattern) {
+                    conversion.push(node)
+                } else if (node instanceof Node.ArrayExpression) {
+                    const pattern = new Node.ArrayPattern(this.convertToArrayPatternElements(node.elements))
+                    conversion.push(pattern)
+                } else if (node instanceof Node.ObjectExpression) {
+                    const pattern = new Node.ObjectPattern(this.convertToObjectPatternProperty(node.properties))
+                    conversion.push(pattern)
+                }
+                else {
+                    throw new TypeError("Invalid type received got : " + node?.constructor)
+                }
+            }
+        }
+        return conversion
+    }
+
+    /**
+     * Convert ObjectExpressionProperty[] into an ObjectPatternProperty[]
+     * @param elements 
+     */
+    convertToObjectPatternProperty(elements: Node.ObjectExpressionProperty[]): Node.ObjectPatternProperty[] {
+        const conversion: Node.ObjectPatternProperty[] = []
+        for (const node of elements) {
+            if (node instanceof Node.Property) {
+                const value = node.value;
+                // ObjectExpression ArrayExpression
+                if (value instanceof Node.ArrayExpression) {
+                    const pattern = new Node.ArrayPattern(this.convertToArrayPatternElements(value.elements))
+                    conversion.push(new Node.Property(node.kind, node.key, node.computed, pattern, node.method, node.shorthand))
+                } else if (value instanceof Node.ObjectExpression) {
+                    const properties: Node.ObjectPatternProperty[] = []
+                    for (const prop of value.properties) {
+                        if (prop instanceof Node.Property) {
+                            properties.push(prop)
+                        } else if (prop instanceof Node.SpreadElement) {
+                            conversion.push(this.convertToRestElement(prop))
+                        } else {
+                            throw new TypeError("Invalid Objecty Pattern Type")
+                        }
+                    }
+                    const pattern = new Node.ObjectPattern(properties)
+                    conversion.push(new Node.Property(node.kind, node.key, node.computed, pattern, node.method, node.shorthand))
+                } else {
+                    conversion.push(node)
+                }
+            } else if (node instanceof Node.SpreadElement) {
+                conversion.push(this.convertToRestElement(node))
+            }
+        }
+        return conversion
+    }
+
 
     // Visit a parse tree produced by ECMAScriptParser#TypeofExpression.
     visitTypeofExpression(ctx: RuleContext): Node.UnaryExpression {
@@ -2774,6 +2920,22 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitInstanceofExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.TypeofExpressionContext) {
             return this.visitTypeofExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.BitNotExpressionContext) {
+            return this.visitBitNotExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.UnaryMinusExpressionContext) {
+            return this.visitUnaryMinusExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.PreDecreaseExpressionContext) {
+            return this.visitPreDecreaseExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.NotExpressionContext) {
+            return this.visitNotExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.UnaryPlusExpressionContext) {
+            return this.visitUnaryPlusExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.PreIncrementExpressionContext) {
+            return this.visitPreIncrementExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.PowerExpressionContext) {
+            return this.visitPowerExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.VoidExpressionContext) {
+            return this.visitVoidExpression(ctx)
         }
 
         this.throwInsanceError(this.dumpContext(ctx))
@@ -2781,7 +2943,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     // Visit a parse tree produced by ECMAScriptParser#RelationalExpression.
     visitRelationalExpression(ctx: RuleContext): Node.BinaryExpression {
-        console.info("visitRelationalExpression [%s] : %s", ctx.getChildCount(), ctx.getText())
         this.assertType(ctx, ECMAScriptParser.RelationalExpressionContext)
         this.assertNodeCount(ctx, 3)
         const left = ctx.getChild(0)
@@ -2898,7 +3059,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertNodeCount(ctx, 1)
         const node = ctx.getChild(0)
         const elements = this.visitArrayLiteral(node)
-
         return new ArrayExpression(elements)
     }
 
