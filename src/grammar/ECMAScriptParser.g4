@@ -395,13 +395,11 @@ arrowFunctionBody
     | singleExpression
     ;
 
-/* 
-    // issue with `() => {}` resolving as object literal
-    arrowFunctionBody
-    : singleExpression
-    | '{' functionBody '}'
-    ; */
-
+/*// issue with `() => {}` resolving as object literal
+arrowFunctionBody
+  : singleExpression
+  | '{' functionBody '}'
+;*/
 
 assignmentOperator
  : '*=' 

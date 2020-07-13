@@ -370,9 +370,9 @@ if (false) {
 }
 
 if (true) {
-        const code = '() => { x = 0 }'
-        const name = 'concise-body-in'
-        const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'arrow-function')
+        const code = 'for (let [x = val];;) {}'
+        const name = 'for-let-val'
+        const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'binding-pattern', 'array-pattern')
 
         // let ast = ASTParser.parse({ type: "code", value: " select css('#a') from s1(), s2() " });
         const ast = ASTParser.parse({ type: "code", value: code });
@@ -380,18 +380,17 @@ if (true) {
 
         const generator = new SourceGenerator();
         const script = generator.toSource(ast);
-
         console.info('-------')
         console.info(script)
         const jsFile = resolve(dir, `${name}.js`)
         const jsonFile = resolve(dir, `${name}.tree.json`)
  
-     /*    if (fs.existsSync(jsFile)) {
+/*          if (fs.existsSync(jsFile)) {
            throw new Error('File exists')
         }
 
         Utils.write(jsFile, code)
-        Utils.write(jsonFile, ast)   */
+        Utils.write(jsonFile, ast)  */ 
 }
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

@@ -118,7 +118,7 @@ export default abstract class ASTParser {
         lexer.addErrorListener(errorHandler);
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-        parser.setTrace(true)
+        parser.setTrace(false)
 
         // parser.removeErrorListeners();
         // parser.addErrorListener(errorHandler);
