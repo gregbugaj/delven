@@ -1,0 +1,28 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "a"
+            },
+            "params": [
+                {
+                    "type": "ArrayPattern",
+                    "elements": []
+                }
+            ],
+            "body": {
+                "type": "BlockStatement",
+                "body": []
+            },
+            "generator": false,
+            "expression": false,
+            "async": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

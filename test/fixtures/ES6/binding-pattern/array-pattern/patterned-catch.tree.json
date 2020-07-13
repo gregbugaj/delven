@@ -1,0 +1,131 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "TryStatement",
+            "block": {
+                "type": "BlockStatement",
+                "body": [],
+                "start": 0,
+                "end": 0
+            },
+            "handler": {
+                "type": "CatchClause",
+                "param": {
+                    "type": "ArrayPattern",
+                    "elements": [
+                        {
+                            "type": "Identifier",
+                            "name": "a"
+                        },
+                        {
+                            "type": "Identifier",
+                            "name": "b"
+                        },
+                        {
+                            "type": "ObjectPattern",
+                            "properties": [
+                                {
+                                    "type": "Property",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "c"
+                                    },
+                                    "computed": false,
+                                    "value": null,
+                                    "kind": "init",
+                                    "method": false,
+                                    "shorthand": true
+                                },
+                                {
+                                    "type": "Property",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "d",
+                                        "start": 0,
+                                        "end": 0
+                                    },
+                                    "computed": false,
+                                    "value": {
+                                        "type": "AssignmentPattern",
+                                        "left": {
+                                            "type": "Identifier",
+                                            "name": "e"
+                                        },
+                                        "right": {
+                                            "type": "Literal",
+                                            "value": 0,
+                                            "raw": "0",
+                                            "start": 0,
+                                            "end": 0
+                                        }
+                                    },
+                                    "kind": "init",
+                                    "method": false,
+                                    "shorthand": false
+                                },
+                                {
+                                    "type": "Property",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "f"
+                                    },
+                                    "computed": true,
+                                    "value": {
+                                        "type": "AssignmentPattern",
+                                        "left": {
+                                            "type": "Identifier",
+                                            "name": "g"
+                                        },
+                                        "right": {
+                                            "type": "Literal",
+                                            "value": 0,
+                                            "raw": "0",
+                                            "start": 0,
+                                            "end": 0
+                                        }
+                                    },
+                                    "kind": "init",
+                                    "method": false,
+                                    "shorthand": false
+                                },
+                                {
+                                    "type": "Property",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "h"
+                                    },
+                                    "computed": false,
+                                    "value": {
+                                        "type": "AssignmentPattern",
+                                        "left": {
+                                            "type": "Identifier",
+                                            "name": "h"
+                                        },
+                                        "right": {
+                                            "type": "Identifier",
+                                            "name": "i"
+                                        }
+                                    },
+                                    "kind": "init",
+                                    "method": false,
+                                    "shorthand": true
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "body": {
+                    "type": "BlockStatement",
+                    "body": [],
+                    "start": 0,
+                    "end": 0
+                }
+            },
+            "finalizer": null
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
