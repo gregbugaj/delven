@@ -2691,6 +2691,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 const arg = node.argument
                 if (this.isBindingIdentifierOrBindingPattern(arg)) {
                     conversion.push(new RestElement(arg))
+                } else if (arg instanceof Node.ArrayExpression) {
+                    const pattern = new Node.ArrayPattern(this.convertToArrayPatternElements(arg.elements))
+                    conversion.push(new RestElement(pattern))
                 } else {
                     throw new TypeError("Invalid type received got : " + node?.constructor)
                 }
