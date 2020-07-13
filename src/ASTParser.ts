@@ -2673,7 +2673,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * Type guard to check if node is and BindingIdentifier | BindingPattern
      * @param node 
      */
-    private isArrayPatternElementType(node:unknown): node is Node.Identifier | Node.ArrayPattern |  Node.ObjectPattern {
+    isBindingIdentifierOrBindingPattern(node: unknown): node is Node.Identifier | Node.ArrayPattern | Node.ObjectPattern {
         return (node instanceof Node.Identifier || node instanceof Node.ArrayPattern || node instanceof Node.ObjectPattern)
     }
 
@@ -2689,14 +2689,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 conversion.push(null)
             } else if (node instanceof Node.SpreadElement) {
                 const arg = node.argument
-                if (this.isArrayPatternElementType(arg)) {
+                if (this.isBindingIdentifierOrBindingPattern(arg)) {
                     conversion.push(new RestElement(arg))
                 } else {
                     throw new TypeError("Invalid type received got : " + node?.constructor)
                 }
             } else { // Expression
                 //bindingPattern = ArrayPattern | ObjectPattern;
-                if (node instanceof Node.Identifier || node instanceof Node.ArrayPattern || node instanceof Node.ObjectPattern) {
+                if (this.isBindingIdentifierOrBindingPattern(node)) {
                     conversion.push(node)
                 } else if (node instanceof Node.ArrayExpression) {
                     const pattern = new Node.ArrayPattern(this.convertToArrayPatternElements(node.elements))
@@ -2705,7 +2705,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                     const pattern = new Node.ObjectPattern(this.convertToObjectPatternProperty(node.properties))
                     conversion.push(pattern)
                 } else if (node instanceof Node.AssignmentExpression) {
-                    if (this.isArrayPatternElementType(node.left)) {
+                    if (this.isBindingIdentifierOrBindingPattern(node.left)) {
                         const pattern = new Node.AssignmentPattern(node.left, node.right)
                         conversion.push(pattern)
                     } else {
@@ -2746,8 +2746,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
                     }
                     const pattern = new Node.ObjectPattern(properties)
                     conversion.push(new Node.Property(node.kind, node.key, node.computed, pattern, node.method, node.shorthand))
+                } else if (value instanceof Node.AssignmentExpression) {
+                    if (this.isBindingIdentifierOrBindingPattern(value.left)) {
+                        const pattern = new Node.AssignmentPattern(value.left, value.right)
+                        conversion.push(new Node.Property(node.kind, node.key, node.computed, pattern, node.method, node.shorthand))
+                    } else {
+                        throw new TypeError("Invalid type received got : " + node?.constructor)
+                    }
                 } else {
-                    conversion.push(node)
+                     conversion.push(node)
                 }
             } else if (node instanceof Node.SpreadElement) {
                 conversion.push(this.convertToRestElement(node))

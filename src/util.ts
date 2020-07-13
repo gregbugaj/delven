@@ -7,21 +7,22 @@ export default class Utils {
      * Create directory from a path
      * @param path 
      */
-    static createDir = async (path: string): Promise<boolean> => {
+    static createDirs = async (path: string): Promise<boolean> => {
         let dir = path
         if (path.indexOf('.') > -1) {
             dir = path.slice(0, path.lastIndexOf('/'))
         }
 
         if (fs.existsSync(dir)) {
-            return true
+            return false
         }
-        fs.mkdirSync(dir)
+
+        fs.mkdirSync(dir,  { recursive: true })
         return true
     }
 
     static async _write(outputFilename: string, value: string): Promise<void> {
-        await this.createDir(outputFilename)
+        await this.createDirs(outputFilename)
 
         fs.writeFile(outputFilename, value, function (err) {
             if (err) {
@@ -46,6 +47,7 @@ export default class Utils {
      * @param value 
      */
     static write(outputFilename: string, value: string | unknown): void {
+
         if (typeof value === 'string') {
             Utils._write(outputFilename, value)
         } else {
