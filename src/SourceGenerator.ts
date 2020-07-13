@@ -586,9 +586,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 this.visitAssignmentPattern(value)
             } else {
                 this.visitExpression(key)
-                if (value) {
-                    this.visitExpression(value)
-                }
             }
         } else {
             this.writeConditional(expression.computed, '[', false, false)
