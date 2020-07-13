@@ -2670,6 +2670,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
+     * Type guard to check if node is and BindingIdentifier | BindingPattern
+     * @param node 
+     */
+    private isArrayPatternElementType(node:unknown): node is Node.Identifier | Node.ArrayPattern |  Node.ObjectPattern {
+        return (node instanceof Node.Identifier || node instanceof Node.ArrayPattern || node instanceof Node.ObjectPattern)
+    }
+
+    /**
      * Convert ArrayExpressionElement[] into ArrayPatternElement[]
      * SpreadElement will be converted to RestElement 
      * @param elements 
@@ -2681,8 +2689,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 conversion.push(null)
             } else if (node instanceof Node.SpreadElement) {
                 const arg = node.argument
-                if (arg instanceof Node.Identifier || arg instanceof Node.ArrayPattern || arg instanceof Node.ObjectPattern) {
+                if (this.isArrayPatternElementType(arg)) {
                     conversion.push(new RestElement(arg))
+                } else {
+                    throw new TypeError("Invalid type received got : " + node?.constructor)
                 }
             } else { // Expression
                 //bindingPattern = ArrayPattern | ObjectPattern;
@@ -2694,6 +2704,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 } else if (node instanceof Node.ObjectExpression) {
                     const pattern = new Node.ObjectPattern(this.convertToObjectPatternProperty(node.properties))
                     conversion.push(pattern)
+                } else if (node instanceof Node.AssignmentExpression) {
+                    if (this.isArrayPatternElementType(node.left)) {
+                        const pattern = new Node.AssignmentPattern(node.left, node.right)
+                        conversion.push(pattern)
+                    } else {
+                        throw new TypeError("Invalid type received got : " + node?.constructor)
+                    }
                 }
                 else {
                     throw new TypeError("Invalid type received got : " + node?.constructor)

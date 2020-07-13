@@ -18,8 +18,8 @@ export default class SourceGenerator {
      * @param node 
      */
     toSource(node: Node.Script | Node.Module): string {
-        const visitor = new ExplicitASTNodeVisitor();
-        visitor.visitScript(node);
+        const visitor = new ExplicitASTNodeVisitor()
+        visitor.visitScript(node)
         return visitor.buffer;
     }
 }
@@ -33,7 +33,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     private indent: string;
 
     constructor() {
-        super();
+        super()
         this._buffer = ""
         this.indentation = 0
         this.indent_with = "    "
@@ -59,18 +59,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     private writeConditional(condition: boolean, txt: string, useIndent: boolean, newline = false): void {
         if (condition) {
-            this.write(txt, useIndent, newline);
+            this.write(txt, useIndent, newline)
         }
     }
 
     private indentDecrease() {
         this.indentation--;
-        this.updateIndent();
+        this.updateIndent()
     }
 
     private indentIncease() {
         this.indentation++;
-        this.updateIndent();
+        this.updateIndent()
     }
 
     private updateIndent() {
@@ -82,9 +82,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitScript(node: Node.Script): void {
-        this.write("// Generated code", false, true);
+        this.write("// Generated code", false, true)
         for (const stm of node.body) {
-            this.visitStatement(stm);
+            this.visitStatement(stm)
         }
     }
 
@@ -92,70 +92,70 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         switch (statement.type) {
             case Syntax.BlockStatement: {
-                this.visitBlockStatement(statement as Node.BlockStatement);
+                this.visitBlockStatement(statement as Node.BlockStatement)
                 break;
             } case Syntax.ExpressionStatement: {
-                this.visitExpressionStatement(statement as Node.ExpressionStatement);
+                this.visitExpressionStatement(statement as Node.ExpressionStatement)
                 break;
             } case Syntax.VariableDeclaration: {
-                this.visitVariableDeclaration(statement as Node.VariableDeclaration);
+                this.visitVariableDeclaration(statement as Node.VariableDeclaration)
                 break;
             } case Syntax.ClassDeclaration: {
-                this.visitClassDeclaration(statement as Node.ClassDeclaration);
+                this.visitClassDeclaration(statement as Node.ClassDeclaration)
                 break;
             } case Syntax.LabeledStatement: {
-                this.visitLabeledStatement(statement as Node.LabeledStatement);
+                this.visitLabeledStatement(statement as Node.LabeledStatement)
                 break;
             } case Syntax.ReturnStatement: {
-                this.vistReturnStatement(statement as Node.ReturnStatement);
+                this.vistReturnStatement(statement as Node.ReturnStatement)
                 break;
             } case Syntax.IfStatement: {
-                this.visitIfStatement(statement as Node.IfStatement);
+                this.visitIfStatement(statement as Node.IfStatement)
                 break;
             } case Syntax.FunctionDeclaration: {
-                this.visitFunctionDeclaration(statement as Node.FunctionDeclaration);
+                this.visitFunctionDeclaration(statement as Node.FunctionDeclaration)
                 break;
             } case Syntax.SwitchStatement: {
-                this.visitSwitchStatement(statement as Node.SwitchStatement);
+                this.visitSwitchStatement(statement as Node.SwitchStatement)
                 break;
             } case Syntax.BreakStatement: {
-                this.visitBreakStatement(statement as Node.BreakStatement);
+                this.visitBreakStatement(statement as Node.BreakStatement)
                 break;
             } case Syntax.EmptyStatement: {
-                this.visitEmptyStatement(statement as Node.EmptyStatement);
+                this.visitEmptyStatement(statement as Node.EmptyStatement)
                 break;
             } case Syntax.TryStatement: {
-                this.visitTryStatement(statement as Node.TryStatement);
+                this.visitTryStatement(statement as Node.TryStatement)
                 break;
             } case Syntax.ThrowStatement: {
-                this.visitThrowStatement(statement as Node.ThrowStatement);
+                this.visitThrowStatement(statement as Node.ThrowStatement)
                 break;
             } case Syntax.WhileStatement: {
-                this.visitWhileStatement(statement as Node.WhileStatement);
+                this.visitWhileStatement(statement as Node.WhileStatement)
                 break;
             } case Syntax.DoWhileStatement: {
-                this.visitDoWhileStatement(statement as Node.DoWhileStatement);
+                this.visitDoWhileStatement(statement as Node.DoWhileStatement)
                 break;
             } case Syntax.ForOfStatement: {
-                this.visitForOfStatement(statement as Node.ForOfStatement);
+                this.visitForOfStatement(statement as Node.ForOfStatement)
                 break;
             } case Syntax.ForInStatement: {
-                this.visitForInStatement(statement as Node.ForInStatement);
+                this.visitForInStatement(statement as Node.ForInStatement)
                 break;
             } case Syntax.ForStatement: {
-                this.visitForStatement(statement as Node.ForStatement);
+                this.visitForStatement(statement as Node.ForStatement)
                 break;
             } case Syntax.ExportNamedDeclaration: {
-                this.visitExportNamedDeclaration(statement as Node.ExportNamedDeclaration);
+                this.visitExportNamedDeclaration(statement as Node.ExportNamedDeclaration)
                 break;
             } case Syntax.ExportDefaultDeclaration: {
-                this.visitExportDefaultDeclaration(statement as Node.ExportDefaultDeclaration);
+                this.visitExportDefaultDeclaration(statement as Node.ExportDefaultDeclaration)
                 break;
             } case Syntax.ExportAllDeclaration: {
-                this.visitExportAllDeclaration(statement as Node.ExportAllDeclaration);
+                this.visitExportAllDeclaration(statement as Node.ExportAllDeclaration)
                 break;
             } case Syntax.SelectStatement: {
-                this.visitSelectStatement(statement as Node.SelectStatement);
+                this.visitSelectStatement(statement as Node.SelectStatement)
                 break;
             }
             default:
@@ -228,7 +228,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         if (statement.update) {
             this.visitExpression(statement.update)
         }
-        this.write(';', false, false)
+        
         this.write(')', false, false)
         this.visitStatement(statement.body)
     }
@@ -302,7 +302,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.write(')', false, false)
         }
 
-        this.writeNewLine();
+        this.writeNewLine()
         this.visitBlockStatement(clause.body)
     }
 
@@ -434,18 +434,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitBlockStatement(node: Node.BlockStatement): void {
-        this.write("{", true, true);
+        this.write("{", true, true)
         const body = node.body;
         if (body != null) {
             for (let i = 0; i < body.length; ++i) {
                 const statement = body[i]
                 this.indentIncease()
-                this.visitStatement(statement);
+                this.visitStatement(statement)
                 this.write(i < body.length - 1 ? '\n' : '', false, false)
                 this.indentDecrease()
             }
         }
-        this.write("}", true, false);
+        this.write("}", true, false)
     }
 
     visitExpressionStatement(node: Node.ExpressionStatement): void {
@@ -453,14 +453,14 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitAssignmentExpression(expression: Node.AssignmentExpression): void {
-        this.visitExpression(expression.left);
+        this.visitExpression(expression.left)
         this.write(" " + expression.operator + " ", false, false)
-        this.visitExpression(expression.right);
+        this.visitExpression(expression.right)
     }
 
     visitSequenceExpression(sequence: Node.SequenceExpression): void {
         for (let i = 0; i < sequence.expressions.length; ++i) {
-            this.visitExpression(sequence.expressions[i] as Node.Expression);
+            this.visitExpression(sequence.expressions[i] as Node.Expression)
             if (i < sequence.expressions.length - 1) {
                 this.write(", ", false, false)
             }
@@ -470,76 +470,76 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitExpression(expression: Node.Expression): void {
         switch (expression.type) {
             case Syntax.SequenceExpression: {
-                this.visitSequenceExpression(expression as Node.SequenceExpression);
+                this.visitSequenceExpression(expression as Node.SequenceExpression)
                 break;
             } case Syntax.Literal: {
                 this.visitLiteral(expression as Node.Literal)
                 break;
             } case Syntax.Identifier: {
-                this.visitIdentifier(expression as Node.Identifier);
+                this.visitIdentifier(expression as Node.Identifier)
                 break;
             } case Syntax.SpreadElement: {
-                this.vistSpreadElement(expression as Node.SpreadElement);
+                this.vistSpreadElement(expression as Node.SpreadElement)
                 break;
             } case Syntax.AssignmentExpression: {
-                this.visitAssignmentExpression(expression as Node.AssignmentExpression);
+                this.visitAssignmentExpression(expression as Node.AssignmentExpression)
                 break;
             } case Syntax.ObjectExpression: {
-                this.visitObjectExpression(expression as Node.ObjectExpression);
+                this.visitObjectExpression(expression as Node.ObjectExpression)
                 break;
             } case Syntax.ArrayExpression: {
-                this.visitArrayExpression(expression as Node.ArrayExpression);
+                this.visitArrayExpression(expression as Node.ArrayExpression)
                 break;
             } case Syntax.BinaryExpression: {
-                this.visitBinaryExpression(expression as Node.BinaryExpression);
+                this.visitBinaryExpression(expression as Node.BinaryExpression)
                 break;
             } case Syntax.LogicalExpression: {
-                this.visitLogicalExpression(expression as Node.BinaryExpression);
+                this.visitLogicalExpression(expression as Node.BinaryExpression)
                 break;
             } case Syntax.ClassExpression: {
-                this.visitClassExpression(expression as Node.ClassExpression);
+                this.visitClassExpression(expression as Node.ClassExpression)
                 break;
             } case Syntax.ArrowFunctionExpression: {
-                this.visitArrowFunctionExpression(expression as Node.ArrowFunctionExpression);
+                this.visitArrowFunctionExpression(expression as Node.ArrowFunctionExpression)
                 break;
             } case Syntax.FunctionExpression: {
-                this.visitFunctionExpression(expression as Node.FunctionExpression);
+                this.visitFunctionExpression(expression as Node.FunctionExpression)
                 break;
             } case Syntax.CallExpression: {
-                this.visitCallExpression(expression as Node.CallExpression);
+                this.visitCallExpression(expression as Node.CallExpression)
                 break;
             } case Syntax.MemberExpression: {
-                this.visitMemberExpression(expression as Node.StaticMemberExpression | Node.ComputedMemberExpression);
+                this.visitMemberExpression(expression as Node.StaticMemberExpression | Node.ComputedMemberExpression)
                 break;
             } case Syntax.ThisExpression: {
-                this.visitThisExpression(expression as Node.ThisExpression);
+                this.visitThisExpression(expression as Node.ThisExpression)
                 break;
             } case Syntax.UpdateExpression: {
-                this.visitUpdateExpression(expression as Node.UpdateExpression);
+                this.visitUpdateExpression(expression as Node.UpdateExpression)
                 break;
             } case Syntax.UnaryExpression: {
-                this.visitUnaryExpression(expression as Node.UnaryExpression);
+                this.visitUnaryExpression(expression as Node.UnaryExpression)
                 break;
             } case Syntax.NewExpression: {
-                this.visitNewExpression(expression as Node.NewExpression);
+                this.visitNewExpression(expression as Node.NewExpression)
                 break;
             } case Syntax.VariableDeclaration: {
-                this.visitVariableDeclaration(expression as Node.VariableDeclaration);
+                this.visitVariableDeclaration(expression as Node.VariableDeclaration)
                 break;
             } case Syntax.Property: {
-                this.visitProperty(expression as Node.Property);
+                this.visitProperty(expression as Node.Property)
                 break;
             } case Syntax.ArrayPattern: {
-                this.visitArrayPattern(expression as Node.ArrayPattern);
+                this.visitArrayPattern(expression as Node.ArrayPattern)
                 break;
             } case Syntax.ObjectPattern: {
-                this.visitObjectPattern(expression as Node.ObjectPattern);
+                this.visitObjectPattern(expression as Node.ObjectPattern)
                 break;
             } case Syntax.AwaitExpression: {
-                this.visitAwaitExpression(expression as Node.AwaitExpression);
+                this.visitAwaitExpression(expression as Node.AwaitExpression)
                 break;
             } case Syntax.ConditionalExpression: {
-                this.visitConditionalExpression(expression as Node.ConditionalExpression);
+                this.visitConditionalExpression(expression as Node.ConditionalExpression)
                 break;
             } case Syntax.AssignmentPattern: {
                 this.visitAssignmentPattern(expression as Node.AssignmentPattern)
@@ -618,15 +618,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitThisExpression(expression: Node.ThisExpression) {
-        this.write('this', false, false);
+        this.write('this', false, false)
     }
 
     visitCallExpression(expression: Node.CallExpression) {
         const args = expression.arguments;
         if (expression.callee.type == Syntax.FunctionExpression) {
-            this.write('(', false, false);
+            this.write('(', false, false)
             this.visitFunctionExpression(expression.callee as Node.FunctionExpression)
-            this.write(')', false, false);
+            this.write(')', false, false)
             this.visitParams(args)
         } else if (expression.callee.type == Syntax.MemberExpression) {
             this.visitMemberExpression(expression.callee as (Node.StaticMemberExpression | Node.ComputedMemberExpression))
@@ -644,13 +644,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         if (expression instanceof Node.StaticMemberExpression) {
             this.visitExpression(expression.object)
-            this.write('.', false, false);
+            this.write('.', false, false)
             this.visitExpression(expression.property)
         } else if (expression instanceof Node.ComputedMemberExpression) {
             this.visitExpression(expression.object)
-            this.write('[', false, false);
+            this.write('[', false, false)
             this.visitExpression(expression.property)
-            this.write(']', false, false);
+            this.write(']', false, false)
         } else {
             throw new TypeError("Unhandled type : " + expression)
         }
@@ -658,7 +658,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitParams(args: Node.ArgumentListElement[] | Node.FunctionParameter[]) {
-        this.write('(', false, false);
+        this.write('(', false, false)
         for (let i = 0; i < args.length; ++i) {
             const arg = args[i];
             if (arg instanceof Node.RestElement) {
@@ -666,9 +666,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } else {
                 this.visitExpression(arg as Node.Expression)
             }
-            this.write(i < args.length - 1 ? ', ' : '', false, false);
+            this.write(i < args.length - 1 ? ', ' : '', false, false)
         }
-        this.write(')', false, false);
+        this.write(')', false, false)
     }
 
     visitFunctionDeclaration(expression: Node.FunctionDeclaration): void {
@@ -697,7 +697,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitArrayExpression(expression: Node.ArrayExpression): void {
-        const elements: Node.ArrayExpressionElement[] = expression.elements;
+        const elements: Node.ArrayExpressionElement[] = expression.elements
         this.write('[', false, false)
         for (let i = 0; i < elements.length; ++i) {
             const element: Node.ArrayExpressionElement = elements[i]//  Expression | SpreadElement | null;
@@ -708,7 +708,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } else {
                 this.visitExpression(element as Node.Expression)
             }
-            this.write(i < elements.length - 1 ? ', ' : '', false, false);
+            this.write(i < elements.length - 1 ? ', ' : '', false, false)
         }
         this.write(']', false, false)
     }
@@ -727,11 +727,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitObjectExpression(expression: Node.ObjectExpression): void {
-        const properties: Node.ObjectExpressionProperty[] = expression.properties;
+        const properties: Node.ObjectExpressionProperty[] = expression.properties
         this.write('{', false, false)
         for (let i = 0; i < properties.length; ++i) {
-            this.visitObjectExpressionProperty(properties[i]);
-            this.write(i < properties.length - 1 ? ', ' : '', false, false);
+            this.visitObjectExpressionProperty(properties[i])
+            this.write(i < properties.length - 1 ? ', ' : '', false, false)
         }
         this.write('}', false, false)
     }
@@ -747,18 +747,18 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 // This is mostl implemented, somewhat hacky
                 if (property.method) {
                     this.write(property.computed ? '[' : '', false, false)
-                    this.visitPropertyKey(key);
+                    this.visitPropertyKey(key)
                     this.write(property.computed ? ']' : '', false, false)
-                    this.visitPropertyValue(value);
+                    this.visitPropertyValue(value)
                 } else {
                     if (property.shorthand) {
-                        this.visitPropertyKey(key);
+                        this.visitPropertyKey(key)
                     } else {
                         this.write(property.computed ? '[' : '', false, false)
-                        this.visitPropertyKey(key);
+                        this.visitPropertyKey(key)
                         this.write(property.computed ? ']' : '', false, false)
                         this.write(':', false, false)
-                        this.visitPropertyValue(value);
+                        this.visitPropertyValue(value)
                     }
                 }
 
@@ -785,7 +785,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             }
             case Syntax.ArrowFunctionExpression: {
-                this.visitArrowFunctionExpression(value as Node.ArrowFunctionExpression);
+                this.visitArrowFunctionExpression(value as Node.ArrowFunctionExpression)
                 break;
             }
             case Syntax.Literal: {
@@ -803,10 +803,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             }
             case Syntax.ObjectExpression: {
-                this.visitObjectExpression(value as Node.ObjectExpression);
+                this.visitObjectExpression(value as Node.ObjectExpression)
                 break;
             } case Syntax.ArrayExpression: {
-                this.visitArrayExpression(value as Node.ArrayExpression);
+                this.visitArrayExpression(value as Node.ArrayExpression)
                 break;
             }
             default:
@@ -815,7 +815,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitFunctionParameterArray(params: Node.FunctionParameter[]): void {
-        this.write('(', false, false);
+        this.write('(', false, false)
         for (let i = 0; i < params.length; ++i) {
             this.visitFunctionParameter(params[i])
             this.write(i < params.length - 1 ? ', ' : '', false, false)
@@ -824,7 +824,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitFunctionExpression(expression: Node.FunctionExpression): void {
-        this.writeFunctionDefinition(expression);
+        this.writeFunctionDefinition(expression)
     }
 
     writeFunctionDefinition(expression: Node.FunctionExpression | Node.FunctionDeclaration) {
@@ -893,8 +893,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitAssignmentPattern(expression: Node.AssignmentPattern): void {
-        this.visitBinding(expression.left as Binding);
-        this.write(' = ', false, false);
+        this.visitBinding(expression.left as Binding)
+        this.write(' = ', false, false)
         this.visitExpression(expression.right)
     }
 
@@ -915,7 +915,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitObjectPattern(node: Node.ObjectPattern): void {
-        this.write('{', false, false);
+        this.write('{', false, false)
         const elements = node.properties
         for (let i = 0; i < elements.length; ++i) {
             const pattern: Node.ObjectPatternProperty = elements[i]
@@ -924,11 +924,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             }
             this.writeConditional(i < elements.length - 1, ', ', false, false)
         }
-        this.write('}', false, false);
+        this.write('}', false, false)
     }
 
     visitArrayPattern(node: Node.ArrayPattern): void {
-        this.write('[', false, false);
+        this.write('[', false, false)
         const elements = node.elements
         for (let i = 0; i < elements.length; ++i) {
             const pattern: Node.ArrayPatternElement = elements[i]
@@ -940,7 +940,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             }
             this.writeConditional(i < elements.length - 1, ', ', false, false)
         }
-        this.write(']', false, false);
+        this.write(']', false, false)
     }
 
     visitPropertyKey(key: Node.PropertyKey) {
@@ -966,7 +966,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitVariableDeclaration(declaration: Node.VariableDeclaration): void {
         const kind = declaration.kind;
         const declarations = declaration.declarations;
-        this.write(`${kind} `, true, false);
+        this.write(`${kind} `, true, false)
         for (let i = 0; i < declarations.length; ++i) {
             this.visitVariableDeclarator(declarations[i] as Node.VariableDeclarator)
             this.writeConditional(i < declarations.length - 1, ', ', false, false)
@@ -981,8 +981,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
 
         if (init != null) {
-            this.write(' = ', false, false);
-            this.visitExpression(init);
+            this.write(' = ', false, false)
+            this.visitExpression(init)
         }
     }
 }
