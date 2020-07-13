@@ -373,8 +373,9 @@ if (false) {
 
 
 if (true) {
-        const code = 'let [...[x]] = y'
-        const name = 'rest-element-array-pattern'
+        // const code = 'var [...{x}] = y'
+        const code = 'var z = {x}'
+        const name = 'rest-element-object-pattern'
         const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'binding-pattern', 'array-pattern')
 
         const ast = ASTParser.parse({ type: "code", value: code });
@@ -388,12 +389,12 @@ if (true) {
         const jsonFile = resolve(dir, `${name}.tree.json`)
 
         
-/*         if (fs.existsSync(jsFile)) {
+/*           if (fs.existsSync(jsFile)) {
                 throw new Error('File exists')
         } 
 
         Utils.write(jsFile, code)
-        Utils.write(jsonFile, ast) */
+        Utils.write(jsonFile, ast)   */
 }
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

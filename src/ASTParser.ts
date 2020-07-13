@@ -1604,6 +1604,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
             }
         }
 
+        if(value == null){
+            value = key
+        }
         return new Node.Property("init", key, computed, value, method, shorthand)
     }
 
@@ -2693,6 +2696,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
                     conversion.push(new RestElement(arg))
                 } else if (arg instanceof Node.ArrayExpression) {
                     const pattern = new Node.ArrayPattern(this.convertToArrayPatternElements(arg.elements))
+                    conversion.push(new RestElement(pattern))
+                }else if (arg instanceof Node.ObjectExpression) {
+                    const pattern = new Node.ObjectPattern(this.convertToObjectPatternProperty(arg.properties))
                     conversion.push(new RestElement(pattern))
                 } else {
                     throw new TypeError("Invalid type received got : " + node?.constructor)
