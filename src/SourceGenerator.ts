@@ -842,7 +842,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitFunctionExpression(expression: Node.FunctionExpression): void {
         if (expression.async) {
-            this.write(' async', false, false)
+            this.write('async', false, false)
+            this.write(' ', false, false)
         }
 
         this.write('function', false, false)
