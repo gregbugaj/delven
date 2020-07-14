@@ -120,8 +120,8 @@ export default abstract class ASTParser {
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
         parser.setTrace(false)
 
-        // parser.removeErrorListeners();
-        // parser.addErrorListener(errorHandler);
+        parser.removeErrorListeners();
+        parser.addErrorListener(errorHandler);
 
         try {
             const tree = parser.program()

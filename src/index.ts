@@ -373,8 +373,11 @@ if (false) {
 
 if (true) {
         const code = `
-        () => { 0 }
+        
+        for (() => { x in y };;);
         `
+        // for (() => { x in y };;);
+        // e => { label: 42 }
         
         const name = 'migrated_0000'
         const dir = resolve(__dirname, '../test/fixtures', 'automatic-semicolon-insertion')
