@@ -372,15 +372,27 @@ if (false) {
 }
 
 if (true) {
-        const code = `
-        
-        for (() => { x in y };;);
-        `
-        // for (() => { x in y };;);
-        // e => { label: 42 }
-        
-        const name = 'migrated_0000'
-        const dir = resolve(__dirname, '../test/fixtures', 'automatic-semicolon-insertion')
+        const code =
+`
+//------------------------------------------------------------------------------
+// Class Definition
+// More intuitive, OOP-style and boilerplate-free classes.
+// http://es6-features.org/#ClassDefinition
+//------------------------------------------------------------------------------
+
+class Shape {
+    constructor (id, x, y) {
+        this.id = id
+        this.move(x, y)
+    }
+    move (x, y) {
+        this.x = x
+        this.y = y
+    }
+}
+`
+        const name = 'ClassDefinition'
+        const dir = resolve(__dirname, '../test/fixtures', 'antlr', 'Classes')
         // const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'binding-pattern', 'array-pattern')
 
         const ast = ASTParser.parse({ type: "code", value: code });
@@ -393,12 +405,12 @@ if (true) {
         const jsFile = resolve(dir, `${name}.js`)
         const jsonFile = resolve(dir, `${name}.tree.json`)
 
-   /*      if (fs.existsSync(jsFile)) {
+        if (fs.existsSync(jsFile)) {
                 throw new Error('File exists')
-        } 
+        }
 
         Utils.write(jsFile, code)
-        Utils.write(jsonFile, ast)   */
+        Utils.write(jsonFile, ast)
 }
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

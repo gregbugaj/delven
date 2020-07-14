@@ -1331,11 +1331,23 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return { async, generator }
     }
 
+    /**
+     * Following fragment breaks 'esprima' compliance but is a perfecly valid. 
+     * Validated via 'espree'
+     * ```
+     * async function* gen(){}
+     * ```
+     * @ref https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
+     * @param ctx 
+     */
     private functionDeclaration(ctx: RuleContext): FunctionDeclaration | AsyncFunctionDeclaration {
         let identifier: Identifier | null = null;
         let params: FunctionParameter[] = []
         let body: BlockStatement = new Node.BlockStatement(null);
         const { async, generator } = this.getFunctionAttributes(ctx)
+
+        console.info(async)
+        console.info(generator)
 
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
@@ -1349,7 +1361,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
 
         if (async) {
-            return new Node.AsyncFunctionDeclaration(identifier, params, body)
+            return new Node.AsyncFunctionDeclaration(identifier, params, body, generator)
         } else {
             return new Node.FunctionDeclaration(identifier, params, body, generator)
         }

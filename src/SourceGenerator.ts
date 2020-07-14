@@ -228,7 +228,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         if (statement.update) {
             this.visitExpression(statement.update)
         }
-        
+
         this.write(')', false, false)
         this.visitStatement(statement.body)
     }
@@ -359,6 +359,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('(', false, false)
         this.visitExpression(node.test)
         this.write(') ', false, false)
+
         this.visitStatement(node.consequent)
         if (node.alternate) {
             this.write('else ', false, false)
@@ -586,6 +587,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 this.visitAssignmentPattern(value)
             } else {
                 this.visitExpression(key)
+
+                if (value) {
+                    this.visitExpression(value)
+                }
             }
         } else {
             this.writeConditional(expression.computed, '[', false, false)
@@ -776,37 +781,31 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             case Syntax.AssignmentPattern: {
                 this.visitAssignmentPattern(value as Node.AssignmentPattern)
                 break;
-            }
-            case Syntax.FunctionExpression: {
+            } case Syntax.FunctionExpression: {
                 this.visitFunctionExpression(value as Node.FunctionExpression)
                 break;
-            }
-            case Syntax.ArrowFunctionExpression: {
+            } case Syntax.ArrowFunctionExpression: {
                 this.visitArrowFunctionExpression(value as Node.ArrowFunctionExpression)
                 break;
-            }
-            case Syntax.Literal: {
+            } case Syntax.Literal: {
                 this.visitLiteral(value as Node.Literal)
                 break;
             } case Syntax.Identifier: {
                 this.visitIdentifier(value as Node.Identifier)
                 break;
-            }
-            case Syntax.ArrayPattern: {
+            } case Syntax.ArrayPattern: {
                 this.visitArrayPattern(value as Node.ArrayPattern)
                 break;
             } case Syntax.ObjectPattern: {
                 this.visitObjectPattern(value as Node.ObjectPattern)
                 break;
-            }
-            case Syntax.ObjectExpression: {
-                this.visitObjectExpression(value as Node.ObjectExpression)
+            } 
+            case Syntax.ObjectExpression:
+            case Syntax.ArrayExpression:
+            case Syntax.BinaryExpression: {
+                this.visitExpression(value)
                 break;
-            } case Syntax.ArrayExpression: {
-                this.visitArrayExpression(value as Node.ArrayExpression)
-                break;
-            }
-            default:
+            } default:
                 throw new TypeError("Type not handled : " + value.type)
         }
     }
@@ -830,11 +829,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.write(' async', false, false)
         }
 
-        this.write(' function ', false, false)
+        this.write(' function', false, false)
 
         if (expression.generator) {
             this.write('*', false, false)
         }
+        
+        this.write(' ', false, false)
 
         if (expression.id != null) {
             this.visitIdentifier(expression.id)
@@ -868,19 +869,16 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             case Syntax.AssignmentPattern: {
                 this.visitAssignmentPattern(param as Node.AssignmentPattern)
                 break;
-            }
-            case Syntax.Identifier: {
+            } case Syntax.Identifier: {
                 this.visitIdentifier(param as Node.Identifier)
                 break;
             } case Syntax.ArrayPattern: {
                 this.visitArrayPattern(param as Node.ArrayPattern)
                 break;
-            }
-            case Syntax.ObjectPattern: {
+            } case Syntax.ObjectPattern: {
                 this.visitObjectPattern(param as Node.ObjectPattern)
                 break;
-            }
-            case Syntax.RestElement: {
+            } case Syntax.RestElement: {
                 this.vistiRestElement(param as Node.RestElement)
                 break;
             }
