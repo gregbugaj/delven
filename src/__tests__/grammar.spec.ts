@@ -1,6 +1,6 @@
 import ASTParser from "../ASTParser"
 import ASTNode from "../ASTNode"
-//import SourceGenerator from "../SourceGenerator";
+import SourceGenerator from "../SourceGenerator";
 import glob from 'glob'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -53,7 +53,7 @@ describe('Generated Grammar Test Suite', () => {
 
     const cases: TestCase[] = discover()
     const mapped = cases.map(_case => [_case.name, _case])
-    it.each(mapped)(`%# : %s`, (label, _case) => {
+    it.each(mapped)(`%# AST : %s`, (label, _case) => {
         const deck = _case as TestCase
         const ast = ASTParser.parse({ type: "code", value: deck.code });
         const expected = JSON.parse(deck.expected) as ASTNode
@@ -64,7 +64,31 @@ describe('Generated Grammar Test Suite', () => {
         if (delta != undefined) {
             console.log(delta);
         }
+        expect(delta).toBeUndefined();
+    })
+})
 
+describe('Source Generator Test', () => {
+    beforeAll(() => {
+        ASTParser.trace(false)
+    });
+
+    const cases: TestCase[] = discover()
+    const mapped = cases.map(_case => [_case.name, _case])
+    it.each(mapped)(`%# Source : %s`, (label, _case) => {
+        const deck = _case as TestCase
+        const ast = ASTParser.parse({ type: "code", value: deck.code });
+
+        const generator = new SourceGenerator();
+        const script = generator.toSource(ast);
+
+        const ast2 = ASTParser.parse({ type: "code", value: script });
+        const diffpatcher = jsondiffpatch.create({});
+
+        const delta = diffpatcher.diff(ast, ast2);
+        if (delta != undefined) {
+            console.log(delta);
+        }
         expect(delta).toBeUndefined();
     })
 })

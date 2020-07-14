@@ -2181,10 +2181,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
         const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME
 
-        const xx = this.getFunctionAttributes(ctx)
-        console.info(xx)
-
-
         const prop = ctx.propertyName()
         const computed = false;
         let key: Node.PropertyKey = null;
