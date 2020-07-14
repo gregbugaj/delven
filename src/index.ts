@@ -374,9 +374,12 @@ if (false) {
 if (true) {
         const code =
 `
-let x = async ()=>{}
+let iter = {
+        *[Symbol.iterator]() {
+        }
+    }
 `
-        const name = 'GeneratorMethods-001'
+        const name = 'GeneratorMethods-002'
         const dir = resolve(__dirname, '../test/fixtures', 'antlr', 'Generators')
         // const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'binding-pattern', 'array-pattern')
 
