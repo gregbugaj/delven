@@ -371,13 +371,10 @@ if (false) {
         })
 }
 
-
 if (true) {
         const code = `
-        { x
-                ++y }
+        () => { 0 }
         `
-        
         
         const name = 'migrated_0000'
         const dir = resolve(__dirname, '../test/fixtures', 'automatic-semicolon-insertion')
