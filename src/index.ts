@@ -374,25 +374,14 @@ if (false) {
 if (true) {
         const code =
 `
-//------------------------------------------------------------------------------
-// Class Definition
-// More intuitive, OOP-style and boilerplate-free classes.
-// http://es6-features.org/#ClassDefinition
-//------------------------------------------------------------------------------
-
-class Shape {
-    constructor (id, x, y) {
-        this.id = id
-        this.move(x, y)
-    }
-    move (x, y) {
-        this.x = x
-        this.y = y
+class Clz {
+    * bar () {
+        
     }
 }
 `
-        const name = 'ClassDefinition'
-        const dir = resolve(__dirname, '../test/fixtures', 'antlr', 'Classes')
+        const name = 'GeneratorMethods-001'
+        const dir = resolve(__dirname, '../test/fixtures', 'antlr', 'Generators')
         // const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'binding-pattern', 'array-pattern')
 
         const ast = ASTParser.parse({ type: "code", value: code });

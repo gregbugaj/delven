@@ -409,6 +409,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('{ ', false, true)
 
         const clzBody: Node.ClassBody = expression.body
+
         for (let i = 0; i < clzBody.body.length; i++) {
             const property = clzBody.body[i]
             if (property.type == Syntax.MethodDefinition) {
@@ -423,6 +424,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitMethodDefinition(expression: Node.MethodDefinition) {
+        
         // AsyncFunctionExpression | FunctionExpression | null;
         if (expression.key != null) {
             this.visitExpression(expression.key as Node.Expression)
@@ -430,6 +432,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         const value = expression.value;
         if (value instanceof Node.FunctionExpression) {
+        
             this.visitFunctionExpression(value as Node.FunctionExpression)
         }
     }
@@ -673,8 +676,26 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write(')', false, false)
     }
 
+
     visitFunctionDeclaration(expression: Node.FunctionDeclaration): void {
-        this.writeFunctionDefinition(expression)
+        if (expression.async) {
+            this.write(' async', false, false)
+        }
+
+        this.write(' function', false, false)
+
+        if (expression.generator) {
+            this.write('*', false, false)
+        }
+        
+        this.write(' ', false, false)
+
+        if (expression.id != null) {
+            this.visitIdentifier(expression.id)
+        }
+
+        this.visitParams(expression.params)
+        this.visitBlockStatement(expression.body)
     }
 
     visitBinaryExpression(expression: Node.BinaryExpression): void {
@@ -820,16 +841,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitFunctionExpression(expression: Node.FunctionExpression): void {
-        this.writeFunctionDefinition(expression)
-    }
-
-    writeFunctionDefinition(expression: Node.FunctionExpression | Node.FunctionDeclaration) {
-
         if (expression.async) {
             this.write(' async', false, false)
         }
-
-        this.write(' function', false, false)
 
         if (expression.generator) {
             this.write('*', false, false)
@@ -844,6 +858,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitParams(expression.params)
         this.visitBlockStatement(expression.body)
     }
+ 
 
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
 

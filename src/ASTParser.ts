@@ -1314,21 +1314,24 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * Get funciton attribues 
      * @param ctx 
      */
-    getFunctionAttributes(ctx: RuleContext): { async: boolean, generator: boolean } {
-        let async = false;
-        let generator = false;
+    getFunctionAttributes(ctx: RuleContext): { isAsync: boolean, isGenerator: boolean, isStatic:boolean } {
+        let isAsync = false;
+        let isGenerator= false;
+        let isStatic = false;
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
             if (node.symbol) {
                 const txt = node.getText()
                 if (txt == 'async') {
-                    async = true
+                    isAsync = true
+                } else if (txt == 'static') {
+                    isStatic = true
                 } else if (txt == '*') {
-                    generator = true
+                    isGenerator = true
                 }
             }
         }
-        return { async, generator }
+        return {isAsync, isGenerator , isStatic}
     }
 
     /**
@@ -1344,10 +1347,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let identifier: Identifier | null = null;
         let params: FunctionParameter[] = []
         let body: BlockStatement = new Node.BlockStatement(null);
-        const { async, generator } = this.getFunctionAttributes(ctx)
-
-        console.info(async)
-        console.info(generator)
+        const {isAsync, isGenerator, isStatic} = this.getFunctionAttributes(ctx)
 
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
@@ -1360,10 +1360,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
             }
         }
 
-        if (async) {
-            return new Node.AsyncFunctionDeclaration(identifier, params, body, generator)
+        if (isAsync) {
+            return new Node.AsyncFunctionDeclaration(identifier, params, body, isGenerator)
         } else {
-            return new Node.FunctionDeclaration(identifier, params, body, generator)
+            return new Node.FunctionDeclaration(identifier, params, body, isGenerator)
         }
     }
 
@@ -2160,6 +2160,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
+     * 
      * Visit a parse tree produced by ECMAScriptParser#methodDefinition.
      * 
      * ```
@@ -2179,6 +2180,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const isAsync = this.hasToken(ctx.parentCtx, ECMAScriptParser.Async)
         const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
         const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME
+        
+        const  xx = this.getFunctionAttributes(ctx)
+        console.info(xx)
+        
 
         const prop = ctx.propertyName()
         const computed = false;
@@ -2191,7 +2196,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             const params: FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
             const body: BlockStatement = this.visitFunctionBody(ctx.functionBody())
             if (isAsync) {
-                value = new AsyncFunctionExpression(null, params, body)
+                value = new AsyncFunctionExpression(null, params, body, isGenerator)
             } else {
                 value = new FunctionExpression(null, params, body, isGenerator)
             }

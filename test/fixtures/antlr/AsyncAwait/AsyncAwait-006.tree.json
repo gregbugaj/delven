@@ -1,0 +1,23 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "gen"
+            },
+            "params": [],
+            "body": {
+                "type": "BlockStatement",
+                "body": []
+            },
+            "generator": true,
+            "expression": false,
+            "async": true
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

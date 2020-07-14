@@ -1,0 +1,194 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ClassDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "Shape"
+            },
+            "superClass": null,
+            "body": {
+                "type": "ClassBody",
+                "body": [
+                    {
+                        "type": "MethodDefinition",
+                        "key": {
+                            "type": "Identifier",
+                            "name": "constructor",
+                            "start": 0,
+                            "end": 0
+                        },
+                        "computed": false,
+                        "value": {
+                            "type": "FunctionExpression",
+                            "id": null,
+                            "params": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "id"
+                                },
+                                {
+                                    "type": "Identifier",
+                                    "name": "x"
+                                },
+                                {
+                                    "type": "Identifier",
+                                    "name": "y"
+                                }
+                            ],
+                            "body": {
+                                "type": "BlockStatement",
+                                "body": [
+                                    {
+                                        "type": "ExpressionStatement",
+                                        "expression": {
+                                            "type": "AssignmentExpression",
+                                            "operator": "=",
+                                            "left": {
+                                                "type": "MemberExpression",
+                                                "computed": false,
+                                                "object": {
+                                                    "type": "ThisExpression"
+                                                },
+                                                "property": {
+                                                    "type": "Identifier",
+                                                    "name": "id",
+                                                    "start": 0,
+                                                    "end": 0
+                                                }
+                                            },
+                                            "right": {
+                                                "type": "Identifier",
+                                                "name": "id"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "type": "ExpressionStatement",
+                                        "expression": {
+                                            "type": "CallExpression",
+                                            "callee": {
+                                                "type": "MemberExpression",
+                                                "computed": false,
+                                                "object": {
+                                                    "type": "ThisExpression"
+                                                },
+                                                "property": {
+                                                    "type": "Identifier",
+                                                    "name": "move",
+                                                    "start": 0,
+                                                    "end": 0
+                                                }
+                                            },
+                                            "arguments": [
+                                                {
+                                                    "type": "Identifier",
+                                                    "name": "x"
+                                                },
+                                                {
+                                                    "type": "Identifier",
+                                                    "name": "y"
+                                                }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            },
+                            "generator": false,
+                            "expression": false,
+                            "async": false
+                        },
+                        "kind": "method",
+                        "static": false
+                    },
+                    {
+                        "type": "MethodDefinition",
+                        "key": {
+                            "type": "Identifier",
+                            "name": "move",
+                            "start": 0,
+                            "end": 0
+                        },
+                        "computed": false,
+                        "value": {
+                            "type": "FunctionExpression",
+                            "id": null,
+                            "params": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "x"
+                                },
+                                {
+                                    "type": "Identifier",
+                                    "name": "y"
+                                }
+                            ],
+                            "body": {
+                                "type": "BlockStatement",
+                                "body": [
+                                    {
+                                        "type": "ExpressionStatement",
+                                        "expression": {
+                                            "type": "AssignmentExpression",
+                                            "operator": "=",
+                                            "left": {
+                                                "type": "MemberExpression",
+                                                "computed": false,
+                                                "object": {
+                                                    "type": "ThisExpression"
+                                                },
+                                                "property": {
+                                                    "type": "Identifier",
+                                                    "name": "x",
+                                                    "start": 0,
+                                                    "end": 0
+                                                }
+                                            },
+                                            "right": {
+                                                "type": "Identifier",
+                                                "name": "x"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "type": "ExpressionStatement",
+                                        "expression": {
+                                            "type": "AssignmentExpression",
+                                            "operator": "=",
+                                            "left": {
+                                                "type": "MemberExpression",
+                                                "computed": false,
+                                                "object": {
+                                                    "type": "ThisExpression"
+                                                },
+                                                "property": {
+                                                    "type": "Identifier",
+                                                    "name": "y",
+                                                    "start": 0,
+                                                    "end": 0
+                                                }
+                                            },
+                                            "right": {
+                                                "type": "Identifier",
+                                                "name": "y"
+                                            }
+                                        }
+                                    }
+                                ]
+                            },
+                            "generator": false,
+                            "expression": false,
+                            "async": false
+                        },
+                        "kind": "method",
+                        "static": false
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
