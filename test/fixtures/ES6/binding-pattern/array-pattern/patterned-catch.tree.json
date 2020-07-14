@@ -32,7 +32,10 @@
                                         "name": "c"
                                     },
                                     "computed": false,
-                                    "value": null,
+                                    "value": {
+                                        "type": "Identifier",
+                                        "name": "c"
+                                    },
                                     "kind": "init",
                                     "method": false,
                                     "shorthand": true

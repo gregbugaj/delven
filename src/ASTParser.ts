@@ -2701,7 +2701,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                     const pattern = new Node.ObjectPattern(this.convertToObjectPatternProperty(arg.properties))
                     conversion.push(new RestElement(pattern))
                 } else {
-                    throw new TypeError("Invalid type received got : " + node?.constructor)
+                    throw new TypeError("Invalid type received got : " + node.constructor)
                 }
             } else { // Expression
                 //bindingPattern = ArrayPattern | ObjectPattern;
@@ -2718,11 +2718,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
                         const pattern = new Node.AssignmentPattern(node.left, node.right)
                         conversion.push(pattern)
                     } else {
-                        throw new TypeError("Invalid type received got : " + node?.constructor)
+                        throw new TypeError("Invalid type received got : " + node.constructor)
                     }
                 }
                 else {
-                    throw new TypeError("Invalid type received got : " + node?.constructor)
+                    throw new TypeError("Invalid type received got : " + node.constructor)
                 }
             }
         }
@@ -2760,7 +2760,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                         const pattern = new Node.AssignmentPattern(value.left, value.right)
                         conversion.push(new Node.Property(node.kind, node.key, node.computed, pattern, node.method, node.shorthand))
                     } else {
-                        throw new TypeError("Invalid type received got : " + node?.constructor)
+                        throw new TypeError("Invalid type received got : " + node.constructor)
                     }
                 } else {
                      conversion.push(node)

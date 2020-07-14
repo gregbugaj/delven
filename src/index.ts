@@ -373,9 +373,15 @@ if (false) {
 
 
 if (true) {
-        const code = 'let [{a}] = 0'
-        const name = 'with-object-pattern'
-        const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'binding-pattern', 'array-pattern')
+        const code = `
+        { x
+                ++y }
+        `
+        
+        
+        const name = 'migrated_0000'
+        const dir = resolve(__dirname, '../test/fixtures', 'automatic-semicolon-insertion')
+        // const dir = resolve(__dirname, '../test/fixtures', 'ES6', 'binding-pattern', 'array-pattern')
 
         const ast = ASTParser.parse({ type: "code", value: code });
         console.info(Utils.toJson(ast))
@@ -387,12 +393,12 @@ if (true) {
         const jsFile = resolve(dir, `${name}.js`)
         const jsonFile = resolve(dir, `${name}.tree.json`)
 
-        if (fs.existsSync(jsFile)) {
+   /*      if (fs.existsSync(jsFile)) {
                 throw new Error('File exists')
         } 
 
         Utils.write(jsFile, code)
-        Utils.write(jsonFile, ast)  
+        Utils.write(jsonFile, ast)   */
 }
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

@@ -17,7 +17,10 @@
                                     "name": "a"
                                 },
                                 "computed": false,
-                                "value": null,
+                                "value": {
+                                    "type": "Identifier",
+                                    "name": "a"
+                                },
                                 "kind": "init",
                                 "method": false,
                                 "shorthand": true
