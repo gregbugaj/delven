@@ -374,10 +374,8 @@ if (false) {
 if (true) {
         const code =
 `
-let iter = {
-        *[Symbol.iterator]() {
-        }
-    }
+let iter = {*[Symbol.iterator]() {}}
+let iter = { *[()=>{}]() { }}
 `
         const name = 'GeneratorMethods-002'
         const dir = resolve(__dirname, '../test/fixtures', 'antlr', 'Generators')
