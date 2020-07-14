@@ -1314,9 +1314,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * Get funciton attribues 
      * @param ctx 
      */
-    getFunctionAttributes(ctx: RuleContext): { isAsync: boolean, isGenerator: boolean, isStatic:boolean } {
+    getFunctionAttributes(ctx: RuleContext): { isAsync: boolean, isGenerator: boolean, isStatic: boolean } {
         let isAsync = false;
-        let isGenerator= false;
+        let isGenerator = false;
         let isStatic = false;
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
@@ -1331,7 +1331,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 }
             }
         }
-        return {isAsync, isGenerator , isStatic}
+        return { isAsync, isGenerator, isStatic }
     }
 
     /**
@@ -1347,7 +1347,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let identifier: Identifier | null = null;
         let params: FunctionParameter[] = []
         let body: BlockStatement = new Node.BlockStatement(null);
-        const {isAsync, isGenerator, isStatic} = this.getFunctionAttributes(ctx)
+        const { isAsync, isGenerator, isStatic } = this.getFunctionAttributes(ctx)
 
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
@@ -1616,7 +1616,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             }
         }
 
-        if(value == null){
+        if (value == null) {
             value = key
         }
         return new Node.Property("init", key, computed, value, method, shorthand)
@@ -2180,10 +2180,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const isAsync = this.hasToken(ctx.parentCtx, ECMAScriptParser.Async)
         const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
         const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME
-        
-        const  xx = this.getFunctionAttributes(ctx)
+
+        const xx = this.getFunctionAttributes(ctx)
         console.info(xx)
-        
+
 
         const prop = ctx.propertyName()
         const computed = false;
@@ -2576,9 +2576,9 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const params = this.visitArrowFunctionParameters(paramContext)
         const body = this.visitArrowFunctionBody(bodyContext)
         const expression = !(body instanceof Node.BlockStatement);
-        const { async } = this.getFunctionAttributes(ctx)
+        const { isAsync } = this.getFunctionAttributes(ctx)
 
-        if (async) {
+        if (isAsync) {
             return new Node.AsyncArrowFunctionExpression(params, body, expression)
         } else {
             return new Node.ArrowFunctionExpression(params, body, expression)
@@ -2714,7 +2714,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 } else if (arg instanceof Node.ArrayExpression) {
                     const pattern = new Node.ArrayPattern(this.convertToArrayPatternElements(arg.elements))
                     conversion.push(new RestElement(pattern))
-                }else if (arg instanceof Node.ObjectExpression) {
+                } else if (arg instanceof Node.ObjectExpression) {
                     const pattern = new Node.ObjectPattern(this.convertToObjectPatternProperty(arg.properties))
                     conversion.push(new RestElement(pattern))
                 } else {
@@ -2780,7 +2780,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                         throw new TypeError("Invalid type received got : " + node.constructor)
                     }
                 } else {
-                     conversion.push(node)
+                    conversion.push(node)
                 }
             } else if (node instanceof Node.SpreadElement) {
                 conversion.push(this.convertToRestElement(node))

@@ -424,7 +424,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitMethodDefinition(expression: Node.MethodDefinition) {
-        
+
         // AsyncFunctionExpression | FunctionExpression | null;
         if (expression.key != null) {
             this.visitExpression(expression.key as Node.Expression)
@@ -432,7 +432,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         const value = expression.value;
         if (value instanceof Node.FunctionExpression) {
-        
+
             this.visitFunctionExpression(value as Node.FunctionExpression)
         }
     }
@@ -687,7 +687,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         if (expression.generator) {
             this.write('*', false, false)
         }
-        
+
         this.write(' ', false, false)
 
         if (expression.id != null) {
@@ -820,7 +820,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ObjectPattern: {
                 this.visitObjectPattern(value as Node.ObjectPattern)
                 break;
-            } 
+            }
             case Syntax.ObjectExpression:
             case Syntax.ArrayExpression:
             case Syntax.BinaryExpression: {
@@ -845,10 +845,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.write(' async', false, false)
         }
 
+        this.write('function', false, false)
+
         if (expression.generator) {
             this.write('*', false, false)
         }
-        
+
         this.write(' ', false, false)
 
         if (expression.id != null) {
@@ -858,7 +860,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitParams(expression.params)
         this.visitBlockStatement(expression.body)
     }
- 
 
     visitArrowFunctionExpression(expression: Node.ArrowFunctionExpression): void {
 

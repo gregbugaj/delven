@@ -374,11 +374,7 @@ if (false) {
 if (true) {
         const code =
 `
-class Clz {
-    * bar () {
-        
-    }
-}
+let x = async ()=>{}
 `
         const name = 'GeneratorMethods-001'
         const dir = resolve(__dirname, '../test/fixtures', 'antlr', 'Generators')
@@ -394,12 +390,12 @@ class Clz {
         const jsFile = resolve(dir, `${name}.js`)
         const jsonFile = resolve(dir, `${name}.tree.json`)
 
-        if (fs.existsSync(jsFile)) {
+/*         if (fs.existsSync(jsFile)) {
                 throw new Error('File exists')
         }
 
         Utils.write(jsFile, code)
-        Utils.write(jsonFile, ast)
+        Utils.write(jsonFile, ast) */
 }
 // Trick to prevent  
 // All files must be modules when the '--isolatedModules' flag is provided.ts(1208)
