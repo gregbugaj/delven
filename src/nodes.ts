@@ -25,7 +25,7 @@ export type Statement = AsyncFunctionDeclaration | BreakStatement | ContinueStat
     EmptyStatement | ExpressionStatement | Directive | ForStatement | ForInStatement | ForOfStatement |
     FunctionDeclaration | IfStatement | ReturnStatement | SwitchStatement | ThrowStatement |
     TryStatement | VariableDeclaration | WhileStatement | WithStatement;
-export type PropertyKey = Identifier | Literal;
+export type PropertyKey = Identifier | Literal | Expression;
 export type PropertyValue = Literal | AssignmentPattern | AsyncFunctionExpression | BindingIdentifier | BindingPattern | FunctionExpression | ArrowFunctionExpression;
 // export type PropertyValue = AssignmentPattern | AsyncFunctionExpression | BindingIdentifier | BindingPattern | FunctionExpression;
 export type StatementListItem = Declaration | Statement;

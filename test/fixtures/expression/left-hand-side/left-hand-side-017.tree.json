@@ -1,0 +1,73 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "MemberExpression",
+                "computed": false,
+                "object": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "MemberExpression",
+                        "computed": false,
+                        "object": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "Identifier",
+                                "name": "universe"
+                            },
+                            "arguments": [
+                                {
+                                    "type": "Literal",
+                                    "value": 42,
+                                    "raw": "42",
+                                    "start": 0,
+                                    "end": 0
+                                }
+                            ]
+                        },
+                        "property": {
+                            "type": "Identifier",
+                            "name": "galaxies",
+                            "start": 0,
+                            "end": 0
+                        }
+                    },
+                    "arguments": [
+                        {
+                            "type": "Literal",
+                            "value": 14,
+                            "raw": "14",
+                            "start": 0,
+                            "end": 0
+                        },
+                        {
+                            "type": "Literal",
+                            "value": 3,
+                            "raw": "3",
+                            "start": 0,
+                            "end": 0
+                        },
+                        {
+                            "type": "Literal",
+                            "value": 77,
+                            "raw": "77",
+                            "start": 0,
+                            "end": 0
+                        }
+                    ]
+                },
+                "property": {
+                    "type": "Identifier",
+                    "name": "milkyway",
+                    "start": 0,
+                    "end": 0
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

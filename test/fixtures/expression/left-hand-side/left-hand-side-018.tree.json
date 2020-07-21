@@ -1,0 +1,57 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "MemberExpression",
+                        "computed": false,
+                        "object": {
+                            "type": "MemberExpression",
+                            "computed": false,
+                            "object": {
+                                "type": "Identifier",
+                                "name": "earth"
+                            },
+                            "property": {
+                                "type": "Identifier",
+                                "name": "asia",
+                                "start": 0,
+                                "end": 0
+                            }
+                        },
+                        "property": {
+                            "type": "Identifier",
+                            "name": "Indonesia",
+                            "start": 0,
+                            "end": 0
+                        }
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "prepareForElection",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "arguments": [
+                    {
+                        "type": "Literal",
+                        "value": 2014,
+                        "raw": "2014",
+                        "start": 0,
+                        "end": 0
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

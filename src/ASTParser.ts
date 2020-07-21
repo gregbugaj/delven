@@ -74,7 +74,7 @@ export class DelvenErrorListener extends ErrorListener {
     getErrors = () => this.errors
 }
 
-class ErrorNode extends ASTNode {
+export class ErrorNode extends ASTNode {
 
     constructor(private errror: ErrorInfo) {
         super()
@@ -118,10 +118,10 @@ export default abstract class ASTParser {
         lexer.addErrorListener(errorHandler);
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-        parser.setTrace(false)
+        parser.setTrace(true)
 
-        parser.removeErrorListeners();
-        parser.addErrorListener(errorHandler);
+        // parser.removeErrorListeners();
+        // parser.addErrorListener(errorHandler);
 
         try {
             const tree = parser.program()
@@ -1545,6 +1545,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 property = this.visitPropertyShorthand(node)
             } else if (node instanceof ECMAScriptParser.FunctionPropertyContext) {
                 property = this.visitFunctionProperty(node)
+            } else if (node instanceof ECMAScriptParser.PropertyGetterContext) {
+                property = this.visitPropertyGetter(node);
             } else {
                 this.throwInsanceError(this.dumpContext(node))
             }
@@ -1650,7 +1652,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     isPropertyKey(expression: Node.Expression): expression is Node.PropertyKey {
-        const types = [Node.Literal, Node.Identifier]
+        const types = [Node.Literal, Node.Identifier, Node.StaticMemberExpression]
         if (this.isInstanceOfAny(expression, types)) {
             return true
         }
@@ -1683,13 +1685,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.FunctionPropertyContext)
         const key = this.visitPropertyName(ctx.propertyName())
-        const computed = false;
+        const computed = true;
         const method = true;
         const shorthand = false;
         let expression: FunctionExpression | AsyncFunctionExpression;
         let params: FunctionParameter[] = []
         let body: BlockStatement;
-        const { async, generator } = this.getFunctionAttributes(ctx)
+        const { isAsync, isGenerator } = this.getFunctionAttributes(ctx)
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
             if (node instanceof ECMAScriptParser.FormalParameterListContext) {
@@ -1699,10 +1701,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
             }
         }
 
-        if (async) {
+        if (isAsync) {
             expression = new Node.AsyncFunctionExpression(null, params, body)
         } else {
-            expression = new Node.FunctionExpression(null, params, body, generator)
+            expression = new Node.FunctionExpression(null, params, body, isGenerator)
         }
 
         return new Node.Property("init", key, computed, expression, method, shorthand)
@@ -1772,12 +1774,30 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.Property("init", key, computed, value, method, shorthand)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#PropertyGetter.
+    
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#PropertyGetter.
+     * Sample: 
+     * ```
+     * x = { get [expr]() { return 'bar'; } } // computed=true
+     *  x = { get width() { return m_width } } // computed=false
+     * ```
+     * Grammar : 
+     * ```
+     * | getter '(' ')' '{' functionBody '}'                                           # PropertyGetter
+     * ```
+     */
     visitPropertyGetter(ctx: RuleContext) {
-        console.trace('not implemented')
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.PropertyGetterContext)
+        const getter = this.getTypedRuleContext(ctx, ECMAScriptParser.GetterContext,0);
+        this.visitGetter(getter)
 
+        const key = null; //this.visitPropertyName(propNode)
+        const value = null;// this.singleExpression(ctx.getChild(2))
+
+        return new Node.Property("get", key, false, value, false, false)
     }
-
 
     // Visit a parse tree produced by ECMAScriptParser#PropertySetter.
     visitPropertySetter(ctx: RuleContext) {
@@ -1807,7 +1827,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             if (this.isPropertyKey(key)) {
                 return key
             } else {
-                throw new TypeError('Invalid type')
+                throw new TypeError('Invalid type : ' + key.constructor) 
             }
         } else {
             const node = ctx.getChild(0)
@@ -2189,10 +2209,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         // case #1
         if (prop) {
             key = this.visitPropertyName(prop)
+            
             const params: FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
             const body: BlockStatement = this.visitFunctionBody(ctx.functionBody())
             if (isAsync) {
-                value = new AsyncFunctionExpression(null, params, body, isGenerator)
+                value = new AsyncFunctionExpression(null, params, body)
             } else {
                 value = new FunctionExpression(null, params, body, isGenerator)
             }
@@ -2936,7 +2957,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.AdditiveExpressionContext)
         this.assertNodeCount(ctx, 3)
-
         return this._binaryExpression(ctx)
     }
 
@@ -2982,6 +3002,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitPowerExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.VoidExpressionContext) {
             return this.visitVoidExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.BitOrExpressionContext) {
+            return this.visitBitOrExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.BitXOrExpressionContext) {
+            return this.visitBitXOrExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.BitAndExpressionContext) {
+            return this.visitBitAndExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.EqualityExpressionContext) {
+            return this.visitEqualityExpression(ctx)
+        }else if (ctx instanceof ECMAScriptParser.BitShiftExpressionContext) {
+            return this.visitBitShiftExpression(ctx)
         }
 
         this.throwInsanceError(this.dumpContext(ctx))
@@ -3315,11 +3345,38 @@ export class DelvenASTVisitor extends DelvenVisitor {
         throw new Error('Not implemented')
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#getter.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#getter.
+     * 
+     * ```
+     * getter
+     *   : {this.n("get")}? identifier propertyName
+     *   ;
+     * ```
+     * 
+     * @param ctx 
+     */
     visitGetter(ctx: RuleContext) {
         this.log(ctx, Trace.frame())
-        throw new Error('Not implemented')
+        this.assertType(ctx, ECMAScriptParser.GetterContext)
+
+        const identifierCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext);
+        const propertyNameCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.PropertyNameContext);
+        const identifier = this.visitIdentifier(identifierCtx) // identifier will alwasys be `get`
+        const key:Node.PropertyKey = this.visitPropertyName(propertyNameCtx)
+        // when IdentifierExpression is present we arehaving a computed field has computed = true  and   Identifier has computed = false
+        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext);
+        const computed = identifierExpressionContext ? true : false
+
+        console.info(identifier)
+        console.info(key)
+        console.info(computed)
+
+        return new Node.Property("init", key, computed, identifier, false, false)
+
     }
+
+
     // Visit a parse tree produced by ECMAScriptParser#setter.
     visitSetter(ctx: RuleContext) {
         this.log(ctx, Trace.frame())

@@ -1,0 +1,35 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "MemberExpression",
+                "computed": false,
+                "object": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "Identifier",
+                        "name": "universe"
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "milkyway",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "property": {
+                    "type": "Identifier",
+                    "name": "solarsystem",
+                    "start": 0,
+                    "end": 0
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

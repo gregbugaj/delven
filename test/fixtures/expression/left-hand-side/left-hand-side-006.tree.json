@@ -1,0 +1,29 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "NewExpression",
+                "callee": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "Identifier",
+                        "name": "foo"
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "bar",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "arguments": []
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

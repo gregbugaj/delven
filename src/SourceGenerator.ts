@@ -725,7 +725,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         for (let i = 0; i < elements.length; ++i) {
             const element: Node.ArrayExpressionElement = elements[i]//  Expression | SpreadElement | null;
             if (element == null) {
-                this.write('null', false, false)
+                // this.write('null', false, false)//
+                this.write(' ', false, false)//
             } else if (element instanceof Node.RestElement) {
                 this.vistiRestElement(element as Node.RestElement)
             } else {
@@ -962,10 +963,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.visitLiteral(key as Node.Literal)
         } else if (key instanceof Node.BinaryExpression) {
             this.visitBinaryExpression(key as Node.BinaryExpression)
+        }  else if (key instanceof Node.StaticMemberExpression) {
+            this.visitMemberExpression(key as Node.StaticMemberExpression)
         } else {
-            throw new TypeError("Not implemented")
+            throw new TypeError("Not implemented : " + key.constructor)
         }
     }
+
 
     visitLiteral(literal: Node.Literal): void {
         this.write(literal.raw, false, false)

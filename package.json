@@ -45,9 +45,11 @@
     "@babel/runtime": "^7.10.2",
     "@types/antlr4": "^4.7.1",
     "@types/node": "^14.0.12",
+    "@types/node-fetch": "^2.5.7",
     "glob": "^7.1.6",
     "json-diff": "^0.5.4",
     "jsondiffpatch": "^0.4.1",
+    "node-fetch": "^2.6.0",
     "typescript": "^3.9.5"
   }
 }

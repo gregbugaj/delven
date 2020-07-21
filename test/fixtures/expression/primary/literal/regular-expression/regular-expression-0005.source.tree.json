@@ -1,0 +1,28 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "source"
+                    },
+                    "init": {
+                        "type": "Literal",
+                        "value": "var x = /[\\\\u{0000000000000061}-\\\\u{7A}]/u",
+                        "raw": "'var x = /[\\\\u{0000000000000061}-\\\\u{7A}]/u'",
+                        "start": 0,
+                        "end": 0
+                    }
+                }
+            ],
+            "kind": "var"
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
