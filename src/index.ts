@@ -5,8 +5,6 @@ import * as fs from "fs"
 import { resolve } from "path"
 import fetch from 'node-fetch'
 
-
-
 async function main() {
         /*
                       let iter = { *[Symbol.iterator]() {}}
@@ -26,8 +24,11 @@ return 1
 
 const code =`
 x =   {
-        get [expr]() { return 'bar'; }
-      };
+        //get (a){ return 'a'},
+        // get foo(){ return 'foo'},
+        get [bar]() { return 'bar'; }
+        // get [z=y]() { return 'bar'; }
+};
 `
 const ast = ASTParser.parse({ type: "code", value: code });
 console.info(Utils.toJson(ast))

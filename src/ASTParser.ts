@@ -1631,8 +1631,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
      */
     isPropertyValue(expression: Node.Expression): expression is Node.PropertyValue {
         // Added Node.Literal
-        //export type BindingPattern = ArrayPattern | ObjectPattern;
-        //export type BindingIdentifier = Identifier;
+        // export type BindingPattern = ArrayPattern | ObjectPattern;
+        // export type BindingIdentifier = Identifier;
         // PropertyValue = AssignmentPattern | AsyncFunctionExpression | BindingIdentifier | BindingPattern | FunctionExpression;
         const types = [
             Node.Literal,
@@ -1651,8 +1651,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
         throw new TypeError('Not a valid PropertyValue type got : ' + expression.constructor)
     }
 
-    isPropertyKey(expression: Node.Expression): expression is Node.PropertyKey {
-        const types = [Node.Literal, Node.Identifier, Node.StaticMemberExpression]
+    /**
+     * Type Guard for Node.PropertyKey, we are passing in an `Node.Expression`
+     * 
+     * @param expression 
+     */
+    isPropertyKey(expression: any): expression is Node.PropertyKey {
+        if (this.isInstanceOfAny(expression, [Node.Literal, Node.Identifier]) || this.isExpression(expression)) {
+            return true
+        }
+        throw new TypeError('Not a valid PropertyKey type got : ' + expression.constructor)
+    }
+
+    /**
+     * Type Guard for Node.Expression type
+     * @param expression 
+     */
+    isExpression(expression: any): expression is Node.Expression {
+        const types = [Node.ArrayExpression, Node.ArrowFunctionExpression, Node.AssignmentExpression, Node.AsyncArrowFunctionExpression, Node.AsyncFunctionExpression,
+        Node.AwaitExpression, Node.BinaryExpression, Node.CallExpression, Node.ClassExpression, Node.ComputedMemberExpression,
+        Node.ConditionalExpression, Node.Identifier, Node.FunctionExpression, Node.Literal, Node.NewExpression, Node.ObjectExpression,
+        Node.RegexLiteral, Node.SequenceExpression, Node.StaticMemberExpression, Node.TaggedTemplateExpression,
+        Node.ThisExpression, Node.UnaryExpression, Node.UpdateExpression, Node.YieldExpression]
+
         if (this.isInstanceOfAny(expression, types)) {
             return true
         }
@@ -1774,13 +1795,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.Property("init", key, computed, value, method, shorthand)
     }
 
-    
+
     /**
      * Visit a parse tree produced by ECMAScriptParser#PropertyGetter.
      * Sample: 
      * ```
-     * x = { get [expr]() { return 'bar'; } } // computed=true
-     *  x = { get width() { return m_width } } // computed=false
+     * x = { get [expr]() { return 'bar'; } }  // computed = true
+     *  x = { get width() { return m_width } } // computed = false
      * ```
      * Grammar : 
      * ```
@@ -1790,13 +1811,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitPropertyGetter(ctx: RuleContext) {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.PropertyGetterContext)
-        const getter = this.getTypedRuleContext(ctx, ECMAScriptParser.GetterContext,0);
-        this.visitGetter(getter)
+        const getterContext = this.getTypedRuleContext(ctx, ECMAScriptParser.GetterContext);
+        const bodyContext = this.getTypedRuleContext(ctx, ECMAScriptParser.FunctionBodyContext);
+        const { computed, key } = this.visitGetter(getterContext)
+        const body = this.visitFunctionBody(bodyContext)
+        const value = new Node.FunctionExpression(null, [], body, false)
 
-        const key = null; //this.visitPropertyName(propNode)
-        const value = null;// this.singleExpression(ctx.getChild(2))
-
-        return new Node.Property("get", key, false, value, false, false)
+        return new Node.Property("get", key, computed, value, false, false)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#PropertySetter.
@@ -1827,7 +1848,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             if (this.isPropertyKey(key)) {
                 return key
             } else {
-                throw new TypeError('Invalid type : ' + key.constructor) 
+                throw new TypeError('Invalid type : ' + key.constructor)
             }
         } else {
             const node = ctx.getChild(0)
@@ -2209,7 +2230,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         // case #1
         if (prop) {
             key = this.visitPropertyName(prop)
-            
+
             const params: FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
             const body: BlockStatement = this.visitFunctionBody(ctx.functionBody())
             if (isAsync) {
@@ -3010,7 +3031,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitBitAndExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.EqualityExpressionContext) {
             return this.visitEqualityExpression(ctx)
-        }else if (ctx instanceof ECMAScriptParser.BitShiftExpressionContext) {
+        } else if (ctx instanceof ECMAScriptParser.BitShiftExpressionContext) {
             return this.visitBitShiftExpression(ctx)
         }
 
@@ -3348,6 +3369,18 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#getter.
      * 
+     * Code sample
+     * ```
+     * x =   {
+     *   get (a){ return 'a'},
+     *   get foo(){ return 'foo'},
+     *   get [bar]() { return 'bar'; },
+     *   get [z+y]() { return 'bar'; },
+     *   get [z=y]() { return 'bar'; }
+     *   };
+     * ```
+     * 
+     * Grammar : 
      * ```
      * getter
      *   : {this.n("get")}? identifier propertyName
@@ -3356,26 +3389,21 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * 
      * @param ctx 
      */
-    visitGetter(ctx: RuleContext) {
+    visitGetter(ctx: RuleContext): { computed: boolean, key: Node.PropertyKey } {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.GetterContext)
-
-        const identifierCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext);
-        const propertyNameCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.PropertyNameContext);
-        const identifier = this.visitIdentifier(identifierCtx) // identifier will alwasys be `get`
-        const key:Node.PropertyKey = this.visitPropertyName(propertyNameCtx)
-        // when IdentifierExpression is present we arehaving a computed field has computed = true  and   Identifier has computed = false
-        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext);
+        const identifierCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext)
+        const propertyNameCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.PropertyNameContext)
+        const identifier = this.visitIdentifier(identifierCtx) // identifier should always be `get`
+        if (identifier.name !== 'get') {
+            throw new TypeError('Invalid get identifier')
+        }
+        const key: Node.PropertyKey = this.visitPropertyName(propertyNameCtx)
+        // when IdentifierExpression is present we are having a computed field ex `[expression]()`
+        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext)
         const computed = identifierExpressionContext ? true : false
-
-        console.info(identifier)
-        console.info(key)
-        console.info(computed)
-
-        return new Node.Property("init", key, computed, identifier, false, false)
-
+        return { computed, key }
     }
-
 
     // Visit a parse tree produced by ECMAScriptParser#setter.
     visitSetter(ctx: RuleContext) {
