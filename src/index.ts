@@ -32,8 +32,7 @@ x =   {
 `
 
 const code =`
-// let {a, b=c, ...z} = 1
-function a([b=c]) {}
+yield
 `
 // x = {fun(){}, ...z} 
 

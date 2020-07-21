@@ -111,6 +111,10 @@ yieldExpression
     
 ```
 
+footnone :
+Fix null check in ./node_modules/antlr4/Utils.js
+
+
 ### 3. Order swapped for NewExpression and ArgumentsExpression
 
 This is necessary so the expression in form will be evaluated as `NewExpression` with 3 nodes(NEW singleExpression arguments?) and not as `NewExpression` with 2 nodes(NEW singleExpression) where `singleExpression` is a `ArgumentsExpression` node.

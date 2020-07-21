@@ -6,8 +6,8 @@ function ECMAScriptLexerBase(input) {
 
     this.scopeStrictModes = new Array();
     this.lastToken = null;
-    this.useStrictDefault = false;
-    this.useStrictCurrent = false;
+    this.useStrictDefault = true;
+    this.useStrictCurrent = true;
 }
 
 ECMAScriptLexerBase.prototype = Object.create(antlr4.Lexer.prototype);

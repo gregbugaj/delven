@@ -118,7 +118,8 @@ export default abstract class ASTParser {
         lexer.addErrorListener(errorHandler);
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-        parser.setTrace(false)
+        parser.buildParseTrees = true;
+        parser.setTrace(true)
 
         // parser.removeErrorListeners();
         // parser.addErrorListener(errorHandler);
@@ -2072,6 +2073,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitSuperExpression(node)
         } else if (node instanceof ECMAScriptParser.InlinedQueryExpressionContext) {
             return this.visitInlinedQueryExpression(node)
+        } else if (node instanceof ECMAScriptParser.YieldExpressionContext) {
+            return this.visitYieldExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -3448,6 +3451,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#eos.
+    visitYieldExpression(ctx: RuleContext): Node.YieldExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.YieldExpressionContext)
+
+        return new Node.YieldExpression(null, false)
+    }    
+
+    
     visitEos(ctx: RuleContext) {
         //console.trace('not implemented')
     }

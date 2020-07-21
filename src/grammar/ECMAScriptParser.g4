@@ -179,8 +179,8 @@ returnStatement
     ;
 
 yieldDeclaration
+    //: Yield ({this.notLineTerminator()}? expressionSequence)?
     : Yield ({this.notLineTerminator()}? expressionSequence)?
-    //: Yield ({this.notLineTerminator()}? expressionSequence)? eos
     ;
 
 withStatement
