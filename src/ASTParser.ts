@@ -2391,16 +2391,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
 
-
     /**
      * Convert SpreadElement to RestElement
      * @param element 
      */
     convertToRestElement(element: Node.SpreadElement): Node.RestElement {
-        if (!(element instanceof Node.Identifier || element instanceof Node.ArrayPattern || element instanceof Node.ObjectPattern)) {
-            throw new TypeError("Unable to convert to RestElement")
+        const argument = element.argument
+        if (!(argument instanceof Node.Identifier || argument instanceof Node.ArrayPattern || argument instanceof Node.ObjectPattern)) {
+            throw new TypeError("Unable to convert to RestElement : " + argument.constructor)
         }
-        return new RestElement(element)
+        return new RestElement(argument)
     }
 
 
