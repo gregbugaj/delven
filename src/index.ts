@@ -22,13 +22,19 @@ return 1
 
 // x = { get width() { return m_width ;} }
 
-const code =`
+const codexx =`
 x =   {
         //get (a){ return 'a'},
         // get foo(){ return 'foo'},
         get [bar]() { return 'bar'; }
         // get [z=y]() { return 'bar'; }
 };
+`
+
+const code =`
+y =  {  		
+        set [zz](_x) { x = _x },
+      };
 `
 const ast = ASTParser.parse({ type: "code", value: code });
 console.info(Utils.toJson(ast))

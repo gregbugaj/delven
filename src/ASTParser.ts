@@ -1547,6 +1547,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 property = this.visitFunctionProperty(node)
             } else if (node instanceof ECMAScriptParser.PropertyGetterContext) {
                 property = this.visitPropertyGetter(node);
+            } else if (node instanceof ECMAScriptParser.PropertySetterContext) {
+                property = this.visitPropertySetter(node);
             } else {
                 this.throwInsanceError(this.dumpContext(node))
             }
@@ -1808,7 +1810,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * | getter '(' ')' '{' functionBody '}'                                           # PropertyGetter
      * ```
      */
-    visitPropertyGetter(ctx: RuleContext) {
+    visitPropertyGetter(ctx: RuleContext): Node.Property {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.PropertyGetterContext)
         const getterContext = this.getTypedRuleContext(ctx, ECMAScriptParser.GetterContext);
@@ -1820,10 +1822,36 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.Property("get", key, computed, value, false, false)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#PropertySetter.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#PropertySetter.
+     * Sample: 
+     * ```
+     *  y =  {  		
+     *          set z(_x) { x = _x },
+     *       };
+     * ```
+     
+     * Grammar : 
+     * ```
+     * | setter '(' formalParameterArg ')' '{' functionBody '}'                        # PropertySetter
+     * ```
+     */
     visitPropertySetter(ctx: RuleContext) {
-        console.trace('not implemented')
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.PropertySetterContext)
+        const setterContext = this.getTypedRuleContext(ctx, ECMAScriptParser.SetterContext);
+        const formatParameterContext = this.getTypedRuleContext(ctx, ECMAScriptParser.FormalParameterArgContext);
+        const bodyContext = this.getTypedRuleContext(ctx, ECMAScriptParser.FunctionBodyContext);
+        const params: FunctionParameter[] = []
+        if (formatParameterContext) {
+            const formal = this.visitFormalParameterArg(formatParameterContext)
+            params.push(formal)
+        }
+        const { computed, key } = this.visitSetter(setterContext)
+        const body = this.visitFunctionBody(bodyContext)
+        const value = new Node.FunctionExpression(null, params, body, false)
 
+        return new Node.Property("set", key, computed, value, false, false)
     }
 
     /**
@@ -3406,9 +3434,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     // Visit a parse tree produced by ECMAScriptParser#setter.
-    visitSetter(ctx: RuleContext) {
+    visitSetter(ctx: RuleContext): { computed: boolean, key: Node.PropertyKey } {
         this.log(ctx, Trace.frame())
-        throw new Error('Not implemented')
+        this.assertType(ctx, ECMAScriptParser.SetterContext)
+        const identifierCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext)
+        const propertyNameCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.PropertyNameContext)
+        const identifier = this.visitIdentifier(identifierCtx) // identifier should always be `set`
+        if (identifier.name !== 'set') {
+            throw new TypeError('Invalid set identifier')
+        }
+        const key: Node.PropertyKey = this.visitPropertyName(propertyNameCtx)
+        // when IdentifierExpression is present we are having a computed field ex `[expression]()`
+        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext)
+        const computed = identifierExpressionContext ? true : false
+        return { computed, key }
     }
 
     // Visit a parse tree produced by ECMAScriptParser#eos.
