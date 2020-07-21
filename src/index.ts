@@ -32,7 +32,7 @@ x =   {
 `
 
 const code =`
-let {a, ...z} = 1
+let {a, b=c, ...z} = 1
 `
 
 // x = {fun(){}, ...z} 
