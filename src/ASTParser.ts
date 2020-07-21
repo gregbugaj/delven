@@ -1526,6 +1526,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
      *  : '{' (propertyAssignment (',' propertyAssignment)*)? ','? '}'
      *  ;
      * ```
+     * 
+     * ```
+     * propertyAssignment
+     *     : propertyName ':' singleExpression                                             # PropertyExpressionAssignment
+     *     | '[' singleExpression ']' ':' singleExpression                                 # ComputedPropertyExpressionAssignment ??? FIXME : Never will be hit
+     *     | Async? '*'? propertyName '(' formalParameterList?  ')'  '{' functionBody '}'  # FunctionProperty
+     *     | getter '(' ')' '{' functionBody '}'                                           # PropertyGetter
+     *     | setter '(' formalParameterArg ')' '{' functionBody '}'                        # PropertySetter
+     *     | Ellipsis? singleExpression                                                    # PropertyShorthand
+     *     ;
+     *``` 
      * @param ctx 
      */
     visitObjectLiteral(ctx: RuleContext): Node.ObjectExpression {
@@ -1557,7 +1568,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 properties.push(property)
             }
         }
-
         return new Node.ObjectExpression(properties)
     }
 
@@ -1753,55 +1763,29 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#PropertyExpressionAssignment.
      * 
-     * Samples
+     * Code:
      * 
-     * Path : `PropertyNameContext`
      * ```
      * x = {[a]:[d]} 
      * ```
      * 
-     * 
-     * Grammar : 
-     * ```
-     * propertyAssignment
-     *     : propertyName ':' singleExpression                                             # PropertyExpressionAssignment
-     *     | '[' singleExpression ']' ':' singleExpression                                 # ComputedPropertyExpressionAssignment
-     *     | Async? '*'? propertyName '(' formalParameterList?  ')'  '{' functionBody '}'  # FunctionProperty
-     *     | getter '(' ')' '{' functionBody '}'                                           # PropertyGetter
-     *     | setter '(' formalParameterArg ')' '{' functionBody '}'                        # PropertySetter
-     *     | Ellipsis? singleExpression                                                    # PropertyShorthand
-     *     ;
-     *``` 
      */
     visitPropertyExpressionAssignment(ctx: RuleContext): Node.ObjectExpressionProperty {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.PropertyExpressionAssignmentContext)
         const propNode: RuleContext = ctx.getChild(0)
-        let key: Node.PropertyKey
-        let value: Node.Expression
+       
         let computed = false
         const method = false
         const shorthand = false
 
-        if (propNode instanceof ECMAScriptParser.PropertyNameContext) {
-            // should check for actuall `[expression]`
-            if (propNode.getChildCount() == 3) {
-                computed = true
-            }
-
-            key = this.visitPropertyName(propNode)
-            value = this.singleExpression(ctx.getChild(2))
-        } else if (propNode instanceof ECMAScriptParser.ComputedPropertyExpressionAssignmentContext) {
-            throw new TypeError("Not implemented : ComputedPropertyExpressionAssignmentContext")
-        } else if (propNode instanceof ECMAScriptParser.FunctionPropertyContext) {
-            throw new TypeError("Not implemented : FunctionPropertyContext")
-        } else if (propNode instanceof ECMAScriptParser.PropertyGetterContext) {
-            throw new TypeError("Not implemented : PropertyGetterContext")
-        } else if (propNode instanceof ECMAScriptParser.PropertySetterContext) {
-            throw new TypeError("Not implemented : PropertySetterContext")
-        } else if (propNode instanceof ECMAScriptParser.PropertyShorthandContext) {
-            throw new TypeError("Not implemented : PropertyShorthandContext")
+        // should check for actuall `[expression]`
+        if (propNode.getChildCount() == 3) {
+            computed = true
         }
+
+        const key: Node.PropertyKey = this.visitPropertyName(propNode)
+        const value: Node.Expression = this.singleExpression(ctx.getChild(2))
 
         return new Node.Property("init", key, computed, value, method, shorthand)
     }
@@ -2350,7 +2334,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         } else {
             const assignable = this.visitAssignable(ctx.getChild(0))
             const expression = this.singleExpression(ctx.getChild(2))
-            return new AssignmentPattern(assignable, expression)
+            return new Node.AssignmentPattern(assignable, expression)
         }
     }
 
@@ -2390,7 +2374,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
     }
 
-
     /**
      * Convert SpreadElement to RestElement
      * @param element 
@@ -2402,7 +2385,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
         return new RestElement(argument)
     }
-
 
     /**
          * Visit a parse tree produced by ECMAScriptParser#lastFormalParameterArg.
@@ -3234,7 +3216,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const expr = this.singleExpression(ctx.getChild(0))
         const property = this.coerceToExpressionOrSequence(this.visitExpressionSequence(ctx.getChild(2)))
 
-        return new ComputedMemberExpression(expr, property)
+        return new Node.ComputedMemberExpression(expr, property)
     }
 
     /**

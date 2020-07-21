@@ -32,11 +32,14 @@ x =   {
 `
 
 const code =`
-let {a, b=c, ...z} = 1
+// let {a, b=c, ...z} = 1
+function a([b=c]) {}
 `
-
 // x = {fun(){}, ...z} 
 
+// Bad source
+// let x = {async test(){}} 
+// x = {fun(){}, z} 
 
 const ast = ASTParser.parse({ type: "code", value: code });
 console.info(Utils.toJson(ast))

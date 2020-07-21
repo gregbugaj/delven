@@ -590,8 +590,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 this.visitAssignmentPattern(value)
             } else {
                 this.visitExpression(key)
-                /* 
-                if (value) {
+
+/*                 if (value) {
                     this.visitExpression(value)
                 } */
             }
