@@ -32,14 +32,19 @@ x =   {
 `
 
 const code =`
-y =  {  		
-        set [zz](_x) { x = _x },
-      };
+x = {a, ...z} 
 `
+
+// x = {fun(){}, ...z} 
+
+
 const ast = ASTParser.parse({ type: "code", value: code });
 console.info(Utils.toJson(ast))
 
-
+const generator = new SourceGenerator();
+const script = generator.toSource(ast);
+console.info('-------')
+console.info(script)
 }
 
 

@@ -760,13 +760,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('}', false, false)
     }
 
-    visitObjectExpressionProperty(expression: Node.ObjectExpressionProperty): void {
 
+    visitObjectExpressionProperty(expression: Node.ObjectExpressionProperty): void {
         switch (expression.type) {
             case Syntax.Property: {
-                const property = expression as Node.Property;
-                const key: Node.PropertyKey = property.key;
-                const value: Node.PropertyValue = property.value;
+                const property = expression as Node.Property
+                const key: Node.PropertyKey = property.key
+                const value: Node.PropertyValue | null = property.value
 
                 // This is mostl implemented, somewhat hacky
                 if (property.method) {
@@ -788,8 +788,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
                 break;
             } case Syntax.SpreadElement: {
-                this.write('SPREAD', false, false)
-                throw new Error("not implemented")
+                const property = expression as Node.SpreadElement
+                this.write('...', false, false)   
+                this.visitExpression(property.argument)             
                 break;
             }
             default:

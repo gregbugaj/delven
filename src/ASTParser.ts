@@ -118,7 +118,7 @@ export default abstract class ASTParser {
         lexer.addErrorListener(errorHandler);
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-        parser.setTrace(true)
+        parser.setTrace(false)
 
         // parser.removeErrorListeners();
         // parser.addErrorListener(errorHandler);
@@ -1599,11 +1599,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         let key: Node.PropertyKey
         let value: Node.PropertyValue | null = null
-        const expression: Node.Expression = this.singleExpression(ctx.getChild(0))
+        const hasEllipsis = this.hasToken(ctx, ECMAScriptParser.Ellipsis)
+        const expression: Node.Expression = this.singleExpression(ctx.singleExpression())
 
         // Convert AssignmentExpression to AssignmentPattern
         if (expression instanceof Node.AssignmentExpression) {
-            const assignable: Node.AssignmentExpression = expression as Node.AssignmentExpression
+            const assignable: Node.AssignmentExpression = expression
             key = assignable.left as Node.PropertyKey
             if (this.isPropertyValue(assignable.right)) {
                 value = new Node.AssignmentPattern(key, assignable.right)
@@ -1611,18 +1612,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 throw new TypeError("Unable to convert property shorthand")
             }
         } else {
-            if (ctx.getChildCount()) {
-                key = new Identifier(ctx.getText())
-            } else {
-                key = new Identifier(ctx.getText())
-                const expression = this.singleExpression(ctx.getChild(0))
-                value = this.isPropertyValue(expression) ? expression : null
+            if(hasEllipsis){
+                return  new Node.SpreadElement(expression)
+            }else{
+                key = expression
             }
         }
 
         if (value == null) {
-            value = key
+             value = key
         }
+
         return new Node.Property("init", key, computed, value, method, shorthand)
     }
 
@@ -1753,6 +1753,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#PropertyExpressionAssignment.
      * 
+     * Samples
+     * 
+     * Path : `PropertyNameContext`
+     * ```
+     * x = {[a]:[d]} 
+     * ```
+     * 
+     * 
+     * Grammar : 
      * ```
      * propertyAssignment
      *     : propertyName ':' singleExpression                                             # PropertyExpressionAssignment
@@ -2229,6 +2238,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
+     * TODO : Implement stage-3 private properties
      * 
      * Visit a parse tree produced by ECMAScriptParser#methodDefinition.
      * 
@@ -2271,6 +2281,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.MethodDefinition(key, computed, value, "method", isStatic)
     }
 
+    /**
+     * Check for specific token type presence
+     * @param ctx 
+     * @param tokenType 
+     */
     hasToken(ctx: antlr4.ParserRuleContext, tokenType: number): boolean {
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const n = ctx.getChild(i)
