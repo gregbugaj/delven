@@ -441,6 +441,7 @@ bigintLiteral
     | BigBinaryIntegerLiteral
     ;
 
+
 getter
     : {this.n("get")}? identifier propertyName
     ;
