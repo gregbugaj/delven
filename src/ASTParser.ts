@@ -2246,23 +2246,25 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
         const isAsync = this.hasToken(ctx.parentCtx, ECMAScriptParser.Async)
         const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
-        const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME
+        const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME */
+        // const { isAsync, isGenerator, isStatic } = this.getFunctionAttributes(ctx.parentCtx)
 
-        console.info("isAsync = ${isAsync}")
-        console.info("isGenerator = ${isGenerator}")
-        console.info("isStatic = ${isStatic}")
-        
-        const prop = ctx.propertyName()
-        const computed = false;
+        console.info(`isAsync = ${isAsync}`)
+        console.info(`isGenerator = ${isGenerator}`)
+        console.info(`isStatic = ${isStatic}`)
+
+        const propertyNameCtx = ctx.propertyName()
+        let computed = false;
         let key: Node.PropertyKey;
         let value: AsyncFunctionExpression | FunctionExpression | null = null;
 
         // case #1
-        if (prop) {
-            key = this.visitPropertyName(prop)
-
+        if (propertyNameCtx) {
+            key = this.visitPropertyName(propertyNameCtx)
+            computed = this.isComputedProperty(propertyNameCtx)
             const params: FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
             const body: BlockStatement = this.visitFunctionBody(ctx.functionBody())
+            
             if (isAsync) {
                 value = new AsyncFunctionExpression(null, params, body)
             } else {
@@ -3434,10 +3436,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
             throw new TypeError('Invalid get identifier')
         }
         const key: Node.PropertyKey = this.visitPropertyName(propertyNameCtx)
-        // when IdentifierExpression is present we are having a computed field ex `[expression]()`
-        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext)
-        const computed = identifierExpressionContext ? true : false
+        const computed = this.isComputedProperty(propertyNameCtx)
+
         return { computed, key }
+    }
+
+    /**
+     * Check if PropertyNameContext is a computed property
+     *  When IdentifierExpression is present we are having a computed field ex `[expression]()`
+     * @param propertyNameCtx 
+     */
+    isComputedProperty(propertyNameCtx: RuleContext): boolean {
+        this.assertType(propertyNameCtx, ECMAScriptParser.PropertyNameContext)
+        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext)
+        return identifierExpressionContext ? true : false
     }
 
     // Visit a parse tree produced by ECMAScriptParser#setter.

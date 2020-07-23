@@ -411,7 +411,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         const clzBody: Node.ClassBody = expression.body
 
         for (let i = 0; i < clzBody.body.length; i++) {
-            const property:Node.Property = clzBody.body[i]
+            const property: Node.Property = clzBody.body[i]
             switch (property.type) {
                 case Syntax.MethodDefinition: {
                     this.visitMethodDefinition(property as Node.MethodDefinition)
@@ -426,23 +426,35 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitMethodDefinition(expression: Node.MethodDefinition) {
+        if (expression.value) {
+            if (expression.value.type == Syntax.FunctionExpression) {
+                if (expression.value.async) {
+                    this.write('async', false, false)
+                    this.write(' ', false, false)
+                }
 
-        
-        console.info(expression)
+                if (expression.value.generator) {
+                    this.write('*', false, false)
+                }
+            }
+        }
 
-        /**
-          // AsyncFunctionExpression | FunctionExpression | null;
+
         if (expression.key != null) {
-            this.visitExpression(expression.key as Node.Expression)
+            this.writeConditional(expression.computed, '[', false, false)
+            this.visitPropertyKey(expression.key)
+            this.writeConditional(expression.computed, ']', false, false)
         }
 
-        const value = expression.value;
-        if (value instanceof Node.FunctionExpression) {
-
-            this.visitFunctionExpression(value as Node.FunctionExpression)
+        if (expression.value) {
+            if (expression.value.type == Syntax.FunctionExpression) {
+                const value: Node.FunctionExpression = expression.value
+                this.visitFunctionParameterArray(value.params)
+                this.visitBlockStatement(value.body)
+            } else {
+                throw new TypeError("Unknow type")
+            }
         }
-         */
-       
     }
 
     visitBlockStatement(node: Node.BlockStatement): void {
