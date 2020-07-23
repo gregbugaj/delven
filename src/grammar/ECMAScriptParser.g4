@@ -63,7 +63,7 @@ statement
  | continueStatement
  | breakStatement
  | returnStatement
- //| yieldStatement  // Footnote 1,6
+ //| yieldDeclaration  // Footnote 1,6
  | withStatement
  | labelledStatement
  | switchStatement
@@ -179,8 +179,8 @@ returnStatement
     ;
 
 yieldDeclaration
-    //: Yield ({this.notLineTerminator()}? expressionSequence)?
-    : Yield ({this.notLineTerminator()}? expressionSequence)?
+    : Yield {this.notLineTerminator()} ('*')? expressionSequence
+    | Yield eos
     ;
 
 withStatement
@@ -358,8 +358,8 @@ singleExpression
     | <assoc=right> singleExpression assignmentOperator singleExpression    # AssignmentOperatorExpression
     | Import '(' singleExpression ')'                                       # ImportExpression
     | singleExpression TemplateStringLiteral                                # TemplateStringExpression  // ECMAScript 6
-    | yieldDeclaration                                                      # YieldExpression           // ECMAScript 6 : GB Footnote 1, 6 
     | This                                                                  # ThisExpression
+    | yieldDeclaration                                                      # YieldExpression           // ECMAScript 6 : GB Footnote 1, 6
     | identifier                                                            # IdentifierExpression
     | Super                                                                 # SuperExpression
     | literal                                                               # LiteralExpression
@@ -494,7 +494,6 @@ keyword
  | Delete
  | In
  | Try
-
  | Class
  | Enum
  | Extends
@@ -527,7 +526,6 @@ eos
 // Extension
 // I like to name this properly to limit confusion
 //https://stackoverflow.com/questions/34131071/sql-clause-vs-expression-terms
-
 querySelectStatement
   : queryExpression
   ;

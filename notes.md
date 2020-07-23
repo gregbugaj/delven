@@ -41,6 +41,7 @@ npm i jest @types/jest ts-jest -D
 
 
 ## Setup v2
+
 https://www.codementor.io/@michaelumanah/how-to-set-up-babel-7-and-nodemon-with-node-js-pbj7cietc
 
 ```

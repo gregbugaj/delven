@@ -7,7 +7,7 @@ import * as path from 'path'
 // import { diffString, diff } from 'json-diff'
 import * as jsondiffpatch from 'jsondiffpatch'
 
-export type TestType = "tree" | "tokens" | "path"
+export type TestType = "tree" | "tokens" | "path" | "failure"
 export type TestCase = {
     name: string,
     type: TestType
@@ -16,7 +16,7 @@ export type TestCase = {
     enabled: boolean
 }
 
-function discover(): TestCase[] {
+function discover(expectType: TestType): TestCase[] {
     const results = glob("./test/fixtures/**/*.js", { sync: true });
     function getType(name: string): TestType {
         return ['tree', 'tokens', 'path', 'failure'].find(type => type === name.split('.')[1]) as TestType
@@ -33,37 +33,102 @@ function discover(): TestCase[] {
 
         for (const assetPath of glob(`${dir}/**/${label}.*.json`, { sync: true })) {
             const assetName = path.basename(assetPath)
-            const basename = path.basename(path.dirname(assetPath))
+            let basename = assetPath.slice('./test/fixtures'.length + 1, assetPath.indexOf(assetName) - 1)
+            basename = basename.replace(/\//g, '.')
+
+            const type = getType(assetName)
+            if (type !== expectType)
+                continue
+
             cases.push({
                 name: `${basename}[${label}]`,
-                type: getType(assetName),
+                type: type,
                 code: content,
                 expected: fs.readFileSync(assetPath, 'utf-8'),
                 enabled: true
             } as TestCase)
         }
     }
-    return cases
+
+    return cases.filter(c => c.name === 'antlr.Generators[GeneratorMethods-001]')
+    // return cases
 }
 
+const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
+
+const createOptions = function () {
+    return {
+        // used to match objects when diffing arrays, by default only === operator is used
+        objectHash: function (obj) {
+            // this function is used only to when objects are not equal by ref
+            return obj._id || obj.id;
+        },
+        arrays: {
+            // default true, detect items moved inside the array (otherwise they will be registered as remove+add)
+            detectMove: true,
+            // default false, the value of items moved is not included in deltas
+            includeValueOnMove: false
+        },
+        textDiff: {
+            // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
+            minLength: 60
+        },
+        /*propertyFilter: function (name, context) {
+            
+             this optional function can be specified to ignore object properties (eg. volatile data)
+              name: property name, present in either context.left or context.right objects
+              context: the diff context (has context.left and context.right objects)
+            *
+            return name.slice(0, 1) !== '$';
+        },/
+        cloneDiffValues: false /* default false. if true, values in the obtained delta will be cloned
+          (using jsondiffpatch.clone by default), to ensure delta keeps no references to left or right objects. this becomes useful if you're diffing and patching the same objects multiple times without serializing deltas.
+          instead of true, a function can be specified here to provide a custom clone(value)
+          */
+    }
+}
+
+
+const assertSame = function (expected, ast): { same: boolean, delta: any} {
+    const a = toJson(ast)
+    const b = toJson(expected)
+    // bug in json diffpatcher when there is an array with null values `"elements": [null, null, {} ]`
+    // to cause a bad compare, example : expression.primary.array[array-0004]
+    if (a === b) {
+        return { same: true, delta: undefined }
+    }
+
+ /*    console.info(a)
+    console.info('----------------------')
+    console.info('----------------------')
+    console.info(b) */
+    
+
+    const diffpatcher = jsondiffpatch.create(createOptions())
+    const delta = diffpatcher.diff(ast, expected);
+
+    if (delta != undefined) {
+        // let annotated = jsondiffpatch.formatters.annotated.format(delta, expected)
+        console.log(delta);
+    }
+
+    return { same: delta == undefined, delta: delta }
+}
+
+if(false)
 describe('Generated Grammar Test Suite', () => {
     beforeAll(() => {
         ASTParser.trace(false)
     });
 
-    const cases: TestCase[] = discover()
+    const cases: TestCase[] = discover("tree")
     const mapped = cases.map(_case => [_case.name, _case])
     it.each(mapped)(`%# AST : %s`, (label, _case) => {
         const deck = _case as TestCase
-        const ast = ASTParser.parse({ type: "code", value: deck.code });
+        const ast = ASTParser.parse({ type: "code", value: deck.code })
         const expected = JSON.parse(deck.expected) as ASTNode
-        // create a configured instance, match objects by name
-        // undefined => no difference
-        const diffpatcher = jsondiffpatch.create({});
-        const delta = diffpatcher.diff(ast, expected);
-        if (delta != undefined) {
-            console.log(delta);
-        }
+        const {same, delta} = assertSame(expected, ast)
+        
         expect(delta).toBeUndefined();
     })
 })
@@ -73,7 +138,7 @@ describe('Source Generator Test', () => {
         ASTParser.trace(false)
     });
 
-    const cases: TestCase[] = discover()
+    const cases: TestCase[] = discover("tree")
     const mapped = cases.map(_case => [_case.name, _case])
     it.each(mapped)(`%# Source : %s`, (label, _case) => {
         const deck = _case as TestCase
@@ -81,14 +146,9 @@ describe('Source Generator Test', () => {
 
         const generator = new SourceGenerator();
         const script = generator.toSource(ast);
-
         const ast2 = ASTParser.parse({ type: "code", value: script });
-        const diffpatcher = jsondiffpatch.create({});
+        const {same, delta} = assertSame(ast, ast2)
 
-        const delta = diffpatcher.diff(ast, ast2);
-        if (delta != undefined) {
-            console.log(delta);
-        }
         expect(delta).toBeUndefined();
     })
 })

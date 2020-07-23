@@ -97,19 +97,8 @@ https://www.w3.org/TR/webdriver1
 
 ### 1 Grammar causing infinive loop
 
-Original 
-```
-yieldExpression
-    : Yield ({this.notLineTerminator()}? expressionSequence)? eos
-```
+See #6
 
-Fixed by removing 'EOS' 
-
-```
-yieldExpression
-    : Yield ({this.notLineTerminator()}? expressionSequence)?
-    
-```
 
 footnone :
 Fix null check in ./node_modules/antlr4/Utils.js
@@ -134,12 +123,32 @@ let x = new z(...k)
 
 Issue  with `() => {}` resolving as object literal
 
-### 6. Yield
+### 6. Yield  : YieldExpression
 
-YieldStatement moved to OI3U49
-izaizaizau 5jy bu86yuy6tr8rtiurbt ui55y 7err9 rt y7u  9944e878brgty bbuuuuuuuuuuuuuuu t8itrtr t 58558 89r8943b iza4w4rthkjhju['lopp-0izawyre7ew 7ytvwt]
+There are two issues with YieldStatemet
 
-YieldExpression
+1) Inifnitive loop causing and stackoverflow.
+2) Not properly handling generator functions
+
+Original EBNF
+
+```ebnf
+yieldExpression
+    : Yield ({this.notLineTerminator()}? expressionSequence)? eos
+```
+
+Fixed by removing 'eos' from original rule.
+Add support to handle Yield with generatators. Broke down declaration into two separate rules, order here is important as the yield start will get evaluated
+as `MuliplicativeExpression` due to `singleExpression` being produced by `expressionSequence`
+
+Updated EBNF
+
+```ebnf
+yieldDeclaration
+    : Yield {this.notLineTerminator()} ('*')? expressionSequence
+    | Yield eos
+    ;
+```
 
 Reference : 
 [https://tc39.es/ecma262/#prod-YieldExpression]

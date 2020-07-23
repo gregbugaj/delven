@@ -411,11 +411,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         const clzBody: Node.ClassBody = expression.body
 
         for (let i = 0; i < clzBody.body.length; i++) {
-            const property = clzBody.body[i]
-            if (property.type == Syntax.MethodDefinition) {
-                this.visitMethodDefinition(property as Node.MethodDefinition)
-            } else {
-                throw new TypeError("Type not handled  : " + property.type)
+            const property:Node.Property = clzBody.body[i]
+            switch (property.type) {
+                case Syntax.MethodDefinition: {
+                    this.visitMethodDefinition(property as Node.MethodDefinition)
+                    break;
+                }
+                default: throw new TypeError("Type not handled  : " + property.type)
             }
 
             this.write('\n', false, false)
@@ -425,7 +427,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitMethodDefinition(expression: Node.MethodDefinition) {
 
-        // AsyncFunctionExpression | FunctionExpression | null;
+        
+        console.info(expression)
+
+        /**
+          // AsyncFunctionExpression | FunctionExpression | null;
         if (expression.key != null) {
             this.visitExpression(expression.key as Node.Expression)
         }
@@ -435,6 +441,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
             this.visitFunctionExpression(value as Node.FunctionExpression)
         }
+         */
+       
     }
 
     visitBlockStatement(node: Node.BlockStatement): void {
@@ -453,7 +461,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitExpressionStatement(node: Node.ExpressionStatement): void {
+        // this.write("(", false, false)
         this.visitExpression(node.expression)
+        // this.write(")", false, false)
     }
 
     visitAssignmentExpression(expression: Node.AssignmentExpression): void {
@@ -554,10 +564,26 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.RestElement: {
                 this.vistiRestElement(expression as Node.RestElement)
                 break;
+            } case Syntax.YieldExpression: {
+                this.visitYieldExpression(expression as Node.YieldExpression)
+                break;
             }
 
             default:
                 throw new TypeError("Type not handled : " + expression.type)
+        }
+    }
+
+    visitYieldExpression(expression: Node.YieldExpression): void {
+        this.write('yield', false, false)
+
+        if (expression.delegate) {
+            this.write('*', false, false)
+        }
+
+        if (expression.argument) {
+            this.write(' ', false, false)
+            this.visitExpression(expression.argument)
         }
     }
 
@@ -591,9 +617,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } else {
                 this.visitExpression(key)
 
-/*                 if (value) {
-                    this.visitExpression(value)
-                } */
+                /*                 if (value) {
+                                    this.visitExpression(value)
+                                } */
             }
         } else {
             this.writeConditional(expression.computed, '[', false, false)
@@ -789,8 +815,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break;
             } case Syntax.SpreadElement: {
                 const property = expression as Node.SpreadElement
-                this.write('...', false, false)   
-                this.visitExpression(property.argument)             
+                this.write('...', false, false)
+                this.visitExpression(property.argument)
                 break;
             }
             default:
@@ -964,7 +990,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.visitLiteral(key as Node.Literal)
         } else if (key instanceof Node.BinaryExpression) {
             this.visitBinaryExpression(key as Node.BinaryExpression)
-        }  else if (key instanceof Node.StaticMemberExpression) {
+        } else if (key instanceof Node.StaticMemberExpression) {
             this.visitMemberExpression(key as Node.StaticMemberExpression)
         } else {
             throw new TypeError("Not implemented : " + key.constructor)

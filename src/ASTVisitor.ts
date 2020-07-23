@@ -300,4 +300,10 @@ export default abstract class ASTVisitor {
      * @param expression 
      */
     abstract visitSuper(expression: Node.Super): void
+
+    /**
+     * 
+     *  @param expression 
+     */
+    abstract visitYieldExpression(expression: Node.YieldExpression): void
 }

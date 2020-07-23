@@ -119,7 +119,7 @@ export default abstract class ASTParser {
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
         parser.buildParseTrees = true;
-        parser.setTrace(true)
+        parser.setTrace(ASTParser._trace)
 
         // parser.removeErrorListeners();
         // parser.addErrorListener(errorHandler);
@@ -3450,14 +3450,38 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return { computed, key }
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#eos.
+    /**
+     * Sample :
+     * ```
+     *  yield         // delegate  = false
+     *  yield 1,2     // sequence
+     *  yield ()=>1   // delegate  = false
+     *  yield *gen()  // delegate  = true
+     *  yield (2) *gen() // YieldExpression (BinaryExpression (Literal, CallExpression))
+     * ```
+     * 
+     * Grammar : 
+     * ```
+     * yieldDeclaration
+     *   : Yield {this.notLineTerminator()} ('*')? expressionSequence
+     *   | Yield eos
+     * ;
+     * ```
+     */
     visitYieldExpression(ctx: RuleContext): Node.YieldExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.YieldExpressionContext)
+        const declarationContext = this.getTypedRuleContext(ctx, ECMAScriptParser.YieldDeclarationContext)
+        const delegate = this.hasToken(declarationContext, ECMAScriptParser.Multiply)
+        let argument: Expression | null = null
+        const esc = this.getTypedRuleContext(declarationContext, ECMAScriptParser.ExpressionSequenceContext)
+        if(esc){
+            const sequence = this.visitExpressionSequence(esc)
+            argument = this.coerceToExpressionOrSequence(sequence)
+        }
 
-        return new Node.YieldExpression(null, false)
+        return new Node.YieldExpression(argument, delegate)
     }    
-
     
     visitEos(ctx: RuleContext) {
         //console.trace('not implemented')

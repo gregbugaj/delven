@@ -1,6 +1,6 @@
 
 class Clz {
-        * bar () {
-          
-        }
+    * bar () {
+        
     }
+}

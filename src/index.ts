@@ -6,130 +6,152 @@ import { resolve } from "path"
 import fetch from 'node-fetch'
 
 async function main() {
-        /*
-                      let iter = { *[Symbol.iterator]() {}}
-                      let iter = { *[()=>{}]() { }}
-                      */
+    /*
+                  let iter = { *[Symbol.iterator]() {}}
+                  let iter = { *[()=>{}]() { }}
+                  */
 
-const crash =
-                `
+    const crash =
+        `
 let math = {
 'factit': function factorial(n) {
 return 1
 }
 };
-` 
+`
 
-// x = { get width() { return m_width ;} }
+    // x = { get width() { return m_width ;} }
 
-const codexx =`
+    const codexx = `
 x =   {
         //get (a){ return 'a'},
         // get foo(){ return 'foo'},
         get [bar]() { return 'bar'; }
         // get [z=y]() { return 'bar'; }
 };
+
+// (function* (...x) {}) 
+/*
+odds  = evens.map(v => v + 1)
+pairs = evens.map(v => ({ even: v, odd: v + 1 }))
+nums  = evens.map((v, i) => v + i)
+*/
 `
-
-const code =`
-yield
+    const code = `    
+class Clz {
+    [a] (x, y) {
+    
+    }, 
+    bar () {
+        
+    }
+}
 `
-// x = {fun(){}, ...z} 
+    // x = {fun(){}, ...z} 
 
-// Bad source
-// let x = {async test(){}} 
-// x = {fun(){}, z} 
+    // Bad source
+    // let x = {async test(){}} 
+    // x = {fun(){}, z} 
 
-const ast = ASTParser.parse({ type: "code", value: code });
-console.info(Utils.toJson(ast))
+    const ast = ASTParser.parse({ type: "code", value: code });
+    console.info(Utils.toJson(ast))
 
-const generator = new SourceGenerator();
-const script = generator.toSource(ast);
-console.info('-------')
-console.info(script)
+    const generator = new SourceGenerator();
+    const script = generator.toSource(ast);
+    console.info('-------')
+    console.info(script)
+
+    console.info('----SOURCE----')
+    console.info(code)
+
+    const dir = resolve(__dirname, '../test/fixtures', "", "")
 }
 
 
-async function generateTestCase() {
-        const getData = async (url: string) => {
-                const response = await fetch(url)
-                const body = await response.text()
-                const status = response.status
-                return { status, body }
+async function mainX() {
+    const getData = async (url: string) => {
+        const response = await fetch(url)
+        const body = await response.text()
+        const status = response.status
+        return { status, body }
+    }
+
+    type GitData = {
+        success: boolean,
+        chunks: string[],
+        code: string,
+    }
+
+    const getGitData = async (startChunk: string, url: string): Promise<GitData> => {
+        const payload = await getData(url);
+        const success = payload.status == 200 ? true : false
+        const code = payload.body
+        if (!success) {
+            return { success: false, chunks: [], code: code }
         }
 
-        type GitData = {
-                success: boolean,
-                chunks: string[],
-                code: string,
+        const index = url.indexOf(startChunk);
+        let s = url.slice(index)
+        if (s.startsWith('/')) {
+            s = s.slice(1)
         }
+        s = s.slice(0, s.lastIndexOf('/'))
+        const chunks = s.split('/')
+        return { success, chunks, code }
+    }
 
-        const getGitData = async (startChunk: string, url: string): Promise<GitData> => {
-                const payload = await getData(url);
-                const success = payload.status == 200 ? true : false
-                const code = payload.body
-                if (!success) {
-                        return { success: false, chunks: [], code: code }
-                }
+    //let iter = { *[Symbol.iterator]() {}}
+    // const index = '0009';//.source
+    //const name = `object-${index}`
 
-                const index = url.indexOf(startChunk);
-                let s = url.slice(index)
-                if (s.startsWith('/')) {
-                        s = s.slice(1)
-                }
-                s = s.slice(0, s.lastIndexOf('/'))
-                const chunks = s.split('/')
-                return { success, chunks, code }
-        }
+    const name = `generator-expression-rest-param`
+    // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
+    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/generator/${name}.js`)
 
-        //let iter = { *[Symbol.iterator]() {}}
-        const index = '0009';//.source
-        const name = `object-${index}`
-        const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
-        console.info(payload)
-        if (!payload.success) {
-                console.info("Gitdata returned with error")
-                return;
-        }
+    console.info(payload)
+    if (!payload.success) {
+        console.info("Gitdata returned with error")
+        return;
+    }
 
-        const dir = resolve(__dirname, '../test/fixtures', ...payload.chunks)
-        const code = payload.code
-        const ast = ASTParser.parse({ type: "code", value: code });
-        console.info(Utils.toJson(ast))
+    const dir = resolve(__dirname, '../test/fixtures', ...payload.chunks)
+    const code = payload.code
+    const ast = ASTParser.parse({ type: "code", value: code });
+    console.info(Utils.toJson(ast))
 
-        if (ast instanceof ErrorNode) {
-                console.info('Parse Errors')
-                const jsFile = resolve(dir, `${name}.failure.js`)
-                const jsonFile = resolve(dir, `${name}.failure.json`)
-/*         
-                if (fs.existsSync(jsFile)) {
-                        throw new Error('File exists')
-                }
-                Utils.write(jsFile, code)
-                Utils.write(jsonFile, ast) */
-                return;
-        }
+    if (ast instanceof ErrorNode) {
+        console.info('Parse Errors')
+        const jsFile = resolve(dir, `${name}.failure.js`)
+        const jsonFile = resolve(dir, `${name}.failure.json`)
+        /*         
+                        if (fs.existsSync(jsFile)) {
+                                throw new Error('File exists')
+                        }
+                        Utils.write(jsFile, code)
+                        Utils.write(jsonFile, ast) */
+        return;
+    }
 
-        const generator = new SourceGenerator();
-        const script = generator.toSource(ast);
-        console.info('-------')
-        console.info(script)
-        console.info('----------')
-        console.info(code)
-        const jsFile = resolve(dir, `${name}.js`)
-        const jsonFile = resolve(dir, `${name}.tree.json`)
-        /* 
-        if (fs.existsSync(jsFile)) {
-                throw new Error('File exists')
-        }
-        Utils.write(jsFile, code)
-        Utils.write(jsonFile, ast) */
+    const generator = new SourceGenerator();
+    const script = generator.toSource(ast);
+    console.info('-------')
+    console.info(script)
+    console.info('----------')
+    console.info(code)
+    const jsFile = resolve(dir, `${name}.js`)
+    const jsonFile = resolve(dir, `${name}.tree.json`)
+    
+    if (fs.existsSync(jsFile)) {
+            throw new Error('File exists')
+    }
+    Utils.write(jsFile, code)
+    Utils.write(jsonFile, ast)
 }
 
 (async () => {
-        await main()
+    await main()
 })().catch(err => {
-        console.error("error in main", err)
+    console.error("error in main", err)
 })
 
 // Trick to prevent  > All files must be modules when the '--isolatedModules' flag is provided.ts(1208)

@@ -1,0 +1,38 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "foo"
+            },
+            "params": [],
+            "body": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "YieldExpression",
+                            "argument": {
+                                "type": "Literal",
+                                "value": 3,
+                                "raw": "3",
+                                "start": 0,
+                                "end": 0
+                            },
+                            "delegate": true
+                        }
+                    }
+                ]
+            },
+            "generator": true,
+            "expression": false,
+            "async": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

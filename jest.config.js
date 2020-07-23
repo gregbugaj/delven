@@ -19,5 +19,8 @@ module.exports = {
           pathRegex: /\.(spec|test)\.ts$/
         }
       }
-    }
-  }
+    },
+
+    "bail": 1
+    
+  };
