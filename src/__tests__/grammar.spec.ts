@@ -50,8 +50,8 @@ function discover(expectType: TestType): TestCase[] {
         }
     }
 
-    // return cases.filter(c => c.name === 'antlr.Generators[GeneratorMethods-001]')
-    return cases
+    return cases.filter(c => c.name === 'expression.left-hand-side[left-hand-side-007]')
+    // return cases
 }
 
 const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
@@ -88,7 +88,6 @@ const createOptions = function () {
     }
 }
 
-
 const assertSame = function (expected, ast): { same: boolean, delta: any} {
     const a = toJson(ast)
     const b = toJson(expected)
@@ -98,11 +97,10 @@ const assertSame = function (expected, ast): { same: boolean, delta: any} {
         return { same: true, delta: undefined }
     }
 
- /*    console.info(a)
+    console.info(a)
     console.info('----------------------')
     console.info('----------------------')
-    console.info(b) */
-    
+    console.info(b) 
 
     const diffpatcher = jsondiffpatch.create(createOptions())
     const delta = diffpatcher.diff(ast, expected);

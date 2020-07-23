@@ -38,11 +38,10 @@ nums  = evens.map((v, i) => v + i)
 */
 `
     const code = `    
-    class Clz {
-        static async [a] (x, y) {}
-        * bar () {}
-    }
+    //( new foo).bar()
+    new foo().bar()
 `
+
     // x = {fun(){}, ...z} 
 
     // Bad source
