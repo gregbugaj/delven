@@ -2243,13 +2243,18 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.MethodDefinitionContext)
         // parent contains info for Asyn and Generator in the parentContext
         //  (Static | {this.n("static")}? identifier | Async)*
+
         const isAsync = this.hasToken(ctx.parentCtx, ECMAScriptParser.Async)
         const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
         const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME
 
+        console.info("isAsync = ${isAsync}")
+        console.info("isGenerator = ${isGenerator}")
+        console.info("isStatic = ${isStatic}")
+        
         const prop = ctx.propertyName()
         const computed = false;
-        let key: Node.PropertyKey = null;
+        let key: Node.PropertyKey;
         let value: AsyncFunctionExpression | FunctionExpression | null = null;
 
         // case #1
@@ -2263,6 +2268,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             } else {
                 value = new FunctionExpression(null, params, body, isGenerator)
             }
+        }else{
+            throw new TypeError("Not Handled")
         }
 
         return new Node.MethodDefinition(key, computed, value, "method", isStatic)
