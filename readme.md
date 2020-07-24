@@ -177,6 +177,64 @@ exportStatement
     ;
 ```
 
+### 8. Left-Hand-Side Expressions not resolving correctly
+
+There are two primary issues here
+
+First there is an incomplete rule
+
+There is an incomplete definition for the grammar that down not handle spec `new MemberExpression[?Yield, ?Await] Arguments[?Yield, ?Await]` this causes the rule to fall through and be handled by `NewExpression`
+
+To solve this we added following alternative rule `MemberNewExpression`
+
+```ebnf
+  New singleExpression '.' identifierName arguments                     # MemberNewExpression  // GB: Footnote 8
+```
+
+Property generated AST needs to look as follows
+
+```javascript
+new foo             // NewExpression[Type = Identifier]
+new foo()           // NewExpression[Type = Identifier]
+
+new foo.bar()       // NewExpression[Type = MemberExpression]
+new foo.bar         // NewExpression[Type = MemberExpression]
+new foo.bar.zet()   // NewExpression[Type = MemberExpression] > MemberExpression
+
+new foo().bar(a)    // CallExpression[Type = MemberExpression] > NewExpression[Type = Identifier]
+new foo[1].bar(a)   // NewExpression[Type = MemberExpression]
+
+new {}.test()       // NewExpression[type=MemberExpression] > ObjectExpression
+new {}().test()     // CallExpression[type=MemberExpression] > NewExpression > ObjectExpression
+```
+
+AST should be equivalent for allt the expressions
+
+```javascript
+new {}
+new {}() 
+
+new []
+new []()
+
+new foo
+new foo()
+
+new foo.bar
+new foo.bar()
+```
+
+Second issue is that the `MemberXXXExpression` rules need to be pulled up to be resolved before `NewExpression` rules to make sure that they resolved in proper order as per spec [https://tc39.es/ecma262/#prod-MemberExpression]
+
+```ebnf
+NewExpression[Yield, Await]:
+    MemberExpression[?Yield, ?Await]
+    new NewExpression[?Yield, ?Await]
+```
+
+Long term solution here is to break appart `singleExpression` to make make clear distintion between `MemberExpression` and `NewExpression`
+In interum we add just adding additional `MemberXXXExpression` expressions to `singleExpression`
+
 
 ## ERRORS
 

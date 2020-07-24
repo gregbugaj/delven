@@ -308,7 +308,7 @@ propertyName
 arguments
     : '('(argument (',' argument)* ','?)?')'
     ;
-    
+
 
 argument
     : Ellipsis? (singleExpression | identifier)
@@ -322,6 +322,7 @@ singleExpression
     : anoymousFunction                                                      # FunctionExpression  // GB: footnote 5
     | Class identifier? classTail                                           # ClassExpression
     | singleExpression '[' expressionSequence ']'                           # MemberIndexExpression
+    | New singleExpression '.' identifierName arguments                     # MemberNewExpression  // GB: Footnote 8
     | singleExpression '?'? '.' '#'? identifierName                         # MemberDotExpression
     | New singleExpression arguments                                        # NewExpression      // GB:footnote 4
     | New singleExpression arguments?                                       # NewExpression      // GB:footnote 4

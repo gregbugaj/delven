@@ -36,14 +36,15 @@ odds  = evens.map(v => v + 1)
 pairs = evens.map(v => ({ even: v, odd: v + 1 }))
 nums  = evens.map((v, i) => v + i)
 */
+/*
+new foo
+*/
+// new {}(a).foo(b)
 `
     const code = `    
-    //( new foo).bar()
-    new foo().bar()
+    new {}.foo
 `
-
     // x = {fun(){}, ...z} 
-
     // Bad source
     // let x = {async test(){}} 
     // x = {fun(){}, z} 

@@ -1623,15 +1623,15 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 throw new TypeError("Unable to convert property shorthand")
             }
         } else {
-            if(hasEllipsis){
-                return  new Node.SpreadElement(expression)
-            }else{
+            if (hasEllipsis) {
+                return new Node.SpreadElement(expression)
+            } else {
                 key = expression
             }
         }
 
         if (value == null) {
-             value = key
+            value = key
         }
 
         return new Node.Property("init", key, computed, value, method, shorthand)
@@ -1775,7 +1775,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.PropertyExpressionAssignmentContext)
         const propNode: RuleContext = ctx.getChild(0)
-       
+
         let computed = false
         const method = false
         const shorthand = false
@@ -2003,6 +2003,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitRelationalExpression(node)
         } else if (node instanceof ECMAScriptParser.IdentifierExpressionContext) {
             return this.visitIdentifierExpression(node)
+        } else if (node instanceof ECMAScriptParser.MemberNewExpressionContext) {
+            return this.visitMemberNewExpression(node)
         } else if (node instanceof ECMAScriptParser.MemberDotExpressionContext) {
             return this.visitMemberDotExpression(node)
         } else if (node instanceof ECMAScriptParser.MemberIndexExpressionContext) {
@@ -2264,13 +2266,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
             computed = this.isComputedProperty(propertyNameCtx)
             const params: FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
             const body: BlockStatement = this.visitFunctionBody(ctx.functionBody())
-            
+
             if (isAsync) {
                 value = new AsyncFunctionExpression(null, params, body)
             } else {
                 value = new FunctionExpression(null, params, body, isGenerator)
             }
-        }else{
+        } else {
             throw new TypeError("Not Handled")
         }
 
@@ -3193,11 +3195,16 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertNodeCount(ctx, 1)
         const node = ctx.getChild(0)
         const elements = this.visitArrayLiteral(node)
-        return new ArrayExpression(elements)
+
+        return new Node.ArrayExpression(elements)
     }
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
+     * 
+     * ```
+     * new foo().bar
+     * ```
      * 
      * computed = false `x.z`
      * computed = true `y[1]`
@@ -3211,6 +3218,47 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const property = this.visitIdentifierName(ctx.getChild(2))
 
         return new Node.StaticMemberExpression(expr, property)
+    }
+
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#MemberNewExpression.
+     * 
+     * GB: Footnote 8 
+     * 
+     * To distinguish between this two expressions we check if the node has ArgumentsExpression it does 
+     * then we know it is a CallExpression 
+     * 
+     * ```
+     * new {}.foo() 
+     * new {}().foo()  // ArgumentsExpression
+     * ```
+     * ```
+     * Grammar :
+     * ```
+     * | New singleExpression '.' identifierName arguments                     # MemberNewExpression 
+     * ```
+     * @param ctx 
+     */
+    visitMemberNewExpression(ctx: RuleContext): Node.NewExpression | Node.CallExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.MemberNewExpressionContext)
+        this.dumpContextAllChildren(ctx)
+
+        const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
+        const argumentsContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ArgumentsContext)
+
+        const identifier: Node.Identifier = this.visitIdentifierName(identifierNameContext)
+        const args: Node.ArgumentListElement[] = this.visitArguments(argumentsContext)
+        const expression: Node.Expression = this.singleExpression(ctx.singleExpression())
+
+        if (expression instanceof Node.CallExpression) {
+            const converted = new Node.NewExpression(expression.callee, expression.arguments)
+            const memberexp = new Node.StaticMemberExpression(converted, identifier)
+            return new Node.CallExpression(memberexp, args)
+        }
+
+        const memberexp = new Node.StaticMemberExpression(expression, identifier)
+        return new Node.NewExpression(memberexp, args)
     }
 
     /**
@@ -3494,14 +3542,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const delegate = this.hasToken(declarationContext, ECMAScriptParser.Multiply)
         let argument: Expression | null = null
         const esc = this.getTypedRuleContext(declarationContext, ECMAScriptParser.ExpressionSequenceContext)
-        if(esc){
+        if (esc) {
             const sequence = this.visitExpressionSequence(esc)
             argument = this.coerceToExpressionOrSequence(sequence)
         }
 
         return new Node.YieldExpression(argument, delegate)
-    }    
-    
+    }
+
     visitEos(ctx: RuleContext) {
         //console.trace('not implemented')
     }

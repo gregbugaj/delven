@@ -522,6 +522,12 @@ ECMAScriptParserVisitor.prototype.visitPostDecreaseExpression = function(ctx) {
 };
 
 
+// Visit a parse tree produced by ECMAScriptParser#MemberNewExpression.
+ECMAScriptParserVisitor.prototype.visitMemberNewExpression = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by ECMAScriptParser#TypeofExpression.
 ECMAScriptParserVisitor.prototype.visitTypeofExpression = function(ctx) {
   return this.visitChildren(ctx);
