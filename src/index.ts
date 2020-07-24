@@ -42,7 +42,7 @@ new foo
 // new {}(a).foo(b)
 `
     const code = `    
-    new {}.foo
+    new {}[1]().foo().bar
 `
     // x = {fun(){}, ...z} 
     // Bad source

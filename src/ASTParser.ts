@@ -3242,8 +3242,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitMemberNewExpression(ctx: RuleContext): Node.NewExpression | Node.CallExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MemberNewExpressionContext)
-        this.dumpContextAllChildren(ctx)
 
+        this.dumpContextAllChildren(ctx)
         const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
         const argumentsContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ArgumentsContext)
 
@@ -3254,6 +3254,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (expression instanceof Node.CallExpression) {
             const converted = new Node.NewExpression(expression.callee, expression.arguments)
             const memberexp = new Node.StaticMemberExpression(converted, identifier)
+
             return new Node.CallExpression(memberexp, args)
         }
 
