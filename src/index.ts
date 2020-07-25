@@ -19,9 +19,6 @@ return 1
 }
 };
 `
-
-    // x = { get width() { return m_width ;} }
-
     const codexx = `
 x =   {
         //get (a){ return 'a'},
@@ -41,8 +38,33 @@ new foo
 */
 // new {}(a).foo(b)
 `
+    // ({ [x]() { } }) computed  = true
+    // ({ foo() { } })  computed  = false
+    // ;({ async foo() { } })
+    // ;({ *foo() { } })
+    // ;({ get foo() { } })
+    // ;({ get [foo]() { } })
+    // ;({ set foo(x) { } })
+    // ;({ set [foo](x) { } })
+
+    // let a = async function () { }  
+    // let b = async function foo() { }  
+    // let c = function () { }  
+    // let d = function foo() { }  
+    // let e = function* () { }  
+    // let f = function* foo() { }  
+    // let g = ()=>  { }
+    // let h = async  ()=>  { }
+    // let i = ()=>  1
+    // let j = async ()=>  1
+    // let k  = class cls {	method(){} }
+    // let l  = class cls {	get method(){} }
+    // let m  = class cls { set method(x){} }
+    // let n  = class cls { set [method](x){} }
+    // let o = {'x': function foo(n) {return 1}};
+
     const code = `    
-    new {}[1]().foo().bar
+    ;({  foo() { } })
 `
     // x = {fun(){}, ...z} 
     // Bad source
@@ -59,8 +81,7 @@ new foo
 
     console.info('----SOURCE----')
     console.info(code)
-
-    const dir = resolve(__dirname, '../test/fixtures', "", "")
+    const dir = resolve(__dirname, '../test/fixtures', ...["", ""])
 }
 
 
@@ -136,9 +157,9 @@ async function mainX() {
     console.info(code)
     const jsFile = resolve(dir, `${name}.js`)
     const jsonFile = resolve(dir, `${name}.tree.json`)
-    
+
     if (fs.existsSync(jsFile)) {
-            throw new Error('File exists')
+        throw new Error('File exists')
     }
     Utils.write(jsFile, code)
     Utils.write(jsonFile, ast)

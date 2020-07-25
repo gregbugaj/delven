@@ -35,10 +35,10 @@ function discover(expectType: TestType): TestCase[] {
             const assetName = path.basename(assetPath)
             let basename = assetPath.slice('./test/fixtures'.length + 1, assetPath.indexOf(assetName) - 1)
             basename = basename.replace(/\//g, '.')
-
             const type = getType(assetName)
-            if (type !== expectType)
+            if (type !== expectType){
                 continue
+            }
 
             cases.push({
                 name: `${basename}[${label}]`,
@@ -50,7 +50,7 @@ function discover(expectType: TestType): TestCase[] {
         }
     }
 
-    return cases.filter(c => c.name === 'expression.left-hand-side[left-hand-side-007]')
+    return cases.filter(c => c.name === 'expression.left-hand-side[left-hand-side-004]')
     // return cases
 }
 
@@ -113,7 +113,6 @@ const assertSame = function (expected, ast): { same: boolean, delta: any} {
     return { same: delta == undefined, delta: delta }
 }
 
-if(false)
 describe('Generated Grammar Test Suite', () => {
     beforeAll(() => {
         ASTParser.trace(false)

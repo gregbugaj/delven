@@ -1708,8 +1708,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     * 
      * Visit a parse tree produced by ECMAScriptParser#propertyAssignment.
+     * 
+     * Sample 
+     * ```
+     * 
+     * ({ [x]() { } })   // computed  = true
+     * ({ foo() { } })   // computed  = false
+     * ```
+     * 
+     * Grammar 
+     * 
      * ```
      *  | Async? '*'? propertyName '(' formalParameterList?  ')'  '{' functionBody '}'  # FunctionProperty
      * ```
@@ -1719,13 +1728,14 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.FunctionPropertyContext)
         const key = this.visitPropertyName(ctx.propertyName())
-        const computed = true;
+        const computed = this.hasComputedProperty(ctx);
         const method = true;
         const shorthand = false;
         let expression: FunctionExpression | AsyncFunctionExpression;
         let params: FunctionParameter[] = []
         let body: BlockStatement;
         const { isAsync, isGenerator } = this.getFunctionAttributes(ctx)
+
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const node = ctx.getChild(i)
             if (node instanceof ECMAScriptParser.FormalParameterListContext) {
@@ -2243,42 +2253,63 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitMethodDefinition(ctx: RuleContext): Node.MethodDefinition {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MethodDefinitionContext)
-        // parent contains info for Asyn and Generator in the parentContext
-        //  (Static | {this.n("static")}? identifier | Async)*
 
-        const isAsync = this.hasToken(ctx.parentCtx, ECMAScriptParser.Async)
-        const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
-        const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME */
-        // const { isAsync, isGenerator, isStatic } = this.getFunctionAttributes(ctx.parentCtx)
-
-        console.info(`isAsync = ${isAsync}`)
-        console.info(`isGenerator = ${isGenerator}`)
-        console.info(`isStatic = ${isStatic}`)
-
-        const propertyNameCtx = ctx.propertyName()
-        let computed = false;
-        let key: Node.PropertyKey;
-        let value: AsyncFunctionExpression | FunctionExpression | null = null;
-
-        // case #1
-        if (propertyNameCtx) {
-            key = this.visitPropertyName(propertyNameCtx)
-            computed = this.isComputedProperty(propertyNameCtx)
-            const params: FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
-            const body: BlockStatement = this.visitFunctionBody(ctx.functionBody())
-
-            if (isAsync) {
-                value = new AsyncFunctionExpression(null, params, body)
-            } else {
-                value = new FunctionExpression(null, params, body, isGenerator)
-            }
+        let kind = ""
+        if (this.getTypedRuleContext(ctx, ECMAScriptParser.PropertyNameContext)) {
+            kind = "method"
+        } else if (this.getTypedRuleContext(ctx, ECMAScriptParser.GetterContext)) {
+            kind = "get"
+        } else if (this.getTypedRuleContext(ctx, ECMAScriptParser.SetterContext)) {
+            kind = "set"
         } else {
-            throw new TypeError("Not Handled")
+            throw new TypeError("Unknown type")
         }
 
-        return new Node.MethodDefinition(key, computed, value, "method", isStatic)
+        let computed = false
+        let key: Node.PropertyKey
+        let value: AsyncFunctionExpression | FunctionExpression | null = null
+        // parent contains info for Asyn and Generator in the parentContext
+        //  (Static | {this.n("static")}? identifier | Async)*
+        
+        const isAsync = this.hasToken(ctx.parentCtx, ECMAScriptParser.Async)
+        const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
+        const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME 
+
+        if (kind === "method") {
+            const propertyNameCtx = ctx.propertyName()
+            key = this.visitPropertyName(propertyNameCtx)
+            computed = this.isComputedProperty(propertyNameCtx)
+            const params: Node.FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
+            const body: Node.BlockStatement = this.visitFunctionBody(ctx.functionBody())
+            value = this.crateFunctionExpression(null, params, body, isAsync, isGenerator)
+        } else if (kind === "get") {
+            const getterContext = this.getTypedRuleContext(ctx, ECMAScriptParser.GetterContext);
+            const bodyContext = this.getTypedRuleContext(ctx, ECMAScriptParser.FunctionBodyContext);
+            const getter = this.visitGetter(getterContext)
+            key = getter.key
+            computed = getter.computed
+            const body = this.visitFunctionBody(bodyContext)
+            value = new Node.FunctionExpression(null, [], body, false)
+        } else {
+            const setterContext = this.getTypedRuleContext(ctx, ECMAScriptParser.SetterContext);
+            const setter = this.visitSetter(setterContext)
+            key = setter.key
+            computed = setter.computed            
+            const params: Node.FunctionParameter[] = ctx.formalParameterList() ? this.visitFormalParameterList(ctx.formalParameterList()) : []
+            const body: Node.BlockStatement = this.visitFunctionBody(ctx.functionBody())
+            value = this.crateFunctionExpression(null, params, body, isAsync, isGenerator)
+        }
+
+        return new Node.MethodDefinition(key, computed, value, kind, isStatic)
     }
 
+    private crateFunctionExpression(id: Identifier | null, params: Node.FunctionParameter[], body: Node.BlockStatement, isAsync:boolean, isGenerator:boolean): Node.FunctionExpression |  Node.AsyncFunctionExpression {
+        if (isAsync) {
+            return new Node.AsyncFunctionExpression(id, params, body)
+        } else {
+            return new Node.FunctionExpression(id, params, body, isGenerator)
+        }
+    }
     /**
      * Check for specific token type presence
      * @param ctx 
@@ -2378,7 +2409,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (assignable instanceof ECMAScriptParser.ArrayLiteralContext) {
             const elements = this.visitArrayLiteral(assignable)
             const converted = this.convertToArrayPatternElements(elements)
-            return new ArrayPattern(converted)
+            return new Node.ArrayPattern(converted)
         } else if (assignable instanceof ECMAScriptParser.ObjectLiteralContext) {
             const elements = this.visitObjectLiteral(assignable)
             const converted = this.convertToObjectPatternProperty(elements.properties)
@@ -2397,7 +2428,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (!(argument instanceof Node.Identifier || argument instanceof Node.ArrayPattern || argument instanceof Node.ObjectPattern)) {
             throw new TypeError("Unable to convert to RestElement : " + argument.constructor)
         }
-        return new RestElement(argument)
+        return new Node.RestElement(argument)
     }
 
     /**
@@ -2510,8 +2541,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitObjectLiteralExpression(ctx: RuleContext): Node.ObjectExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ObjectLiteralExpressionContext)
-        const node = ctx.getChild(0)
-        return this.visitObjectLiteral(node)
+        return this.visitObjectLiteral(ctx.getChild(0))
     }
 
     /**
@@ -2751,7 +2781,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             lhs = this.convertToArrayPattern(lhs)
         }
 
-        return new AssignmentExpression(operator, lhs, rhs)
+        return new Node.AssignmentExpression(operator, lhs, rhs)
     }
 
     /**
@@ -2793,7 +2823,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                     conversion.push(new RestElement(pattern))
                 } else if (arg instanceof Node.ObjectExpression) {
                     const pattern = new Node.ObjectPattern(this.convertToObjectPatternProperty(arg.properties))
-                    conversion.push(new RestElement(pattern))
+                    conversion.push(new Node.RestElement(pattern))
                 } else {
                     throw new TypeError("Invalid type received got : " + node.constructor)
                 }
@@ -3243,7 +3273,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MemberNewExpressionContext)
 
-        this.dumpContextAllChildren(ctx)
         const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
         const argumentsContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ArgumentsContext)
 
@@ -3493,6 +3522,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Check if PropertyNameContext is a computed property
      *  When IdentifierExpression is present we are having a computed field ex `[expression]()`
+     * 
      * @param propertyNameCtx 
      */
     isComputedProperty(propertyNameCtx: RuleContext): boolean {
@@ -3501,6 +3531,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return identifierExpressionContext ? true : false
     }
 
+    /**
+     *  Check if current context has computed property
+     * 
+     * @param ctx
+     */
+    hasComputedProperty(propertyNameCtx: RuleContext): boolean {
+        const propertyNameContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.PropertyNameContext)
+        return propertyNameContext ? this.isComputedProperty(propertyNameContext) : false
+    }
+
+
     // Visit a parse tree produced by ECMAScriptParser#setter.
     visitSetter(ctx: RuleContext): { computed: boolean, key: Node.PropertyKey } {
         this.log(ctx, Trace.frame())
@@ -3508,13 +3549,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const identifierCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext)
         const propertyNameCtx = this.getTypedRuleContext(ctx, ECMAScriptParser.PropertyNameContext)
         const identifier = this.visitIdentifier(identifierCtx) // identifier should always be `set`
-        if (identifier.name !== 'set') {
-            throw new TypeError('Invalid set identifier')
-        }
+        this.assertTrue(identifier != null && identifier.name === 'set', 'Invalid set identifier')
+
         const key: Node.PropertyKey = this.visitPropertyName(propertyNameCtx)
-        // when IdentifierExpression is present we are having a computed field ex `[expression]()`
-        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext)
-        const computed = identifierExpressionContext ? true : false
+        const computed = this.isComputedProperty(propertyNameCtx)
+
         return { computed, key }
     }
 
@@ -3551,19 +3590,12 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.YieldExpression(argument, delegate)
     }
 
-    visitEos(ctx: RuleContext) {
-        //console.trace('not implemented')
-    }
-
-    // Visit a parse tree produced by ECMAScriptParser#eof.
-    visitEof(ctx: RuleContext) {
-        console.trace('not implemented')
-    }
 
     visitInlinedQueryExpression(ctx: RuleContext): Node.QueryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.InlinedQueryExpressionContext)
         const bindable = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryExpressionContext)
+
         return this.visitQueryExpression(bindable)
     }
 
@@ -3667,5 +3699,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
         const expression = this.coerceToExpressionOrSequence(sequence)
 
         return new Node.WhereClause(expression)
+    }
+
+    /**
+     * Asserts that a condition is true.
+     * 
+     * @param condition 
+     * @param message 
+     */
+    assertTrue(condition: boolean, message = 'Assertion failed'): void {
+        if (!condition) {
+            throw new TypeError(message)
+        }
     }
 }
