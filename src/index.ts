@@ -64,7 +64,8 @@ new foo
     // let o = {'x': function foo(n) {return 1}};
 
     const code = `    
-    ;({  foo() { } })
+yield * a
+x + y
 `
     // x = {fun(){}, ...z} 
     // Bad source
@@ -85,7 +86,7 @@ new foo
 }
 
 
-async function mainX() {
+async function mainXX() {
     const getData = async (url: string) => {
         const response = await fetch(url)
         const body = await response.text()
@@ -121,7 +122,7 @@ async function mainX() {
     // const index = '0009';//.source
     //const name = `object-${index}`
 
-    const name = `generator-expression-rest-param`
+    const name = `generator-method-with-yield-line-terminator`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
     const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/generator/${name}.js`)
 

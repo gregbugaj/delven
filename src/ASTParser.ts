@@ -126,6 +126,8 @@ export default abstract class ASTParser {
 
         try {
             const tree = parser.program()
+            console.log(tree.toStringTree(parser.ruleNames));
+
             return tree.accept(this.visitor)
         } catch (e) {
             if (errorHandler.hasErrors()) {
@@ -3578,10 +3580,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitYieldExpression(ctx: RuleContext): Node.YieldExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.YieldExpressionContext)
-        const declarationContext = this.getTypedRuleContext(ctx, ECMAScriptParser.YieldDeclarationContext)
-        const delegate = this.hasToken(declarationContext, ECMAScriptParser.Multiply)
+        const delegate = this.hasToken(ctx, ECMAScriptParser.Multiply)
         let argument: Expression | null = null
-        const esc = this.getTypedRuleContext(declarationContext, ECMAScriptParser.ExpressionSequenceContext)
+        
+        const esc = this.getTypedRuleContext(ctx, ECMAScriptParser.ExpressionSequenceContext)
         if (esc) {
             const sequence = this.visitExpressionSequence(esc)
             argument = this.coerceToExpressionOrSequence(sequence)

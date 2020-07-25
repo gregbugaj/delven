@@ -178,11 +178,6 @@ returnStatement
     : Return ({this.notLineTerminator()}? expressionSequence)? eos
     ;
 
-yieldDeclaration
-    : Yield {this.notLineTerminator()} ('*')? expressionSequence
-    | Yield eos
-    ;
-
 withStatement
     : With '(' expressionSequence ')' statement
     ;
@@ -360,7 +355,7 @@ singleExpression
     | Import '(' singleExpression ')'                                       # ImportExpression
     | singleExpression TemplateStringLiteral                                # TemplateStringExpression  // ECMAScript 6
     | This                                                                  # ThisExpression
-    | yieldDeclaration                                                      # YieldExpression           // ECMAScript 6 : GB Footnote 1, 6
+    | Yield ({this.notLineTerminator()}? ('*')? expressionSequence)?        # YieldExpression           // ECMAScript 6 : GB Footnote 1, 6
     | identifier                                                            # IdentifierExpression
     | Super                                                                 # SuperExpression
     | literal                                                               # LiteralExpression
@@ -369,6 +364,13 @@ singleExpression
     | '(' expressionSequence ')'                                            # ParenthesizedExpression
     | queryExpression                                                       # InlinedQueryExpression
     ;
+
+/*yieldDeclaration
+    : Yield (expressionSequence)? eos
+    //| Yield {this.notLineTerminator()}? ('*')? expressionSequence
+    | Yield eos
+    ;
+    */
 
 assignable
     : identifier
@@ -441,7 +443,6 @@ bigintLiteral
     | BigOctalIntegerLiteral
     | BigBinaryIntegerLiteral
     ;
-
 
 getter
     : {this.n("get")}? identifier propertyName
