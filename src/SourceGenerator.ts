@@ -431,8 +431,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitMethodDefinition(expression: Node.MethodDefinition) {
         this.assertNotNull(expression)
 
+        console.info(expression)
         if (expression.value) {
             if (expression.value.type == Syntax.FunctionExpression) {
+
+                if (expression.static) {
+                    this.write('static', false, false)
+                    this.write(' ', false, false)
+                }
+
                 if (expression.value.async) {
                     this.write('async', false, false)
                     this.write(' ', false, false)
@@ -448,6 +455,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.write(expression.kind, false, false)
             this.write(' ', false, false)
         }
+
 
         if (expression.key != null) {
             this.writeConditional(expression.computed, '[', false, false)
@@ -1053,7 +1061,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.visitExpression(init)
         }
     }
-
 
     /**
      * Asserts that a object is not null

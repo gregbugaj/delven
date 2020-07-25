@@ -190,7 +190,7 @@ Public:                         'public' {this.IsStrictMode()}?;
 Interface:                      'interface' {this.IsStrictMode()}?;
 Package:                        'package' {this.IsStrictMode()}?;
 Protected:                      'protected' {this.IsStrictMode()}?;
-Static:                         'static' {this.IsStrictMode()}?;
+Static:                         'static'; //{this.IsStrictMode()}?;
 Yield:                          'yield'; //{this.IsStrictMode()}?;
 
 /// Identifier Names and Identifiers

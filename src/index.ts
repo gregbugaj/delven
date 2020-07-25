@@ -64,8 +64,7 @@ new foo
     // let o = {'x': function foo(n) {return 1}};
 
     const code = `    
-yield * a
-x + y
+    class Foo { static *foo() {} }
 `
     // x = {fun(){}, ...z} 
     // Bad source
@@ -86,7 +85,7 @@ x + y
 }
 
 
-async function mainXX() {
+async function mainxx() {
     const getData = async (url: string) => {
         const response = await fetch(url)
         const body = await response.text()
@@ -122,7 +121,7 @@ async function mainXX() {
     // const index = '0009';//.source
     //const name = `object-${index}`
 
-    const name = `generator-method-with-yield-line-terminator`
+    const name = `static-generator-method`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
     const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/generator/${name}.js`)
 
@@ -159,8 +158,8 @@ async function mainXX() {
     const jsFile = resolve(dir, `${name}.js`)
     const jsonFile = resolve(dir, `${name}.tree.json`)
 
-    if (fs.existsSync(jsFile)) {
-        throw new Error('File exists')
+    if (fs.existsSync(jsFile) || fs.existsSync(jsonFile)) {
+        throw new Error('File already exists')
     }
     Utils.write(jsFile, code)
     Utils.write(jsonFile, ast)

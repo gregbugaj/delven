@@ -63,7 +63,6 @@ statement
  | continueStatement
  | breakStatement
  | returnStatement
- //| yieldDeclaration  // Footnote 1,6
  | withStatement
  | labelledStatement
  | switchStatement
@@ -364,13 +363,6 @@ singleExpression
     | '(' expressionSequence ')'                                            # ParenthesizedExpression
     | queryExpression                                                       # InlinedQueryExpression
     ;
-
-/*yieldDeclaration
-    : Yield (expressionSequence)? eos
-    //| Yield {this.notLineTerminator()}? ('*')? expressionSequence
-    | Yield eos
-    ;
-    */
 
 assignable
     : identifier

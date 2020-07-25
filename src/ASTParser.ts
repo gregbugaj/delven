@@ -2272,11 +2272,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         let value: AsyncFunctionExpression | FunctionExpression | null = null
         // parent contains info for Asyn and Generator in the parentContext
         //  (Static | {this.n("static")}? identifier | Async)*
-        
+
         const isAsync = this.hasToken(ctx.parentCtx, ECMAScriptParser.Async)
         const isGenerator = this.hasToken(ctx, ECMAScriptParser.Multiply)
-        const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) // FIXME 
-
+        const isStatic = this.hasToken(ctx.parentCtx, ECMAScriptParser.Static) 
+        
         if (kind === "method") {
             const propertyNameCtx = ctx.propertyName()
             key = this.visitPropertyName(propertyNameCtx)
@@ -3582,7 +3582,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.YieldExpressionContext)
         const delegate = this.hasToken(ctx, ECMAScriptParser.Multiply)
         let argument: Expression | null = null
-        
+
         const esc = this.getTypedRuleContext(ctx, ECMAScriptParser.ExpressionSequenceContext)
         if (esc) {
             const sequence = this.visitExpressionSequence(esc)
