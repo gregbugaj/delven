@@ -42,8 +42,11 @@ const codeX = `
   let ℮
 `
    const code = `    
-//    import foo, {bar as k, zet} from "foo";
-import { null as nil } from "bar"
+
+   function f() {
+    let x = new.target;
+}
+
 `
     // x = {fun(){}, ...z} 
     // Bad source
