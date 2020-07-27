@@ -45,9 +45,9 @@ async function main() {
     // const index = '0009';//.source
     //const name = `object-${index}`
 
-    const name = `math_dal_part`
+    const name = `import-null-as-nil`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
-    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/identifier/${name}.js`)
+    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/import-declaration/${name}.js`)
 
     console.info(payload)
     if (!payload.success) {

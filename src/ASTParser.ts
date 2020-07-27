@@ -416,6 +416,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitImportStatement(ctx: RuleContext): Node.ImportDeclaration {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportStatementContext)
+
         return this.visitImportFromBlock(ctx.getChild(1))
     }
 
@@ -423,8 +424,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * 
      * ```
      * importFromBlock
-     *   : importDefault? (importNamespace | moduleItems) importFrom eos
-     *   | StringLiteral eos
+     *   : StringLiteral eos
+     *   | importDefault? (importNamespace | moduleItems) importFrom eos
      *   ;
      * ```
      * @param ctx 
@@ -432,11 +433,19 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitImportFromBlock(ctx: RuleContext): Node.ImportDeclaration {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportFromBlockContext)
+
+        this.dumpContextAllChildren(ctx)
+        // form of `import "foo";`
+        if(ctx.getChildCount() == 2){
+            // StringLiteral wrapped in quotes 
+            return new Node.ImportDeclaration([], this.createStringLiteral(ctx.getChild(0)));
+        }
+
         // source
-        const source: Literal = this.visitImportFrom(this.getTypedRuleContext(ctx, ECMAScriptParser.ImportFromContext))
+        const source: Node.Literal = this.visitImportFrom(this.getTypedRuleContext(ctx, ECMAScriptParser.ImportFromContext))
 
         // specifiers
-        let specifiers: Node.ImportDeclarationSpecifier[] = []
+        const specifiers: Node.ImportDeclarationSpecifier[] = []
         const importDefaultContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ImportDefaultContext);
         const importNamespaceContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ImportNamespaceContext);
         const moduleItemsContext = this.getTypedRuleContext(ctx, ECMAScriptParser.ModuleItemsContext);
@@ -450,7 +459,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
 
         if (moduleItemsContext) {
-            specifiers = [...specifiers, this.visitModuleItems(moduleItemsContext)]
+            const modules: ModuleSpecifier[] = this.visitModuleItems(moduleItemsContext)
+            for(const spec of modules){
+                const converted = new Node.ImportSpecifier(spec.rhs, spec.lhs)
+                specifiers.push(converted)
+            }
         }
 
         return new Node.ImportDeclaration(specifiers, source);
@@ -496,7 +509,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx 
      */
-    visitImportNamespace(ctx: RuleContext): Node.ImportDefaultSpecifier {
+    visitImportNamespace(ctx: RuleContext): Node.ImportNamespaceSpecifier {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportNamespaceContext)
         const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
@@ -504,7 +517,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         if (identifierNameContext) {
             ident = this.visitIdentifierName(identifierNameContext)
         }
-        return new Node.ImportDefaultSpecifier(ident)
+        return new Node.ImportNamespaceSpecifier(ident)
     }
 
     visitImportDefault(ctx: RuleContext): Node.ImportDefaultSpecifier {

@@ -84,8 +84,8 @@ importStatement
     ;
 
 importFromBlock
-    : importDefault? (importNamespace | moduleItems) importFrom eos
-    | StringLiteral eos
+    : StringLiteral eos  // GB : Footnote 10 > Switched order so we can handle `import "foo"`
+    | importDefault? (importNamespace | moduleItems) importFrom eos
     ;
 
 moduleItems
@@ -93,7 +93,7 @@ moduleItems
     ;
 
 importDefault
-    : aliasName ','
+    : aliasName
     ;
 
 importNamespace

@@ -297,6 +297,12 @@ export default abstract class ASTVisitor {
 
     /**
      * 
+     * @param statement 
+     */
+    abstract visitImportDeclaration(statement: Node.ImportDeclaration): void 
+
+    /**
+     * 
      * @param expression 
      */
     abstract visitSuper(expression: Node.Super): void

@@ -37,8 +37,13 @@ async function main() {
     // let n  = class cls { set [method](x){} }
     // let o = {'x': function foo(n) {return 1}};
 
-    const code = `    
-    let ℮
+
+const codeX = `    
+  let ℮
+`
+   const code = `    
+//    import foo, {bar as k, zet} from "foo";
+import { null as nil } from "bar"
 `
     // x = {fun(){}, ...z} 
     // Bad source

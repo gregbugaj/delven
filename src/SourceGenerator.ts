@@ -155,6 +155,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ExportAllDeclaration: {
                 this.visitExportAllDeclaration(statement as Node.ExportAllDeclaration)
                 break
+            } case Syntax.ImportDeclaration: {
+                this.visitImportDeclaration(statement as Node.ImportDeclaration)
+                break
             } case Syntax.SelectStatement: {
                 this.visitSelectStatement(statement as Node.SelectStatement)
                 break
@@ -169,6 +172,52 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitSelectStatement(statement: Node.SelectStatement) {
         console.info(statement)
+    }
+
+    visitImportDeclaration(statement: Node.ImportDeclaration): void {
+        this.assertNotNull(statement)
+        this.write('import ', false, false)
+
+        if (statement.specifiers && statement.specifiers.length > 0) {
+            const specifiers: Node.ImportDeclarationSpecifier[] = statement.specifiers
+            let hasImporSpec = false
+            for (let i = 0; i < specifiers.length; ++i) {
+                const specifier = specifiers[i]
+                if (specifier.type === Syntax.ImportDefaultSpecifier) {
+                    if (specifier.local) {
+                        this.visitIdentifier(specifier.local)
+                        this.write(' ', false, false)
+                    }
+                } else if (specifier.type === Syntax.ImportSpecifier) {
+                    const is = specifier as Node.ImportSpecifier
+                    this.writeConditional(hasImporSpec == false, '{', false, false)
+
+                    if (is.local != null && is.imported) {
+                        this.visitIdentifier(is.imported)
+                        this.write(' as ', false, false)
+                        this.visitIdentifier(is.local)
+                    } else {
+                        this.visitIdentifier(is.imported)
+                    }
+
+                    hasImporSpec = true
+                } else if (specifier.type === Syntax.ImportNamespaceSpecifier){
+                    this.write('*', false, false)
+                    this.write(' as ', false, false)
+                    this.visitIdentifier(specifier.local)
+                    this.write(' ', false, false)
+                }else {
+                    throw new TypeError("Unhandled type")
+                }
+
+                this.writeConditional(i < specifiers.length - 1, ', ', false, false)
+            }
+
+            this.writeConditional(hasImporSpec, '} ', false, false)
+            this.write('from ', false, false)
+        }
+
+        this.visitLiteral(statement.source)
     }
 
     visitExportAllDeclaration(statement: Node.ExportAllDeclaration) {
