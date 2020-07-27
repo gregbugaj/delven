@@ -38,7 +38,7 @@ async function main() {
     // let o = {'x': function foo(n) {return 1}};
 
     const code = `    
-    var \u{41}\u{42}\u{43}; var \u{4133}
+    let ℮
 `
     // x = {fun(){}, ...z} 
     // Bad source

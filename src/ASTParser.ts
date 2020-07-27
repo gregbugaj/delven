@@ -3330,7 +3330,11 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.Identifier(name)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#identifier.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#identifier.
+     * @ref https://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
+     * @param ctx 
+     */
     visitIdentifier(ctx: RuleContext): Node.Identifier {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.IdentifierContext)
