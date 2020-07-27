@@ -1,10 +1,11 @@
 var path = require('path');
 var webpack = require('webpack');
+
 module.exports = {
-    entry: './public/js/main.js',
+    entry: './src/index.ts',
     output: {
-        path: path.resolve(__dirname, 'public/js/'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, './lib'),
+        filename: 'delven-transpiler.js'
     },
     module: {
         loaders: [

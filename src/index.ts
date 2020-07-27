@@ -41,13 +41,8 @@ async function main() {
 const codeX = `    
   let ℮
 `
-   const code = `    
+   const code = "`$` "
 
-   function f() {
-    new new.target()();
-}
-
-`
     // x = {fun(){}, ...z} 
     // Bad source
     // let x = {async test(){}} 
