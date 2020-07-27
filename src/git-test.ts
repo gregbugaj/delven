@@ -46,8 +46,8 @@ async function main() {
     //const name = `${index}`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/method-definition/migrated_${index}.js`)
     
-     const name = `rest-parameter-object`
-     const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/rest-parameter/${name}.js`)
+     const name = `new-spread`
+     const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/spread-element/${name}.js`)
     
 
     console.info(payload)
