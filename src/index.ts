@@ -10,34 +10,8 @@ async function main() {
                   let iter = { *[Symbol.iterator]() {}}
                   let iter = { *[()=>{}]() { }}
                   */
-
-    const crash =
-        `
-let math = {
-'factit': function factorial(n) {
-return 1
-}
-};
-`
-    const codexx = `
-x =   {
-        //get (a){ return 'a'},
-        // get foo(){ return 'foo'},
-        get [bar]() { return 'bar'; }
-        // get [z=y]() { return 'bar'; }
-};
-
-// (function* (...x) {}) 
-/*
-odds  = evens.map(v => v + 1)
-pairs = evens.map(v => ({ even: v, odd: v + 1 }))
-nums  = evens.map((v, i) => v + i)
-*/
-/*
-new foo
-*/
-// new {}(a).foo(b)
-`
+ 
+ 
     // ({ [x]() { } }) computed  = true
     // ({ foo() { } })  computed  = false
     // ;({ async foo() { } })
@@ -64,7 +38,7 @@ new foo
     // let o = {'x': function foo(n) {return 1}};
 
     const code = `    
-    class Foo { static *foo() {} }
+    var \u{41}\u{42}\u{43}; var \u{4133}
 `
     // x = {fun(){}, ...z} 
     // Bad source
@@ -82,87 +56,6 @@ new foo
     console.info('----SOURCE----')
     console.info(code)
     const dir = resolve(__dirname, '../test/fixtures', ...["", ""])
-}
-
-
-async function mainxx() {
-    const getData = async (url: string) => {
-        const response = await fetch(url)
-        const body = await response.text()
-        const status = response.status
-        return { status, body }
-    }
-
-    type GitData = {
-        success: boolean,
-        chunks: string[],
-        code: string,
-    }
-
-    const getGitData = async (startChunk: string, url: string): Promise<GitData> => {
-        const payload = await getData(url);
-        const success = payload.status == 200 ? true : false
-        const code = payload.body
-        if (!success) {
-            return { success: false, chunks: [], code: code }
-        }
-
-        const index = url.indexOf(startChunk);
-        let s = url.slice(index)
-        if (s.startsWith('/')) {
-            s = s.slice(1)
-        }
-        s = s.slice(0, s.lastIndexOf('/'))
-        const chunks = s.split('/')
-        return { success, chunks, code }
-    }
-
-    //let iter = { *[Symbol.iterator]() {}}
-    // const index = '0009';//.source
-    //const name = `object-${index}`
-
-    const name = `static-generator-method`
-    // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
-    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/generator/${name}.js`)
-
-    console.info(payload)
-    if (!payload.success) {
-        console.info("Gitdata returned with error")
-        return;
-    }
-
-    const dir = resolve(__dirname, '../test/fixtures', ...payload.chunks)
-    const code = payload.code
-    const ast = ASTParser.parse({ type: "code", value: code });
-    console.info(Utils.toJson(ast))
-
-    if (ast instanceof ErrorNode) {
-        console.info('Parse Errors')
-        const jsFile = resolve(dir, `${name}.failure.js`)
-        const jsonFile = resolve(dir, `${name}.failure.json`)
-        /*         
-                        if (fs.existsSync(jsFile)) {
-                                throw new Error('File exists')
-                        }
-                        Utils.write(jsFile, code)
-                        Utils.write(jsonFile, ast) */
-        return;
-    }
-
-    const generator = new SourceGenerator();
-    const script = generator.toSource(ast);
-    console.info('-------')
-    console.info(script)
-    console.info('----------')
-    console.info(code)
-    const jsFile = resolve(dir, `${name}.js`)
-    const jsonFile = resolve(dir, `${name}.tree.json`)
-
-    if (fs.existsSync(jsFile) || fs.existsSync(jsonFile)) {
-        throw new Error('File already exists')
-    }
-    Utils.write(jsFile, code)
-    Utils.write(jsonFile, ast)
 }
 
 (async () => {

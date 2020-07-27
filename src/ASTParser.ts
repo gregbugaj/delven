@@ -841,13 +841,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.VariableDeclarationListContext)
         const varModifierContext = this.getTypedRuleContext(ctx, ECMAScriptParser.VarModifierContext, 0)
         const varModifier = varModifierContext.getText()
-        const declarations: VariableDeclarator[] = [];
+        const declarations: Node.VariableDeclarator[] = [];
         for (const node of this.filterSymbols(ctx)) {
             if (node instanceof ECMAScriptParser.VariableDeclarationContext) {
                 declarations.push(this.visitVariableDeclaration(node))
             }
         }
-        return new VariableDeclaration(declarations, varModifier)
+        return new Node.VariableDeclaration(declarations, varModifier)
     }
 
     /**
@@ -862,12 +862,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.VariableDeclarationContext)
         const assignableContext = this.getTypedRuleContext(ctx, ECMAScriptParser.AssignableContext, 0)
-        const assignable = this.visitAssignable(assignableContext)
+         const assignable = this.visitAssignable(assignableContext)
         let init = null;
         if (ctx.getChildCount() == 3) {
             init = this.singleExpression(ctx.getChild(2))
         }
-        return new VariableDeclarator(assignable, init)
+
+        return new Node.VariableDeclarator(assignable, init)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#emptyStatement.
@@ -1510,7 +1511,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.singleExpression(ctx.getChild(0))
         } else {
             const expression = this.singleExpression(ctx.getChild(1))
-            return new SpreadElement(expression)
+            return new Node.SpreadElement(expression)
         }
     }
 
@@ -2305,7 +2306,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.MethodDefinition(key, computed, value, kind, isStatic)
     }
 
-    private crateFunctionExpression(id: Identifier | null, params: Node.FunctionParameter[], body: Node.BlockStatement, isAsync:boolean, isGenerator:boolean): Node.FunctionExpression |  Node.AsyncFunctionExpression {
+    private crateFunctionExpression(id: Node.Identifier | null, params: Node.FunctionParameter[], body: Node.BlockStatement, isAsync:boolean, isGenerator:boolean): Node.FunctionExpression |  Node.AsyncFunctionExpression {
         if (isAsync) {
             return new Node.AsyncFunctionExpression(id, params, body)
         } else {
@@ -3333,9 +3334,27 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitIdentifier(ctx: RuleContext): Node.Identifier {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.IdentifierContext)
-        return new Node.Identifier(ctx.getChild(0).getText())
-    }
+        const txt =  ctx.getChild(0).getText()
 
+        const decodeCodePoint = (text:string) => {
+            // \u{41}  : Unicode code point sequences
+            // \u{41}  : u(\{[^}]*\}?) # Match valid code point sequences
+            // \u{41}  : u(\{[0123456789abcdefABCDEF]*\}?) # Match valid code point sequences from hex digit
+            const buffer = text.replace(/\\u(\{([0123456789abcdefABCDEF]*)\}?)/gi, (match, group1, group2) => {
+                let code = 0
+                for(let i = 0; i < group2.length; ++i){
+                    const ch = group2[i].toLowerCase()
+                    code = code * 16 + '0123456789abcdef'.indexOf(ch);
+                }
+                return String.fromCodePoint(code)
+            })
+            
+            return buffer
+         }
+
+        const ident = decodeCodePoint(txt)
+        return new Node.Identifier(ident)
+    }
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#AssignmentOperatorExpression.
@@ -3434,7 +3453,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     private createLiteralValue(ctx: RuleContext, value: boolean | number | string | null, raw: string): Node.Literal {
-        const literal = new Literal(value, raw)
+        const literal = new Node.Literal(value, raw)
         return this.decorate(literal, this.asMarker(this.asMetadata(ctx.getSourceInterval())))
     }
 
