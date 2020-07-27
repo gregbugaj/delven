@@ -1,0 +1,51 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "ArrowFunctionExpression",
+                "id": null,
+                "params": [
+                    {
+                        "type": "Identifier",
+                        "name": "a"
+                    },
+                    {
+                        "type": "RestElement",
+                        "argument": {
+                            "type": "ObjectExpression",
+                            "properties": [
+                                {
+                                    "type": "Property",
+                                    "key": {
+                                        "type": "Identifier",
+                                        "name": "b"
+                                    },
+                                    "computed": false,
+                                    "value": {
+                                        "type": "Identifier",
+                                        "name": "b"
+                                    },
+                                    "kind": "init",
+                                    "method": false,
+                                    "shorthand": true
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "body": {
+                    "type": "Identifier",
+                    "name": "c"
+                },
+                "generator": false,
+                "expression": true,
+                "async": false
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

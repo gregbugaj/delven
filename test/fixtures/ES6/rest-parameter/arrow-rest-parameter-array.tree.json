@@ -1,0 +1,40 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "ArrowFunctionExpression",
+                "id": null,
+                "params": [
+                    {
+                        "type": "Identifier",
+                        "name": "a"
+                    },
+                    {
+                        "type": "RestElement",
+                        "argument": {
+                            "type": "ArrayExpression",
+                            "elements": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "b"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "body": {
+                    "type": "Identifier",
+                    "name": "c"
+                },
+                "generator": false,
+                "expression": true,
+                "async": false
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
