@@ -312,4 +312,10 @@ export default abstract class ASTVisitor {
      *  @param expression 
      */
     abstract visitYieldExpression(expression: Node.YieldExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitMetaProperty(expression: Node.MetaProperty): void
 }

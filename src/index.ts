@@ -44,7 +44,7 @@ const codeX = `
    const code = `    
 
    function f() {
-    let x = new.target;
+    new new.target()();
 }
 
 `

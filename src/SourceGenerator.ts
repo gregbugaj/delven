@@ -659,13 +659,21 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.YieldExpression: {
                 this.visitYieldExpression(expression as Node.YieldExpression)
                 break
+            } case Syntax.MetaProperty: {
+                this.visitMetaProperty(expression as Node.MetaProperty)
+                break
             }
-
             default:
                 throw new TypeError("Type not handled : " + expression.type)
         }
     }
 
+    visitMetaProperty(expression: Node.MetaProperty): void {
+        this.visitIdentifier(expression.meta)
+        this.write('.', false, false)
+        this.visitIdentifier(expression.property)
+    }    
+    
     visitYieldExpression(expression: Node.YieldExpression): void {
         this.write('yield', false, false)
 

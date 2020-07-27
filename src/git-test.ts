@@ -45,9 +45,9 @@ async function main() {
     // const index = '0009';//.source
     //const name = `object-${index}`
 
-    const name = `import-null-as-nil`
+    const name = `new-target-precedence`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
-    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/import-declaration/${name}.js`)
+    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/meta-property/${name}.js`)
 
     console.info(payload)
     if (!payload.success) {

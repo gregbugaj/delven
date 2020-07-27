@@ -2145,7 +2145,10 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitMetaExpression(ctx: RuleContext): Node.MetaProperty {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MetaExpressionContext)
-        throw new TypeError("Opperation not supported at this time")
+        this.dumpContextAllChildren(ctx)
+        const identifierContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext)
+        const identifier = this.visitIdentifier(identifierContext)
+        return new Node.MetaProperty(new Node.Identifier('new'), identifier)
     }
 
     /***
