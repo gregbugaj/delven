@@ -480,7 +480,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitMethodDefinition(expression: Node.MethodDefinition) {
         this.assertNotNull(expression)
 
-        console.info(expression)
         if (expression.value) {
             if (expression.value.type == Syntax.FunctionExpression) {
 

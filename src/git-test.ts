@@ -42,12 +42,13 @@ async function main() {
     }
 
     //let iter = { *[Symbol.iterator]() {}}
-    // const index = '0009';//.source
-    //const name = `object-${index}`
-
-    const name = `new-target-precedence`
-    // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/expression/primary/object/migrated_${index}.js`)
-    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/meta-property/${name}.js`)
+    const index = '0005';//.source
+    const name = `${index}`
+    const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/method-definition/migrated_${index}.js`)
+    /* 
+     const name = `new-target-precedence`
+     const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/meta-property/${name}.js`)
+     */
 
     console.info(payload)
     if (!payload.success) {
