@@ -49,8 +49,8 @@ function discover(expectType: TestType): TestCase[] {
             } as TestCase)
         }
     }
-
-    // return cases.filter(c => c.name === 'expression.left-hand-side[left-hand-side-004]')
+    
+    //  return cases.filter(c => c.name === 'ES6.import-declaration[import-default]')
     return cases
 }
 
@@ -97,17 +97,17 @@ const assertSame = function (expected, ast): { same: boolean, delta: any} {
         return { same: true, delta: undefined }
     }
 
-    console.info(a)
+/*     console.info(a)
     console.info('----------------------')
     console.info('----------------------')
     console.info(b) 
-
+ */
     const diffpatcher = jsondiffpatch.create(createOptions())
     const delta = diffpatcher.diff(ast, expected);
 
     if (delta != undefined) {
         // let annotated = jsondiffpatch.formatters.annotated.format(delta, expected)
-        console.log(delta);
+        // console.log(delta);
     }
 
     return { same: delta == undefined, delta: delta }
@@ -130,6 +130,7 @@ describe('Generated Grammar Test Suite', () => {
     })
 })
 
+if(false)
 describe('Source Generator Test', () => {
     beforeAll(() => {
         ASTParser.trace(false)

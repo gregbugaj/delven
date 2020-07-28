@@ -519,8 +519,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * Examples :
      * 
      * ```
-     *   import defaultExport from 'module_name'; // 1 node
-     *   import * as name from 'module_name';  // 3 nodes
+     *   import defaultExport from 'module_name'; // 1 node  ImportDefaultSpecifier
+     *   import * as name from 'module_name';  // 3 nodes    ImportNamespaceSpecifier
      * ```
      * 
      * ```
@@ -530,14 +530,19 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx 
      */
-    visitImportNamespace(ctx: RuleContext): Node.ImportNamespaceSpecifier {
+    visitImportNamespace(ctx: RuleContext): Node.ImportNamespaceSpecifier | Node.ImportDefaultSpecifier {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportNamespaceContext)
-        const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
         let ident: Node.Identifier = new Node.Identifier("*")
+        const identifierNameContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierNameContext)
         if (identifierNameContext) {
             ident = this.visitIdentifierName(identifierNameContext)
         }
+
+        if(ctx.getChildCount() == 1){
+            return new Node.ImportDefaultSpecifier(ident)    
+        }
+
         return new Node.ImportNamespaceSpecifier(ident)
     }
 

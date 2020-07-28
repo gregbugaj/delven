@@ -99,7 +99,7 @@
                             "expression": false,
                             "async": false
                         },
-                        "kind": "method",
+                        "kind": "constructor",
                         "static": false
                     },
                     {
