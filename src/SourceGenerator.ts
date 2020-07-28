@@ -146,6 +146,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.ForStatement: {
                 this.visitForStatement(statement as Node.ForStatement)
                 break
+            } case Syntax.ContinueStatement: {
+                this.visitContinueStatement(statement as Node.ContinueStatement)
+                break
             } case Syntax.ExportNamedDeclaration: {
                 this.visitExportNamedDeclaration(statement as Node.ExportNamedDeclaration)
                 break
@@ -167,7 +170,17 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
 
         this.write('\n', false, false)
+    }
 
+
+    visitContinueStatement(statement: Node.ContinueStatement):void {
+        this.assertNotNull(statement)
+        this.write('continue ', false, false)
+
+        if(statement.label){
+            this.write(' ', false, false)
+            this.visitIdentifier(statement.label)
+        }
     }
 
     visitSelectStatement(statement: Node.SelectStatement) {

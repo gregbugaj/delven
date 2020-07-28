@@ -330,4 +330,10 @@ export default abstract class ASTVisitor {
      * @param property 
      */
     abstract visitClassProperty(property: Node.ClassProperty): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitContinueStatement(statement: Node.ContinueStatement): void
 }
