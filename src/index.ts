@@ -44,7 +44,7 @@ async function main() {
     //    const code = "`$` "
     const code = `
 
-    async (x,y,) => x
+    export default async function f(a) { await a }
       
    `
    

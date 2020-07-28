@@ -228,7 +228,14 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitExportDefaultDeclaration(statement: Node.ExportDefaultDeclaration) {
         this.write('export default ', false, false)
-        this.visitExpression(statement.declaration)
+
+        switch (statement.declaration.type) {
+            case Syntax.FunctionDeclaration:
+                this.visitFunctionDeclaration(statement.declaration as Node.FunctionDeclaration)
+                break;
+            default:
+                this.visitExpression(statement.declaration)
+        }
     }
 
     visitExportNamedDeclaration(statement: Node.ExportNamedDeclaration) {
@@ -242,6 +249,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             for (let i = 0; i < specifiers.length; ++i) {
                 const specifier: Node.ExportSpecifier = specifiers[i]
                 this.visitIdentifier(specifier.local)
+
                 if (specifier.exported) {
                     this.write(' as ', false, false)
                     this.visitIdentifier(specifier.exported)
