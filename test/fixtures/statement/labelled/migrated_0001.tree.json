@@ -1,0 +1,32 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "LabeledStatement",
+            "label": {
+                "type": "Identifier",
+                "name": "start"
+            },
+            "body": {
+                "type": "WhileStatement",
+                "test": {
+                    "type": "Literal",
+                    "value": true,
+                    "raw": "true",
+                    "start": 0,
+                    "end": 0
+                },
+                "body": {
+                    "type": "BreakStatement",
+                    "label": {
+                        "type": "Identifier",
+                        "name": "start"
+                    }
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

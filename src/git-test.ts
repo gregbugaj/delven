@@ -46,8 +46,8 @@ async function main() {
     //const name = `${index}`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/method-definition/migrated_${index}.js`)
     
-    const name = `migrated_0000`
-    const payload = await getGitData('/statement', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/statement/with/${name}.js`)
+    const name = `migrated_0015`
+    const payload = await getGitData('/statement', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/automatic-semicolon-insertion/${name}.js`)
     
     console.info(payload)
     if (!payload.success) {

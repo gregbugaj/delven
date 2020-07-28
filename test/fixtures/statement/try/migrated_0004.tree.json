@@ -1,0 +1,41 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "TryStatement",
+            "block": {
+                "type": "BlockStatement",
+                "body": [],
+                "start": 0,
+                "end": 0
+            },
+            "handler": null,
+            "finalizer": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "Identifier",
+                                "name": "cleanup"
+                            },
+                            "arguments": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "stuff"
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "start": 0,
+                "end": 0
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

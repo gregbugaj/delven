@@ -1,0 +1,28 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "LabeledStatement",
+            "label": {
+                "type": "Identifier",
+                "name": "start"
+            },
+            "body": {
+                "type": "ForStatement",
+                "init": null,
+                "test": null,
+                "update": null,
+                "body": {
+                    "type": "BreakStatement",
+                    "label": {
+                        "type": "Identifier",
+                        "name": "start"
+                    }
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

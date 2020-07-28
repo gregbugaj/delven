@@ -477,7 +477,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     classDefinition(expression: Node.ClassDeclaration | Node.ClassExpression) {
         this.assertNotNull(expression)
 
-        console.info(expression)
         this.write('class ', false, false)
         if (expression.id != null) {
             this.visitIdentifier(expression.id as Node.Identifier)

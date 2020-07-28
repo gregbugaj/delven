@@ -134,7 +134,7 @@ export default abstract class ASTParser {
 
         try {
             const tree = parser.program()
-            console.log(tree.toStringTree(parser.ruleNames));
+            // console.log(tree.toStringTree(parser.ruleNames));
 
             return tree.accept(this.visitor)
         } catch (e) {
@@ -456,7 +456,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportFromBlockContext)
 
-        this.dumpContextAllChildren(ctx)
         // form of `import "foo";`
         if (ctx.getChildCount() == 2) {
             // StringLiteral wrapped in quotes 
@@ -2178,7 +2177,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
     visitMetaExpression(ctx: RuleContext): Node.MetaProperty {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MetaExpressionContext)
-        this.dumpContextAllChildren(ctx)
         const identifierContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierContext)
         const identifier = this.visitIdentifier(identifierContext)
 
