@@ -288,6 +288,12 @@ ECMAScriptParserVisitor.prototype.visitClassTail = function(ctx) {
 };
 
 
+// Visit a parse tree produced by ECMAScriptParser#classHeritage.
+ECMAScriptParserVisitor.prototype.visitClassHeritage = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by ECMAScriptParser#classElement.
 ECMAScriptParserVisitor.prototype.visitClassElement = function(ctx) {
   return this.visitChildren(ctx);

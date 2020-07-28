@@ -10,8 +10,8 @@ async function main() {
                   let iter = { *[Symbol.iterator]() {}}
                   let iter = { *[()=>{}]() { }}
                   */
- 
- 
+
+
     // ({ [x]() { } }) computed  = true
     // ({ foo() { } })  computed  = false
     // ;({ async foo() { } })
@@ -38,11 +38,20 @@ async function main() {
     // let o = {'x': function foo(n) {return 1}};
 
 
-const codeX = `    
+    const codeX = `    
   let ℮
 `
-   const code = "`$` "
+    //    const code = "`$` "
+    const code = `
 
+    class A extends B {
+        X() {
+            return super[1]
+        }
+    }
+      
+   `
+   
     // x = {fun(){}, ...z} 
     // Bad source
     // let x = {async test(){}} 

@@ -201,12 +201,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                     }
 
                     hasImporSpec = true
-                } else if (specifier.type === Syntax.ImportNamespaceSpecifier){
+                } else if (specifier.type === Syntax.ImportNamespaceSpecifier) {
                     this.write('*', false, false)
                     this.write(' as ', false, false)
                     this.visitIdentifier(specifier.local)
                     this.write(' ', false, false)
-                }else {
+                } else {
                     throw new TypeError("Unhandled type")
                 }
 
@@ -453,28 +453,58 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     classDefinition(expression: Node.ClassDeclaration | Node.ClassExpression) {
         this.assertNotNull(expression)
 
+        console.info(expression)
         this.write('class ', false, false)
         if (expression.id != null) {
             this.visitIdentifier(expression.id as Node.Identifier)
-            this.write('\n', false, false)
+            // this.write('\n', false, false)
         }
-        this.write('{ ', false, true)
 
+        if (expression.superClass) {
+            this.write(' extends ', false, false)
+            this.visitExpression(expression.superClass)
+        }
+
+        this.write('{ ', false, true)
         const clzBody: Node.ClassBody = expression.body
 
         for (let i = 0; i < clzBody.body.length; i++) {
-            const property: Node.Property = clzBody.body[i]
+            const property: Node.MethodDefinition | Node.EmptyStatement | Node.ClassPrivateProperty | Node.ClassProperty = clzBody.body[i]
+
             switch (property.type) {
+                case Syntax.EmptyStatement: {
+                    this.visitEmptyStatement(property as Node.EmptyStatement)
+                    break
+                }
                 case Syntax.MethodDefinition: {
                     this.visitMethodDefinition(property as Node.MethodDefinition)
                     break
                 }
+                case Syntax.ClassPrivateProperty: {
+                    this.visitClassPrivateProperty(property as Node.ClassPrivateProperty)
+                    break
+                } case Syntax.ClassProperty: {
+                    this.visitClassProperty(property as Node.ClassProperty)
+                    break
+                }
+
                 default: throw new TypeError("Type not handled  : " + property.type)
             }
 
             this.write('\n', false, false)
         }
         this.write('}', false, false)
+    }
+
+    visitClassPrivateProperty(property: Node.ClassPrivateProperty) {
+        this.write('#', false, false)
+        this.visitClassProperty(property as Node.ClassProperty)
+    }
+
+    visitClassProperty(property: Node.ClassProperty) {
+        this.visitPropertyKey(property.id)
+        this.write(' = ', false, false)
+        this.visitExpression(property.expression)
     }
 
     visitMethodDefinition(expression: Node.MethodDefinition) {
@@ -671,8 +701,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitIdentifier(expression.meta)
         this.write('.', false, false)
         this.visitIdentifier(expression.property)
-    }    
-    
+    }
+
     visitYieldExpression(expression: Node.YieldExpression): void {
         this.write('yield', false, false)
 

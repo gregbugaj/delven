@@ -236,6 +236,23 @@ Long term solution here is to break appart `singleExpression` to make make clear
 In interum we add just adding additional `MemberXXXExpression` expressions to `singleExpression`
 
 
+### 11. Changed grammar to be closer to the specification
+
+https://tc39.es/ecma262/#prod-ClassBody
+
+There is nothing wrong with existing grammar but this makes it simpler and follows the naming from the specification
+
+```ebnf
+classTail  // GB : Footnote 11
+    : classHeritage?  '{' classElement* '}'
+    ;
+
+classHeritage
+    : Extends singleExpression
+    ;
+```
+
+
 ## ERRORS
 
 https://github.com/antlr/grammars-v4/pull/1553

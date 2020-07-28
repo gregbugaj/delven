@@ -16,6 +16,8 @@ export const Syntax = {
     ClassBody: 'ClassBody',
     ClassDeclaration: 'ClassDeclaration',
     ClassExpression: 'ClassExpression',
+    ClassProperty: 'ClassProperty',
+    ClassPrivateProperty: 'ClassPrivateProperty',
     ConditionalExpression: 'ConditionalExpression',
     ContinueStatement: 'ContinueStatement',
     DoWhileStatement: 'DoWhileStatement',

@@ -42,14 +42,13 @@ async function main() {
     }
 
     //let iter = { *[Symbol.iterator]() {}}
-    const index = '0005';//.source
+    // const index = '0005';//.source
     //const name = `${index}`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/method-definition/migrated_${index}.js`)
     
-     const name = `new-spread`
-     const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/spread-element/${name}.js`)
+    const name = `super_member`
+    const payload = await getGitData('/ES6', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/super-property/${name}.js`)
     
-
     console.info(payload)
     if (!payload.success) {
         console.info("Gitdata returned with error")

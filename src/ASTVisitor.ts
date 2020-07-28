@@ -299,7 +299,7 @@ export default abstract class ASTVisitor {
      * 
      * @param statement 
      */
-    abstract visitImportDeclaration(statement: Node.ImportDeclaration): void 
+    abstract visitImportDeclaration(statement: Node.ImportDeclaration): void
 
     /**
      * 
@@ -318,4 +318,16 @@ export default abstract class ASTVisitor {
      * @param expression 
      */
     abstract visitMetaProperty(expression: Node.MetaProperty): void
+
+    /**
+     * 
+     * @param property 
+     */
+    abstract visitClassPrivateProperty(property: Node.ClassPrivateProperty): void
+
+    /**
+     * 
+     * @param property 
+     */
+    abstract visitClassProperty(property: Node.ClassProperty): void
 }

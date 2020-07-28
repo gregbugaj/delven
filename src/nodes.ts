@@ -220,12 +220,13 @@ export class ClassBody {
     }
 }
 
+// GB : Changed supertClass to allow for Expressions
 export class ClassDeclaration {
     readonly type: string;
     readonly id: Identifier | null;
-    readonly superClass: Identifier | null;
+    readonly superClass: Expression | null;
     readonly body: ClassBody;
-    constructor(id: Identifier | null, superClass: Identifier | null, body: ClassBody) {
+    constructor(id: Identifier | null, superClass: Expression | null, body: ClassBody) {
         this.type = Syntax.ClassDeclaration;
         this.id = id;
         this.superClass = superClass;
@@ -236,9 +237,9 @@ export class ClassDeclaration {
 export class ClassExpression {
     readonly type: string;
     readonly id: Identifier | null;
-    readonly superClass: Identifier | null;
+    readonly superClass: Expression | null;
     readonly body: ClassBody;
-    constructor(id: Identifier | null, superClass: Identifier | null, body: ClassBody) {
+    constructor(id: Identifier | null, superClass: Expression | null, body: ClassBody) {
         this.type = Syntax.ClassExpression;
         this.id = id;
         this.superClass = superClass;
@@ -246,6 +247,27 @@ export class ClassExpression {
     }
 }
 
+export class ClassProperty {
+    readonly type: string;
+    readonly id: PropertyKey;
+    readonly expression: Expression;
+    constructor(id: PropertyKey, expression: Expression) {
+        this.type = Syntax.ClassProperty;
+        this.id = id;
+        this.expression = expression;
+    }
+}
+
+export class ClassPrivateProperty {
+    readonly type: string;
+    readonly id: PropertyKey;
+    readonly expression: Expression;
+    constructor(id: PropertyKey, expression: Expression) {
+        this.type = Syntax.ClassPrivateProperty;
+        this.id = id;
+        this.expression = expression;
+    }
+}
 export class ComputedMemberExpression {
     readonly type: string;
     readonly computed: boolean;

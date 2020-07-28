@@ -233,12 +233,16 @@ classDeclaration
     : Class identifier classTail
     ;
 
-classTail
-    : (Extends singleExpression)?  '{' classElement* '}'
+classTail  // GB : Footnote 11
+    : classHeritage?  '{' classElement* '}'
+    ;
+
+classHeritage
+    : Extends singleExpression
     ;
 
 classElement
-    : (Static | {this.n("static")}? identifier | Async)* (methodDefinition | assignable '=' objectLiteral ';')
+    : (Static | {this.n("static")}? identifier | Async)* methodDefinition
     | emptyStatement
     | '#'? propertyName '=' singleExpression
     ;
