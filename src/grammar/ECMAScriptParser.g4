@@ -253,9 +253,9 @@ methodDefinition
     | '*'? '#'? setter '(' formalParameterList? ')' '{' functionBody '}'
     ;
 
-
+// Issue#15
 formalParameterList
-    : formalParameterArg (',' formalParameterArg)* (',' lastFormalParameterArg)?
+    : formalParameterArg (',' formalParameterArg)* (',' lastFormalParameterArg?)?
     | lastFormalParameterArg
     ;
 
@@ -295,7 +295,7 @@ propertyAssignment
     | setter '(' formalParameterArg ')' '{' functionBody '}'                        # PropertySetter
     | Ellipsis? singleExpression                                                    # PropertyShorthand
     ;
-    
+
 propertyName
     : identifierName
     | StringLiteral

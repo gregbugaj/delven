@@ -1,0 +1,36 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExportDefaultDeclaration",
+            "declaration": {
+                "type": "ArrowFunctionExpression",
+                "id": null,
+                "params": [
+                    {
+                        "type": "Identifier",
+                        "name": "x"
+                    }
+                ],
+                "body": {
+                    "type": "BinaryExpression",
+                    "operator": "*",
+                    "left": {
+                        "type": "Identifier",
+                        "name": "x"
+                    },
+                    "right": {
+                        "type": "Identifier",
+                        "name": "x"
+                    }
+                },
+                "generator": false,
+                "expression": true,
+                "async": true
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

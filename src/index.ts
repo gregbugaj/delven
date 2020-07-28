@@ -44,11 +44,7 @@ async function main() {
     //    const code = "`$` "
     const code = `
 
-    class A extends B {
-        X() {
-            return super[1]
-        }
-    }
+    async (x,y,) => x
       
    `
    
