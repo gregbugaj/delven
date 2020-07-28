@@ -327,7 +327,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitDoWhileStatement(statement: Node.DoWhileStatement) {
         this.write('do', false, false)
+        this.write(' ', false, false)
+
         this.visitStatement(statement.body)
+
         this.write('while', false, false)
         this.write('(', false, false)
         this.visitExpression(statement.test)

@@ -43,7 +43,7 @@ async function main() {
 `
     //    const code = "`$` "
     const code = `
-    ({x, ...y} = {x, ...y})
+    do keep(); while (true)
       
    `
    
