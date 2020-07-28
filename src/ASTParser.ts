@@ -539,8 +539,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             ident = this.visitIdentifierName(identifierNameContext)
         }
 
-        if(ctx.getChildCount() == 1){
-            return new Node.ImportDefaultSpecifier(ident)    
+        if (ctx.getChildCount() == 1) {
+            return new Node.ImportDefaultSpecifier(ident)
         }
 
         return new Node.ImportNamespaceSpecifier(ident)
@@ -1129,7 +1129,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.ReturnStatement(expression)
     }
 
-    
+
     /**
      * Visit a parse tree produced by ECMAScriptParser#withStatement.
      * ```
@@ -1780,6 +1780,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.FunctionPropertyContext)
         const key = this.visitPropertyName(ctx.propertyName())
         const computed = this.hasComputedProperty(ctx);
+
         const method = true;
         const shorthand = false;
         let expression: FunctionExpression | AsyncFunctionExpression;
@@ -3620,8 +3621,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Check if PropertyNameContext is a computed property
-     * When IdentifierExpression or LiteralExpressionContext is present 
-     * we are having a computed field ex `[expression]()` or `['name']()`
+     * When IdentifierExpression / LiteralExpressionContext / is present 
+     * we are having a computed field ex `[expression]()` or `['name']()`  or `{*[Symbol.iterator](){}}`
      * 
      * @param propertyNameCtx 
      */
@@ -3632,7 +3633,13 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
         else if (this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.LiteralExpressionContext)) {
             return true;
-        } else {
+        }  else if (this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.MemberDotExpressionContext)) {
+            const chain = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.MemberDotExpressionContext)
+            if (this.getTypedRuleContext(chain, ECMAScriptParser.IdentifierExpressionContext)) {
+                return true;
+            }
+        }
+        else {
             return false
         }
     }

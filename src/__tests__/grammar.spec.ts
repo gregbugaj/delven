@@ -50,7 +50,7 @@ function discover(expectType: TestType): TestCase[] {
         }
     }
     
-    //  return cases.filter(c => c.name === 'ES6.import-declaration[import-default]')
+    // return cases.filter(c => c.name === 'antlr.Generators[generators-symbol-iterator]')
     return cases
 }
 

@@ -1,2 +1,1 @@
-
 new foo().bar()

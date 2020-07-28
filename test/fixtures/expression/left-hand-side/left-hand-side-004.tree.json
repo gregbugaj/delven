@@ -4,12 +4,12 @@
         {
             "type": "ExpressionStatement",
             "expression": {
-                "type": "NewExpression",
+                "type": "CallExpression",
                 "callee": {
                     "type": "MemberExpression",
                     "computed": false,
                     "object": {
-                        "type": "CallExpression",
+                        "type": "NewExpression",
                         "callee": {
                             "type": "Identifier",
                             "name": "foo"

@@ -43,7 +43,8 @@ async function main() {
     //    const code = "`$` "
     // for([a,b[a],{c,d=e,[f]:[g,h().a,(0).k,...i[0]]}] in 0);
     const code = `
-    import zz, * as k from "foo";
+   
+let iter = { *[Symbol.iterator]() {}}
        `
    
     // x = {fun(){}, ...z} 
