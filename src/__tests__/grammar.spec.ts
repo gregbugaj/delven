@@ -36,7 +36,7 @@ function discover(expectType: TestType): TestCase[] {
             let basename = assetPath.slice('./test/fixtures'.length + 1, assetPath.indexOf(assetName) - 1)
             basename = basename.replace(/\//g, '.')
             const type = getType(assetName)
-            if (type !== expectType){
+            if (type !== expectType) {
                 continue
             }
 
@@ -49,9 +49,9 @@ function discover(expectType: TestType): TestCase[] {
             } as TestCase)
         }
     }
-    
-    // return cases.filter(c => c.name === 'antlr.Generators[generators-symbol-iterator]')
-    return cases
+
+    return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
+    //return cases
 }
 
 const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
@@ -88,7 +88,7 @@ const createOptions = function () {
     }
 }
 
-const assertSame = function (expected, ast): { same: boolean, delta: any} {
+const assertSame = function (expected, ast): { same: boolean, delta: any } {
     const a = toJson(ast)
     const b = toJson(expected)
     // bug in json diffpatcher when there is an array with null values `"elements": [null, null, {} ]`
@@ -97,22 +97,23 @@ const assertSame = function (expected, ast): { same: boolean, delta: any} {
         return { same: true, delta: undefined }
     }
 
-/*     console.info(a)
-    console.info('----------------------')
-    console.info('----------------------')
-    console.info(b) 
- */
+    /*     console.info(a)
+        console.info('----------------------')
+        console.info('----------------------')
+        console.info(b) 
+     */
     const diffpatcher = jsondiffpatch.create(createOptions())
     const delta = diffpatcher.diff(ast, expected);
 
     if (delta != undefined) {
         // let annotated = jsondiffpatch.formatters.annotated.format(delta, expected)
-        // console.log(delta);
+        console.log(delta);
     }
 
     return { same: delta == undefined, delta: delta }
 }
 
+if(false)
 describe('Generated Grammar Test Suite', () => {
     beforeAll(() => {
         ASTParser.trace(false)
@@ -124,13 +125,13 @@ describe('Generated Grammar Test Suite', () => {
         const deck = _case as TestCase
         const ast = ASTParser.parse({ type: "code", value: deck.code })
         const expected = JSON.parse(deck.expected) as ASTNode
-        const {same, delta} = assertSame(expected, ast)
-        
+        const { same, delta } = assertSame(expected, ast)
+
         expect(delta).toBeUndefined();
     })
 })
 
-if(false)
+
 describe('Source Generator Test', () => {
     beforeAll(() => {
         ASTParser.trace(false)
@@ -145,7 +146,7 @@ describe('Source Generator Test', () => {
         const generator = new SourceGenerator();
         const script = generator.toSource(ast);
         const ast2 = ASTParser.parse({ type: "code", value: script });
-        const {same, delta} = assertSame(ast, ast2)
+        const { same, delta } = assertSame(ast, ast2)
 
         expect(delta).toBeUndefined();
     })

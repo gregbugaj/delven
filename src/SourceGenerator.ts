@@ -598,8 +598,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitExpressionStatement(statement: Node.ExpressionStatement): void {
         switch (statement.expression.type) {
+            // case Syntax.AssignmentExpression:
             case Syntax.ObjectExpression:
-            case Syntax.AssignmentExpression:
             case Syntax.FunctionExpression:
                 {
                     this.write("(", false, false)

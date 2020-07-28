@@ -7,7 +7,10 @@
                 "type": "Identifier",
                 "name": "A"
             },
-            "superClass": null,
+            "superClass": {
+                "type": "Identifier",
+                "name": "B"
+            },
             "body": {
                 "type": "ClassBody",
                 "body": [
@@ -51,7 +54,7 @@
                             "expression": false,
                             "async": false
                         },
-                        "kind": "method",
+                        "kind": "constructor",
                         "static": false
                     }
                 ]

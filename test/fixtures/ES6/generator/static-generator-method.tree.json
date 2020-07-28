@@ -33,7 +33,7 @@
                             "async": false
                         },
                         "kind": "method",
-                        "static": false
+                        "static": true
                     }
                 ]
             }

@@ -41,11 +41,17 @@ async function main() {
   let ℮
 `
     //    const code = "`$` "
-    // for([a,b[a],{c,d=e,[f]:[g,h().a,(0).k,...i[0]]}] in 0);
-    const code = `
-   
-let iter = { *[Symbol.iterator]() {}}
-       `
+
+const codeXX = `
+    odds  = evens.map(v => v + 1)
+    pairs = evens.map(v => ({ even: v, odd: v + 1 }))
+    nums  = evens.map((v, i) => v + i)
+ `
+    // const code = fs.readFileSync('test/fixtures/ES6/identifier/escaped_math_zain_start.js', "utf8")
+
+    const code =  `
+    ({x, ...y} = {x, ...y})
+ ` 
    
     // x = {fun(){}, ...z} 
     // Bad source
