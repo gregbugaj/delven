@@ -44,7 +44,9 @@ async function main() {
     //    const code = "`$` "
     const code = `
 
-    ({ async ["xyz"]() {} })
+    async ()=>{
+        await import(x) 
+       }
       
    `
    

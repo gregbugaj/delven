@@ -243,3 +243,4 @@ UnexpectedCharacter=136
 'protected'=125
 'static'=126
 'yield'=127
+'\n'=133

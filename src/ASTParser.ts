@@ -429,6 +429,20 @@ export class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
+     * ```
+     * Import '(' singleExpression ')'   # ImportExpression
+     * ```
+     */
+    visitImportExpression(ctx: RuleContext): Node.CallExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.ImportExpressionContext)
+        const expression = this.singleExpression(ctx.singleExpression())
+        
+        return new Node.CallExpression(new Node.Import(), [expression])
+    }
+
+
+    /**
      * 
      * ```
      * importFromBlock
@@ -2111,6 +2125,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitInlinedQueryExpression(node)
         } else if (node instanceof ECMAScriptParser.YieldExpressionContext) {
             return this.visitYieldExpression(node)
+        } else if (node instanceof ECMAScriptParser.ImportExpressionContext) {
+            return this.visitImportExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))

@@ -796,6 +796,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             this.visitFunctionExpression(expression.callee as Node.FunctionExpression)
             this.write(')', false, false)
             this.visitParams(args)
+        } else if (expression.callee.type == Syntax.Import) {
+            this.write('import', false, false)
+            this.visitParams(args)
         } else {
             this.visitExpression(expression.callee)
             this.visitParams(args)

@@ -46,8 +46,8 @@ async function main() {
     //const name = `${index}`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/method-definition/migrated_${index}.js`)
     
-    const name = `trailing-comma-spread`
-    const payload = await getGitData('/es2017', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/es2017/trailing-commas/${name}.js`)
+    const name = `await-import`
+    const payload = await getGitData('/es2018', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/es2018/dynamic-import/${name}.js`)
     
     console.info(payload)
     if (!payload.success) {
