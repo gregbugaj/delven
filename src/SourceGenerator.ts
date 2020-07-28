@@ -172,12 +172,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('\n', false, false)
     }
 
-
-    visitContinueStatement(statement: Node.ContinueStatement):void {
+    visitContinueStatement(statement: Node.ContinueStatement): void {
         this.assertNotNull(statement)
         this.write('continue ', false, false)
 
-        if(statement.label){
+        if (statement.label) {
             this.write(' ', false, false)
             this.visitIdentifier(statement.label)
         }
@@ -322,6 +321,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write(' in ', false, false)
         this.visitExpression(statement.right)
         this.write(')', false, false)
+        this.write(' ', false, false)
         this.visitStatement(statement.body)
     }
 

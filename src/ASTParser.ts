@@ -437,7 +437,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ImportExpressionContext)
         const expression = this.singleExpression(ctx.singleExpression())
-        
+
         return new Node.CallExpression(new Node.Import(), [expression])
     }
 
@@ -1125,9 +1125,18 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new Node.ReturnStatement(expression)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#withStatement.
-    visitWithStatement(ctx: RuleContext) {
-        console.trace('not implemented')
+    
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#withStatement.
+     * ```
+     * withStatement
+     *   : With '(' expressionSequence ')' statement
+     *   ;
+     * ```
+     * @param ctx 
+     */
+    visitWithStatement(ctx: RuleContext): Node.WithStatement {
+        throw new Error('Strict mode code may not include a with statement')
     }
 
     /**
