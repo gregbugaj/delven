@@ -2325,8 +2325,8 @@ export class DelvenASTVisitor extends DelvenVisitor {
             const body: Node.BlockStatement = this.visitFunctionBody(ctx.functionBody())
             value = this.crateFunctionExpression(null, params, body, isAsync, isGenerator)
 
-            if(!computed && key instanceof Node.Identifier){
-                if(key.name === 'constructor'){
+            if (!computed && key instanceof Node.Identifier) {
+                if (key.name === 'constructor') {
                     kind = 'constructor'
                 }
             }
@@ -3592,14 +3592,21 @@ export class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Check if PropertyNameContext is a computed property
-     *  When IdentifierExpression is present we are having a computed field ex `[expression]()`
+     * When IdentifierExpression or LiteralExpressionContext is present 
+     * we are having a computed field ex `[expression]()` or `['name']()`
      * 
      * @param propertyNameCtx 
      */
     isComputedProperty(propertyNameCtx: RuleContext): boolean {
         this.assertType(propertyNameCtx, ECMAScriptParser.PropertyNameContext)
-        const identifierExpressionContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext)
-        return identifierExpressionContext ? true : false
+        if (this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.IdentifierExpressionContext)) {
+            return true;
+        }
+        else if (this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.LiteralExpressionContext)) {
+            return true;
+        } else {
+            return false
+        }
     }
 
     /**

@@ -44,7 +44,7 @@ async function main() {
     //    const code = "`$` "
     const code = `
 
-    export default async function f(a) { await a }
+    ({ async ["xyz"]() {} })
       
    `
    
