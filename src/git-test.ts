@@ -46,7 +46,7 @@ async function main() {
     //const name = `${index}`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/method-definition/migrated_${index}.js`)
     
-    const name = `export-default-async-named-function-declaration-await.module`
+    const name = `inner-function-async`
     const payload = await getGitData('/es2017', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/es2017/async/functions/${name}.js`)
     
     console.info(payload)

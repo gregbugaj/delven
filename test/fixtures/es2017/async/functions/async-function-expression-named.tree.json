@@ -1,0 +1,34 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "AssignmentExpression",
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "a"
+                },
+                "right": {
+                    "type": "FunctionExpression",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "f"
+                    },
+                    "params": [],
+                    "body": {
+                        "type": "BlockStatement",
+                        "body": []
+                    },
+                    "generator": false,
+                    "expression": false,
+                    "async": true
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
