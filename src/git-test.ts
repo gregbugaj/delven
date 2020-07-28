@@ -46,8 +46,8 @@ async function main() {
     //const name = `${index}`
     // const payload = await getGitData('/expression', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/ES6/method-definition/migrated_${index}.js`)
     
-    const name = `await-import`
-    const payload = await getGitData('/es2018', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/es2018/dynamic-import/${name}.js`)
+    const name = `spread-null-undefined`
+    const payload = await getGitData('/es2018', `https://raw.githubusercontent.com/jquery/esprima/master/test/fixtures/es2018/spread-property/${name}.js`)
     
     console.info(payload)
     if (!payload.success) {

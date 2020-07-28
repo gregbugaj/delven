@@ -1,0 +1,55 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "load"
+            },
+            "params": [
+                {
+                    "type": "Identifier",
+                    "name": "f"
+                }
+            ],
+            "body": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ReturnStatement",
+                        "argument": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "Import"
+                            },
+                            "arguments": [
+                                {
+                                    "type": "BinaryExpression",
+                                    "operator": "+",
+                                    "left": {
+                                        "type": "Literal",
+                                        "value": "lib/",
+                                        "raw": "'lib/'",
+                                        "start": 0,
+                                        "end": 0
+                                    },
+                                    "right": {
+                                        "type": "Identifier",
+                                        "name": "f"
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "generator": false,
+            "expression": false,
+            "async": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
