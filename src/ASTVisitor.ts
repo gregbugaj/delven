@@ -341,7 +341,18 @@ export default abstract class ASTVisitor {
      * 
      * @param statement 
      */
-    abstract visitOptionalMemberExpression(arg0: Node.OptionalMemberExpression): void
-    
-    abstract visitOptionalMemberExpression(arg0: Node.OptionalMemberExpression): void
+    abstract visitOptionalMemberExpression(expression: Node.OptionalMemberExpression): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitOptionalCallExpression(expression: Node.OptionalCallExpression): void
+
+
+    /**
+     * 
+     * @param template 
+     */
+    abstract visitTemplateLiteral(template: Node.TemplateLiteral): void
 }

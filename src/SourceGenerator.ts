@@ -722,9 +722,30 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.OptionalMemberExpression: {
                 this.visitOptionalMemberExpression(expression as Node.OptionalMemberExpression)
                 break
+            } case Syntax.TemplateLiteral: {
+                this.visitTemplateLiteral(expression as Node.TemplateLiteral)
+                break
             }
             default:
                 throw new TypeError("Type not handled : " + expression.type)
+        }
+    }
+
+    visitTemplateLiteral(template: Node.TemplateLiteral): void {
+        if (template.quasis.length === 0) {
+            this.write('``', false, false)
+        } else {
+            this.write('`', false, false)
+            for (let i = 0; i < template.quasis.length; ++i) {
+                const quasi = template.quasis[i]
+                this.write(quasi.value.raw, false, false)
+                if (i < template.expressions.length) {
+                    this.write('${', false, false)
+                    this.visitExpression(template.expressions[i])
+                    this.write('}', false, false)
+                }
+            }
+            this.write('`', false, false)
         }
     }
 

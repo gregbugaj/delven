@@ -52,10 +52,9 @@ const codezz = `
     // x = y?.z 
     // x = y()?.test
     // y?.test()
-    const code =  `
-    x?.y()
- ` 
- // antlr.ArrowFunctions[ExpressionBodies]
+    const code =  "let x = `A ${1+2} B + C${b}D`"
+
+    // antlr.ArrowFunctions[ExpressionBodies]
    
 //  antlr.Classes[ClassDefinition]
 
@@ -85,3 +84,6 @@ const codezz = `
 
 // Trick to prevent  > All files must be modules when the '--isolatedModules' flag is provided.ts(1208)
 export { } 
+
+
+

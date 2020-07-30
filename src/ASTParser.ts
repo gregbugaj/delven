@@ -135,7 +135,6 @@ export default abstract class ASTParser {
         try {
             const tree = parser.program()
             // console.log(tree.toStringTree(parser.ruleNames));
-
             return tree.accept(this.visitor)
         } catch (e) {
             if (errorHandler.hasErrors()) {
@@ -395,8 +394,6 @@ export class DelvenASTVisitor extends DelvenVisitor {
             return this.visitLabelledStatement(node)
         } else if (node instanceof ECMAScriptParser.SwitchStatementContext) {
             return this.visitSwitchStatement(node)
-            // } else if (node instanceof ECMAScriptParser.FunctionExpressionContext) {
-            //     return this.visitFunctionExpression(node, true)
         } else if (node instanceof ECMAScriptParser.ThrowStatementContext) {
             return this.visitThrowStatement(node)
         } else if (node instanceof ECMAScriptParser.TryStatementContext) {
@@ -3559,12 +3556,47 @@ export class DelvenASTVisitor extends DelvenVisitor {
         return new RegexLiteral(new RegExp("", ""), raw, pattern, flags)
     }
 
+    /**
+     * This is quikc and dirty implemenation of TemplateLiteral string iterpolation
+     * TODO : Update grammar to use ANTLR lexer modes to properly parse the expressions tree rather than reinterpeting expression here
+     * @param ctx 
+     */
     private createTemplateLiteral(ctx: RuleContext): Node.TemplateLiteral {
         const expressions: Node.Expression[] = [];
         const quasis: Node.TemplateElement[] = [];
+        const txt = ctx.getText()
+        const literal = txt.substring(txt.indexOf('`') + 1, txt.lastIndexOf('`'))
+        const evalTemplateLiteral = (fragment: string) => {
+            const chars = new antlr4.InputStream(fragment)
+            const lexer = new DelvenLexer(chars)
+            const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
+            const tree = parser.singleExpression()
+            return tree.accept(this)
+        }
 
-        throw new TypeError("Not implemented")
-        // return new Node.TemplateLiteral(quasis, expressions)
+        const regex = /\${(.+?)\}/gi;
+        let m;
+        let pos = 0
+
+        while ((m = regex.exec(literal)) !== null) {
+            // This is necessary to avoid infinite loops with zero-width matches
+            if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+            }
+
+            const raw = literal.substring(pos, m.index)
+            pos = m[0].length + m.index
+            expressions.push(evalTemplateLiteral(m[1]))
+            quasis.push(new Node.TemplateElement({ raw: raw, cooked: raw }, false))
+        }
+
+        // check for tail
+        if (pos < literal.length) {
+            const raw = literal.substring(pos)
+            quasis.push(new Node.TemplateElement({ raw: raw, cooked: raw }, true))
+        }
+
+        return new Node.TemplateLiteral(quasis, expressions)
     }
 
     // Visit a parse tree produced by ECMAScriptParser#identifierName.
