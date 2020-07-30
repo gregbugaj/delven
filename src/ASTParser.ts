@@ -3685,9 +3685,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
                 return true;
             }
         }
-        else {
-            return false
-        }
+        return false
     }
 
     /**
