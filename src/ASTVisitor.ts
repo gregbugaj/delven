@@ -11,100 +11,100 @@ export default abstract class ASTVisitor {
      * 
      * @param node V
      */
-    abstract visitScript(node: Node.Script): void;
+    abstract visitModule(node: Node.Script): void
 
     /**
      * 
      * @param node 
      */
-    abstract visitExpressionStatement(node: Node.ExpressionStatement): void;
+    abstract visitExpressionStatement(node: Node.ExpressionStatement): void
 
     /**
      * 
      * @param node 
      */
-    abstract visitSequenceExpression(node: Node.SequenceExpression): void;
+    abstract visitSequenceExpression(node: Node.SequenceExpression): void
 
     /**
      * 
      * @param literal 
      */
-    abstract visitLiteral(literal: Node.Literal): void;
+    abstract visitLiteral(literal: Node.Literal): void
 
     /**
      * 
      * @param identifier 
      */
-    abstract visitIdentifier(identifier: Node.Identifier): void;
+    abstract visitIdentifier(identifier: Node.Identifier): void
 
     /**
      * 
      * @param expression 
      */
-    abstract visitExpression(expression: Node.Expression): void;
+    abstract visitExpression(expression: Node.Expression): void
 
     /**
      * 
      * @param expression 
      */
-    abstract visitAssignmentExpression(expression: Node.AssignmentExpression): void;
+    abstract visitAssignmentExpression(expression: Node.AssignmentExpression): void
 
     /**
      * 
      * @param declaration 
      */
-    abstract visitVariableDeclaration(declaration: Node.VariableDeclaration): void;
+    abstract visitVariableDeclaration(declaration: Node.VariableDeclaration): void
 
     /**
      * 
      */
-    abstract visitVariableDeclarator(node: Node.VariableDeclarator): void;
+    abstract visitVariableDeclarator(node: Node.VariableDeclarator): void
 
     /**
      * 
      * @param node 
      */
-    abstract visitBlockStatement(node: Node.BlockStatement): void;
+    abstract visitBlockStatement(node: Node.BlockStatement): void
 
     /**
      * 
      * @param expression 
      */
-    abstract visitObjectExpression(expression: Node.ObjectExpression): void;
+    abstract visitObjectExpression(expression: Node.ObjectExpression): void
 
     /**
      * 
      * @param property 
      */
-    abstract visitObjectExpressionProperty(expression: Node.ObjectExpressionProperty): void;
+    abstract visitObjectExpressionProperty(expression: Node.ObjectExpressionProperty): void
 
     /**
      * @param expression 
      */
-    abstract visitArrowFunctionExpression(expression: Node.AsyncFunctionExpression): void;
+    abstract visitArrowFunctionExpression(expression: Node.AsyncFunctionExpression): void
 
     /**
      * @param expression 
      */
-    abstract visitFunctionExpression(expression: Node.FunctionExpression): void;
+    abstract visitFunctionExpression(expression: Node.FunctionExpression): void
 
     /**
      * 
      * @param param 
      */
-    abstract visitFunctionParameter(param: Node.FunctionParameter): void;
+    abstract visitFunctionParameter(param: Node.FunctionParameter): void
 
     /**
      * 
      * @param expression 
      */
-    abstract visitAssignmentPattern(expression: Node.AssignmentPattern): void;
+    abstract visitAssignmentPattern(expression: Node.AssignmentPattern): void
 
     /**
      * 
      * @param node 
      */
-    abstract visitObjectPattern(node: Node.ObjectPattern): void;
+    abstract visitObjectPattern(node: Node.ObjectPattern): void
 
     /**
      * 
@@ -336,4 +336,12 @@ export default abstract class ASTVisitor {
      * @param statement 
      */
     abstract visitContinueStatement(statement: Node.ContinueStatement): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitOptionalMemberExpression(arg0: Node.OptionalMemberExpression): void
+    
+    abstract visitOptionalMemberExpression(arg0: Node.OptionalMemberExpression): void
 }

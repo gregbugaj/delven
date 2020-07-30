@@ -18,10 +18,10 @@ export default class SourceGenerator {
      * 
      * @param node 
      */
-    toSource(node: Node.Script | Node.Module): string {
+    toSource(node: Node.Module): string {
         const visitor = new ExplicitASTNodeVisitor()
-        visitor.visitScript(node)
-        return visitor.buffer;
+        visitor.visitModule(node)
+        return visitor.buffer
     }
 }
 
@@ -82,8 +82,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.indent = pad;
     }
 
-    visitScript(node: Node.Script): void {
+    visitModule(node: Node.Module): void {
         this.write("// Generated code", false, true)
+
         for (const stm of node.body) {
             this.visitStatement(stm)
         }
@@ -667,6 +668,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.CallExpression: {
                 this.visitCallExpression(expression as Node.CallExpression)
                 break
+            } case Syntax.OptionalCallExpression: {
+                this.visitOptionalCallExpression(expression as Node.OptionalCallExpression)
+                break
             } case Syntax.MemberExpression: {
                 this.visitMemberExpression(expression as Node.StaticMemberExpression | Node.ComputedMemberExpression)
                 break
@@ -714,6 +718,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 break
             } case Syntax.MetaProperty: {
                 this.visitMetaProperty(expression as Node.MetaProperty)
+                break
+            } case Syntax.OptionalMemberExpression: {
+                this.visitOptionalMemberExpression(expression as Node.OptionalMemberExpression)
                 break
             }
             default:
@@ -769,10 +776,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 this.visitAssignmentPattern(value)
             } else {
                 this.visitExpression(key)
-
-                /*                 if (value) {
-                                    this.visitExpression(value)
-                                } */
             }
         } else {
             this.writeConditional(expression.computed, '[', false, false)
@@ -805,7 +808,16 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('this', false, false)
     }
 
+
+    visitOptionalCallExpression(expression: Node.OptionalCallExpression) {
+        this._visitCallExpression(expression)
+    }
+
     visitCallExpression(expression: Node.CallExpression) {
+        this._visitCallExpression(expression)
+    }
+
+    private _visitCallExpression(expression: Node.CallExpression | Node.OptionalCallExpression) {
         const args = expression.arguments;
         if (expression.callee.type == Syntax.FunctionExpression) {
             this.write('(', false, false)
@@ -821,11 +833,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
-    visitMemberExpression(expression: Node.StaticMemberExpression | Node.ComputedMemberExpression) {
-
-        if (expression instanceof Node.StaticMemberExpression) {
+    visitMemberExpression(expression: Node.StaticMemberExpression | Node.ComputedMemberExpression | Node.OptionalMemberExpression) {
+        if (expression instanceof Node.StaticMemberExpression || expression instanceof Node.OptionalMemberExpression) {
+            const isOptional = expression instanceof Node.OptionalMemberExpression
             this.visitExpression(expression.object)
-            this.write('.', false, false)
+            this.write(isOptional ? '?.' : '.', false, false)
             this.visitExpression(expression.property)
         } else if (expression instanceof Node.ComputedMemberExpression) {
             this.visitExpression(expression.object)
@@ -835,7 +847,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         } else {
             throw new TypeError("Unhandled type : " + expression)
         }
+    }
 
+    visitOptionalMemberExpression(expression: Node.OptionalMemberExpression) {
+        this.visitMemberExpression(expression)
     }
 
     visitParams(args: Node.ArgumentListElement[] | Node.FunctionParameter[]) {
@@ -1147,7 +1162,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             throw new TypeError("Not implemented : " + key.constructor)
         }
     }
-
 
     visitLiteral(literal: Node.Literal): void {
         this.write(literal.raw, false, false)

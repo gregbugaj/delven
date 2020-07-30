@@ -200,6 +200,19 @@ export class CallExpression {
     }
 }
 
+export class OptionalCallExpression {
+    readonly type: string;
+    readonly optional: boolean;
+    readonly callee: Expression | Import;
+    readonly arguments: ArgumentListElement[];
+    constructor(callee: Expression | Import, args: ArgumentListElement[]) {
+        this.type = Syntax.OptionalCallExpression;
+        this.callee = callee;
+        this.arguments = args;
+        this.optional = true;
+    }
+}
+
 export class CatchClause {
     readonly type: string;
     readonly param: BindingIdentifier | BindingPattern;
@@ -717,6 +730,21 @@ export class StaticMemberExpression {
     constructor(object: Expression, property: Expression) {
         this.type = Syntax.MemberExpression;
         this.computed = false;
+        this.object = object;
+        this.property = property;
+    }
+}
+
+export class OptionalMemberExpression {
+    readonly type: string;
+    readonly computed: boolean;
+    readonly optional: boolean
+    readonly object: Expression;
+    readonly property: Expression;
+    constructor(object: Expression, property: Expression) {
+        this.type = Syntax.OptionalMemberExpression;
+        this.computed = false;
+        this.optional = true;
         this.object = object;
         this.property = property;
     }

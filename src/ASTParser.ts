@@ -2646,16 +2646,17 @@ export class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx 
      */
-    visitArgumentsExpression(ctx: RuleContext): Node.CallExpression {
+    visitArgumentsExpression(ctx: RuleContext): Node.CallExpression | Node.OptionalCallExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ArgumentsExpressionContext)
         const arg = ctx.arguments()
         const callee = this.singleExpression(ctx.singleExpression())
         const args: Node.ArgumentListElement[] = arg ? this.visitArguments(arg) : [];
+        const dot = this.getTypedRuleContext(ctx, ECMAScriptParser.MemberDotExpressionContext)
+        const isOptional = this.hasToken(dot, ECMAScriptParser.QuestionMark)
 
-        return new Node.CallExpression(callee, args)
+        return isOptional ? new Node.OptionalCallExpression(callee, args) : new Node.CallExpression(callee, args)
     }
-
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#ThisExpression.
@@ -3310,22 +3311,35 @@ export class DelvenASTVisitor extends DelvenVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
      * 
+     * Grammar fragment
+     * ```
+     * | singleExpression '?'? '.' '#'? identifierName                         # MemberDotExpression
+     * ```
      * ```
      * new foo().bar
+     * ```
+     * 
+     * Following snippet will produce an `OptionalMemberExpression`
+     * ```
+     * let x = y?.test()
      * ```
      * 
      * computed = false `x.z`
      * computed = true `y[1]`
      */
-    visitMemberDotExpression(ctx: RuleContext): Node.StaticMemberExpression {
+    visitMemberDotExpression(ctx: RuleContext): Node.StaticMemberExpression | Node.OptionalMemberExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MemberDotExpressionContext)
-        this.assertNodeCount(ctx, 3)
 
-        const expr = this.singleExpression(ctx.getChild(0))
-        const property = this.visitIdentifierName(ctx.getChild(2))
-
-        return new Node.StaticMemberExpression(expr, property)
+        if (ctx.getChildCount() == 3) {
+            const expr = this.singleExpression(ctx.getChild(0))
+            const property = this.visitIdentifierName(ctx.getChild(2))
+            return new Node.StaticMemberExpression(expr, property)
+        } else {
+            const expr = this.singleExpression(ctx.getChild(0))
+            const property = this.visitIdentifierName(ctx.getChild(3))
+            return new Node.OptionalMemberExpression(expr, property)
+        }
     }
 
     /**
@@ -3633,7 +3647,7 @@ export class DelvenASTVisitor extends DelvenVisitor {
         }
         else if (this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.LiteralExpressionContext)) {
             return true;
-        }  else if (this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.MemberDotExpressionContext)) {
+        } else if (this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.MemberDotExpressionContext)) {
             const chain = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.MemberDotExpressionContext)
             if (this.getTypedRuleContext(chain, ECMAScriptParser.IdentifierExpressionContext)) {
                 return true;

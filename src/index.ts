@@ -48,11 +48,13 @@ const codezz = `
     nums  = evens.map((v, i) => v + i)
  `
     // const code = fs.readFileSync('test/fixtures/ES6/identifier/escaped_math_zain_start.js', "utf8")
-
+ 
+    // x = y?.z 
+    // x = y()?.test
+    // y?.test()
     const code =  `
-    let x = 1 ? true : 2 ? true : false    
+    x?.y()
  ` 
-
  // antlr.ArrowFunctions[ExpressionBodies]
    
 //  antlr.Classes[ClassDefinition]
