@@ -42,7 +42,7 @@ async function main() {
 `
     //    const code = "`$` "
 
-const codeXX = `
+const codezz = `
     odds  = evens.map(v => v + 1)
     pairs = evens.map(v => ({ even: v, odd: v + 1 }))
     nums  = evens.map((v, i) => v + i)
@@ -50,9 +50,13 @@ const codeXX = `
     // const code = fs.readFileSync('test/fixtures/ES6/identifier/escaped_math_zain_start.js', "utf8")
 
     const code =  `
-    ({x, ...y} = {x, ...y})
+    let x = 1 ? true : 2 ? true : false    
  ` 
+
+ // antlr.ArrowFunctions[ExpressionBodies]
    
+//  antlr.Classes[ClassDefinition]
+
     // x = {fun(){}, ...z} 
     // Bad source
     // let x = {async test(){}} 

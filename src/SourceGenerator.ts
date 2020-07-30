@@ -746,9 +746,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitConditionalExpression(expression: Node.ConditionalExpression): void {
         this.visitExpression(expression.test)
-        this.write('?', false, false)
+        this.write(' ? ', false, false)
         this.visitExpression(expression.consequent)
-        this.write(':', false, false)
+        this.write(' : ', false, false)
         this.visitExpression(expression.alternate)
     }
 
@@ -928,12 +928,17 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitObjectExpression(expression: Node.ObjectExpression): void {
         const properties: Node.ObjectExpressionProperty[] = expression.properties
-        this.write('{', false, false)
-        for (let i = 0; i < properties.length; ++i) {
-            this.visitObjectExpressionProperty(properties[i])
-            this.write(i < properties.length - 1 ? ', ' : '', false, false)
+        if (expression.properties.length === 0) {
+            this.write('{}', false, false)
+        } else {
+
+            this.write('{', false, false)
+            for (let i = 0; i < properties.length; ++i) {
+                this.visitObjectExpressionProperty(properties[i])
+                this.write(i < properties.length - 1 ? ', ' : '', false, false)
+            }
+            this.write('}', false, false)
         }
-        this.write('}', false, false)
     }
 
 
