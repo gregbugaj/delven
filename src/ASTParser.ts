@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as antlr4 from "antlr4"
 import { ECMAScriptParserVisitor as DelvenVisitor } from "./parser/ECMAScriptParserVisitor"
@@ -56,15 +57,18 @@ interface ExportFromBlock {
     namespace: Node.ImportDefaultSpecifier | null
 }
 
+type ClassElement = Node.MethodDefinition | Node.EmptyStatement | Node.ClassPrivateProperty | Node.ClassProperty
+
+type IterableStatement = Node.DoWhileStatement | Node.WhileStatement | Node.ForStatement | Node.ForInStatement | Node.ForOfStatement
+
 export type ErrorInfo = {
     line: number,
     column: number,
     msg: string,
 }
 
-type IterableStatement = Node.DoWhileStatement | Node.WhileStatement | Node.ForStatement | Node.ForInStatement | Node.ForOfStatement
 
-export class DelvenErrorListener extends ErrorListener {
+class DelvenErrorListener extends ErrorListener {
     errors: ErrorInfo[] = []
     syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
         console.error(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`);
@@ -434,6 +438,118 @@ class DelvenASTVisitor extends DelvenVisitor {
             return this.visitFunctionDeclaration(node)
         } else if (node instanceof ECMAScriptParser.QuerySelectStatementContext) {
             return this.visitQuerySelectStatement(node)
+        }
+
+        this.throwInsanceError(this.dumpContext(node))
+    }
+
+    /**
+    * Evaluate a singleExpression
+    * Currently singleExpression is called from both Statements and Expressions which causes problems for 
+    * distinguishing function declaration from function expressions 
+    * 
+    * @param node 
+    */
+    singleExpression(node: RuleContext): Node.Expression {
+
+        if (node instanceof ECMAScriptParser.LiteralExpressionContext) {
+            return this.visitLiteralExpression(node)
+        } else if (node instanceof ECMAScriptParser.ObjectLiteralExpressionContext) {
+            return this.visitObjectLiteralExpression(node)
+        } else if (node instanceof ECMAScriptParser.AssignmentExpressionContext) {
+            return this.visitAssignmentExpression(node)
+        } else if (node instanceof ECMAScriptParser.AdditiveExpressionContext) {
+            return this.visitAdditiveExpression(node)
+        } else if (node instanceof ECMAScriptParser.MultiplicativeExpressionContext) {
+            return this.visitMultiplicativeExpression(node)
+        } else if (node instanceof ECMAScriptParser.ArrayLiteralExpressionContext) {
+            return this.visitArrayLiteralExpression(node)
+        } else if (node instanceof ECMAScriptParser.EqualityExpressionContext) {
+            return this.visitEqualityExpression(node)
+        } else if (node instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
+            return this.visitParenthesizedExpression(node)
+        } else if (node instanceof ECMAScriptParser.RelationalExpressionContext) {
+            return this.visitRelationalExpression(node)
+        } else if (node instanceof ECMAScriptParser.IdentifierExpressionContext) {
+            return this.visitIdentifierExpression(node)
+        } else if (node instanceof ECMAScriptParser.MemberNewExpressionContext) {
+            return this.visitMemberNewExpression(node)
+        } else if (node instanceof ECMAScriptParser.MemberDotExpressionContext) {
+            return this.visitMemberDotExpression(node)
+        } else if (node instanceof ECMAScriptParser.MemberIndexExpressionContext) {
+            return this.visitMemberIndexExpression(node)
+        } else if (node instanceof ECMAScriptParser.AssignmentOperatorExpressionContext) {
+            return this.visitAssignmentOperatorExpression(node)
+        } else if (node instanceof ECMAScriptParser.FunctionExpressionContext) {
+            return this.visitFunctionExpression(node)
+        } else if (node instanceof ECMAScriptParser.NewExpressionContext) {
+            return this.visitNewExpression(node)
+        } else if (node instanceof ECMAScriptParser.ArgumentsExpressionContext) {
+            return this.visitArgumentsExpression(node)
+        } else if (node instanceof ECMAScriptParser.MetaExpressionContext) {
+            return this.visitMetaExpression(node)
+        } else if (node instanceof ECMAScriptParser.VoidExpressionContext) {
+            return this.visitVoidExpression(node)
+        } else if (node instanceof ECMAScriptParser.PostIncrementExpressionContext) {
+            return this.visitPostIncrementExpression(node)
+        } else if (node instanceof ECMAScriptParser.PreIncrementExpressionContext) {
+            return this.visitPreIncrementExpression(node)
+        } else if (node instanceof ECMAScriptParser.PreDecreaseExpressionContext) {
+            return this.visitPreDecreaseExpression(node)
+        } else if (node instanceof ECMAScriptParser.PostDecreaseExpressionContext) {
+            return this.visitPostDecreaseExpression(node)
+        } else if (node instanceof ECMAScriptParser.ThisExpressionContext) {
+            return this.visitThisExpression(node)
+        } else if (node instanceof ECMAScriptParser.ClassExpressionContext) {
+            return this.visitClassExpression(node)
+        } else if (node instanceof ECMAScriptParser.LogicalAndExpressionContext) {
+            return this.visitLogicalAndExpression(node)
+        } else if (node instanceof ECMAScriptParser.LogicalOrExpressionContext) {
+            return this.visitLogicalOrExpression(node)
+        } else if (node instanceof ECMAScriptParser.InExpressionContext) {
+            return this.visitInExpression(node)
+        } else if (node instanceof ECMAScriptParser.IdentifierContext) {
+            return this.visitIdentifier(node)
+        } else if (node instanceof ECMAScriptParser.PowerExpressionContext) {
+            return this.visitPowerExpression(node)
+        } else if (node instanceof ECMAScriptParser.DeleteExpressionContext) {
+            return this.visitDeleteExpression(node)
+        } else if (node instanceof ECMAScriptParser.UnaryPlusExpressionContext) {
+            return this.visitUnaryPlusExpression(node)
+        } else if (node instanceof ECMAScriptParser.UnaryMinusExpressionContext) {
+            return this.visitUnaryMinusExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitNotExpressionContext) {
+            return this.visitBitNotExpression(node)
+        } else if (node instanceof ECMAScriptParser.NotExpressionContext) {
+            return this.visitNotExpression(node)
+        } else if (node instanceof ECMAScriptParser.CoalesceExpressionContext) {
+            return this.visitCoalesceExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitShiftExpressionContext) {
+            return this.visitBitShiftExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitXOrExpressionContext) {
+            return this.visitBitXOrExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitAndExpressionContext) {
+            return this.visitBitAndExpression(node)
+        } else if (node instanceof ECMAScriptParser.BitOrExpressionContext) {
+            return this.visitBitOrExpression(node)
+        } else if (node instanceof ECMAScriptParser.AwaitExpressionContext) {
+            return this.visitAwaitExpression(node)
+        } else if (node instanceof ECMAScriptParser.InstanceofExpressionContext) {
+            return this.visitInstanceofExpression(node)
+        } else if (node instanceof ECMAScriptParser.TypeofExpressionContext) {
+            return this.visitTypeofExpression(node)
+        } else if (node instanceof ECMAScriptParser.TernaryExpressionContext) {
+            return this.visitTernaryExpression(node)
+        } else if (node instanceof ECMAScriptParser.SuperExpressionContext) {
+            return this.visitSuperExpression(node)
+        } else if (node instanceof ECMAScriptParser.InlinedQueryExpressionContext) {
+            return this.visitInlinedQueryExpression(node)
+        } else if (node instanceof ECMAScriptParser.YieldExpressionContext) {
+            return this.visitYieldExpression(node)
+        } else if (node instanceof ECMAScriptParser.ImportExpressionContext) {
+            return this.visitImportExpression(node)
+        } else if (node instanceof ECMAScriptParser.TemplateStringExpressionContext) {
+            return this.visitTemplateStringExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -1062,10 +1178,10 @@ class DelvenASTVisitor extends DelvenVisitor {
             }
         }
 
-        let lhs: Node.Expression
         const identifierExpressionContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierExpressionContext)
         const iVariableDeclarationListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.VariableDeclarationListContext)
 
+        let lhs: Node.Expression
         if (identifierExpressionContext) {
             lhs = this.coerceToExpressionOrSequence(this.singleExpression(identifierExpressionContext))
         } else if (iVariableDeclarationListContext) {
@@ -1289,21 +1405,26 @@ class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
+     * Visit a parse tree produced by ECMAScriptParser#labelledStatement. 
      * 
+     * ```
      * labelledStatement
      *   : identifier ':' statement
-     *   ; 
+     *   ;
+     * ``` 
      */
     visitLabelledStatement(ctx: RuleContext): Node.LabeledStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.LabelledStatementContext)
         const identifier = this.visitIdentifier(ctx.getChild(0))
         const statement = this.visitStatement(ctx.getChild(2))
+
         return new Node.LabeledStatement(identifier, statement)
     }
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#throwStatement.
+     * 
      * ```
      * throwStatement
      *   : Throw {this.notLineTerminator()}? expressionSequence eos
@@ -2085,120 +2206,6 @@ class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     * Evaluate a singleExpression
-     * Currently singleExpression is called from both Statements and Expressions which causes problems for 
-     * distinguishing function declaration from function expressions 
-     * 
-     * @param node 
-     * @param isStatement 
-     */
-    singleExpression(node: RuleContext): Node.Expression {
-
-        if (node instanceof ECMAScriptParser.LiteralExpressionContext) {
-            return this.visitLiteralExpression(node)
-        } else if (node instanceof ECMAScriptParser.ObjectLiteralExpressionContext) {
-            return this.visitObjectLiteralExpression(node)
-        } else if (node instanceof ECMAScriptParser.AssignmentExpressionContext) {
-            return this.visitAssignmentExpression(node)
-        } else if (node instanceof ECMAScriptParser.AdditiveExpressionContext) {
-            return this.visitAdditiveExpression(node)
-        } else if (node instanceof ECMAScriptParser.MultiplicativeExpressionContext) {
-            return this.visitMultiplicativeExpression(node)
-        } else if (node instanceof ECMAScriptParser.ArrayLiteralExpressionContext) {
-            return this.visitArrayLiteralExpression(node)
-        } else if (node instanceof ECMAScriptParser.EqualityExpressionContext) {
-            return this.visitEqualityExpression(node)
-        } else if (node instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
-            return this.visitParenthesizedExpression(node)
-        } else if (node instanceof ECMAScriptParser.RelationalExpressionContext) {
-            return this.visitRelationalExpression(node)
-        } else if (node instanceof ECMAScriptParser.IdentifierExpressionContext) {
-            return this.visitIdentifierExpression(node)
-        } else if (node instanceof ECMAScriptParser.MemberNewExpressionContext) {
-            return this.visitMemberNewExpression(node)
-        } else if (node instanceof ECMAScriptParser.MemberDotExpressionContext) {
-            return this.visitMemberDotExpression(node)
-        } else if (node instanceof ECMAScriptParser.MemberIndexExpressionContext) {
-            return this.visitMemberIndexExpression(node)
-        } else if (node instanceof ECMAScriptParser.AssignmentOperatorExpressionContext) {
-            return this.visitAssignmentOperatorExpression(node)
-        } else if (node instanceof ECMAScriptParser.FunctionExpressionContext) {
-            return this.visitFunctionExpression(node)
-        } else if (node instanceof ECMAScriptParser.NewExpressionContext) {
-            return this.visitNewExpression(node)
-        } else if (node instanceof ECMAScriptParser.ArgumentsExpressionContext) {
-            return this.visitArgumentsExpression(node)
-        } else if (node instanceof ECMAScriptParser.MetaExpressionContext) {
-            return this.visitMetaExpression(node)
-        } else if (node instanceof ECMAScriptParser.VoidExpressionContext) {
-            return this.visitVoidExpression(node)
-        } else if (node instanceof ECMAScriptParser.PostIncrementExpressionContext) {
-            return this.visitPostIncrementExpression(node)
-        } else if (node instanceof ECMAScriptParser.PreIncrementExpressionContext) {
-            return this.visitPreIncrementExpression(node)
-        } else if (node instanceof ECMAScriptParser.PreDecreaseExpressionContext) {
-            return this.visitPreDecreaseExpression(node)
-        } else if (node instanceof ECMAScriptParser.PostDecreaseExpressionContext) {
-            return this.visitPostDecreaseExpression(node)
-        } else if (node instanceof ECMAScriptParser.ThisExpressionContext) {
-            return this.visitThisExpression(node)
-        } else if (node instanceof ECMAScriptParser.ClassExpressionContext) {
-            return this.visitClassExpression(node)
-        } else if (node instanceof ECMAScriptParser.LogicalAndExpressionContext) {
-            return this.visitLogicalAndExpression(node)
-        } else if (node instanceof ECMAScriptParser.LogicalOrExpressionContext) {
-            return this.visitLogicalOrExpression(node)
-        } else if (node instanceof ECMAScriptParser.InExpressionContext) {
-            return this.visitInExpression(node)
-        } else if (node instanceof ECMAScriptParser.IdentifierContext) {
-            return this.visitIdentifier(node)
-        } else if (node instanceof ECMAScriptParser.PowerExpressionContext) {
-            return this.visitPowerExpression(node)
-        } else if (node instanceof ECMAScriptParser.DeleteExpressionContext) {
-            return this.visitDeleteExpression(node)
-        } else if (node instanceof ECMAScriptParser.UnaryPlusExpressionContext) {
-            return this.visitUnaryPlusExpression(node)
-        } else if (node instanceof ECMAScriptParser.UnaryMinusExpressionContext) {
-            return this.visitUnaryMinusExpression(node)
-        } else if (node instanceof ECMAScriptParser.BitNotExpressionContext) {
-            return this.visitBitNotExpression(node)
-        } else if (node instanceof ECMAScriptParser.NotExpressionContext) {
-            return this.visitNotExpression(node)
-        } else if (node instanceof ECMAScriptParser.CoalesceExpressionContext) {
-            return this.visitCoalesceExpression(node)
-        } else if (node instanceof ECMAScriptParser.BitShiftExpressionContext) {
-            return this.visitBitShiftExpression(node)
-        } else if (node instanceof ECMAScriptParser.BitXOrExpressionContext) {
-            return this.visitBitXOrExpression(node)
-        } else if (node instanceof ECMAScriptParser.BitAndExpressionContext) {
-            return this.visitBitAndExpression(node)
-        } else if (node instanceof ECMAScriptParser.BitOrExpressionContext) {
-            return this.visitBitOrExpression(node)
-        } else if (node instanceof ECMAScriptParser.AwaitExpressionContext) {
-            return this.visitAwaitExpression(node)
-        } else if (node instanceof ECMAScriptParser.InstanceofExpressionContext) {
-            return this.visitInstanceofExpression(node)
-        } else if (node instanceof ECMAScriptParser.TypeofExpressionContext) {
-            return this.visitTypeofExpression(node)
-        } else if (node instanceof ECMAScriptParser.TernaryExpressionContext) {
-            return this.visitTernaryExpression(node)
-        } else if (node instanceof ECMAScriptParser.SuperExpressionContext) {
-            return this.visitSuperExpression(node)
-        } else if (node instanceof ECMAScriptParser.InlinedQueryExpressionContext) {
-            return this.visitInlinedQueryExpression(node)
-        } else if (node instanceof ECMAScriptParser.YieldExpressionContext) {
-            return this.visitYieldExpression(node)
-        } else if (node instanceof ECMAScriptParser.ImportExpressionContext) {
-            return this.visitImportExpression(node)
-        } else if (node instanceof ECMAScriptParser.TemplateStringExpressionContext) {
-            return this.visitTemplateStringExpression(node)
-        }
-
-        this.throwInsanceError(this.dumpContext(node))
-    }
-
-    /**
-     * 
      * Example :
      * ```
      * async ()=> await 1
@@ -2217,6 +2224,10 @@ class DelvenASTVisitor extends DelvenVisitor {
         return new Node.AwaitExpression(epression)
     }
 
+    /**
+     * 
+     * @param ctx 
+     */
     visitSuperExpression(ctx: RuleContext): Node.Super {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.SuperExpressionContext)
@@ -2240,7 +2251,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         return new Node.MetaProperty(new Node.Identifier('new'), identifier)
     }
 
-    /***
+    /**
      * Visit a parse tree produced by ECMAScriptParser#classDeclaration.
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/class
      * 
@@ -2303,7 +2314,7 @@ class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx 
      */
-    visitClassElement(ctx: RuleContext): Node.MethodDefinition | Node.EmptyStatement | Node.ClassPrivateProperty | Node.ClassProperty {
+    visitClassElement(ctx: RuleContext): ClassElement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ClassElementContext)
 
@@ -3087,7 +3098,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         return new Node.UnaryExpression("delete", argument)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
+     * 
+     * @param ctx 
+     */
     visitEqualityExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.EqualityExpressionContext)
@@ -3096,7 +3111,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this._binaryExpression(ctx)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#BitXOrExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#BitXOrExpression.
+     * 
+     * @param ctx 
+     */
     visitBitXOrExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BitXOrExpressionContext)
@@ -3105,7 +3124,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this._binaryExpression(ctx)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
+     * 
+     * @param ctx 
+     */
     visitBitAndExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BitAndExpressionContext)
@@ -3114,7 +3137,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this._binaryExpression(ctx)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
+     * 
+     * @param ctx 
+     */
     visitBitOrExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BitOrExpressionContext)
@@ -3122,7 +3149,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this._binaryExpression(ctx)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#MultiplicativeExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#MultiplicativeExpression.
+     * 
+     * @param ctx 
+     */
     visitMultiplicativeExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.MultiplicativeExpressionContext)
@@ -3131,7 +3162,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this._binaryExpression(ctx)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#BitShiftExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#BitShiftExpression.
+     * 
+     * @param ctx 
+     */
     visitBitShiftExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BitShiftExpressionContext)
@@ -3141,12 +3176,12 @@ class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     * sequences that have only one node will be pulled up to `Node.Expression`
+     * Coerce SequenceExpression that have only one node will be pulled up to `Node.Expression`
      * complaince(esprima) 
      * 
      * @param sequence 
      */
-    private coerceToExpressionOrSequence(sequence: Node.SequenceExpression): Node.Expression {
+    private coerceToExpressionOrSequence(sequence: Node.SequenceExpression): Node.SequenceExpression | Node.Expression {
         if (sequence.expressions) {
             if (sequence.expressions.length == 1) {
                 return sequence.expressions[0]
@@ -3172,7 +3207,11 @@ class DelvenASTVisitor extends DelvenVisitor {
     }
 
 
-    // Visit a parse tree produced by ECMAScriptParser#AdditiveExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#AdditiveExpression.
+     * 
+     * @param ctx 
+     */
     visitAdditiveExpression(ctx: RuleContext): Node.BinaryExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.AdditiveExpressionContext)
@@ -3180,7 +3219,12 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this._binaryExpression(ctx)
     }
 
-    _visitBinaryExpression(ctx: RuleContext) {
+    /**
+     * Visit binary expression
+     * 
+     * @param ctx 
+     */
+    private _visitBinaryExpression(ctx: RuleContext): Node.Expression {
 
         if (ctx instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
             return this.visitParenthesizedExpression(ctx)
@@ -3237,7 +3281,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         this.throwInsanceError(this.dumpContext(ctx))
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#RelationalExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#RelationalExpression.
+     * 
+     * @param ctx 
+     */
     visitRelationalExpression(ctx: RuleContext): Node.BinaryExpression {
         this.assertType(ctx, ECMAScriptParser.RelationalExpressionContext)
         this.assertNodeCount(ctx, 3)
@@ -3256,7 +3304,10 @@ class DelvenASTVisitor extends DelvenVisitor {
         return new UpdateExpression(operator, argument, prefix)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#PostIncrementExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#PostIncrementExpression.
+     * @param ctx 
+     */
     visitPostIncrementExpression(ctx: RuleContext): Node.UpdateExpression {
         this.assertType(ctx, ECMAScriptParser.PostIncrementExpressionContext)
         this.assertNodeCount(ctx, 2)
@@ -3264,21 +3315,33 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this.getUpdateExpression(ctx, false)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#PreIncrementExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#PreIncrementExpression.
+     * 
+     * @param ctx 
+     */
     visitPreIncrementExpression(ctx: RuleContext): Node.UpdateExpression {
         this.assertType(ctx, ECMAScriptParser.PreIncrementExpressionContext)
         this.assertNodeCount(ctx, 2)
         return this.getUpdateExpression(ctx, true)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#PreDecreaseExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#PreDecreaseExpression.
+     * 
+     * @param ctx 
+     */
     visitPreDecreaseExpression(ctx: RuleContext): Node.UpdateExpression {
         this.assertType(ctx, ECMAScriptParser.PreDecreaseExpressionContext)
         this.assertNodeCount(ctx, 2)
         return this.getUpdateExpression(ctx, true)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#PostDecreaseExpression.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#PostDecreaseExpression.
+     * 
+     * @param ctx 
+     */
     visitPostDecreaseExpression(ctx: RuleContext): Node.UpdateExpression {
         this.assertType(ctx, ECMAScriptParser.PostDecreaseExpressionContext)
         this.assertNodeCount(ctx, 2)
@@ -3472,6 +3535,7 @@ class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#identifier.
+     * 
      * @ref https://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
      * @param ctx 
      */
@@ -3586,7 +3650,11 @@ class DelvenASTVisitor extends DelvenVisitor {
         this.throwInsanceError(this.dumpContext(node))
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#numericLiteral.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#numericLiteral.
+     * 
+     * @param ctx 
+     */
     visitNumericLiteral(ctx: RuleContext): Node.Literal {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.NumericLiteralContext)
@@ -3607,7 +3675,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         const raw = txt;
         const pattern = txt.substring(txt.indexOf('/') + 1, txt.lastIndexOf('/'))
         const flags = txt.substring(txt.lastIndexOf('/') + 1)
-        
+
         return new RegexLiteral(new RegExp("", ""), raw, pattern, flags)
     }
 
@@ -3679,10 +3747,10 @@ class DelvenASTVisitor extends DelvenVisitor {
         const tag = this.singleExpression(ctx.singleExpression())
         this.dumpContextAllChildren(ctx)
         const quasi = this.createTemplateLiteral(ctx.getChild(1))
-        
+
         return new Node.TaggedTemplateExpression(tag, quasi)
     }
- 
+
     /**
      * Visit a parse tree produced by ECMAScriptParser#identifierName.
      * 
@@ -3697,13 +3765,21 @@ class DelvenASTVisitor extends DelvenVisitor {
         return this.decorate(identifier, this.asMarker(this.asMetadata(ctx.getSourceInterval())))
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#reservedWord.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#reservedWord.
+     * 
+     * @param ctx 
+     */
     visitReservedWord(ctx: RuleContext) {
         this.log(ctx, Trace.frame())
         throw new Error('Not implemented')
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#keyword.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#keyword.
+     * 
+     * @param ctx 
+     */
     visitKeyword(ctx: RuleContext) {
         this.log(ctx, Trace.frame())
         throw new Error('Not implemented')
@@ -3777,17 +3853,25 @@ class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     *  Check if current context has computed property
+     * Check if current context has computed property
      * 
-     * @param ctx
+     * @param propertyNameCtx
      */
     hasComputedProperty(propertyNameCtx: RuleContext): boolean {
         const propertyNameContext = this.getTypedRuleContext(propertyNameCtx, ECMAScriptParser.PropertyNameContext)
         return propertyNameContext ? this.isComputedProperty(propertyNameContext) : false
     }
 
-
-    // Visit a parse tree produced by ECMAScriptParser#setter.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#setter.
+     * 
+     * ```
+     * setter
+     *  : {this.n("set")}? identifier propertyName
+     *  ;
+     * ```
+     * @param ctx 
+     */
     visitSetter(ctx: RuleContext): { computed: boolean, key: Node.PropertyKey } {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.SetterContext)
