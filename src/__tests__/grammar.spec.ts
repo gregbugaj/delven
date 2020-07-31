@@ -50,8 +50,8 @@ function discover(expectType: TestType): TestCase[] {
         }
     }
 
-    // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
-    return cases
+    return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
+    // return cases
 }
 
 const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);

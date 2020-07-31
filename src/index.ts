@@ -53,10 +53,11 @@ const codezz = `
     // y?.test()
     // const code =  "let x = tag`A ${1+2} B + C${b}D`"
 
+    // ({x, ...y} = {x, ...y})
     const code = `
-    (async function() {
-
-     })();
+    let k =   {
+        break: !!opts.shouldBreak
+      };
     `
 
     // antlr.ArrowFunctions[ExpressionBodies]

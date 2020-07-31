@@ -281,7 +281,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.TemplateLiteral: {
                 this.visitTemplateLiteral(expression as Node.TemplateLiteral)
                 break
-            }case Syntax.TaggedTemplateExpression: {
+            } case Syntax.TaggedTemplateExpression: {
                 this.visitTaggedTemplateExpression(expression as Node.TaggedTemplateExpression)
                 break
             }
@@ -435,7 +435,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitForOfStatement(statement: Node.ForOfStatement) {
         this.write('for', false, false)
-        this.writeConditional(statement.await,' await ', false, false)
+        this.writeConditional(statement.await, ' await ', false, false)
         this.write('(', false, false)
         this.visitExpression(statement.left)
         this.write(' of ', false, false)
@@ -1043,12 +1043,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             case Syntax.AssignmentPattern: {
                 this.visitAssignmentPattern(value as Node.AssignmentPattern)
                 break
-            } case Syntax.FunctionExpression: {
-                this.visitFunctionExpression(value as Node.FunctionExpression)
-                break
-            } case Syntax.ArrowFunctionExpression: {
-                this.visitArrowFunctionExpression(value as Node.ArrowFunctionExpression)
-                break
             } case Syntax.Literal: {
                 this.visitLiteral(value as Node.Literal)
                 break
@@ -1062,9 +1056,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                 this.visitObjectPattern(value as Node.ObjectPattern)
                 break
             }
+            case Syntax.FunctionExpression:
+            case Syntax.ArrowFunctionExpression:
             case Syntax.ObjectExpression:
             case Syntax.ArrayExpression:
-            case Syntax.BinaryExpression: {
+            case Syntax.BinaryExpression:
+            case Syntax.UnaryExpression: {
                 this.visitExpression(value)
                 break
             } default:
