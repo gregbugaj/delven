@@ -54,11 +54,9 @@ const codezz = `
     // const code =  "let x = tag`A ${1+2} B + C${b}D`"
 
     const code = `
-    
-    for await (let num of asyncIterable) {
-        console.log(num);
-      }
+    (async function() {
 
+     })();
     `
 
     // antlr.ArrowFunctions[ExpressionBodies]

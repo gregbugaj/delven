@@ -2451,18 +2451,22 @@ class DelvenASTVisitor extends DelvenVisitor {
         }
     }
     /**
-     * Check for specific token type presence
+     * Check for specific token type present
+     * 
      * @param ctx 
      * @param tokenType 
      */
-    hasToken(ctx: antlr4.ParserRuleContext, tokenType: number): boolean {
+    hasToken(ctx: RuleContext, tokenType: number): boolean {
+        if(ctx == null){
+            return false
+        }
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             const n = ctx.getChild(i)
             if (n.symbol && tokenType === n.symbol.type) {
-                return true;
+                return true
             }
         }
-        return false;
+        return false
     }
 
     /**
@@ -2715,7 +2719,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         const callee = this.singleExpression(ctx.singleExpression())
         const args: Node.ArgumentListElement[] = arg ? this.visitArguments(arg) : [];
         const dot = this.getTypedRuleContext(ctx, ECMAScriptParser.MemberDotExpressionContext)
-        const isOptional = this.hasToken(dot, ECMAScriptParser.QuestionMark)
+         const isOptional = this.hasToken(dot, ECMAScriptParser.QuestionMark)
 
         return isOptional ? new Node.OptionalCallExpression(callee, args) : new Node.CallExpression(callee, args)
     }
