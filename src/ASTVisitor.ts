@@ -360,4 +360,10 @@ export default abstract class ASTVisitor {
      * @param statement 
      */
     abstract visitDebuggerStatement(statement: Node.DebuggerStatement): void
+
+    /**
+     * 
+     * @param expression 
+     */
+    abstract visitTaggedTemplateExpression(expression: Node.TaggedTemplateExpression): void
 }

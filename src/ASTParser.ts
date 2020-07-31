@@ -2190,6 +2190,8 @@ class DelvenASTVisitor extends DelvenVisitor {
             return this.visitYieldExpression(node)
         } else if (node instanceof ECMAScriptParser.ImportExpressionContext) {
             return this.visitImportExpression(node)
+        } else if (node instanceof ECMAScriptParser.TemplateStringExpressionContext) {
+            return this.visitTemplateStringExpression(node)
         }
 
         this.throwInsanceError(this.dumpContext(node))
@@ -3605,6 +3607,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         const raw = txt;
         const pattern = txt.substring(txt.indexOf('/') + 1, txt.lastIndexOf('/'))
         const flags = txt.substring(txt.lastIndexOf('/') + 1)
+        
         return new RegexLiteral(new RegExp("", ""), raw, pattern, flags)
     }
 
@@ -3657,6 +3660,29 @@ class DelvenASTVisitor extends DelvenVisitor {
         return new Node.TemplateLiteral(quasis, expressions)
     }
 
+    /**
+     * Template string expression
+     * Usage 
+     * ```
+     *  const code =  "let x = tag`A ${1+2} B + C${b}D`"
+     * ```
+     * 
+     * Grammar
+     * ```
+     * singleExpression TemplateStringLiteral
+     * ```
+     * @param ctx 
+     */
+    visitTemplateStringExpression(ctx: RuleContext): Node.TaggedTemplateExpression {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.TemplateStringExpressionContext)
+        const tag = this.singleExpression(ctx.singleExpression())
+        this.dumpContextAllChildren(ctx)
+        const quasi = this.createTemplateLiteral(ctx.getChild(1))
+        
+        return new Node.TaggedTemplateExpression(tag, quasi)
+    }
+ 
     /**
      * Visit a parse tree produced by ECMAScriptParser#identifierName.
      * 

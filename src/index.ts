@@ -51,7 +51,7 @@ const codezz = `
     // x = y?.z 
     // x = y()?.test
     // y?.test()
-    const code =  "let x = `A ${1+2} B + C${b}D`"
+    const code =  "let x = tag`A ${1+2} B + C${b}D`"
 
     // antlr.ArrowFunctions[ExpressionBodies]
    

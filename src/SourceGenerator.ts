@@ -182,6 +182,120 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
 
+
+    visitExpression(expression: Node.Expression): void {
+        switch (expression.type) {
+            case Syntax.SequenceExpression: {
+                this.visitSequenceExpression(expression as Node.SequenceExpression)
+                break
+            } case Syntax.Literal: {
+                this.visitLiteral(expression as Node.Literal)
+                break
+            } case Syntax.Identifier: {
+                this.visitIdentifier(expression as Node.Identifier)
+                break
+            } case Syntax.SpreadElement: {
+                this.vistSpreadElement(expression as Node.SpreadElement)
+                break
+            } case Syntax.AssignmentExpression: {
+                this.visitAssignmentExpression(expression as Node.AssignmentExpression)
+                break
+            } case Syntax.ObjectExpression: {
+                this.visitObjectExpression(expression as Node.ObjectExpression)
+                break
+            } case Syntax.ArrayExpression: {
+                this.visitArrayExpression(expression as Node.ArrayExpression)
+                break
+            } case Syntax.BinaryExpression: {
+                this.visitBinaryExpression(expression as Node.BinaryExpression)
+                break
+            } case Syntax.LogicalExpression: {
+                this.visitLogicalExpression(expression as Node.BinaryExpression)
+                break
+            } case Syntax.ClassExpression: {
+                this.visitClassExpression(expression as Node.ClassExpression)
+                break
+            } case Syntax.ArrowFunctionExpression: {
+                this.visitArrowFunctionExpression(expression as Node.ArrowFunctionExpression)
+                break
+            } case Syntax.FunctionExpression: {
+                this.visitFunctionExpression(expression as Node.FunctionExpression)
+                break
+            } case Syntax.CallExpression: {
+                this.visitCallExpression(expression as Node.CallExpression)
+                break
+            } case Syntax.OptionalCallExpression: {
+                this.visitOptionalCallExpression(expression as Node.OptionalCallExpression)
+                break
+            } case Syntax.MemberExpression: {
+                this.visitMemberExpression(expression as Node.StaticMemberExpression | Node.ComputedMemberExpression)
+                break
+            } case Syntax.ThisExpression: {
+                this.visitThisExpression(expression as Node.ThisExpression)
+                break
+            } case Syntax.UpdateExpression: {
+                this.visitUpdateExpression(expression as Node.UpdateExpression)
+                break
+            } case Syntax.UnaryExpression: {
+                this.visitUnaryExpression(expression as Node.UnaryExpression)
+                break
+            } case Syntax.NewExpression: {
+                this.visitNewExpression(expression as Node.NewExpression)
+                break
+            } case Syntax.VariableDeclaration: {
+                this.visitVariableDeclaration(expression as Node.VariableDeclaration)
+                break
+            } case Syntax.Property: {
+                this.visitProperty(expression as Node.Property)
+                break
+            } case Syntax.ArrayPattern: {
+                this.visitArrayPattern(expression as Node.ArrayPattern)
+                break
+            } case Syntax.ObjectPattern: {
+                this.visitObjectPattern(expression as Node.ObjectPattern)
+                break
+            } case Syntax.AwaitExpression: {
+                this.visitAwaitExpression(expression as Node.AwaitExpression)
+                break
+            } case Syntax.ConditionalExpression: {
+                this.visitConditionalExpression(expression as Node.ConditionalExpression)
+                break
+            } case Syntax.AssignmentPattern: {
+                this.visitAssignmentPattern(expression as Node.AssignmentPattern)
+                break
+            } case Syntax.Super: {
+                this.visitSuper(expression as Node.Super)
+                break
+            } case Syntax.RestElement: {
+                this.vistiRestElement(expression as Node.RestElement)
+                break
+            } case Syntax.YieldExpression: {
+                this.visitYieldExpression(expression as Node.YieldExpression)
+                break
+            } case Syntax.MetaProperty: {
+                this.visitMetaProperty(expression as Node.MetaProperty)
+                break
+            } case Syntax.OptionalMemberExpression: {
+                this.visitOptionalMemberExpression(expression as Node.OptionalMemberExpression)
+                break
+            } case Syntax.TemplateLiteral: {
+                this.visitTemplateLiteral(expression as Node.TemplateLiteral)
+                break
+            }case Syntax.TaggedTemplateExpression: {
+                this.visitTaggedTemplateExpression(expression as Node.TaggedTemplateExpression)
+                break
+            }
+            default:
+                throw new TypeError("Type not handled : " + expression.type)
+        }
+    }
+
+    visitTaggedTemplateExpression(expression: Node.TaggedTemplateExpression): void {
+        this.assertNotNull(expression)
+        this.visitExpression(expression.tag)
+        this.visitTemplateLiteral(expression.quasi)
+    }
+
     visitDebuggerStatement(statement: Node.DebuggerStatement): void {
         this.assertNotNull(statement)
         this.write('debugger ', false, false)
@@ -641,109 +755,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         }
     }
 
-    visitExpression(expression: Node.Expression): void {
-        switch (expression.type) {
-            case Syntax.SequenceExpression: {
-                this.visitSequenceExpression(expression as Node.SequenceExpression)
-                break
-            } case Syntax.Literal: {
-                this.visitLiteral(expression as Node.Literal)
-                break
-            } case Syntax.Identifier: {
-                this.visitIdentifier(expression as Node.Identifier)
-                break
-            } case Syntax.SpreadElement: {
-                this.vistSpreadElement(expression as Node.SpreadElement)
-                break
-            } case Syntax.AssignmentExpression: {
-                this.visitAssignmentExpression(expression as Node.AssignmentExpression)
-                break
-            } case Syntax.ObjectExpression: {
-                this.visitObjectExpression(expression as Node.ObjectExpression)
-                break
-            } case Syntax.ArrayExpression: {
-                this.visitArrayExpression(expression as Node.ArrayExpression)
-                break
-            } case Syntax.BinaryExpression: {
-                this.visitBinaryExpression(expression as Node.BinaryExpression)
-                break
-            } case Syntax.LogicalExpression: {
-                this.visitLogicalExpression(expression as Node.BinaryExpression)
-                break
-            } case Syntax.ClassExpression: {
-                this.visitClassExpression(expression as Node.ClassExpression)
-                break
-            } case Syntax.ArrowFunctionExpression: {
-                this.visitArrowFunctionExpression(expression as Node.ArrowFunctionExpression)
-                break
-            } case Syntax.FunctionExpression: {
-                this.visitFunctionExpression(expression as Node.FunctionExpression)
-                break
-            } case Syntax.CallExpression: {
-                this.visitCallExpression(expression as Node.CallExpression)
-                break
-            } case Syntax.OptionalCallExpression: {
-                this.visitOptionalCallExpression(expression as Node.OptionalCallExpression)
-                break
-            } case Syntax.MemberExpression: {
-                this.visitMemberExpression(expression as Node.StaticMemberExpression | Node.ComputedMemberExpression)
-                break
-            } case Syntax.ThisExpression: {
-                this.visitThisExpression(expression as Node.ThisExpression)
-                break
-            } case Syntax.UpdateExpression: {
-                this.visitUpdateExpression(expression as Node.UpdateExpression)
-                break
-            } case Syntax.UnaryExpression: {
-                this.visitUnaryExpression(expression as Node.UnaryExpression)
-                break
-            } case Syntax.NewExpression: {
-                this.visitNewExpression(expression as Node.NewExpression)
-                break
-            } case Syntax.VariableDeclaration: {
-                this.visitVariableDeclaration(expression as Node.VariableDeclaration)
-                break
-            } case Syntax.Property: {
-                this.visitProperty(expression as Node.Property)
-                break
-            } case Syntax.ArrayPattern: {
-                this.visitArrayPattern(expression as Node.ArrayPattern)
-                break
-            } case Syntax.ObjectPattern: {
-                this.visitObjectPattern(expression as Node.ObjectPattern)
-                break
-            } case Syntax.AwaitExpression: {
-                this.visitAwaitExpression(expression as Node.AwaitExpression)
-                break
-            } case Syntax.ConditionalExpression: {
-                this.visitConditionalExpression(expression as Node.ConditionalExpression)
-                break
-            } case Syntax.AssignmentPattern: {
-                this.visitAssignmentPattern(expression as Node.AssignmentPattern)
-                break
-            } case Syntax.Super: {
-                this.visitSuper(expression as Node.Super)
-                break
-            } case Syntax.RestElement: {
-                this.vistiRestElement(expression as Node.RestElement)
-                break
-            } case Syntax.YieldExpression: {
-                this.visitYieldExpression(expression as Node.YieldExpression)
-                break
-            } case Syntax.MetaProperty: {
-                this.visitMetaProperty(expression as Node.MetaProperty)
-                break
-            } case Syntax.OptionalMemberExpression: {
-                this.visitOptionalMemberExpression(expression as Node.OptionalMemberExpression)
-                break
-            } case Syntax.TemplateLiteral: {
-                this.visitTemplateLiteral(expression as Node.TemplateLiteral)
-                break
-            }
-            default:
-                throw new TypeError("Type not handled : " + expression.type)
-        }
-    }
 
     visitTemplateLiteral(template: Node.TemplateLiteral): void {
         if (template.quasis.length === 0) {
