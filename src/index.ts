@@ -3,7 +3,6 @@ import SourceGenerator from "./SourceGenerator";
 import Utils from './util'
 import * as fs from "fs"
 import { resolve } from "path"
-import fetch from 'node-fetch'
 
 async function main() {
     /*

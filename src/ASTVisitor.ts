@@ -349,10 +349,15 @@ export default abstract class ASTVisitor {
      */
     abstract visitOptionalCallExpression(expression: Node.OptionalCallExpression): void
 
-
     /**
      * 
      * @param template 
      */
     abstract visitTemplateLiteral(template: Node.TemplateLiteral): void
+
+    /**
+     * 
+     * @param statement 
+     */
+    abstract visitDebuggerStatement(statement: Node.DebuggerStatement): void
 }

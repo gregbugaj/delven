@@ -6,12 +6,17 @@ import { isNullOrUndefined } from "util";
 /**
  * Source generator to transform valid AST back into ECMAScript
  * JS does not support overloading, so the visit methods need different names.
+ * 
+ * Usage
+ * 
+ * ```
+ *  const generator = new SourceGenerator();
+ *  const script = generator.toSource(ast);
+ *  console.info('-------')
+ *  console.info(script)
+ * ```
  */
 export default class SourceGenerator {
-
-    constructor() {
-        // 
-    }
 
     /**
      * Convert ASTNode back into sourcecode representation
@@ -165,12 +170,21 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             } case Syntax.SelectStatement: {
                 this.visitSelectStatement(statement as Node.SelectStatement)
                 break
+            } case Syntax.DebuggerStatement: {
+                this.visitDebuggerStatement(statement as Node.DebuggerStatement)
+                break
             }
             default:
                 throw new TypeError("Type not handled : " + statement.type)
         }
 
         this.write('\n', false, false)
+    }
+
+
+    visitDebuggerStatement(statement: Node.DebuggerStatement): void {
+        this.assertNotNull(statement)
+        this.write('debugger ', false, false)
     }
 
     visitContinueStatement(statement: Node.ContinueStatement): void {
