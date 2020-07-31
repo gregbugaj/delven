@@ -423,11 +423,14 @@ export class ForOfStatement {
     readonly left: Expression;
     readonly right: Expression;
     readonly body: Statement;
-    constructor(left: Expression, right: Expression, body: Statement) {
+    readonly await:boolean;
+    
+    constructor(left: Expression, right: Expression, body: Statement, await:boolean) {
         this.type = Syntax.ForOfStatement;
         this.left = left;
         this.right = right;
         this.body = body;
+        this.await = await
     }
 }
 

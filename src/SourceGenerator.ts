@@ -435,6 +435,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitForOfStatement(statement: Node.ForOfStatement) {
         this.write('for', false, false)
+        this.writeConditional(statement.await,' await ', false, false)
         this.write('(', false, false)
         this.visitExpression(statement.left)
         this.write(' of ', false, false)

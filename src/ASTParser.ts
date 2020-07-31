@@ -1156,7 +1156,15 @@ class DelvenASTVisitor extends DelvenVisitor {
     }
 
     /**
-     * 
+     * Visit for statement
+     * Sample 
+     * ```
+     *  for await (let num of asyncIterable) {
+     *     console.log(num);
+     *  }
+     * ```
+
+     * Grammar
      * ```
      *    | For Await? '(' (singleExpression | variableDeclarationList) identifier{this.p("of")}? expressionSequence ')' statement  # ForOfStatement
      * ```
@@ -1167,17 +1175,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         this.assertType(ctx, ECMAScriptParser.ForOfStatementContext)
 
         // TODO : Implement await syntax
-        let await_ = false
-        for (let i = 0; i < ctx.getChildCount(); ++i) {
-            const node = ctx.getChild(i)
-            if (node.symbol) {
-                const txt = node.getText()
-                if (txt == 'await') {
-                    await_ = true
-                }
-            }
-        }
-
+        const await_ = this.hasToken(ctx, ECMAScriptParser.Await)
         const identifierExpressionContext = this.getTypedRuleContext(ctx, ECMAScriptParser.IdentifierExpressionContext)
         const iVariableDeclarationListContext = this.getTypedRuleContext(ctx, ECMAScriptParser.VariableDeclarationListContext)
 
@@ -1186,11 +1184,13 @@ class DelvenASTVisitor extends DelvenVisitor {
             lhs = this.coerceToExpressionOrSequence(this.singleExpression(identifierExpressionContext))
         } else if (iVariableDeclarationListContext) {
             lhs = this.visitVariableDeclarationList(iVariableDeclarationListContext)
+        } else {
+            throw new TypeError('')
         }
 
         const rhs: Node.Expression = this.coerceToExpressionOrSequence(this.visitExpressionSequence(ctx.expressionSequence()))
         const body: Node.Statement = this.visitStatement(ctx.statement())
-        return new Node.ForOfStatement(lhs, rhs, body)
+        return new Node.ForOfStatement(lhs, rhs, body, await_)
     }
 
     /**
