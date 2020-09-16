@@ -20,50 +20,74 @@ https://babeljs.io/docs/en/usage
  ./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts'  --source-maps inline
 ```
 
+
 ```
 npm init
 npm install -g typescript
 npm install --save-dev @babel/core
 npm install @babel/preset-env --save-dev
 npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/polyfill @babel/preset-typescript  @types/node @types/jest
-```
 
-npm install babel-preset-es2015  --save-dev 
+npm install --save-dev @babel/plugin-proposal-nullish-coalescing-operator
+npm install --save-dev @babel/plugin-proposal-class-properties
+npm install --save-dev @babel/plugin-proposal-class-properties
+```
 
 ## JEST Setup
 https://basarat.gitbook.io/typescript/intro-1/jest
 
 ```
 npm i jest @types/jest ts-jest -D
+```
 
+## Webpack setup
+
+https://webpack.js.org/guides/typescript/
+
+```js
+npm install -D babel-loader @babel/core @babel/preset-env webpack
+```
+
+```js
+npm install --save-dev ts-loader
 ```
 
 
 
-## Setup v2
+## Packaging for Distribution
 
+Create library using webpack
+
+```
+npm install --save-dev ts-loader
+npm run package
+```
+
+
+## Setup v2
 https://www.codementor.io/@michaelumanah/how-to-set-up-babel-7-and-nodemon-with-node-js-pbj7cietc
 
 ```
  npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/node
  npm install --save-dev nodemon
-
-
 ```
 
 
 ## Resources
+
 https://developer.chrome.com/extensions/webRequest
 https://developer.chrome.com/extensions/management
 https://github.com/babel/example-node-server
 
 
 ### Expression Trees
+
 https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/
 https://www.tutorialsteacher.com/linq/expression-tree
 
 
 ### USQL Optimzation 
+
 https://www.slideshare.net/MichaelRys/best-practices-and-performance-tuning-of-usql-in-azure-data-lake-sql-konferenz-2018
 
 Spark SQL Programming Guide

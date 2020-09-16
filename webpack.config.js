@@ -2,21 +2,25 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-    entry: './src/index.ts',
+    entry: path.resolve(__dirname, 'src/index.ts'),
     output: {
-        path: path.resolve(__dirname, './lib'),
-        filename: 'delven-transpiler.js'
+        path: path.resolve(__dirname, 'lib'),
+        filename: 'delven-transpiler.js',
+        library: '$',
+        libraryTarget: 'umd',
     },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /.js$/,
+                test: /\.ts$/,
+                loader: 'ts-loader',
                 exclude: /node_modules/,
-                loader: 'babel-loader',
-                query: {
-                    presets: ['es2015']
-                }
             }
         ]
-    }
+    },
+    resolve: {
+        extensions: ['.ts', '.js'],
+    },
+    mode: 'development',
+    devtool: 'sourceMap',
 };
