@@ -14,7 +14,8 @@
         "lint-fix": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
         "lint": " eslint \"**/*.{js,ts}\" --quiet ",
         "buildXXXX": "npm run build-ts && npm run lint ",
-        "package": "webpack --config babel.webpack.config.js"
+        "package": "webpack --config babel.webpack.config.js",
+        "types": "tsc -p tsconfig.build.types.json --outDir ./types"
     },
     "author": "Greg",
     "license": "ISC",

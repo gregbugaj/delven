@@ -82,14 +82,18 @@ const codezz = `
     const dir = resolve(__dirname, '../test/fixtures', ...["", ""])
 }
 
-(async () => {
-    await main()
-})().catch(err => {
-    console.error("error in main", err)
-})
+// (async () => {
+//     await main()
+// })().catch(err => {
+//     console.error("error in main", err)
+// })
 
 // Trick to prevent  > All files must be modules when the '--isolatedModules' flag is provided.ts(1208)
-export { } 
+export {
+
+    ASTParser,
+    SourceGenerator
+ } 
 
 
 
