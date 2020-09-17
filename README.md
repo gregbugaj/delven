@@ -1,7 +1,16 @@
 # delven-explorer
-
 Compiler / AST Explorer
 
+
+## Linking to local delven-transpiler
+
+```sh
+cd ./delven-transpiler 
+npm link 
+
+cd ./delven-explorer
+npm link ../delven-transpiler/lib
+```
 
 ## Setup Material UI
 
@@ -26,6 +35,7 @@ CodeMirror
 ```sh
 npm install @types/codemirror
 ```
+
 ## Router
 
 ```sh    
