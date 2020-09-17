@@ -1,4 +1,6 @@
-var path = require('path');
+const path = require('path');
+const CopyPlugin = require('copy-webpack-plugin');
+
 module.exports = {
     entry: path.resolve(__dirname, 'src/index.ts'),
     output: {
@@ -7,7 +9,7 @@ module.exports = {
         libraryTarget: 'umd2',
         library: "delven",
     },
-    
+
     module: {
         rules: [
             {
@@ -18,8 +20,18 @@ module.exports = {
                     presets: ["@babel/preset-env"]
                 }
             }
-        ]
+        ],
     },
+
+    plugins: [
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, 'npm-dist'),
+                }
+            ],
+        }),
+    ],
 
     resolve: {
         extensions: ['.ts', '.js'],
