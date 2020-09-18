@@ -93,3 +93,4 @@ You will also see any lint errors in the console.
 
 ## References
 [https://create-react-app.dev/docs/adding-typescript/]
+[https://gist.github.com/bennadel/e40ddc3b7b72f07c992c7b59de7c04b0#file-message-bus-events-ts]
