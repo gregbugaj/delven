@@ -36,7 +36,12 @@ import ModuleSelect from '../shared/select-modules';
 import BreadcrumModule from '../shared/breadcrumbs';
 
 import Editor from './Editor'
-import { Hidden } from "@material-ui/core";
+import FullWidthTabs from './TabbedMenu'
+
+// RxJS v6+
+import { interval } from 'rxjs';
+import { publish, tap } from 'rxjs/operators';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
@@ -195,6 +200,10 @@ function AstExplorerApplication() {
 
   return (
 
+    <Provider store={store}>
+
+    
+
     // style={{ height: 40, minHeight:40 }}
     <div className={classes.root}>
       <CssBaseline />
@@ -291,6 +300,8 @@ function AstExplorerApplication() {
           </ListItem>
         </List>
         <Divider />
+
+        <FullWidthTabs></FullWidthTabs>
       </Drawer>
 
       <main className={classes.content}>
@@ -305,9 +316,9 @@ function AstExplorerApplication() {
 
           </Container>  
       </main>
-        
-      
     </div>    
+
+    </Provider>
   );
 }
 

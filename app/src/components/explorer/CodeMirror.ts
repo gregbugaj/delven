@@ -5,7 +5,6 @@ import 'codemirror/theme/darcula.css';
 import 'codemirror/theme/monokai.css';
 
 import 'codemirror/mode/javascript/javascript';
-
 import '../../styles/_codemirror.css';
 
 export class CodeMirrorManager {
