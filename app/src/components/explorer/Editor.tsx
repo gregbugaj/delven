@@ -12,6 +12,11 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import { ASTParser, SourceGenerator } from "delven";
 
+
+import { EventTypes } from "../bus/message-bus-events";
+import { EventTypeSampleQuery } from "../bus/message-bus-events";
+import "../globalServices"
+
 const useStyles = makeStyles((theme) => ({
 
 }));
@@ -67,9 +72,9 @@ class Editor extends React.Component<EditorProps, IState> {
     let e2 = this.astEditor
     let observer = new MutationObserver(function (mutations) {
       if (targetNode?.style.display != 'none') {
-        if(targetNode.id == 'json-container')
+        if (targetNode.id == 'json-container')
           e1?.refresh()
-        else if(targetNode.id == 'json-container')
+        else if (targetNode.id == 'json-container')
           e2?.refresh()
       }
     });
@@ -92,6 +97,15 @@ class Editor extends React.Component<EditorProps, IState> {
 
     this.observeEditorChange(document.getElementById('json-container') as HTMLElement)
     this.observeEditorChange(document.getElementById('compiled-container') as HTMLElement)
+
+    // get message bus
+    let eventBus = globalThis.services.eventBus;
+    eventBus.on(
+      EventTypeSampleQuery,
+      (event): void => {
+        console.log("Event-EventTypeSampleQuery [on]:", event.payload);
+      }
+    )
   }
 
   evaluate() {

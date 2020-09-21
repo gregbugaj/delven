@@ -38,9 +38,11 @@ import BreadcrumModule from '../shared/breadcrumbs';
 import Editor from './Editor'
 import FullWidthTabs from './TabbedMenu'
 
-// RxJS v6+
-import { interval } from 'rxjs';
-import { publish, tap } from 'rxjs/operators';
+import { EventTypes } from "../bus/message-bus-events";
+import { EventTypeA, EventTypeB, EventTypeC, EventTypeSampleQuery  } from "../bus/message-bus-events";
+import { MessageBusGroup } from "../bus/message-bus";
+import { MessageBusService } from "../bus/message-bus";
+ 
 
 const drawerWidth = 240;
 
@@ -192,18 +194,16 @@ function AstExplorerApplication() {
     setOpen(false);
   };
 
-    const [openAdmin, setOpenAdmin] = React.useState(true);
+  const [openAdmin, setOpenAdmin] = React.useState(true);
 
-    const handleAdminClick = () => {
-        setOpenAdmin(!openAdmin);
-    };
+  const handleAdminClick = () => {
+      setOpenAdmin(!openAdmin);
+  };
+
 
   return (
 
-    <Provider store={store}>
-
-    
-
+    // style={{ height: 40, minHeight:40 }}
     // style={{ height: 40, minHeight:40 }}
     <div className={classes.root}>
       <CssBaseline />
@@ -318,7 +318,6 @@ function AstExplorerApplication() {
       </main>
     </div>    
 
-    </Provider>
   );
 }
 

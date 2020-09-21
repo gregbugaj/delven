@@ -14,10 +14,12 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 
-// RxJS v6+
-import { interval } from 'rxjs';
-import { publish, tap } from 'rxjs/operators';
 
+import { EventTypes } from "../bus/message-bus-events";
+import { EventTypeSampleQuery  } from "../bus/message-bus-events";
+import { MessageBusGroup } from "../bus/message-bus";
+import { MessageBusService } from "../bus/message-bus";
+import "../globalServices"
 
 interface RenderTree {
     id: string;
@@ -49,11 +51,12 @@ const data: RenderTree = {
 function RecursiveTreeView() {
     const classes = useStyles();
     const [val, setStateVal] = React.useState("");
+    const eventBus = globalThis.services.eventBus;
 
     const nodeClicked = (event: React.SyntheticEvent, node: RenderTree) => {
         event.preventDefault();
         console.info('Clicked node')
-        console.info(node)
+        eventBus.emit(new EventTypeSampleQuery({ name: node.name, id : node.id }));
     }
 
     const renderTree = (nodes: RenderTree) => (
