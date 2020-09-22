@@ -32,11 +32,7 @@ const getAllFilesJson = function (dirPath) {
     files.forEach(function (file) {
         const name = path.join(dirPath, "/", file);
         const hash = crypto.createHash('md5').update(name).digest('hex');
-        const data = {
-            name: file,
-            id: hash,
-            children: []
-        };
+        const data = { name: file, id: hash, children: [] };
 
         if (fs.statSync(name).isDirectory()) {
             data.children = getAllFilesJson(name);
@@ -47,15 +43,38 @@ const getAllFilesJson = function (dirPath) {
     return nodes;
 }
 
+
+const locateFileByHash = function (dirPath, predicateHash) {
+    const files = fs.readdirSync(dirPath);
+    for (let key in files) {
+        const name = path.join(dirPath, "/", files[key]);
+        const hash = crypto.createHash('md5').update(name).digest('hex');
+        if (hash == predicateHash) {
+            return name;
+        }
+        if (fs.statSync(name).isDirectory()) {
+            return locateFileByHash(name, predicateHash);
+        }
+    }
+    return null
+}
+
+
 app.get('/api/v1/samples', (req, res) => {
-    const samples = getAllFilesJson('sample-queries')
-    console.info(samples)
+    const samples = getAllFilesJson('sample-queries');
     res.send(JSON.stringify({ samples }));
 });
 
+
 app.get('/api/v1/samples/:id', (req, res) => {
-    const id = req.params.id;
-    res.send('Hash :' + id)
+    const hash = req.params.id;
+    const file = locateFileByHash('./sample-queries', hash);
+    if (file != null) {
+        const code = fs.readFileSync(file, "utf8")
+        res.send(code)
+    } else {
+        res.send('Unable to load hash : ' + hash)
+    }
 });
 
 const PORT = process.env.PORT || 8080;
