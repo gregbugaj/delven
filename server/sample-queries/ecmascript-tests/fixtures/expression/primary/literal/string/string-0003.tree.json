@@ -1,0 +1,18 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "Literal",
+                "value": "\\x61",
+                "raw": "\"\\x61\"",
+                "start": 0,
+                "end": 0
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

@@ -1,0 +1,41 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "AssignmentExpression",
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                },
+                "right": {
+                    "type": "ObjectExpression",
+                    "properties": [
+                        {
+                            "type": "SpreadElement",
+                            "argument": {
+                                "type": "Identifier",
+                                "name": "undefined"
+                            }
+                        },
+                        {
+                            "type": "SpreadElement",
+                            "argument": {
+                                "type": "Literal",
+                                "value": null,
+                                "raw": "null",
+                                "start": 0,
+                                "end": 0
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

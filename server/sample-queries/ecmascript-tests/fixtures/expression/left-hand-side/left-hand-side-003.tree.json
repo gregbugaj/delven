@@ -1,0 +1,23 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "NewExpression",
+                "callee": {
+                    "type": "NewExpression",
+                    "callee": {
+                        "type": "Identifier",
+                        "name": "foo"
+                    },
+                    "arguments": []
+                },
+                "arguments": []
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

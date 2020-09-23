@@ -1,0 +1,30 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "Identifier",
+                    "name": "f"
+                },
+                "arguments": [
+                    {
+                        "type": "SpreadElement",
+                        "argument": {
+                            "type": "Literal",
+                            "value": 0.5,
+                            "raw": ".5",
+                            "start": 0,
+                            "end": 0
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

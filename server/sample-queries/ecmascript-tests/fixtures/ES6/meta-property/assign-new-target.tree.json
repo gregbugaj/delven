@@ -1,0 +1,48 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "f"
+            },
+            "params": [],
+            "body": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "VariableDeclaration",
+                        "declarations": [
+                            {
+                                "type": "VariableDeclarator",
+                                "id": {
+                                    "type": "Identifier",
+                                    "name": "x"
+                                },
+                                "init": {
+                                    "type": "MetaProperty",
+                                    "meta": {
+                                        "type": "Identifier",
+                                        "name": "new"
+                                    },
+                                    "property": {
+                                        "type": "Identifier",
+                                        "name": "target"
+                                    }
+                                }
+                            }
+                        ],
+                        "kind": "let"
+                    }
+                ]
+            },
+            "generator": false,
+            "expression": false,
+            "async": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

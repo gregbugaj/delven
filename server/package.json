@@ -3,12 +3,14 @@
   "version": "2.0.0",
   "main": "index.js",
   "private": true,
-  "author": "Greg",  
-  "dependencies": {
-    "body-parser": "^1.15.2",
-    "express": "^4.14.0"
-  },
+  "author": "Greg",
+  "dependencies": {},
   "scripts": {
     "start": "STATIC=../out node index.js"
+  },
+  "devDependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.4"
   }
 }

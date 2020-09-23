@@ -5,7 +5,10 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const app = express();
+
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 
 // `next` is needed here to mark this as an error handler
 // eslint-disable-next-line no-unused-vars
@@ -30,14 +33,19 @@ const getAllFilesJson = function (dirPath) {
     const nodes = [];
 
     files.forEach(function (file) {
+
         const name = path.join(dirPath, "/", file);
         const hash = crypto.createHash('md5').update(name).digest('hex');
         const data = { name: file, id: hash, children: [] };
 
-        if (fs.statSync(name).isDirectory()) {
+        let isDir = fs.statSync(name).isDirectory()
+        if (isDir) {
             data.children = getAllFilesJson(name);
         }
-        nodes.push(data);
+
+        if(isDir || file.endsWith(".js")){
+            nodes.push(data);
+        }
     });
 
     return nodes;
@@ -46,34 +54,42 @@ const getAllFilesJson = function (dirPath) {
 
 const locateFileByHash = function (dirPath, predicateHash) {
     const files = fs.readdirSync(dirPath);
-    for (let key in files) {
+
+    for (const key in files) {
         const name = path.join(dirPath, "/", files[key]);
         const hash = crypto.createHash('md5').update(name).digest('hex');
         if (hash == predicateHash) {
             return name;
         }
+
         if (fs.statSync(name).isDirectory()) {
-            return locateFileByHash(name, predicateHash);
+            const target = locateFileByHash(name, predicateHash);
+            if (target != null)
+                return target;
         }
     }
     return null
 }
 
-
 app.get('/api/v1/samples', (req, res) => {
-    const samples = getAllFilesJson('sample-queries');
-    res.send(JSON.stringify({ samples }));
+    const samples = getAllFilesJson('./sample-queries');
+    res.send(JSON.stringify({ 'name': 'Root', 'id': '0000', children: samples }));
 });
 
 
 app.get('/api/v1/samples/:id', (req, res) => {
     const hash = req.params.id;
     const file = locateFileByHash('./sample-queries', hash);
+    console.info(`File = ${file}`)
     if (file != null) {
-        const code = fs.readFileSync(file, "utf8")
-        res.send(code)
+        if (fs.statSync(file).isDirectory()) {
+            res.send({ "staus": "ok", "code": "" })
+        } else {
+            const code = fs.readFileSync(file, "utf8")
+            res.send({ "staus": "ok", "code": code })
+        }
     } else {
-        res.send('Unable to load hash : ' + hash)
+        res.send({ "status": "errror", "msg": 'Unable to load hash : ' + hash })
     }
 });
 

@@ -1,0 +1,49 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "ArrayPattern",
+                        "elements": [
+                            {
+                                "type": "RestElement",
+                                "argument": {
+                                    "type": "ObjectPattern",
+                                    "properties": [
+                                        {
+                                            "type": "Property",
+                                            "key": {
+                                                "type": "Identifier",
+                                                "name": "x"
+                                            },
+                                            "computed": false,
+                                            "value": {
+                                                "type": "Identifier",
+                                                "name": "x"
+                                            },
+                                            "kind": "init",
+                                            "method": false,
+                                            "shorthand": true
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "init": {
+                        "type": "Identifier",
+                        "name": "y"
+                    }
+                }
+            ],
+            "kind": "var"
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

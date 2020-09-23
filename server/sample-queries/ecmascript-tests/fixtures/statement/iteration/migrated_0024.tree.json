@@ -1,0 +1,39 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ForInStatement",
+            "left": {
+                "type": "MemberExpression",
+                "computed": true,
+                "object": {
+                    "type": "Identifier",
+                    "name": "a"
+                },
+                "property": {
+                    "type": "BinaryExpression",
+                    "operator": "in",
+                    "left": {
+                        "type": "Identifier",
+                        "name": "b"
+                    },
+                    "right": {
+                        "type": "Identifier",
+                        "name": "c"
+                    }
+                }
+            },
+            "right": {
+                "type": "Identifier",
+                "name": "d"
+            },
+            "body": {
+                "type": "EmptyStatement"
+            },
+            "each": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

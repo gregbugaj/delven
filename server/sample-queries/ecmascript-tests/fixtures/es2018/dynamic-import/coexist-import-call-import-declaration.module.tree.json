@@ -1,0 +1,66 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ImportDeclaration",
+            "specifiers": [
+                {
+                    "type": "ImportNamespaceSpecifier",
+                    "local": {
+                        "type": "Identifier",
+                        "name": "$",
+                        "start": 0,
+                        "end": 0
+                    }
+                }
+            ],
+            "source": {
+                "type": "Literal",
+                "value": "a",
+                "raw": "\"a\"",
+                "start": 0,
+                "end": 0
+            }
+        },
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "CallExpression",
+                        "callee": {
+                            "type": "Import"
+                        },
+                        "arguments": [
+                            {
+                                "type": "Literal",
+                                "value": "b",
+                                "raw": "\"b\"",
+                                "start": 0,
+                                "end": 0
+                            }
+                        ]
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "then",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "arguments": [
+                    {
+                        "type": "Identifier",
+                        "name": "c"
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

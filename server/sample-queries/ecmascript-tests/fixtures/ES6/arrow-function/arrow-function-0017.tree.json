@@ -1,0 +1,60 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "ArrowFunctionExpression",
+                "id": null,
+                "params": [
+                    {
+                        "type": "Identifier",
+                        "name": "x"
+                    }
+                ],
+                "body": {
+                    "type": "ArrowFunctionExpression",
+                    "id": null,
+                    "params": [
+                        {
+                            "type": "Identifier",
+                            "name": "y"
+                        },
+                        {
+                            "type": "Identifier",
+                            "name": "z"
+                        }
+                    ],
+                    "body": {
+                        "type": "SequenceExpression",
+                        "expressions": [
+                            {
+                                "type": "Identifier",
+                                "name": "x"
+                            },
+                            {
+                                "type": "Identifier",
+                                "name": "y"
+                            },
+                            {
+                                "type": "Identifier",
+                                "name": "z"
+                            }
+                        ],
+                        "start": 0,
+                        "end": 0
+                    },
+                    "generator": false,
+                    "expression": true,
+                    "async": false
+                },
+                "generator": false,
+                "expression": true,
+                "async": false
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

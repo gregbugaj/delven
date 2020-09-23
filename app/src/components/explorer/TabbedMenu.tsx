@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
@@ -14,12 +15,9 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 
-
-import { EventTypes } from "../bus/message-bus-events";
-import { EventTypeSampleQuery  } from "../bus/message-bus-events";
-import { MessageBusGroup } from "../bus/message-bus";
-import { MessageBusService } from "../bus/message-bus";
+import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
+import { http } from "../../http"
 
 interface RenderTree {
     id: string;
@@ -27,36 +25,17 @@ interface RenderTree {
     children?: RenderTree[];
 }
 
-const data: RenderTree = {
-    id: "root",
-    name: "Parent",
-    children: [
-        {
-            id: "1",
-            name: "Child - 1"
-        },
-        {
-            id: "3",
-            name: "Child - 3",
-            children: [
-                {
-                    id: "4",
-                    name: "Child - 4"
-                }
-            ]
-        }
-    ]
-};
+function SideTreeView(props: {}) {
 
-function RecursiveTreeView() {
+    console.info("SideTreeView")
     const classes = useStyles();
-    const [val, setStateVal] = React.useState("");
+    const [treeData, setTreeDataState] = useState({} as RenderTree);
     const eventBus = globalThis.services.eventBus;
 
     const nodeClicked = (event: React.SyntheticEvent, node: RenderTree) => {
         event.preventDefault();
         console.info('Clicked node')
-        eventBus.emit(new EventTypeSampleQuery({ name: node.name, id : node.id }));
+        eventBus.emit(new EventTypeSampleQuery({ name: node.name, id: node.id }));
     }
 
     const renderTree = (nodes: RenderTree) => (
@@ -73,6 +52,19 @@ function RecursiveTreeView() {
             : null
     );
 
+    React.useEffect(() => {
+        let exec = async () => {
+            console.info('Render exec')
+            const data = await http<RenderTree>('/api/v1/samples')
+            setTreeDataState(data)
+        }
+        exec()
+        return () => {
+            console.log(`Unmounted`)
+        }
+    }, [])
+
+
     return (
         <TreeView
             className={classes.root}
@@ -80,7 +72,7 @@ function RecursiveTreeView() {
             // defaultExpanded={["root"]}
             defaultExpandIcon={<ChevronRightIcon />}
         >
-            {renderTreeTopLevel(data.children)}
+            {renderTreeTopLevel(treeData.children)}
         </TreeView>
     );
 }
@@ -157,6 +149,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
 }));
 
+
 export default function FullWidthTabs() {
     const classes = useStyles();
     const theme = useTheme();
@@ -164,10 +157,6 @@ export default function FullWidthTabs() {
 
     const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setValue(newValue);
-    };
-
-    const handleChangeIndex = (index: number) => {
-        setValue(index);
     };
 
     const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
@@ -188,15 +177,20 @@ export default function FullWidthTabs() {
             </AppBar>
 
             <TabPanel value={value} index={0}>
-                <Link href="#" onClick={preventDefault}>Share</Link>
+                <Link href="#" onClick={preventDefault}>Share</Link>  
+
+                <Link href="#" onClick={preventDefault}>Expand All</Link>
+
+                <Link href="#" onClick={preventDefault}>Collapse All</Link>
+
                 <Divider />
-                <RecursiveTreeView />
+                <SideTreeView />
             </TabPanel>
 
             <TabPanel value={value} index={1}>
                 <Link href="#" onClick={preventDefault}>Update</Link>
                 <Divider />
-                <RecursiveTreeView />
+                <SideTreeView />
             </TabPanel>
         </div>
     );

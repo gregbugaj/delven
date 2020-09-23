@@ -1,0 +1,39 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "LabeledStatement",
+            "label": {
+                "type": "Identifier",
+                "name": "__proto__"
+            },
+            "body": {
+                "type": "WhileStatement",
+                "test": {
+                    "type": "Literal",
+                    "value": true,
+                    "raw": "true",
+                    "start": 0,
+                    "end": 0
+                },
+                "body": {
+                    "type": "BlockStatement",
+                    "body": [
+                        {
+                            "type": "BreakStatement",
+                            "label": {
+                                "type": "Identifier",
+                                "name": "__proto__"
+                            }
+                        }
+                    ],
+                    "start": 0,
+                    "end": 0
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

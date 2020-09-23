@@ -16,6 +16,7 @@ import { ASTParser, SourceGenerator } from "delven";
 import { EventTypes } from "../bus/message-bus-events";
 import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
+import { http } from "../../http"
 
 const useStyles = makeStyles((theme) => ({
 
@@ -63,6 +64,7 @@ class Editor extends React.Component<EditorProps, IState> {
     this.state = {
       display: 'compiled',
     }
+
     this.handleViewChange = this.handleViewChange.bind(this)
     this.evaluate = this.evaluate.bind(this)
   }
@@ -82,7 +84,7 @@ class Editor extends React.Component<EditorProps, IState> {
     observer.observe(targetNode, { attributes: true, childList: true });
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const ecmaNode: HTMLTextAreaElement = document.getElementById(this.props.ecmaName) as HTMLTextAreaElement;
     const astNode: HTMLTextAreaElement = document.getElementById(this.props.astName) as HTMLTextAreaElement;
     const jsonNode: HTMLTextAreaElement = document.getElementById(this.props.jsonName) as HTMLTextAreaElement;
@@ -100,16 +102,26 @@ class Editor extends React.Component<EditorProps, IState> {
 
     // get message bus
     let eventBus = globalThis.services.eventBus;
+    let editor = this.ecmaEditor
     eventBus.on(
       EventTypeSampleQuery,
       (event): void => {
-        console.log("Event-EventTypeSampleQuery [on]:", event.payload);
+        let payload =  event.payload
+        let id = payload.id
+        console.log("Event-EventTypeSampleQuery [on]:", payload);
+        (async () => {
+            console.info('Get data')
+            const data = await http<{code:string}>(`/api/v1/samples/${id}`)
+            const code = data.code
+            console.info(data.code)
+            editor.setValue(code)
+          }
+        )()
       }
     )
   }
 
   evaluate() {
-    console.info('evaluate :')
     const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
 
     if (this.astEditor && this.ecmaEditor && this.jsonEditor) {

@@ -1,0 +1,29 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "DoWhileStatement",
+            "body": {
+                "type": "ExpressionStatement",
+                "expression": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "Identifier",
+                        "name": "that"
+                    },
+                    "arguments": []
+                }
+            },
+            "test": {
+                "type": "Literal",
+                "value": true,
+                "raw": "true",
+                "start": 0,
+                "end": 0
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

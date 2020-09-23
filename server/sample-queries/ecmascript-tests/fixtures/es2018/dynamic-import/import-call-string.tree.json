@@ -1,0 +1,45 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "CallExpression",
+                        "callee": {
+                            "type": "Import"
+                        },
+                        "arguments": [
+                            {
+                                "type": "Literal",
+                                "value": "lib.js",
+                                "raw": "'lib.js'",
+                                "start": 0,
+                                "end": 0
+                            }
+                        ]
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "then",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "arguments": [
+                    {
+                        "type": "Identifier",
+                        "name": "doThis"
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

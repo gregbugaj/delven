@@ -1,0 +1,34 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "MemberExpression",
+                "computed": true,
+                "object": {
+                    "type": "Identifier",
+                    "name": "universe"
+                },
+                "property": {
+                    "type": "SequenceExpression",
+                    "expressions": [
+                        {
+                            "type": "Identifier",
+                            "name": "galaxyName"
+                        },
+                        {
+                            "type": "Identifier",
+                            "name": "otherUselessName"
+                        }
+                    ],
+                    "start": 0,
+                    "end": 0
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

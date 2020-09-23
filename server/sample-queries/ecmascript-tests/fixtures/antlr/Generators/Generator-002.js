@@ -1,0 +1,1 @@
+fasync(function* (t) {})

@@ -1,0 +1,60 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ForInStatement",
+            "left": {
+                "type": "VariableDeclaration",
+                "declarations": [
+                    {
+                        "type": "VariableDeclarator",
+                        "id": {
+                            "type": "Identifier",
+                            "name": "a"
+                        },
+                        "init": {
+                            "type": "AssignmentExpression",
+                            "operator": "=",
+                            "left": {
+                                "type": "Identifier",
+                                "name": "b"
+                            },
+                            "right": {
+                                "type": "AssignmentExpression",
+                                "operator": "=",
+                                "left": {
+                                    "type": "Identifier",
+                                    "name": "c"
+                                },
+                                "right": {
+                                    "type": "BinaryExpression",
+                                    "operator": "in",
+                                    "left": {
+                                        "type": "Identifier",
+                                        "name": "d"
+                                    },
+                                    "right": {
+                                        "type": "Identifier",
+                                        "name": "e"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "kind": "var"
+            },
+            "right": {
+                "type": "Identifier",
+                "name": "z"
+            },
+            "body": {
+                "type": "EmptyStatement"
+            },
+            "each": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

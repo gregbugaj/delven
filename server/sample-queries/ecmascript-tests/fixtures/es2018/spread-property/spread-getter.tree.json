@@ -1,0 +1,64 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "AssignmentExpression",
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                },
+                "right": {
+                    "type": "ObjectExpression",
+                    "properties": [
+                        {
+                            "type": "SpreadElement",
+                            "argument": {
+                                "type": "Identifier",
+                                "name": "y"
+                            }
+                        },
+                        {
+                            "type": "SpreadElement",
+                            "argument": {
+                                "type": "ObjectExpression",
+                                "properties": [
+                                    {
+                                        "type": "Property",
+                                        "key": {
+                                            "type": "Identifier",
+                                            "name": "z",
+                                            "start": 0,
+                                            "end": 0
+                                        },
+                                        "computed": false,
+                                        "value": {
+                                            "type": "FunctionExpression",
+                                            "id": null,
+                                            "params": [],
+                                            "body": {
+                                                "type": "BlockStatement",
+                                                "body": []
+                                            },
+                                            "generator": false,
+                                            "expression": false,
+                                            "async": false
+                                        },
+                                        "kind": "get",
+                                        "method": false,
+                                        "shorthand": false
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

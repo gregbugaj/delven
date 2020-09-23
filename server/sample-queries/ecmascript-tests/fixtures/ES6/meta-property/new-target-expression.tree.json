@@ -1,0 +1,48 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "f"
+                    },
+                    "init": {
+                        "type": "FunctionExpression",
+                        "id": null,
+                        "params": [],
+                        "body": {
+                            "type": "BlockStatement",
+                            "body": [
+                                {
+                                    "type": "ExpressionStatement",
+                                    "expression": {
+                                        "type": "MetaProperty",
+                                        "meta": {
+                                            "type": "Identifier",
+                                            "name": "new"
+                                        },
+                                        "property": {
+                                            "type": "Identifier",
+                                            "name": "target"
+                                        }
+                                    }
+                                }
+                            ]
+                        },
+                        "generator": false,
+                        "expression": false,
+                        "async": false
+                    }
+                }
+            ],
+            "kind": "var"
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

@@ -1,0 +1,35 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ImportDeclaration",
+            "specifiers": [
+                {
+                    "type": "ImportSpecifier",
+                    "local": {
+                        "type": "Identifier",
+                        "name": "nil",
+                        "start": 0,
+                        "end": 0
+                    },
+                    "imported": {
+                        "type": "Identifier",
+                        "name": "null",
+                        "start": 0,
+                        "end": 0
+                    }
+                }
+            ],
+            "source": {
+                "type": "Literal",
+                "value": "bar",
+                "raw": "\"bar\"",
+                "start": 0,
+                "end": 0
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

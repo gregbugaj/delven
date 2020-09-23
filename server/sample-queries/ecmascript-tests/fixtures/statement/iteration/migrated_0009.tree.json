@@ -1,0 +1,20 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ForStatement",
+            "init": null,
+            "test": null,
+            "update": null,
+            "body": {
+                "type": "BlockStatement",
+                "body": [],
+                "start": 0,
+                "end": 0
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

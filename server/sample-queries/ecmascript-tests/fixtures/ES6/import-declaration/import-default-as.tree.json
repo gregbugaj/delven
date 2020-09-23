@@ -1,0 +1,35 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ImportDeclaration",
+            "specifiers": [
+                {
+                    "type": "ImportSpecifier",
+                    "local": {
+                        "type": "Identifier",
+                        "name": "foo",
+                        "start": 0,
+                        "end": 0
+                    },
+                    "imported": {
+                        "type": "Identifier",
+                        "name": "default",
+                        "start": 0,
+                        "end": 0
+                    }
+                }
+            ],
+            "source": {
+                "type": "Literal",
+                "value": "foo",
+                "raw": "\"foo\"",
+                "start": 0,
+                "end": 0
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

@@ -1,0 +1,46 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ForInStatement",
+            "left": {
+                "type": "VariableDeclaration",
+                "declarations": [
+                    {
+                        "type": "VariableDeclarator",
+                        "id": {
+                            "type": "Identifier",
+                            "name": "x"
+                        },
+                        "init": null
+                    }
+                ],
+                "kind": "const"
+            },
+            "right": {
+                "type": "Identifier",
+                "name": "list"
+            },
+            "body": {
+                "type": "ExpressionStatement",
+                "expression": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "Identifier",
+                        "name": "process"
+                    },
+                    "arguments": [
+                        {
+                            "type": "Identifier",
+                            "name": "x"
+                        }
+                    ]
+                }
+            },
+            "each": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
