@@ -28,6 +28,12 @@ for(x of iterator){
 }
 ```
 
+```sql
+for(x of select css('#test'), css('#test') from sourceA()){
+    console.info(x)
+}
+```
+
 ## Destructuring assignment
 Single-row query
 ```sql
@@ -67,7 +73,17 @@ from SourceA using {'reducer': (row)=>{}}
 
 ```sql
 select css('#sel1'), css('#sel2') 
+from SourceA using {'reducer': function(row){}}
+```
+
+```sql
+select css('#sel1'), css('#sel2') 
 from SourceA using new Reducer()
+```
+
+```sql
+````select css('#sel1'), css('#sel2') 
+from SourceA using (new Reducer({arg1:"A"}, {arg2:"B"}), new Processor())````
 ```
 
 ## 
@@ -105,6 +121,13 @@ within css('#container-a'), nativeContainer()
 from SourceA
 ```
 
+## Datasources
+
+```js
+ select me from  source() 
+ 
+ //([{"smith", 10, "2025-01-01"}, {"smith", 10, "2025-01-01"}]) 
+```
 
 ## Returning from a function 
 
