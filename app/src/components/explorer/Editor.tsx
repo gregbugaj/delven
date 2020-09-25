@@ -11,11 +11,10 @@ import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-
+import { green } from '@material-ui/core/colors';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 
 import { ASTParser, SourceGenerator } from "delven";
 import { EventTypeSampleQuery } from "../bus/message-bus-events";
@@ -147,9 +146,35 @@ class Editor extends React.Component<EditorProps, IState> {
   render() {
     return (
       <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-        <Grid container >
+        <Grid container style={{ padding: "0px", border: "0px solid purple" }}>
           <Grid item sm={12} md={6}>
-            <Button variant="contained" color="primary" style={{ minWidth: 80 }} onClick={this.evaluate}>Execute</Button>
+            <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid purple" }} >
+              <Grid item>
+                <Button variant="contained" color="primary" style={{ minWidth: 80 }} onClick={this.evaluate}>Execute</Button>
+              </Grid>
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="checkedB"
+                      color="primary"
+                    />
+                  }
+                  label="Query optimizer"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="checkedB"
+                      color="primary"
+                    />
+                  }
+                  label="Mock provider"
+                />
+              </Grid>
+            </Grid>
+
           </Grid>
           <Grid item sm={12} md={6}>
             <ToggleButtonGroup size="small" exclusive onChange={this.handleViewChange} value={this.state.display} aria-label="text primary button group">
@@ -159,6 +184,7 @@ class Editor extends React.Component<EditorProps, IState> {
               <ToggleButton value="consle">Console</ToggleButton>
               <ToggleButton value="consle">Graph</ToggleButton>
             </ToggleButtonGroup >
+
           </Grid>
         </Grid>
 
