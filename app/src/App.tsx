@@ -198,7 +198,6 @@ export function Application() {
 
             </Grid>
           </div>
-
         </Route>
       </Router>
     </div>

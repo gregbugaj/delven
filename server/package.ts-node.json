@@ -7,10 +7,10 @@
   "author": "Greg",
   "dependencies": {},
   "scripts": {
-    "start": "npm run build && node build/index.js",
+    "start": "npm run build && node -r tsconfig-paths/register build/index.js",
     "check-types": "tsc",
     "watch-ts": "tsc -w --outDir ./build",
-    "dev": "nodemon ./build",
+    "dev": "nodemon",
     "build": "rm -rf ./build && mkdir ./build && npx tsc"
   },
   "devDependencies": {

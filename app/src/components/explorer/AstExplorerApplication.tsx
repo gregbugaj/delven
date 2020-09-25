@@ -18,17 +18,19 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import DashboardIcon from "@material-ui/icons/Dashboard";
 import PeopleIcon from "@material-ui/icons/People";
-import BarChartIcon from "@material-ui/icons/BarChart";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
 import Collapse from '@material-ui/core/Collapse';
+import Link from '@material-ui/core/Link';
+import Grid from '@material-ui/core/Grid';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from '@material-ui/core/Button';
 
-import { BrowserRouter as Router, Route, withRouter, Switch} from "react-router-dom"
+
+import { BrowserRouter as Router, Route, withRouter, Switch } from "react-router-dom"
 
 // Customization
 import { AdapterLink } from "../utils/NavLinkMui";
@@ -37,21 +39,13 @@ import BreadcrumModule from '../shared/breadcrumbs';
 
 import Editor from './Editor'
 import FullWidthTabs from './TabbedMenu'
-
-import { EventTypes } from "../bus/message-bus-events";
-import { EventTypeA, EventTypeB, EventTypeC, EventTypeSampleQuery  } from "../bus/message-bus-events";
-import { MessageBusGroup } from "../bus/message-bus";
-import { MessageBusService } from "../bus/message-bus";
- 
-
 const drawerWidth = 240;
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
-    padding:0,
-    minHeight:"100vh",
-
+    padding: 0,
+    minHeight: 'calc(100vh - 32px)',
   },
   toolbar: {
     paddingRight: 24 // keep right padding when drawer closed
@@ -110,20 +104,19 @@ const useStyles = makeStyles(theme => ({
 
   appBarSpacer: {
     minHeight: 80,
-    border:'0px solid green'
+    border: '0px solid green'
   },
 
   content: {
     flexGrow: 1,
-    height: "100vh",
     overflow: "auto",
   },
-  
+
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(4),
-    paddingLeft : 0,
-    paddingRight : 0
+    paddingLeft: 0,
+    paddingRight: 0
   },
 
   paper: {
@@ -143,33 +136,33 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DefaultComponent = () => {
-    return (
-       <div style={{border:'0px solid red', height:'100%'}}>
-          <Editor></Editor>
-       </div>
-    );
+  return (
+    <div style={{ border: '0px solid red', height: '100%' }}>
+      <Editor></Editor>
+    </div>
+  );
 };
 
 //<Editor></Editor>
 
 const SettingsComponent = () => {
-    return (
-        <div>
-            <Typography variant="h6">
-            Settings Component
+  return (
+    <div>
+      <Typography variant="h6">
+        Settings Component
             </Typography>
-        </div>
-    );
+    </div>
+  );
 };
 
 const IntegrationComponent = () => {
-    return (
-        <div>
-            <Typography variant="h6">
-            Integration Component
+  return (
+    <div>
+      <Typography variant="h6">
+        Integration Component
             </Typography>
-        </div>
-    );
+    </div>
+  );
 };
 
 
@@ -180,12 +173,12 @@ const breadcrumbNameMap: { [key: string]: string } = {
   '/explorer/settings/feature-b': 'Admin - Future B',
   '/explorer/settings/feature-c': 'Admin - Future C',
 };
- 
+
 
 function AstExplorerApplication() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -197,7 +190,7 @@ function AstExplorerApplication() {
   const [openAdmin, setOpenAdmin] = React.useState(true);
 
   const handleAdminClick = () => {
-      setOpenAdmin(!openAdmin);
+    setOpenAdmin(!openAdmin);
   };
 
 
@@ -205,149 +198,139 @@ function AstExplorerApplication() {
 
     // style={{ height: 40, minHeight:40 }}
     // style={{ height: 40, minHeight:40 }}
-    <div className={classes.root}>
+    <div style={{ border: '0px solid green', padding: '0px' }} >
       <CssBaseline />
-      <AppBar
-        color='default'
-        position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}  
-      >
-        <Toolbar className={classes.toolbar} >
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
 
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}
-          >
+      <div className={classes.root} >
+        <AppBar
+          color='default'
+          position="absolute"
+          className={clsx(classes.appBar, open && classes.appBarShift)}
+        >
+          <Toolbar className={classes.toolbar} >
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerOpen}
+              className={clsx(
+                classes.menuButton,
+                open && classes.menuButtonHidden
+              )}
+            >
+              <MenuIcon />
+            </IconButton>
 
-            <BreadcrumModule breadcrumbs={breadcrumbNameMap} label="Explorer"/>
-          </Typography>
+            <Typography
+              component="h1"
+              variant="h6"
+              color="inherit"
+              noWrap
+              className={classes.title}
+            >
 
-          <ModuleSelect/>
-        </Toolbar>
-      </AppBar>
+              <BreadcrumModule breadcrumbs={breadcrumbNameMap} label="Explorer" />
+            </Typography>
 
-      
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
+            <ModuleSelect />
+          </Toolbar>
+        </AppBar>
 
-        <List>
 
-          <ListItem button onClick={handleAdminClick} component={AdapterLink} to='/explorer/settings' >
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="Settings" />
-            {openAdmin ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
+          }}
+          open={open}
+        >
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+
+          <List>
+
+            <ListItem button onClick={handleAdminClick} component={AdapterLink} to='/explorer/settings' >
+              <ListItemIcon>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Settings" />
+              {openAdmin ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
 
             <Collapse in={openAdmin} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
+              <List component="div" disablePadding>
                 <ListItem button component={AdapterLink} to='/explorer/settings/plugins' className={classes.nested}>
-                    <ListItemIcon>
-                         <AssignmentIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Plugins" />
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Plugins" />
                 </ListItem>
 
                 <ListItem button component={AdapterLink} to='/explorer/settings/feature-b' className={classes.nested}>
-                    <ListItemIcon>
-                         <AssignmentIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Feature B" />
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Feature B" />
                 </ListItem>
 
                 <ListItem button component={AdapterLink} to='/explorer/settings/feature-c' className={classes.nested}>
-                    <ListItemIcon>
-                         <AssignmentIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="Feature C" />
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Feature C" />
                 </ListItem>
-                </List>
+              </List>
             </Collapse>
 
 
-          <ListItem button component={AdapterLink} to='/explorer/integration'>
-            <ListItemIcon>
-              <LayersIcon />
-            </ListItemIcon>
-            <ListItemText primary="Integrations" />
-          </ListItem>
-        </List>
-        <Divider />
+            <ListItem button component={AdapterLink} to='/explorer/integration'>
+              <ListItemIcon>
+                <LayersIcon />
+              </ListItemIcon>
+              <ListItemText primary="Integrations" />
+            </ListItem>
+          </List>
+          <Divider />
 
-        <FullWidthTabs></FullWidthTabs>
-      </Drawer>
+          <FullWidthTabs></FullWidthTabs>
+        </Drawer>
 
-      <main className={classes.content}>
-        <div style={{minHeight:64}}/>
-        <Container maxWidth="xl" className={classes.container} style={{border:'0px solid green', padding:'0px', height: 'calc(100vh - 64px)'}} >
-
-          <Switch>
-            <Route exact path='/explorer' component={DefaultComponent} />
-            <Route exact path='/explorer/settings' component={SettingsComponent} />
-            <Route path='/explorer/integration' component={IntegrationComponent} />
-          </Switch>
-
-          </Container>  
-      </main>
-    </div>    
-
+        <main className={classes.content}>
+          <div style={{ minHeight: 64 }}></div>
+          <Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 96px)' }} >
+            <Switch>
+              <Route exact path='/explorer' component={DefaultComponent} />
+              <Route exact path='/explorer/settings' component={SettingsComponent} />
+              <Route path='/explorer/integration' component={IntegrationComponent} />
+            </Switch>
+          </Container>
+        </main>
+      </div>
+      <Footer></Footer>
+    </div>
   );
 }
 
-/*
-  <div className={classes.appBarSpacer}  />
-
-        <Container maxWidth="xl" className={classes.container} style={{border:'0px solid green',  height: "100vh"}} >
-
-          <Switch>
-            <Route exact path='/explorer' component={DefaultComponent} />
-            <Route exact path='/explorer/settings' component={SettingsComponent} />
-            <Route path='/explorer/integration' component={IntegrationComponent} />
-          </Switch>
-   
-        </Container>  
-*/
-
-function FooterXXX() {
-  return (
-      <AppBar position="static" color="primary">
-        <Container maxWidth="md">
-          <Toolbar>
-            <Typography variant="body1" color="inherit">
-              &copy; 2020 Greg
-            </Typography>
-          </Toolbar>
-        </Container>
-      </AppBar>
-  )
-}
-
+const Footer = () => (
+  <div className="footer">
+    <Grid container direction="row" justify="space-between">
+      <Grid item>
+        <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
+          <Button>Execution time : 122ms</Button>
+        </ButtonGroup>
+      </Grid>
+      <Grid item>
+        <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
+          <Button>Build : ####</Button>
+          <Button>Runtime : ###</Button>/Button>
+        </ButtonGroup>
+      </Grid>
+    </Grid>
+  </div>
+);
 
 export default AstExplorerApplication;

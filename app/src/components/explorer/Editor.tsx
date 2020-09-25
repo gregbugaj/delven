@@ -10,10 +10,14 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
+
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+
+
 import { ASTParser, SourceGenerator } from "delven";
-
-
-import { EventTypes } from "../bus/message-bus-events";
 import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
@@ -106,16 +110,14 @@ class Editor extends React.Component<EditorProps, IState> {
     eventBus.on(
       EventTypeSampleQuery,
       (event): void => {
-        let payload =  event.payload
+        let payload = event.payload
         let id = payload.id
         console.log("Event-EventTypeSampleQuery [on]:", payload);
         (async () => {
-            console.info('Get data')
-            const data = await http<{code:string}>(`/api/v1/samples/${id}`)
-            const code = data.code
-            console.info(data.code)
-            editor.setValue(code)
-          }
+          const data = await http<{ code: string }>(`/api/v1/samples/${id}`)
+          const code = data.code
+          editor.setValue(code)
+        }
         )()
       }
     )
@@ -139,13 +141,27 @@ class Editor extends React.Component<EditorProps, IState> {
   handleViewChange(event: any, renderType: string) {
     if (renderType == null)
       return
-    console.info('Render :' + renderType)
     this.setState({ display: renderType });
   }
 
   render() {
     return (
       <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+        <Grid container >
+          <Grid item sm={12} md={6}>
+            <Button variant="contained" color="primary" style={{ minWidth: 80 }} onClick={this.evaluate}>Execute</Button>
+          </Grid>
+          <Grid item sm={12} md={6}>
+            <ToggleButtonGroup size="small" exclusive onChange={this.handleViewChange} value={this.state.display} aria-label="text primary button group">
+              {/* <ToggleButton value="tree">Tree</ToggleButton> */}
+              <ToggleButton value="json">JSON</ToggleButton>
+              <ToggleButton value="compiled">Compiled</ToggleButton>
+              <ToggleButton value="consle">Console</ToggleButton>
+              <ToggleButton value="consle">Graph</ToggleButton>
+            </ToggleButtonGroup >
+          </Grid>
+        </Grid>
+
         <div style={{ display: 'flex', flex: '1 1 auto', overflowY: 'auto' }}>
           <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
             <textarea
@@ -162,12 +178,6 @@ class Editor extends React.Component<EditorProps, IState> {
               <div style={{ flex: ' 1 0 50%', border: "0px solid purple", overflowY: 'auto' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
-                  <ToggleButtonGroup exclusive onChange={this.handleViewChange} value={this.state.display} aria-label="text primary button group">
-                    {/* <ToggleButton value="tree">Tree</ToggleButton> */}
-                    <ToggleButton value="json">JSON</ToggleButton>
-                    <ToggleButton value="compiled">Compiled</ToggleButton>
-                  </ToggleButtonGroup >
-
                   <div id='json-container' style={{ display: this.state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                     <textarea
                       name={this.props.jsonName}
@@ -179,7 +189,6 @@ class Editor extends React.Component<EditorProps, IState> {
                   </div>
 
                   <div id='compiled-container' style={{ display: this.state.display == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-
                     <textarea
                       name={this.props.astName}
                       id={this.props.astName}
@@ -191,36 +200,7 @@ class Editor extends React.Component<EditorProps, IState> {
                 </div>
               </div>
 
-              <div style={{ flex: ' 1 0 0%', border: "0px solid purple", overflowY: 'hidden', padding: '0px', marginTop: '10px' }}>
-                <Grid
-                  container
-                  direction="row"
-                  justify="flex-start"
-                  alignItems="stretch"
-                  style={{ height: '100%', overflowY: 'hidden', }}
-                >
-                  <Grid item xs={2} container>
-                    <Grid container spacing={5} direction="column" >
-                      <Grid item>
-                        <Button variant="contained" style={{ minWidth: 120 }} onClick={this.evaluate}>Evaluate</Button>
-                      </Grid>
-                      <Grid item>
-                        <Button variant="contained" style={{ minWidth: 120 }}>Clear</Button>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-
-                  <Grid item xs={10} >
-                    <textarea style={{ width: '100%', height: '100%' }}
-                      defaultValue=''
-                      autoComplete="off"
-                    />
-                  </Grid>
-                </Grid>
-
-              </div>
             </div>
-
           </div>
         </div>
       </div>
