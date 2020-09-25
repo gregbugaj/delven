@@ -326,7 +326,7 @@ const Footer = () => (
       <Grid item>
         <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
           <Button>Build : ####</Button>
-          <Button>Runtime : ###</Button>/Button>
+          <Button>Runtime : ###</Button>
         </ButtonGroup>
       </Grid>
     </Grid>
