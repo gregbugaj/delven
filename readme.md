@@ -208,7 +208,7 @@ new {}.test()       // NewExpression[type=MemberExpression] > ObjectExpression
 new {}().test()     // CallExpression[type=MemberExpression] > NewExpression > ObjectExpression
 ```
 
-AST should be equivalent for allt the expressions
+AST should be equivalent for all the expressions
 
 ```javascript
 new {}
@@ -296,3 +296,8 @@ RangeError: Maximum call stack size exceeded
     at ParserATNSimulator.closure_ (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1310:18)
     at ParserATNSimulator.closureCheckingStopState (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1254:10)
     at ParserATNSimulator.closure_ (/home/greg/dev/delven.io/delven-transpiler/node_modules/antlr4/atn/ParserATNSimulator.js:1310:18)
+
+
+## Resources
+
+https://github.com/google/traceur-compiler
