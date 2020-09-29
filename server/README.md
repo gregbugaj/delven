@@ -26,5 +26,8 @@ npm run dev
  
 
 ## References
+[https://medium.com/@phtnhphan/how-to-setup-typescript-for-nodejs-project-45d42057f7a3]
 
-https://medium.com/@phtnhphan/how-to-setup-typescript-for-nodejs-project-45d42057f7a3
+
+Websocket setup
+[https://www.npmjs.com/package/express-ws]

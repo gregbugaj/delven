@@ -60,10 +60,12 @@ export class MessageBusService {
         return subscription;
     }
 
-    // I subscribe to the message bus, but only invoke the callback when the event is
-    // of the given newable type (ie, it's a Class definition, not an instance).
-    // --
-    // NOTE: The NewableType<T> will allow for Type inference.
+    /**
+     * Subscribe to the message bus, but only invoke the callback when the event is
+     * of the given newable type (ie, it's a Class definition, not an instance).
+     * --
+     * NOTE: The NewableType<T> will allow for Type inference.
+    */
     public on<T>(typeFilter: NewableType<T>, callback: CallbackFunction<T>, callbackContext: any = null): Subscription {
         const subscription = this.eventStream
             .pipe(filter((event: any): boolean => event instanceof typeFilter))

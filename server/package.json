@@ -5,7 +5,9 @@
   "main": "index.js",
   "private": true,
   "author": "Greg",
-  "dependencies": {},
+  "dependencies": {
+    "express-ws": "^4.0.0"
+  },
   "scripts": {
     "start": "npm run build && node build/index.js",
     "check-types": "tsc",

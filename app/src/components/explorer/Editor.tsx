@@ -21,6 +21,8 @@ import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
 
+import {ServerExecutor} from "../../executors";
+
 const useStyles = makeStyles((theme) => ({
 
 }));
@@ -122,18 +124,35 @@ class Editor extends React.Component<EditorProps, IState> {
     )
   }
 
-  evaluate() {
-    const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
+  async evaluate() {
+    let hostname = window.location.hostname
+    let host = `ws://${hostname}:8080/ws`
+    let executor = new ServerExecutor();
+    // executor.setup({"uri":host})
+    // .then(val=>{
+    //   console.info("Executor ready")
 
-    if (this.astEditor && this.ecmaEditor && this.jsonEditor) {
-      const txt = this.ecmaEditor.getValue()
-      const ast = ASTParser.parse({ type: "code", value: txt });
-      const json = toJson(ast)
-      const generator = new SourceGenerator();
-      const script = generator.toSource(ast);
+    // }).catch(e=>{console.info("Unable to setup executor", e)})
 
-      this.jsonEditor.setValue(json)
-      this.astEditor.setValue(script)
+    executor.on("*", msg=>console.info(`Received : ${msg.event}`))
+    let status = await executor.setup({"uri":host})
+
+    console.info(`Executor ready : ${status}`);
+
+    let x = false
+    if (x) {
+      const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
+
+      if (this.astEditor && this.ecmaEditor && this.jsonEditor) {
+        const txt = this.ecmaEditor.getValue()
+        const ast = ASTParser.parse({ type: "code", value: txt });
+        const json = toJson(ast)
+        const generator = new SourceGenerator();
+        const script = generator.toSource(ast);
+
+        this.jsonEditor.setValue(json)
+        this.astEditor.setValue(script)
+      }
     }
   }
 
