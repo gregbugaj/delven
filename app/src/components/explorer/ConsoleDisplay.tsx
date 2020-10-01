@@ -91,6 +91,15 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
     this._append("raw", message)
   }
 
+  componentDidMount(){
+    const objDiv = document.getElementById("console-out");
+    console.info(objDiv)
+    if(objDiv != null){
+      objDiv.scrollIntoView(false)
+      // objDiv.scrollTop = objDiv.scrollHeight;
+    }
+  }
+
   render() {
     function MessageItem(props) {
       let message = props.message
