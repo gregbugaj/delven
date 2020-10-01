@@ -16,12 +16,13 @@ import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
+import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
 import { ASTParser, SourceGenerator } from "delven";
 import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
 
-import {ServerExecutor} from "../../executors";
+import { ServerExecutor } from "../../executors";
 
 const useStyles = makeStyles((theme) => ({
 
@@ -124,7 +125,14 @@ class Editor extends React.Component<EditorProps, IState> {
     )
   }
 
+  log(level: ConsoleMessageLevel, message: string) {
+    let consoleDisplay = this.refs.child as ConsoleDisplay
+    if (consoleDisplay)
+      consoleDisplay.append({time:new Date().toISOString(), level, message })
+  }
   async evaluate() {
+    this.log("success", "Evaluating Script")
+
     let hostname = window.location.hostname
     let host = `ws://${hostname}:8080/ws`
     let executor = new ServerExecutor();
@@ -134,9 +142,8 @@ class Editor extends React.Component<EditorProps, IState> {
 
     // }).catch(e=>{console.info("Unable to setup executor", e)})
 
-    executor.on("*", msg=>console.info(`Received : ${msg.event}`))
-    let status = await executor.setup({"uri":host})
-
+    executor.on("*", msg => console.info(`Received : ${msg.event}`))
+    let status = await executor.setup({ "uri": host })
     console.info(`Executor ready : ${status}`);
 
     let x = false
@@ -163,6 +170,14 @@ class Editor extends React.Component<EditorProps, IState> {
   }
 
   render() {
+    let messages: ConsoleMessage[] = []
+    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "warn", message: "Important message" })
+    messages.push({ level: "error", message: "Error message" })
+    messages.push({ message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "raw", message: "Raw message" })
+
     return (
       <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
         <Grid container style={{ padding: "0px", border: "0px solid purple" }}>
@@ -200,8 +215,8 @@ class Editor extends React.Component<EditorProps, IState> {
               {/* <ToggleButton value="tree">Tree</ToggleButton> */}
               <ToggleButton value="json">JSON</ToggleButton>
               <ToggleButton value="compiled">Compiled</ToggleButton>
-              <ToggleButton value="consle">Console</ToggleButton>
-              <ToggleButton value="consle">Graph</ToggleButton>
+              <ToggleButton value="console">Console</ToggleButton>
+              <ToggleButton value="graph">Graph</ToggleButton>
             </ToggleButtonGroup >
 
           </Grid>
@@ -241,6 +256,14 @@ class Editor extends React.Component<EditorProps, IState> {
                       autoComplete="off"
                       autoFocus={this.props.astAutoFocus}
                     />
+                  </div>
+
+                  <div id='console-container' style={{ display: this.state.display == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    <ConsoleDisplay messages={messages} ref="child"></ConsoleDisplay>
+                  </div>
+
+                  <div id='graph-container' style={{ display: this.state.display == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    Graph
                   </div>
                 </div>
               </div>
