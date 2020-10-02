@@ -216,7 +216,7 @@ class Editor extends React.Component<EditorProps, IState> {
               <ToggleButton value="json">JSON</ToggleButton>
               <ToggleButton value="compiled">Compiled</ToggleButton>
               <ToggleButton value="console">Console</ToggleButton>
-              <ToggleButton value="graph">Graph</ToggleButton>
+              <ToggleButton value="graph">Job Graph</ToggleButton>
             </ToggleButtonGroup >
 
           </Grid>
