@@ -301,3 +301,5 @@ RangeError: Maximum call stack size exceeded
 ## Resources
 
 https://github.com/google/traceur-compiler
+https://github.com/google/traceur-compiler/tree/master/src/codegeneration
+https://github.com/codesandbox/codesandbox-client
