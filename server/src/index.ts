@@ -6,6 +6,8 @@ import * as path from "path"
 import * as crypto from "crypto"
 import http from "http"
 
+import LocalExecutor from './executors/LocalExecutor'
+
 export interface NodeInfo {
     name: string,
     id: string,
@@ -58,7 +60,8 @@ async function main() {
         // key: fs.readFileSync('key.pem'),
         // cert: fs.readFileSync('cert.pem')
     }
-    
+
+    const executor = new LocalExecutor()
     let expressServer = express()
     // const server = http.createServer(serverOptions, expressServer)
     // const wss = expressWs(expressServer, server);
@@ -110,6 +113,12 @@ async function main() {
         res.send(JSON.stringify({ 'name': 'Root', 'id': '0000', children: samples }));
     });
 
+    app.get('/api/v1/executre', async (req: Request, res: Response) => {
+        setJsonHeaders(res);
+        const execId = executor.compile('let x = 1')
+        res.send(JSON.stringify({ 'executionId': execId }));
+    });
+
     app.get('/api/v1/samples/:id', async (req: Request, res: Response) => {
         setJsonHeaders(res);
 
@@ -128,19 +137,15 @@ async function main() {
         }
     });
 
-    const PORT = process.env.PORT || 8080;
-    let srv = app.listen(PORT as number, '0.0.0.0', (port, err) => {
-        if (err) throw err;
+    const port = process.env.PORT || 8080;
+    let srv = app.listen(port as number, '0.0.0.0', (err) => {
+        if (err) {
+            console.log(err)
+            throw err;
+        }
+
         console.log(`Server listening on port ${port}!`);
     });
-
-    // srv.on('upgrade', function(req, socket, head) {
-    //     console.info('Upgrade request')
-    //     // wss.emit('connection', socket, req);
-    //     // wss.handleUpgrade(req, socket, head, function connected(ws) {
-            
-    //     // })
-    // });
 }
 
 (async () => {

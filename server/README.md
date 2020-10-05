@@ -31,3 +31,10 @@ npm run dev
 
 Websocket setup
 [https://www.npmjs.com/package/express-ws]
+
+
+Debug using source-maps
+
+```
+node --inspect build/
+```
