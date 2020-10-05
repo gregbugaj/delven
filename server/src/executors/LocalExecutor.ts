@@ -13,7 +13,6 @@ export default class LocalExecutor implements IExecutor {
     async compile(script: string): Promise<string> {
         console.info('Compiling script')
 
-
         return Promise.resolve(create_UUID())
     }
 

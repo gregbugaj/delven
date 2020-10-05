@@ -5,7 +5,6 @@ import expressWs from "express-ws"
 import * as path from "path"
 import * as crypto from "crypto"
 import http from "http"
-
 import LocalExecutor from './executors/LocalExecutor'
 
 export interface NodeInfo {
@@ -79,7 +78,7 @@ async function main() {
     // `next` is needed here to mark this as an error handler
     // eslint-disable-next-line no-unused-vars
     app.use((err, req: Request, res: Response, next) => {
-        console.log('error');
+        console.log('error', err);
         console.error((new Date()).toLocaleString(), err);
         if (err.response) {
             res.status(err.response.status).send(err.response.statusText);
@@ -91,14 +90,12 @@ async function main() {
 
     // middleware
     app.use(function (req: Request, res: Response, next) {
-        console.log('middleware');
         next();
     });
 
     app.ws('/ws', function (ws, req) {
         ws.on('message', function (msg) {
             console.log(msg);
-
             ws.send(JSON.stringify('reply'))
         });
 
@@ -113,9 +110,10 @@ async function main() {
         res.send(JSON.stringify({ 'name': 'Root', 'id': '0000', children: samples }));
     });
 
-    app.get('/api/v1/executre', async (req: Request, res: Response) => {
+    app.get('/api/v1/execute', async (req: Request, res: Response) => {
         setJsonHeaders(res);
-        const execId = executor.compile('let x = 1')
+        const execId = await executor.compile('let x = 1')
+        console.info(`execId : : ${execId}`)
         res.send(JSON.stringify({ 'executionId': execId }));
     });
 
