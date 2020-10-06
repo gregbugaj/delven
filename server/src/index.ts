@@ -67,6 +67,11 @@ async function main() {
     const wss = expressWs(expressServer);
     const app = wss.app
 
+    // Parse HTTP JSON bodies
+    app.use(express.json());
+    // Parse URL-encoded params
+    app.use(express.urlencoded({ extended: true }));
+
     app.on("connection", (webSocket) => {
         console.info("Total connected clients:", wss.clients.size);
         app.locals.clients = wss.clients;
@@ -93,10 +98,25 @@ async function main() {
         next();
     });
 
-    app.ws('/ws', function (ws, req) {
-        ws.on('message', function (msg) {
-            console.log(msg);
-            ws.send(JSON.stringify('reply'))
+    app.ws('/ws', async (ws, req) => {
+        ws.on('message', async function (payload: string) {
+            let msg: { 'type': string, data?: any } = JSON.parse(payload)
+            console.log('Incomming message', msg);
+            let type: string = msg.type
+            let data: any = msg['data'] ? msg['data'] : ''
+            let reply: {
+                type: string
+                data?: any
+            } = {type:'unhandled'};
+
+            switch (type) {
+                case 'compile':
+                    reply.type = 'compile.reply'
+                    reply.data = await executor.compile(data)
+                    break;
+                default: reply.data = 'unhandled'
+            }
+            ws.send(JSON.stringify(reply))
         });
 
         ws.on('close', () => {

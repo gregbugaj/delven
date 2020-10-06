@@ -1,13 +1,14 @@
 import { IExecutor, ISetupParams, Message, CallbackFunction } from './executor';
 
-import { filter } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { Subscription } from "rxjs";
 
 export class ServerExecutor implements IExecutor {
     id?: string
     ws?: WebSocket
-    private eventStream: Subject<Message>
+    private eventStream: Subject<MessageEvent>
+    params: ISetupParams | undefined;
 
     constructor() {
         this.eventStream = new Subject();
@@ -15,22 +16,38 @@ export class ServerExecutor implements IExecutor {
 
     public on(eventNameFilter: string, callback: CallbackFunction<Message>): Subscription {
         return this.eventStream
-            .pipe(filter((event: Message): boolean => eventNameFilter === "*" || event?.event === eventNameFilter))
+            .pipe(map((event: MessageEvent): Message => {
+                return JSON.parse(event.data)
+            }))
+            .pipe(filter((event: Message): boolean => {
+                return eventNameFilter === "*" || event?.type === eventNameFilter
+            }))
             .subscribe((event: Message): void => {
                 try {
                     callback.call(null, event);
                 } catch (error) {
                     console.error('Unable to handle envent', error)
                 }
-            }
-            )
+            })
     }
 
-    public emit(event: string, data?: any): void {
-        this.ws?.send(JSON.stringify({ type: event, data: data }));
+    public async emit(event: string, data?: any): Promise<undefined> {
+        if (this.ws?.readyState == WebSocket.CLOSED) {
+            console.info("Connection closed")
+            if (this.params != undefined) {
+                await this.setup(this.params)
+            }
+        }
+
+        if (this.ws?.readyState == WebSocket.OPEN) {
+            this.ws.send(JSON.stringify({ type: event, data: data }));
+        }
+
+        return Promise.resolve(undefined)
     }
 
     public async setup(params: ISetupParams): Promise<boolean> {
+        this.params = params
         const uri = params.uri
         console.info(`Attempting to setup connection for : ${uri}`)
         if (this.ws?.readyState === WebSocket.OPEN) {
@@ -51,9 +68,9 @@ export class ServerExecutor implements IExecutor {
                     reject(event)
                 }
 
-                this.ws.onmessage = message => {
+                this.ws.onmessage = (message: MessageEvent) => {
                     console.log('onmessage', message);
-                    self.eventStream.next(message as unknown as Message);
+                    self.eventStream.next(message);
                 };
             } catch (e) {
                 console.error("Error connecting", e)

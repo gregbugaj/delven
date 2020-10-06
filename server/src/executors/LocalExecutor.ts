@@ -1,4 +1,5 @@
-import { IExecutor, CallbackFunction } from './executor';
+import { IExecutor, CallbackFunction, CompilationUnit } from './executor';
+import request from 'request'
 
 /**
  * Local script executor
@@ -10,20 +11,40 @@ export default class LocalExecutor implements IExecutor {
         console.info(`Setting up executor`)
     }
 
-    async compile(script: string): Promise<string> {
+    async compile(script: string): Promise<CompilationUnit> {
         console.info('Compiling script')
+        let unit: CompilationUnit = {
+            id: create_UUID(),
+            code: script,
+            compileTime: 0
+        }
 
-        return Promise.resolve(create_UUID())
+        const options = {
+            url: 'http://localhost:5000/runner/compile',
+            form: {
+                code: JSON.stringify(unit)
+            }
+        };
+        return new Promise((resolve, reject) => {
+            request.post(options, (err, res, body) => {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                }
+
+                const result = JSON.parse(body)
+                resolve(result)
+            });
+        })
     }
 
     public async dispose() {
-
+        // noop
     }
 
     private terminalMessage(msg: string) {
         // this.emit('terminal:message', `> Sandbox Container: ${msg}\n\r`);
     }
-
 }
 
 function create_UUID() {

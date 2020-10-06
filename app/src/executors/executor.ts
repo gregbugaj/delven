@@ -10,8 +10,8 @@ export interface CallbackFunction<T = any> {
 }
 
 export interface Message {
-    event: string,
-    data?: any
+    type: string,
+    data?: any 
 }
 
 

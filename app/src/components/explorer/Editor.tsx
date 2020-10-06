@@ -17,7 +17,6 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
-import { ASTParser, SourceGenerator } from "delven";
 import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
@@ -51,6 +50,8 @@ class Editor extends React.Component<EditorProps, IState> {
 
   private jsonEditor?: CodeMirrorManager;
 
+  private executor: ServerExecutor;
+
   static defaultProps = {
     ecmaName: 'editor-ecma',
     ecmaValue: 'let x = 1',
@@ -73,6 +74,7 @@ class Editor extends React.Component<EditorProps, IState> {
 
     this.handleViewChange = this.handleViewChange.bind(this)
     this.evaluate = this.evaluate.bind(this)
+    this.executor = new ServerExecutor();
   }
 
   observeEditorChange(targetNode: HTMLElement) {
@@ -114,7 +116,7 @@ class Editor extends React.Component<EditorProps, IState> {
       (event): void => {
         let payload = event.payload
         let id = payload.id
-        console.log("Event-EventTypeSampleQuery [on]:", payload);
+
         (async () => {
           const data = await http<{ code: string }>(`/api/v1/samples/${id}`)
           const code = data.code
@@ -123,43 +125,40 @@ class Editor extends React.Component<EditorProps, IState> {
         )()
       }
     )
+
+    const hostname = window.location.hostname
+    const host = `ws://${hostname}:8080/ws`
+
+    this.executor.on("*", msg => {
+      console.info(`Received from backend : ${msg}`)
+      console.info(msg)
+    })
+
+    this.executor.on('compile.reply', msg => {
+      console.info(`Received compile backend : ${msg}`)
+      let unit = msg.data
+      if (this.astEditor && this.jsonEditor) {
+        const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
+        this.jsonEditor.setValue(toJson(unit.ast))
+        this.astEditor.setValue(unit.generated)
+      } 
+    })
+
+    let status = await this.executor.setup({ "uri": host })
+    console.debug(`Executor ready : ${status}`);
   }
 
   log(level: ConsoleMessageLevel, message: string) {
     let consoleDisplay = this.refs.child as ConsoleDisplay
     if (consoleDisplay)
-      consoleDisplay.append({time:new Date().toISOString(), level, message })
+      consoleDisplay.append({ time: new Date().toISOString(), level, message })
   }
+
   async evaluate() {
-    this.log("success", "Evaluating Script")
-
-    let hostname = window.location.hostname
-    let host = `ws://${hostname}:8080/ws`
-    let executor = new ServerExecutor();
-    // executor.setup({"uri":host})
-    // .then(val=>{
-    //   console.info("Executor ready")
-
-    // }).catch(e=>{console.info("Unable to setup executor", e)})
-
-    executor.on("*", msg => console.info(`Received : ${msg.event}`))
-    let status = await executor.setup({ "uri": host })
-    console.info(`Executor ready : ${status}`);
-
-    let x = false
-    if (x) {
-      const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
-
-      if (this.astEditor && this.ecmaEditor && this.jsonEditor) {
-        const txt = this.ecmaEditor.getValue()
-        const ast = ASTParser.parse({ type: "code", value: txt });
-        const json = toJson(ast)
-        const generator = new SourceGenerator();
-        const script = generator.toSource(ast);
-
-        this.jsonEditor.setValue(json)
-        this.astEditor.setValue(script)
-      }
+    this.log("success", "Evaluating Script")    
+    if (this.ecmaEditor) {
+      const txt = this.ecmaEditor.getValue()
+      this.executor.emit('compile', txt)
     }
   }
 
