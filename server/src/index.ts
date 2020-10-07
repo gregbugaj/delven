@@ -110,9 +110,13 @@ async function main() {
             } = {type:'unhandled'};
 
             switch (type) {
-                case 'compile':
+                case 'code:compile':
                     reply.type = 'compile.reply'
                     reply.data = await executor.compile(data)
+                    break;              
+                case 'code:evaluate':
+                    reply.type = 'evaluate.reply'
+                    reply.data = await executor.evaluate(data)
                     break;
                 default: reply.data = 'unhandled'
             }
@@ -139,16 +143,16 @@ async function main() {
 
     app.get('/api/v1/samples/:id', async (req: Request, res: Response) => {
         setJsonHeaders(res);
-
         const hash = req.params.id;
         const file = locateFileByHash('./sample-queries', hash);
         console.info(`File = ${file}`)
+
         if (file != null) {
             if (fs.statSync(file).isDirectory()) {
-                res.send({ "staus": "ok", "code": "" })
+                res.send({ "status": "ok", "data": "" })
             } else {
                 const code = fs.readFileSync(file, "utf8")
-                res.send({ "staus": "ok", "code": code })
+                res.send({ "status": "ok", "data": code })
             }
         } else {
             res.send({ "status": "errror", "msg": 'Unable to load hash : ' + hash })

@@ -1,31 +1,19 @@
 import React from 'react'
-import Typography from '@material-ui/core/Typography'
 import { fade, makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-
 import { CodeMirrorManager } from './CodeMirror'
-import ReactDOM from 'react-dom';
 import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
 import ToggleButton from '@material-ui/lab/ToggleButton';
+import Icon from '@material-ui/core/Icon';
+
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
-
-
-import { green } from '@material-ui/core/colors';
-import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
 import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
-
 import { ServerExecutor } from "../../executors";
-
-const useStyles = makeStyles((theme) => ({
-
-}));
 
 type EditorProps = {
   ecmaName: string
@@ -73,7 +61,9 @@ class Editor extends React.Component<EditorProps, IState> {
     }
 
     this.handleViewChange = this.handleViewChange.bind(this)
+    this.compile = this.compile.bind(this)
     this.evaluate = this.evaluate.bind(this)
+
     this.executor = new ServerExecutor();
   }
 
@@ -109,20 +99,30 @@ class Editor extends React.Component<EditorProps, IState> {
     this.observeEditorChange(document.getElementById('compiled-container') as HTMLElement)
 
     // get message bus
-    let eventBus = globalThis.services.eventBus;
+    let eventBus = globalThis.services.eventBus
     let editor = this.ecmaEditor
+
     eventBus.on(
       EventTypeSampleQuery,
       (event): void => {
-        let payload = event.payload
-        let id = payload.id
+        let id = event.payload.id
 
-        (async () => {
-          const data = await http<{ code: string }>(`/api/v1/samples/${id}`)
-          const code = data.code
-          editor.setValue(code)
-        }
-        )()
+          ; (async () => {
+            type ServiceReplyType = {
+              status: string,
+              msg?: string
+              data?: any
+            }
+
+            const reply = await http<ServiceReplyType>(`/api/v1/samples/${id}`);
+            if (reply.status === 'errror') {
+              alert(reply.msg)
+            } else if (reply.status === 'ok') {
+              const code = reply.data;
+              editor.setValue(code);
+            }
+          }
+          )()
       }
     )
 
@@ -141,7 +141,22 @@ class Editor extends React.Component<EditorProps, IState> {
         const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
         this.jsonEditor.setValue(toJson(unit.ast))
         this.astEditor.setValue(unit.generated)
-      } 
+      }
+    })
+
+
+    this.executor.on('evaluate.reply', msg => {
+      console.info(`Received evaluate backend : ${msg}`)
+      let data = msg.data
+      if(data.stdout){
+          console.info(data.stdout)
+          this.log("raw", "------------------------------------")
+          let chunks = data.stdout.split('\r')
+          for(let chunk of chunks){
+            this.log("raw", chunk)
+          }
+          this.log("raw", "------------------------------------")
+      }
     })
 
     let status = await this.executor.setup({ "uri": host })
@@ -150,15 +165,28 @@ class Editor extends React.Component<EditorProps, IState> {
 
   log(level: ConsoleMessageLevel, message: string) {
     let consoleDisplay = this.refs.child as ConsoleDisplay
-    if (consoleDisplay)
-      consoleDisplay.append({ time: new Date().toISOString(), level, message })
+    if (consoleDisplay){
+      if(level == 'raw'){
+        consoleDisplay.append({level, message })
+      }else{
+        consoleDisplay.append({ time: new Date().toISOString(), level, message })
+      }
+    }
+  }
+
+  async compile() {
+    this.log("success", "Compiling Script")
+    if (this.ecmaEditor) {
+      const txt = this.ecmaEditor.getValue()
+      this.executor.emit('code:compile', txt)
+    }
   }
 
   async evaluate() {
-    this.log("success", "Evaluating Script")    
+    this.log("success", "Evaluating Script")
     if (this.ecmaEditor) {
       const txt = this.ecmaEditor.getValue()
-      this.executor.emit('compile', txt)
+      this.executor.emit('code:evaluate', txt)
     }
   }
 
@@ -170,6 +198,7 @@ class Editor extends React.Component<EditorProps, IState> {
 
   render() {
     let messages: ConsoleMessage[] = []
+
     messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
     messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
     messages.push({ time: new Date().toISOString(), level: "warn", message: "Important message" })
@@ -178,13 +207,16 @@ class Editor extends React.Component<EditorProps, IState> {
     messages.push({ time: new Date().toISOString(), level: "raw", message: "Raw message" })
 
     return (
-      <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-        <Grid container style={{ padding: "0px", border: "0px solid purple" }}>
+      <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+        <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid purple" }} >
+
               <Grid item>
-                <Button variant="contained" color="primary" style={{ minWidth: 80 }} onClick={this.evaluate}>Execute</Button>
+                <Button size="small" variant="contained" color="primary" style={{ minWidth: 80, marginRight: '20px' }} onClick={this.compile}>Compile</Button>
+                <Button size="small" variant="contained" color="secondary" style={{ minWidth: 80 }} onClick={this.evaluate}>Run</Button>
               </Grid>
+
               <Grid item>
                 <FormControlLabel
                   control={
@@ -212,10 +244,10 @@ class Editor extends React.Component<EditorProps, IState> {
           <Grid item sm={12} md={6}>
             <ToggleButtonGroup size="small" exclusive onChange={this.handleViewChange} value={this.state.display} aria-label="text primary button group">
               {/* <ToggleButton value="tree">Tree</ToggleButton> */}
-              <ToggleButton value="json">JSON</ToggleButton>
-              <ToggleButton value="compiled">Compiled</ToggleButton>
-              <ToggleButton value="console">Console</ToggleButton>
-              <ToggleButton value="graph">Job Graph</ToggleButton>
+              <ToggleButton size="small" value="json">JSON</ToggleButton>
+              <ToggleButton size="small" value="compiled">Compiled</ToggleButton>
+              <ToggleButton size="small" value="console">Console</ToggleButton>
+              <ToggleButton size="small" value="graph">Job Graph</ToggleButton>
             </ToggleButtonGroup >
 
           </Grid>

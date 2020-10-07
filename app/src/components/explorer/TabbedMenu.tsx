@@ -34,7 +34,6 @@ function SideTreeView(props: {}) {
 
     const nodeClicked = (event: React.SyntheticEvent, node: RenderTree) => {
         event.preventDefault();
-        console.info('Clicked node')
         eventBus.emit(new EventTypeSampleQuery({ name: node.name, id: node.id }));
     }
 
