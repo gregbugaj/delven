@@ -18,7 +18,7 @@ export default class LocalExecutor implements IExecutor {
         console.info(`Setting up executor`)
     }
 
-    evaluate(script: string): EvaluationResult {
+    evaluateXXXX(script: string): EvaluationResult {
 
         const _org = console;
 
@@ -89,6 +89,37 @@ export default class LocalExecutor implements IExecutor {
         return { "exception": exception, stdout: buffer, stderr: "" }
     }
 
+    async evaluate(script: string): Promise<EvaluationResult> {
+
+        console.info('Evaluating script')
+        let unit: CompilationUnit = {
+            id: create_UUID(),
+            code: script,
+            compileTime: 0
+        }
+
+        const options = {
+            url: 'http://localhost:5000/runner/evaluate',
+            form: {
+                code: JSON.stringify(unit)
+            }
+        }
+
+        return new Promise((resolve, reject) => {
+            request.post(options, (err, res, body) => {
+                if (err) {
+                    console.log(err);
+                    reject(err)
+                }
+
+                const result = JSON.parse(body)
+                resolve(result)
+            })
+        })
+
+    }
+
+
     async compile(script: string): Promise<CompilationUnit> {
         console.info('Compiling script')
         let unit: CompilationUnit = {
@@ -102,7 +133,8 @@ export default class LocalExecutor implements IExecutor {
             form: {
                 code: JSON.stringify(unit)
             }
-        };
+        }
+
         return new Promise((resolve, reject) => {
             request.post(options, (err, res, body) => {
                 if (err) {
@@ -112,7 +144,7 @@ export default class LocalExecutor implements IExecutor {
 
                 const result = JSON.parse(body)
                 resolve(result)
-            });
+            })
         })
     }
 

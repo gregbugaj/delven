@@ -5,6 +5,8 @@ import { CodeMirrorManager } from './CodeMirror'
 import Button from '@material-ui/core/Button';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import Icon from '@material-ui/core/Icon';
+import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
+import BlurLinearIcon from '@material-ui/icons/BlurLinear';
 
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -144,18 +146,19 @@ class Editor extends React.Component<EditorProps, IState> {
       }
     })
 
-
     this.executor.on('evaluate.reply', msg => {
       console.info(`Received evaluate backend : ${msg}`)
       let data = msg.data
-      if(data.stdout){
-          console.info(data.stdout)
-          this.log("raw", "------------------------------------")
-          let chunks = data.stdout.split('\r')
-          for(let chunk of chunks){
-            this.log("raw", chunk)
-          }
-          this.log("raw", "------------------------------------")
+      if (data.exception) {
+        let exception = data.exception
+        this.log("raw", exception.message)
+        this.log("raw", exception.stack)
+      } else if (data.stdout) {
+        console.info(data.stdout)
+        this.log("raw", "------------------------------------")
+        let chunks = data.stdout.split('\r')
+        this.log("raw", chunks)
+        this.log("raw", "------------------------------------")
       }
     })
 
@@ -163,14 +166,28 @@ class Editor extends React.Component<EditorProps, IState> {
     console.debug(`Executor ready : ${status}`);
   }
 
-  log(level: ConsoleMessageLevel, message: string) {
-    let consoleDisplay = this.refs.child as ConsoleDisplay
-    if (consoleDisplay){
-      if(level == 'raw'){
-        consoleDisplay.append({level, message })
-      }else{
-        consoleDisplay.append({ time: new Date().toISOString(), level, message })
+  _log(level: ConsoleMessageLevel, message: string): ConsoleMessage {
+    if (level == 'raw') {
+      return { level, message }
+    } else {
+      return { time: new Date().toISOString(), level, message }
+    }
+  }
+
+  log(level: ConsoleMessageLevel, message: string | string[]) {
+    const consoleDisplay = this.refs.child as ConsoleDisplay
+    const combined: ConsoleMessage[] = []
+    
+    if (consoleDisplay) {
+      if (message instanceof Array) {
+        for (let chunk of message) {
+          console.info(chunk)
+          combined.push(this._log(level, chunk))
+        }
+      } else {
+        combined.push(this._log(level, message))
       }
+      consoleDisplay.append(combined)
     }
   }
 
@@ -199,13 +216,6 @@ class Editor extends React.Component<EditorProps, IState> {
   render() {
     let messages: ConsoleMessage[] = []
 
-    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
-    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
-    messages.push({ time: new Date().toISOString(), level: "warn", message: "Important message" })
-    messages.push({ level: "error", message: "Error message" })
-    messages.push({ message: "Important message" })
-    messages.push({ time: new Date().toISOString(), level: "raw", message: "Raw message" })
-
     return (
       <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
         <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
@@ -213,8 +223,13 @@ class Editor extends React.Component<EditorProps, IState> {
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid purple" }} >
 
               <Grid item>
-                <Button size="small" variant="contained" color="primary" style={{ minWidth: 80, marginRight: '20px' }} onClick={this.compile}>Compile</Button>
-                <Button size="small" variant="contained" color="secondary" style={{ minWidth: 80 }} onClick={this.evaluate}>Run</Button>
+                <Button size="medium" variant="contained" color="primary" style={{ minWidth: 80, marginRight: '20px' }}
+                  startIcon={< BlurLinearIcon fontSize="large" />}
+                  onClick={this.compile}>Compile</Button>
+
+                <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 80 }}
+                  startIcon={<DirectionsRunIcon fontSize="large" />}
+                  onClick={this.evaluate}>Run</Button>
               </Grid>
 
               <Grid item>

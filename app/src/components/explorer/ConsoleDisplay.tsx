@@ -65,8 +65,8 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
     }
   }
 
-  public append(message: ConsoleMessage) {
-    this.setState({ messages: this.state.messages?.concat(message) })
+  public append(messages: ConsoleMessage | ConsoleMessage[]) {
+    this.setState({ messages: this.state.messages?.concat(messages) })
   }
 
   private _append(level: ConsoleMessageLevel, message: string) {
@@ -150,7 +150,7 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
                 </Typography>
             </Grid>
             <Grid item>
-              <Button  size="small" variant="contained" style={{ minWidth: 80 }} >Raw logs</Button>
+              <Button size="small" variant="contained" style={{ minWidth: 80 }} >Raw logs</Button>
             </Grid>
           </Grid>
         </div>
