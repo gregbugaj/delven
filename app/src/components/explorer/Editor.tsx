@@ -17,6 +17,22 @@ import "../globalServices"
 import { http } from "../../http"
 import { ServerExecutor } from "../../executors";
 
+// https://reactsvgicons.com/search?q=arrow
+const BxsRightArrowIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      height="1em"
+      width="1em"
+      {...props}
+    >
+      <path d="M5.536 21.886a1.004 1.004 0 001.033-.064l13-9a1 1 0 000-1.644l-13-9A1 1 0 005 3v18a1 1 0 00.536.886z" />
+    </svg>
+  );
+}
+
+
 type EditorProps = {
   ecmaName: string
   ecmaValue: string
@@ -177,7 +193,7 @@ class Editor extends React.Component<EditorProps, IState> {
   log(level: ConsoleMessageLevel, message: string | string[]) {
     const consoleDisplay = this.refs.child as ConsoleDisplay
     const combined: ConsoleMessage[] = []
-    
+
     if (consoleDisplay) {
       if (message instanceof Array) {
         for (let chunk of message) {
@@ -212,23 +228,26 @@ class Editor extends React.Component<EditorProps, IState> {
       return
     this.setState({ display: renderType });
   }
-
+  
   render() {
     let messages: ConsoleMessage[] = []
-
     return (
       <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-        <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
+        <Grid container style={{ padding: "4px", border: "1px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
-            <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid purple" }} >
+            <Grid container justify="space-between" style={{ padding: "0px", border: "1px solid green" }} >
 
               <Grid item>
-                <Button size="medium" variant="contained" color="primary" style={{ minWidth: 80, marginRight: '20px' }}
-                  startIcon={< BlurLinearIcon fontSize="large" />}
+                <Button size="medium" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
+                  endIcon={< BlurLinearIcon fontSize="large" />}
                   onClick={this.compile}>Compile</Button>
 
-                <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 80 }}
-                  startIcon={<DirectionsRunIcon fontSize="large" />}
+                <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
+                  endIcon={
+                
+                    <BxsRightArrowIcon />
+                
+                }
                   onClick={this.evaluate}>Run</Button>
               </Grid>
 
