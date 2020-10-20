@@ -3,7 +3,8 @@
  * 
  * https://github.com/microsoft/TypeScript/issues/25710
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
- *  Async Generators 
+ * 
+ * Async Generators 
  * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-3.html
  * 
  * https://javascript.info/async-iterators-generators
@@ -26,7 +27,6 @@ export class MockQueryable implements IQueryable<number> {
 
     constructor() {
         console.info("entry")
-        Symbol.iterator
     }
 
     async * iterOfIter(): AsyncGenerator<number, unknown, unknown> {

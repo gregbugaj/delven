@@ -733,7 +733,7 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0002\u0002\u043d\u0440\u0005\u008eH\u0002\u043e\u043f\u0007b\u0002",
     "\u0002\u043f\u0441\u0005\u008cG\u0002\u0440\u043e\u0003\u0002\u0002",
     "\u0002\u0440\u0441\u0003\u0002\u0002\u0002\u0441\u0449\u0003\u0002\u0002",
-    "\u0002\u0442\u0443\u0005t;\u0002\u0443\u0446\u0005p9\u0002\u0444\u0445",
+    "\u0002\u0442\u0443\u0005t;\u0002\u0443\u0446\u0005n8\u0002\u0444\u0445",
     "\u0007b\u0002\u0002\u0445\u0447\u0005\u008cG\u0002\u0446\u0444\u0003",
     "\u0002\u0002\u0002\u0446\u0447\u0003\u0002\u0002\u0002\u0447\u0449\u0003",
     "\u0002\u0002\u0002\u0448\u043c\u0003\u0002\u0002\u0002\u0448\u043d\u0003",
@@ -11998,8 +11998,8 @@ Select_list_elemContext.prototype.singleExpression = function() {
     return this.getTypedRuleContext(SingleExpressionContext,0);
 };
 
-Select_list_elemContext.prototype.argument = function() {
-    return this.getTypedRuleContext(ArgumentContext,0);
+Select_list_elemContext.prototype.arguments = function() {
+    return this.getTypedRuleContext(ArgumentsContext,0);
 };
 
 Select_list_elemContext.prototype.accept = function(visitor) {
@@ -12051,7 +12051,7 @@ ECMAScriptParser.prototype.select_list_elem = function() {
             this.state = 1088;
             this.singleExpression(0);
             this.state = 1089;
-            this.argument();
+            this.arguments();
             this.state = 1092;
             this._errHandler.sync(this);
             var la_ = this._interp.adaptivePredict(this._input,123,this._ctx);

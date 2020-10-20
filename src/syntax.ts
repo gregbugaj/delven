@@ -75,6 +75,7 @@ export const Syntax = {
     YieldExpression: 'YieldExpression',
 
     // Extension
+    URIIdentifier: 'URIIdentifier',
     SelectStatement: 'SelectStatement',
     QueryBindingExpression: 'QueryBindingExpression',
     QueryExpression: 'QueryExpression',

@@ -978,7 +978,7 @@ class DelvenASTVisitor extends DelvenVisitor {
             if (node instanceof ECMAScriptParser.StatementContext) {
                 body.push(this.visitStatement(node))
             } else {
-                this.throwTypeError(type)
+                this.throwTypeError(node)
             }
         }
         return body;
@@ -1702,8 +1702,8 @@ class DelvenASTVisitor extends DelvenVisitor {
      * 
      * @param ctx 
      */
-    private iterable(ctx: RuleContext) {
-        const nodes = [];
+    private iterable(ctx: RuleContext): any[]{
+        const nodes:any[] = [];
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             nodes.push(ctx.getChild(i))
         }
@@ -2457,7 +2457,7 @@ class DelvenASTVisitor extends DelvenVisitor {
      * @param tokenType 
      */
     hasToken(ctx: RuleContext, tokenType: number): boolean {
-        if(ctx == null){
+        if (ctx == null) {
             return false
         }
         for (let i = 0; i < ctx.getChildCount(); ++i) {
@@ -2719,7 +2719,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         const callee = this.singleExpression(ctx.singleExpression())
         const args: Node.ArgumentListElement[] = arg ? this.visitArguments(arg) : [];
         const dot = this.getTypedRuleContext(ctx, ECMAScriptParser.MemberDotExpressionContext)
-         const isOptional = this.hasToken(dot, ECMAScriptParser.QuestionMark)
+        const isOptional = this.hasToken(dot, ECMAScriptParser.QuestionMark)
 
         return isOptional ? new Node.OptionalCallExpression(callee, args) : new Node.CallExpression(callee, args)
     }
@@ -2924,6 +2924,8 @@ class DelvenASTVisitor extends DelvenVisitor {
 
         if (lhs instanceof Node.ArrayExpression) {
             lhs = this.convertToArrayPattern(lhs)
+        } else if (lhs instanceof Node.ObjectExpression) {
+            lhs = new Node.ObjectPattern(this.convertToObjectPatternProperty(lhs.properties))
         }
 
         return new Node.AssignmentExpression(operator, lhs, rhs)
@@ -3266,7 +3268,9 @@ class DelvenASTVisitor extends DelvenVisitor {
             return this.visitUnaryPlusExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.PreIncrementExpressionContext) {
             return this.visitPreIncrementExpression(ctx)
-        } else if (ctx instanceof ECMAScriptParser.PowerExpressionContext) {
+        } else if (ctx instanceof ECMAScriptParser.PostIncrementExpressionContext) {
+            return this.visitPostIncrementExpression(ctx)
+        }  else if (ctx instanceof ECMAScriptParser.PowerExpressionContext) {
             return this.visitPowerExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.VoidExpressionContext) {
             return this.visitVoidExpression(ctx)
@@ -3586,6 +3590,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         const lhs = this.singleExpression(initialiser)
         const rhs = this.singleExpression(expression)
 
+        console.info(rhs)
         return new Node.AssignmentExpression(operator, lhs, rhs)
     }
 
@@ -3703,7 +3708,7 @@ class DelvenASTVisitor extends DelvenVisitor {
             const chars = new antlr4.InputStream(fragment)
             const lexer = new DelvenLexer(chars)
             const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-            const tree = parser.singleExpression()
+            const tree = parser.singleExpression(0)
             return tree.accept(this)
         }
 
@@ -3969,11 +3974,31 @@ class DelvenASTVisitor extends DelvenVisitor {
     visitQuerySelectListExpression(ctx: RuleContext): Node.SelectClause {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.QuerySelectListExpressionContext)
+        console.info(ctx.getChildCount())
 
-        const itema = new Node.SelectItemExpression(new Node.Identifier("a"))
-        const itemb = new Node.SelectItemExpression(new Node.Identifier("b"))
+        const selects: Node.SelectItemExpression[] = []
+        for (const node of this.filterSymbols(ctx)) {
+            if (node instanceof ECMAScriptParser.Select_list_elemContext) {
+                const child = node.getChild(0)
+                if (child instanceof ECMAScriptParser.IdentifierExpressionContext) {
+                    const identifierExpressionContext = this.getTypedRuleContext(node, ECMAScriptParser.IdentifierExpressionContext)
+                    const argumentsContext = this.getTypedRuleContext(node, ECMAScriptParser.ArgumentsContext)
+                    const identifierNameContext = this.getTypedRuleContext(node, ECMAScriptParser.IdentifierNameContext)
 
-        const selectClause: Node.SelectClause = new Node.SelectClause([itema, itemb])
+                    const identifierExpression: Node.Identifier = this.visitIdentifierExpression(identifierExpressionContext)
+                    const args: Node.ArgumentListElement[] = this.visitArguments(argumentsContext)
+                    const identifierName: Node.Identifier | null = identifierNameContext ? this.visitIdentifierName(identifierNameContext) : null
+                    const call = new Node.CallExpression(identifierExpression, args)
+
+                    selects.push(new Node.SelectItemExpression(call, identifierName))
+                } else if (child instanceof ECMAScriptParser.IdentifierContext) {
+                    const value = child.getText()
+                    selects.push(new Node.SelectItemExpression(new Node.Identifier(value), null))
+                }
+            }
+        }
+
+        const selectClause: Node.SelectClause = new Node.SelectClause(selects)
         return selectClause
     }
 
@@ -3981,6 +4006,7 @@ class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.QueryFromExpressionContext)
         const elems: Node.FromClauseElement[] = this.visitQueryDataSourcesExpression(ctx.dataSources())
+
         return new Node.FromClause(elems)
     }
 
@@ -3988,7 +4014,9 @@ class DelvenASTVisitor extends DelvenVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.QueryDataSourcesExpressionContext)
         const elems: Node.FromClauseElement[] = []
+
         for (const node of this.filterSymbols(ctx)) {
+
             if (node instanceof ECMAScriptParser.DataSourceContext) {
                 elems.push(this.visitDataSource(node))
             } else {
@@ -3998,18 +4026,62 @@ class DelvenASTVisitor extends DelvenVisitor {
         return elems
     }
 
+    /**
+     * Visit the DataSource
+     * 
+     * Sample:
+     * ```
+     *  select x,y from w
+     * ```
+     * 
+     * Grammar 
+     * ```
+     * dataSources
+     *   : dataSource (',' dataSource)*            # QueryDataSourcesExpression
+     *   ;
+     * ```
+     * @param ctx 
+     */
     visitDataSource(ctx: RuleContext): Node.FromClauseElement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.DataSourceContext)
         const expression = this.getTypedRuleContext(ctx, ECMAScriptParser.QueryDataSourceExpressionContext)
         const node = expression.getChild(0)
+
         if (node instanceof ECMAScriptParser.QueryDataSourceItemArgumentsExpressionContext) {
             return this.visitQueryDataSourceItemArgumentsExpression(node)
+        } else if (node instanceof ECMAScriptParser.QueryDataSourceItemIdentifierExpressionContext) {
+            return this.visitQueryDataSourceItemIdentifierExpression(node)
+        } else if (node instanceof ECMAScriptParser.QueryDataSourceItemUrlExpressionContext) {
+            return this.visitQueryDataSourceItemUrlExpression(node)
         }
 
         throw new TypeError("Type not handled")
     }
 
+
+    visitQueryDataSourceItemIdentifierExpression(ctx: RuleContext): Node.FromClauseElement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QueryDataSourceItemIdentifierExpressionContext)
+        const expression = this.singleExpression(ctx.getChild(0))
+
+        return new Node.FromClauseElement(expression, null)
+    }
+
+    /**
+     * Handles ULR style datasources
+     * 
+     * ```
+     * select x from http://src
+     * ```
+     */
+    visitQueryDataSourceItemUrlExpression(ctx: RuleContext): Node.FromClauseElement {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.QueryDataSourceItemUrlExpressionContext)
+
+        const ident = new Node.URIIdentifier(ctx.getText())
+        return new Node.FromClauseElement(ident, null)
+    }
 
     visitQueryDataSourceItemArgumentsExpression(ctx: RuleContext): Node.FromClauseElement {
         this.log(ctx, Trace.frame())

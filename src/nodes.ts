@@ -17,7 +17,7 @@ export type Expression = ArrayExpression | ArrowFunctionExpression | AssignmentE
     ConditionalExpression | Identifier | FunctionExpression | Literal | NewExpression | ObjectExpression |
     RegexLiteral | SequenceExpression | StaticMemberExpression | TaggedTemplateExpression |
     ThisExpression | UnaryExpression | UpdateExpression | YieldExpression;
-export type FunctionParameter = AssignmentPattern | BindingIdentifier | BindingPattern;
+export type FunctionParameter = AssignmentPattern | BindingIdentifier | BindingPattern | RestElement; // Add RestElement
 export type ImportDeclarationSpecifier = ImportDefaultSpecifier | ImportNamespaceSpecifier | ImportSpecifier;
 export type ObjectExpressionProperty = Property | SpreadElement;
 export type ObjectPatternProperty = Property | RestElement;
@@ -854,7 +854,7 @@ export class UnaryExpression {
     readonly operator: string;
     readonly argument: Expression;
     readonly prefix: boolean;
-    constructor(operator, argument) {
+    constructor(operator:string, argument:Expression) {
         this.type = Syntax.UnaryExpression;
         this.operator = operator;
         this.argument = argument;
@@ -867,7 +867,7 @@ export class UpdateExpression {
     readonly operator: string;
     readonly argument: Expression;
     readonly prefix: boolean;
-    constructor(operator, argument, prefix) {
+    constructor(operator:string, argument:Expression, prefix:boolean) {
         this.type = Syntax.UpdateExpression;
         this.operator = operator;
         this.argument = argument;
@@ -927,6 +927,17 @@ export class YieldExpression {
         this.type = Syntax.YieldExpression;
         this.argument = argument;
         this.delegate = delegate;
+    }
+}
+
+// Extensions
+
+export class URIIdentifier {
+    readonly type: string;
+    readonly uri: string;
+    constructor(uri:string) {
+        this.type = Syntax.URIIdentifier;
+        this.uri = uri;
     }
 }
 
@@ -1003,9 +1014,12 @@ export class WhereClause {
 
 export class SelectItemExpression {
     readonly type: string;
+    readonly alias: Identifier | null;
     readonly expression: Expression;
-    constructor(expression: Expression) {
+
+    constructor(expression: Expression, alias: Identifier | null) {
         this.type = Syntax.SelectItemExpression;
         this.expression = expression;
+        this.alias = alias;
     }
 }

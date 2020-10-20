@@ -1,7 +1,9 @@
+import { isDoStatement } from "typescript";
+import { isNullOrUndefined } from "util";
 import ASTVisitor, { Binding } from "./ASTVisitor";
 import * as Node from "./nodes";
+import { needsParens } from "./ParensUtil";
 import { Syntax } from "./syntax";
-import { isNullOrUndefined } from "util";
 
 /**
  * Source generator to transform valid AST back into ECMAScript
@@ -24,12 +26,48 @@ export default class SourceGenerator {
      * @param node 
      */
     toSource(node: Node.Module): string {
+        this.decorate(node, null, "")
+
         const visitor = new ExplicitASTNodeVisitor()
         visitor.visitModule(node)
         return visitor.buffer
     }
-}
 
+    /**
+     * Decorate node with new properties `__path__` and `__parent__`
+     * to provide additional information durning source transpilling
+     * 
+     * This will create circurall dependencies and will mess with tests 
+     * if the `Util.toJson` is not used. 
+     *  
+     * @param node the node to decorate 
+     * @param parent the partent node 
+     * @param path the current path in the object graph
+     */
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    decorate(node: any, parent: any | null, path: string): void {
+        if (node == null || node == undefined) {
+            return
+        }
+        const keys = Object.getOwnPropertyNames(node)
+        for (const key in keys) {
+            const name = keys[key];
+            if (name.startsWith('__')) {
+                continue
+            } else if (name == 'type') {
+                if (path === "") {
+                    path = node[name]
+                }
+                else {
+                    path += "." + node[name]
+                }
+                node['__parent__'] = parent
+            } else if (typeof (node[name]) === 'object') {
+                this.decorate(node[name], node, path)
+            }
+        }
+    }
+}
 class ExplicitASTNodeVisitor extends ASTVisitor {
 
     private _buffer: string
@@ -89,7 +127,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitModule(node: Node.Module): void {
         this.write("// Generated code", false, true)
-
         for (const stm of node.body) {
             this.visitStatement(stm)
         }
@@ -312,7 +349,60 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitSelectStatement(statement: Node.SelectStatement) {
-        console.info(statement)
+        const body: Node.QueryExpression = statement.body;
+        const from = body.from;
+        const select = body.select;
+        const where = body.where;
+
+        // console.info(from)
+        // console.info(select)
+        // console.info(where)
+
+        this.write('Select', false, false)
+        this.write('([ ', false, false)
+        for (let i = 0; i < select.projections.length; ++i) {
+            const projection = select.projections[i];
+            const expression = projection.expression
+            this.writeNewLine()
+            this.write('{expr: ', false, false)
+            this.visitExpression(expression)
+
+            if (projection.alias) {
+                this.write(', alias: ', false, false)
+                this.visitExpression(projection.alias)
+            }
+
+            this.write('}', false, false)
+            this.writeConditional(i < select.projections.length - 1, ', ', false, false)
+            this.writeNewLine()
+        }
+
+        this.write(']', false, false)
+        this.write(')', false, false)
+
+        if (from) {
+            this.writeNewLine()
+            const fce: Node.FromClauseElement = from.expressions[0]
+            const exp = fce.expression;
+            console.info(exp)
+            console.info(from.expressions[0])
+            this.write('.From', false, false)
+            this.write('(', false, false)
+            if (exp.type == Syntax.URIIdentifier) {
+                this.write(`URIDataSource.of('${exp.uri}')`, false, false)
+            }
+            this.write(')', false, false)
+        }
+
+        if (where) {
+            this.writeNewLine()
+            this.write('.Where', false, false)
+            this.write('((row)=> {', false, false)
+            this.write('return (', false, false)
+            this.visitExpression(where.expression)
+            this.write(')', false, false)
+            this.write('})', false, false)
+        }
     }
 
     visitImportDeclaration(statement: Node.ImportDeclaration): void {
@@ -465,8 +555,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('(', false, false)
         this.visitExpression(statement.test)
         this.write(')', false, false)
-
-
     }
 
     visitWhileStatement(statement: Node.WhileStatement): void {
@@ -727,18 +815,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitExpressionStatement(statement: Node.ExpressionStatement): void {
-        switch (statement.expression.type) {
-            // case Syntax.AssignmentExpression:
-            case Syntax.ObjectExpression:
-            case Syntax.FunctionExpression:
-                {
-                    this.write("(", false, false)
-                    this.visitExpression(statement.expression)
-                    this.write(")", false, false)
-                    break
-                }
-            default: this.visitExpression(statement.expression)
-        }
+        const parens = needsParens(statement.expression)
+        
+        this.writeConditional(parens, "(", false, false)
+        this.visitExpression(statement.expression)
+        this.writeConditional(parens, ")", false, false)
     }
 
     visitAssignmentExpression(expression: Node.AssignmentExpression): void {
@@ -945,16 +1026,20 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     binaryExpression(expression: Node.BinaryExpression): void {
-        const leftParen = (expression.left.type == Syntax.LogicalExpression || expression.left.type == Syntax.BinaryExpression)
-        const rightParen = (expression.right.type == Syntax.LogicalExpression || expression.right.type == Syntax.BinaryExpression)
+        // let leftParen =  (expression.left.type == Syntax.LogicalExpression || expression.left.type == Syntax.BinaryExpression)
+        // let rightParen = (expression.right.type == Syntax.LogicalExpression || expression.right.type == Syntax.BinaryExpression)
+        let leftParen = needsParens(expression.left)
+        let rightParen = needsParens(expression.right)
 
-        this.write(leftParen ? '(' : '', false, false)
+        this.writeConditional(leftParen, '(' , false, false)
         this.visitExpression(expression.left)
-        this.write(leftParen ? ')' : '', false, false)
+        this.writeConditional(leftParen , ')', false, false)
+
         this.write(` ${expression.operator} `, false, false)
-        this.write(rightParen ? '(' : '', false, false)
+
+        this.writeConditional(rightParen, '(', false, false)
         this.visitExpression(expression.right)
-        this.write(rightParen ? ')' : '', false, false)
+        this.writeConditional(rightParen, ')', false, false)
     }
 
     visitArrayExpression(expression: Node.ArrayExpression): void {
@@ -1111,11 +1196,12 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.write('=>', false, false)
 
         if (expression.body instanceof Node.BlockStatement) {
-            this.visitBlockStatement(expression.body as Node.BlockStatement)
+            this.visitBlockStatement(expression.body)
         } else {
-            this.write('(', false, false)
+            const parens = needsParens(expression.body)
+            this.writeConditional(parens, '(', false, false)
             this.visitExpression(expression.body)
-            this.write(')', false, false)
+            this.writeConditional(parens, ')', false, false)
         }
     }
 

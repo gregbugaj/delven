@@ -549,7 +549,7 @@ select_list
 select_list_elem
   : '*'
   | identifier (As identifierName)?
-  | singleExpression argument (As identifierName)?
+  | singleExpression arguments (As identifierName)?
 	;
 
 fromClause

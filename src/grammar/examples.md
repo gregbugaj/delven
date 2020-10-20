@@ -3,12 +3,11 @@
 ## Basic syntax
 ```sql
 
-select x, z from s.()
+select x, z from provider.data()
 
 select x, z from s
-select x, z from s.()
+select x, z from s.d()
 select x, z from () => {}
-
 
 select x, z from (http://www.google.com)
 select x, z from http://source.com
@@ -170,4 +169,9 @@ let y = ()=>select css('#sel1') from Source()
 
 ```sql
 select css('#a') , z from (select css('#a') from zz) where (x==1)
+```
+
+## Composite
+```sql
+select css('#s', '#m') as s, css('#z') as z from http://google.com where 1==1 || 2==2 && css('#s') == true
 ```

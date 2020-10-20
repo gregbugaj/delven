@@ -14,6 +14,12 @@ export default abstract class ASTVisitor {
     abstract visitModule(node: Node.Script): void
 
     /**
+     * Visit statement
+     * @param statement 
+     */
+    abstract visitStatement(statement: Node.Declaration | Node.Statement):void
+
+    /**
      * 
      * @param node 
      */

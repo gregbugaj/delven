@@ -54,10 +54,10 @@ const codezz = `
     // const code =  "let x = tag`A ${1+2} B + C${b}D`"
 
     // ({x, ...y} = {x, ...y})
-    const code = `
-    odds  = evens.map(v => v + 1)
-    pairs = evens.map(v => ({ even: v, odd: v + 1 }))
-    nums  = evens.map((v, i) => v + i)
+    const codexx = `
+        odds  = evens.map(v => v + 1)
+        pairs = evens.map(v => ({ even: v, odd: v + 1 }))
+        nums  = evens.map((v, i) => v + i)
     `
 
     // antlr.ArrowFunctions[ExpressionBodies]
@@ -69,8 +69,17 @@ const codezz = `
     // let x = {async test(){}} 
     // x = {fun(){}, z} 
 
+    // const code = `let x = ()=> {1}`
+    // const code = `select x, css('#s', 1) as s, css('#z') as z from http://google.com where 1==1 || 2==2 && css('#s') == true`
+    // const code = `({x, ...y} = {x, ...y})` // Needs proper quotes
+    // const code = `({x} = {x})`
+    // const code = `{ do { } while (false) false }`
+    // const code = `let x = 1 + 2 + 3 / 2`
+    // const code = `let k = (1+2) * x++`
+    const code = `let k = (1+2) * (1 * x++)`
+    // const code = `let x= 2 + (2 /2)`
     const ast = ASTParser.parse({ type: "code", value: code });
-    console.info(Utils.toJson(ast))
+    console.info(JSON.stringify(ast))
 
     const generator = new SourceGenerator();
     const script = generator.toSource(ast);
@@ -82,11 +91,11 @@ const codezz = `
     const dir = resolve(__dirname, '../test/fixtures', ...["", ""])
 }
 
-// (async () => {
-//     await main()
-// })().catch(err => {
-//     console.error("error in main", err)
-// })
+(async () => {
+    await main()
+})().catch(err => {
+    console.error("error in main", err)
+})
 
 // Trick to prevent  > All files must be modules when the '--isolatedModules' flag is provided.ts(1208)
 export {

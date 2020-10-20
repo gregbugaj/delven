@@ -4,6 +4,8 @@ import SourceGenerator from "../SourceGenerator";
 import glob from 'glob'
 import * as fs from 'fs'
 import * as path from 'path'
+import Utils from '../util'
+
 // import { diffString, diff } from 'json-diff'
 import * as jsondiffpatch from 'jsondiffpatch'
 
@@ -50,11 +52,9 @@ function discover(expectType: TestType): TestCase[] {
         }
     }
 
-    return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
-    // return cases
+    // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
+    return cases
 }
-
-const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
 
 const createOptions = function () {
     return {
@@ -89,8 +89,8 @@ const createOptions = function () {
 }
 
 const assertSame = function (expected, ast): { same: boolean, delta: any } {
-    const a = toJson(ast)
-    const b = toJson(expected)
+    const a = Utils.toJson(ast)
+    const b = Utils.toJson(expected)
     // bug in json diffpatcher when there is an array with null values `"elements": [null, null, {} ]`
     // to cause a bad compare, example : expression.primary.array[array-0004]
     if (a === b) {

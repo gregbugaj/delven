@@ -1,7 +1,34 @@
 import * as fs from 'fs'
+
+/**
+ * 
+ * @param obj the object to sanitize
+ */
+function sanitize(obj: any | null): void {
+    if (obj == null || obj == undefined) {
+        return
+    }
+
+    // prevent circular dependenices
+    delete obj['__parent__'];
+    delete obj['__path__'];
+
+    const keys = Object.getOwnPropertyNames(obj)
+
+    for (const key in keys) {
+        const name = keys[key];
+        if (obj[name] && typeof obj[name] === 'object') {
+            sanitize(obj[name])
+        }
+    }
+}
 export default class Utils {
 
-    static toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
+    static toJson = (obj: unknown): string => {
+        const clone = Object.create(obj);
+        sanitize(clone)
+        return JSON.stringify(clone, function replacer(key, value) { return value }, 4)
+    };
 
     /**
      * Create directory from a path
@@ -17,7 +44,7 @@ export default class Utils {
             return false
         }
 
-        fs.mkdirSync(dir,  { recursive: true })
+        fs.mkdirSync(dir, { recursive: true })
         return true
     }
 
