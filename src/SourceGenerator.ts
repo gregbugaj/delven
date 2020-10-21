@@ -79,7 +79,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         super()
         this._buffer = ""
         this.indentation = 0
-        this.indent_with = "    "
+        this.indent_with = ""
         this.indent = ""
         this.line = 1
     }
@@ -89,7 +89,15 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     private write(txt: string, useIndent: boolean, newline = false): void {
-        this._buffer += (useIndent ? this.indent : "") + txt;
+        this._buffer += this.indentation+"  : " + txt;
+        if (newline) {
+            this._buffer += '\n';
+            this.line++;
+        }
+    }
+    
+    private ___write(txt: string, useIndent: boolean, newline = false): void {
+        this._buffer += this.indentation+"  : " + (useIndent ? this.indent : "") + txt;
         if (newline) {
             this._buffer += '\n';
             this.line++;
@@ -658,9 +666,14 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitUpdateExpression(expression: Node.UpdateExpression): void {
+        const parens = hasParenthesis(expression.argument, 'argument')
+        this.writeConditional(parens, "(", false, false)
+
         this.writeConditional(expression.prefix, expression.operator, false, false)
         this.visitExpression(expression.argument)
         this.writeConditional(!expression.prefix, expression.operator, false, false)
+
+        this.writeConditional(parens, ")", false, false)
     }
 
     vistReturnStatement(expression: Node.ReturnStatement): void {
@@ -701,7 +714,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         if (expression.superClass) {
             this.write(' extends ', false, false)
+            const parens = hasParenthesis(expression.superClass, 'superClass')
+            this.writeConditional(parens, "(", false, false)
             this.visitExpression(expression.superClass)
+            this.writeConditional(parens, ")", false, false)
         }
 
         this.write('{ ', false, true)
@@ -804,7 +820,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
                     const bodyStatment = body[i]
                     this.indentIncease()
                     this.visitStatement(bodyStatment)
-                    this.write(i < body.length - 1 ? '\n' : '', false, false)
+                    // this.write(i < body.length - 1 ? '\n' : '', false, false)
                     this.indentDecrease()
                 }
             }
@@ -814,7 +830,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitExpressionStatement(statement: Node.ExpressionStatement): void {
         const parens = hasParenthesis(statement.expression)
-        
+
         this.writeConditional(parens, "(", false, false)
         this.visitExpression(statement.expression)
         this.writeConditional(parens, ")", false, false)
@@ -1034,13 +1050,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     binaryExpression(expression: Node.BinaryExpression): void {
-        
+
         const leftParen = hasParenthesis(expression.left, 'left')
         const rightParen = hasParenthesis(expression.right, 'right')
 
-        this.writeConditional(leftParen, '(' , false, false)
+        this.writeConditional(leftParen, '(', false, false)
         this.visitExpression(expression.left)
-        this.writeConditional(leftParen , ')', false, false)
+        this.writeConditional(leftParen, ')', false, false)
 
         this.write(` ${expression.operator} `, false, false)
 
@@ -1070,9 +1086,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     vistSpreadElement(expression: Node.SpreadElement): void {
         const wrap = hasParenthesis(expression.argument, 'argument')
         this.write('...', false, false)
-        this.writeConditional(wrap, '(' , false, false)
+        this.writeConditional(wrap, '(', false, false)
         this.visitExpression(expression.argument)
-        this.writeConditional(wrap, ')' , false, false)
+        this.writeConditional(wrap, ')', false, false)
     }
 
     vistiRestElement(expression: Node.RestElement): void {

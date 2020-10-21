@@ -3,6 +3,9 @@ import SourceGenerator from "./SourceGenerator";
 import Utils from './util'
 import * as fs from "fs"
 import { resolve } from "path"
+// import * as chalk from "chalk"
+import chalk from "chalk";
+
 
 async function main() {
     /*
@@ -87,18 +90,27 @@ const codezz = `
     // const code = `k = { *foo() {} }`
     // const code = `let k = ((x)=> 1, (y)=>2)` 
     const code = `
-    
-    // class-extends
-    // "ArrowFunctionExpression"
-    class a1 extends (() => {}) {}
-
+        (function funa() {
+        func(() => {thing(); console.info(a);}, identifier);
+        })()
+        
+        function z(){
+        let z = 1
+        }
     ` 
+
+   
     // const code = `x?.y()` 
 
+    const parser_label = chalk.green("parser") 
+    console.time(parser_label); 
     const ast = ASTParser.parse({ type: "code", value: code });
     console.info('Serialized')
     console.info(Utils.toJson(ast))
+    console.timeEnd(parser_label); 
 
+    const generator_label = chalk.green("generator") 
+    console.time(generator_label); 
     const generator = new SourceGenerator();
     const script = generator.toSource(ast);
     console.info('-------')
@@ -106,7 +118,8 @@ const codezz = `
 
     console.info('----SOURCE----')
     console.info(code)
-    const dir = resolve(__dirname, '../test/fixtures', ...["", ""])
+
+    console.timeEnd(generator_label); 
 }
 
 (async () => {

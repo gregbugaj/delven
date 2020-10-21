@@ -1,8 +1,9 @@
+import { NodeBuilderFlags } from "typescript";
 import { Syntax } from "./syntax";
 
 // Parentisis logic based on 'prettier' project
 
-const debug = false
+const debug = true
 
 function isStatementOrDeclaration(node: any): boolean {
     if (node === null || node.type === null)
@@ -59,6 +60,26 @@ function hasParenthesis(node: any, name?: string | null): boolean {
         return false
     }
 
+    // Add parens around the extends clause of a class. 
+    if ((parent.type === Syntax.ClassDeclaration || parent.type == Syntax.ClassExpression) &&
+        parent.superClass == node && (
+            node.type == Syntax.ArrowFunctionExpression ||
+            node.type == Syntax.AssignmentExpression ||
+            node.type == Syntax.AwaitExpression ||
+            node.type == Syntax.BinaryExpression ||
+            node.type == Syntax.ConditionalExpression ||
+            node.type == Syntax.LogicalExpression ||
+            node.type == Syntax.NewExpression ||
+            node.type == Syntax.ObjectExpression ||
+            node.type == Syntax.SequenceExpression ||
+            node.type == Syntax.TaggedTemplateExpression ||
+            node.type == Syntax.UnaryExpression ||
+            node.type == Syntax.UpdateExpression ||
+            node.type == Syntax.YieldExpression)
+    ) {
+        return true
+    }
+
     switch (node.type) {
         case Syntax.Identifier:
         case Syntax.Literal:
@@ -67,6 +88,16 @@ function hasParenthesis(node: any, name?: string | null): boolean {
         case Syntax.SpreadElement:
             return true
 
+        case Syntax.UpdateExpression: {
+            if (parent.type === Syntax.UnaryExpression) {
+                return (node.prefix &&
+                    ((node.operator === "++" && parent.operator === "+") ||
+                        (node.operator === "--" && parent.operator === "-"))
+                )
+            }
+        }
+
+        // eslint-disable-next-line no-fallthrough
         case Syntax.AssignmentExpression: {
             if (parent.type === Syntax.ExpressionStatement) {
                 return node.left.type === Syntax.ObjectPattern

@@ -68,8 +68,9 @@ function discover(expectType: TestType): TestCase[] {
     }
 
     // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
-    // return cases.filter(c => c.name.indexOf('parenthesis') > -1)
-    return cases
+    return cases.filter(c => c.name.indexOf('class-001') > -1)
+    // return [cases[0]]
+    // return cases
 }
 
 const createOptions = function () {
@@ -109,6 +110,9 @@ const hasError = (ast: any): boolean => ast instanceof ErrorNode
 const assertSame = function (expected, ast): { same: boolean, delta: any } {
     const a = Utils.toJson(ast)
     const b = Utils.toJson(expected)
+
+    console.debug(a)
+    console.debug(b)
     // bug in json diffpatcher when there is an array with null values `"elements": [null, null, {} ]`
     // to cause a bad compare, example : expression.primary.array[array-0004]
     if (a === b) {
@@ -171,6 +175,7 @@ describe('Source-to-Source Test', () => {
     const cases: TestCase[] = discover("raw")
     const mapped = cases.map(_case => [_case.name, _case])
 
+    console.info(cases)
     it.each(mapped)(`%# Source : %s`, (label, _case) => {
         const deck = _case as TestCase
         const ast = ASTParser.parse({ type: "code", value: deck.code });
@@ -187,6 +192,11 @@ describe('Source-to-Source Test', () => {
 
         const generator = new SourceGenerator();
         const script = generator.toSource(ast);
+
+        console.info('script')
+        console.info(deck.code)
+        console.info(script)
+
         const ast2 = ASTParser.parse({ type: "code", value: script });
 
         if (hasError(ast2)) {
@@ -204,7 +214,8 @@ describe('Source-to-Source Test', () => {
 
         const { same, delta } = assertSame(ast, ast2)
 
-        if(delta){
+        console.info(`same == ${same}`)
+        if(delta) {
             console.info('AST Trees')
             console.info(Utils.toJson(ast))
             console.info(Utils.toJson(ast2))

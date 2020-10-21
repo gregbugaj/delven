@@ -234,7 +234,7 @@ classDeclaration
     : Class identifier classTail
     ;
 
-classTail  // GB : Footnote 11
+classTail  // GB : Footnote 11, this rules allow us to consume way to much
     : classHeritage?  '{' classElement* '}'
     ;
 

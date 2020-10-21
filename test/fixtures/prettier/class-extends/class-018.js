@@ -1,3 +1,1 @@
-
-
 x = class extends (++b) {}

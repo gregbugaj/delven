@@ -67,19 +67,20 @@ export type ErrorInfo = {
     msg: string,
 }
 
-
 class DelvenErrorListener extends ErrorListener {
     errors: ErrorInfo[] = []
     code: string
-    
-    constructor(code:string){
+
+    constructor(code: string) {
         super()
         this.code = code
     }
 
     syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
-        
+
         console.error(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`)
+        console.error(this.code)
+
         const error: ErrorInfo = {
             line: line,
             column: column,
@@ -162,7 +163,6 @@ export default abstract class ASTParser {
 
         try {
             const tree = parser.program()
-
             if (ASTParser._trace) {
                 console.log(tree.toStringTree(parser.ruleNames))
             }
@@ -1714,8 +1714,8 @@ class DelvenASTVisitor extends DelvenVisitor {
      * 
      * @param ctx 
      */
-    private iterable(ctx: RuleContext): any[]{
-        const nodes:any[] = [];
+    private iterable(ctx: RuleContext): any[] {
+        const nodes: any[] = [];
         for (let i = 0; i < ctx.getChildCount(); ++i) {
             nodes.push(ctx.getChild(i))
         }
@@ -3282,7 +3282,7 @@ class DelvenASTVisitor extends DelvenVisitor {
             return this.visitPreIncrementExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.PostIncrementExpressionContext) {
             return this.visitPostIncrementExpression(ctx)
-        }  else if (ctx instanceof ECMAScriptParser.PowerExpressionContext) {
+        } else if (ctx instanceof ECMAScriptParser.PowerExpressionContext) {
             return this.visitPowerExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.VoidExpressionContext) {
             return this.visitVoidExpression(ctx)
