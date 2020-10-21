@@ -1,4 +1,4 @@
-import ASTParser from "../ASTParser"
+import ASTParser, { ErrorNode } from "../ASTParser"
 import ASTNode from "../ASTNode"
 import SourceGenerator from "../SourceGenerator";
 import glob from 'glob'
@@ -9,7 +9,7 @@ import Utils from '../util'
 // import { diffString, diff } from 'json-diff'
 import * as jsondiffpatch from 'jsondiffpatch'
 
-export type TestType = "tree" | "tokens" | "path" | "failure"
+export type TestType = "tree" | "tokens" | "path" | "failure" | "raw"
 export type TestCase = {
     name: string,
     type: TestType
@@ -33,26 +33,42 @@ function discover(expectType: TestType): TestCase[] {
         const content = fs.readFileSync(filePath, 'utf-8')
         const label = chunks[0]
 
-        for (const assetPath of glob(`${dir}/**/${label}.*.json`, { sync: true })) {
-            const assetName = path.basename(assetPath)
-            let basename = assetPath.slice('./test/fixtures'.length + 1, assetPath.indexOf(assetName) - 1)
+        if (expectType === 'raw') {
+            const assetName = path.basename(filePath)
+            let basename = filePath.slice('./test/fixtures'.length + 1, filePath.indexOf(assetName) - 1)
             basename = basename.replace(/\//g, '.')
-            const type = getType(assetName)
-            if (type !== expectType) {
-                continue
-            }
-
             cases.push({
                 name: `${basename}[${label}]`,
-                type: type,
+                type: 'raw',
                 code: content,
-                expected: fs.readFileSync(assetPath, 'utf-8'),
+                expected: content,
                 enabled: true
             } as TestCase)
+
+        } else {
+
+            for (const assetPath of glob(`${dir}/**/${label}.*.json`, { sync: true })) {
+                const assetName = path.basename(assetPath)
+                let basename = assetPath.slice('./test/fixtures'.length + 1, assetPath.indexOf(assetName) - 1)
+                basename = basename.replace(/\//g, '.')
+                const type = getType(assetName)
+                if (type !== expectType) {
+                    continue
+                }
+
+                cases.push({
+                    name: `${basename}[${label}]`,
+                    type: type,
+                    code: content,
+                    expected: fs.readFileSync(assetPath, 'utf-8'),
+                    enabled: true
+                } as TestCase)
+            }
         }
     }
 
     // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
+    // return cases.filter(c => c.name.indexOf('parenthesis') > -1)
     return cases
 }
 
@@ -88,6 +104,8 @@ const createOptions = function () {
     }
 }
 
+const hasError = (ast: any): boolean => ast instanceof ErrorNode
+
 const assertSame = function (expected, ast): { same: boolean, delta: any } {
     const a = Utils.toJson(ast)
     const b = Utils.toJson(expected)
@@ -113,40 +131,84 @@ const assertSame = function (expected, ast): { same: boolean, delta: any } {
     return { same: delta == undefined, delta: delta }
 }
 
-if(false)
-describe('Generated Grammar Test Suite', () => {
-    beforeAll(() => {
-        ASTParser.trace(false)
-    });
 
-    const cases: TestCase[] = discover("tree")
-    const mapped = cases.map(_case => [_case.name, _case])
-    it.each(mapped)(`%# AST : %s`, (label, _case) => {
-        const deck = _case as TestCase
-        const ast = ASTParser.parse({ type: "code", value: deck.code })
-        const expected = JSON.parse(deck.expected) as ASTNode
-        const { same, delta } = assertSame(expected, ast)
+if (false)
+    describe('Generated Grammar Test Suite', () => {
+        beforeAll(() => {
+            ASTParser.trace(false)
+        });
 
-        expect(delta).toBeUndefined();
+        const cases: TestCase[] = discover("tree")
+        const mapped = cases.map(_case => [_case.name, _case])
+
+        it.each(mapped)(`%# AST : %s`, (label, _case) => {
+            const deck = _case as TestCase
+            const ast = ASTParser.parse({ type: "code", value: deck.code })
+
+            if (hasError(ast)) {
+                const detail = ast.toString()
+                const emsg = `Parsing error for :
+            \n${detail}\n
+            ------------------Source-----------------------
+            \n${deck.code}\n
+             `
+                throw new Error(emsg);
+            }
+
+            const expected = JSON.parse(deck.expected) as ASTNode
+            const { same, delta } = assertSame(expected, ast)
+
+            expect(delta).toBeUndefined();
+        })
     })
-})
 
 
-describe('Source Generator Test', () => {
+describe('Source-to-Source Test', () => {
     beforeAll(() => {
         ASTParser.trace(false)
     });
 
-    const cases: TestCase[] = discover("tree")
+    const cases: TestCase[] = discover("raw")
     const mapped = cases.map(_case => [_case.name, _case])
+
     it.each(mapped)(`%# Source : %s`, (label, _case) => {
         const deck = _case as TestCase
         const ast = ASTParser.parse({ type: "code", value: deck.code });
 
+        if (hasError(ast)) {
+            const detail = ast.toString()
+            const emsg = `Parsing error for source-to-source translation :
+            \n${detail}\n
+            ------------------Source-----------------------
+            \n${deck.code}\n
+             `
+            throw new Error(emsg);
+        }
+
         const generator = new SourceGenerator();
         const script = generator.toSource(ast);
         const ast2 = ASTParser.parse({ type: "code", value: script });
+
+        if (hasError(ast2)) {
+            const detail = ast2.toString()
+            const emsg = `Parsing error for source-to-source translation :
+            \n${detail}\n
+            ------------------Source-----------------------
+            \n${deck.code}\n
+            ------------------Target-----------------------
+            \n${script}\n
+            -----------------------------------------------
+             `
+            throw new Error(emsg);
+        }
+
         const { same, delta } = assertSame(ast, ast2)
+
+        if(delta){
+            console.info('AST Trees')
+            console.info(Utils.toJson(ast))
+            console.info(Utils.toJson(ast2))
+        }
 
         expect(delta).toBeUndefined();
     })

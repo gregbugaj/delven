@@ -1,8 +1,7 @@
-import { isDoStatement } from "typescript";
 import { isNullOrUndefined } from "util";
 import ASTVisitor, { Binding } from "./ASTVisitor";
 import * as Node from "./nodes";
-import { needsParens } from "./ParensUtil";
+import { hasParenthesis } from "./ParensUtil";
 import { Syntax } from "./syntax";
 
 /**
@@ -217,7 +216,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         this.write('\n', false, false)
     }
-
 
 
     visitExpression(expression: Node.Expression): void {
@@ -815,7 +813,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitExpressionStatement(statement: Node.ExpressionStatement): void {
-        const parens = needsParens(statement.expression)
+        const parens = hasParenthesis(statement.expression)
         
         this.writeConditional(parens, "(", false, false)
         this.visitExpression(statement.expression)
@@ -829,12 +827,17 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitSequenceExpression(sequence: Node.SequenceExpression): void {
+        const parens = hasParenthesis(sequence)
+        this.writeConditional(parens, '(', false, false)
+
         for (let i = 0; i < sequence.expressions.length; ++i) {
             this.visitExpression(sequence.expressions[i] as Node.Expression)
             if (i < sequence.expressions.length - 1) {
                 this.write(", ", false, false)
             }
         }
+
+        this.writeConditional(parens, ')', false, false)
     }
 
 
@@ -918,9 +921,13 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     visitUnaryExpression(expression: Node.UnaryExpression): void {
+        const parens = hasParenthesis(expression.argument, 'argument')
+
         this.write(expression.operator, false, false)
+        this.writeConditional(parens, '(', false, false)
         this.writeConditional((expression.operator === 'typeof' || expression.operator === 'void'), ' ', false, false)
         this.visitExpression(expression.argument)
+        this.writeConditional(parens, ')', false, false)
     }
 
     visitNewExpression(expression: Node.NewExpression): void {
@@ -932,6 +939,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         this.visitParams(args)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     visitThisExpression(expression: Node.ThisExpression) {
         this.write('this', false, false)
     }
@@ -1026,10 +1034,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     binaryExpression(expression: Node.BinaryExpression): void {
-        // let leftParen =  (expression.left.type == Syntax.LogicalExpression || expression.left.type == Syntax.BinaryExpression)
-        // let rightParen = (expression.right.type == Syntax.LogicalExpression || expression.right.type == Syntax.BinaryExpression)
-        let leftParen = needsParens(expression.left)
-        let rightParen = needsParens(expression.right)
+        
+        const leftParen = hasParenthesis(expression.left, 'left')
+        const rightParen = hasParenthesis(expression.right, 'right')
 
         this.writeConditional(leftParen, '(' , false, false)
         this.visitExpression(expression.left)
@@ -1061,11 +1068,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     }
 
     vistSpreadElement(expression: Node.SpreadElement): void {
-        const wrap = !(expression.argument instanceof Node.Identifier)
+        const wrap = hasParenthesis(expression.argument, 'argument')
         this.write('...', false, false)
-        this.write(wrap ? '(' : '', false, false)
+        this.writeConditional(wrap, '(' , false, false)
         this.visitExpression(expression.argument)
-        this.write(wrap ? ')' : '', false, false)
+        this.writeConditional(wrap, ')' , false, false)
     }
 
     vistiRestElement(expression: Node.RestElement): void {
@@ -1146,7 +1153,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
             case Syntax.ObjectExpression:
             case Syntax.ArrayExpression:
             case Syntax.BinaryExpression:
-            case Syntax.UnaryExpression: {
+            case Syntax.LogicalExpression:
+            case Syntax.UnaryExpression:
+            case Syntax.MemberExpression: {
                 this.visitExpression(value)
                 break
             } default:
@@ -1198,7 +1207,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
         if (expression.body instanceof Node.BlockStatement) {
             this.visitBlockStatement(expression.body)
         } else {
-            const parens = needsParens(expression.body)
+            const parens = hasParenthesis(expression.body, 'body')
             this.writeConditional(parens, '(', false, false)
             this.visitExpression(expression.body)
             this.writeConditional(parens, ')', false, false)

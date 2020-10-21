@@ -70,16 +70,22 @@ export type ErrorInfo = {
 
 class DelvenErrorListener extends ErrorListener {
     errors: ErrorInfo[] = []
+    code: string
+    
+    constructor(code:string){
+        super()
+        this.code = code
+    }
+
     syntaxError(recognizer: Recognizer, offendingSymbol: Token, line: number, column: number, msg: string, e: any): void {
-        console.error(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`);
+        
+        console.error(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`)
         const error: ErrorInfo = {
             line: line,
             column: column,
             msg: msg
         }
-
         this.errors.push(error)
-        throw new Error('Parsing error')
     }
 
     hasErrors = () => this.errors.length > 0
@@ -88,9 +94,13 @@ class DelvenErrorListener extends ErrorListener {
 }
 
 export class ErrorNode extends ASTNode {
-    constructor(private errror: ErrorInfo) {
+    constructor(private error: ErrorInfo) {
         super()
-        this.errror = errror
+        this.error = error
+    }
+
+    toString(): string {
+        return `${this.error.line}, ${this.error.column} : ${this.error.msg}`
     }
 }
 
@@ -137,22 +147,24 @@ export default abstract class ASTParser {
                 code = fs.readFileSync(source.value, "utf8")
         }
 
-        const errorHandler = new DelvenErrorListener()
+        const errorHandler = new DelvenErrorListener(code)
         const chars = new antlr4.InputStream(code)
         const lexer = new DelvenLexer(chars)
-        lexer.removeErrorListeners();
-        lexer.addErrorListener(errorHandler);
+
+        lexer.removeErrorListeners()
+        lexer.addErrorListener(errorHandler)
 
         const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
         parser.setTrace(ASTParser._trace)
 
         parser.removeErrorListeners();
-        parser.addErrorListener(errorHandler);
+        parser.addErrorListener(errorHandler)
 
         try {
             const tree = parser.program()
+
             if (ASTParser._trace) {
-                console.log(tree.toStringTree(parser.ruleNames));
+                console.log(tree.toStringTree(parser.ruleNames))
             }
 
             return tree.accept(this.visitor)
@@ -3284,6 +3296,14 @@ class DelvenASTVisitor extends DelvenVisitor {
             return this.visitEqualityExpression(ctx)
         } else if (ctx instanceof ECMAScriptParser.BitShiftExpressionContext) {
             return this.visitBitShiftExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.NewExpressionContext) {
+            return this.visitNewExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.ObjectLiteralExpressionContext) {
+            return this.visitObjectLiteralExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.ArrayLiteralExpressionContext) {
+            return this.visitArrayLiteralExpression(ctx)
+        } else if (ctx instanceof ECMAScriptParser.MemberIndexExpressionContext) {
+            return this.visitMemberIndexExpression(ctx)
         }
 
         this.throwInsanceError(this.dumpContext(ctx))
@@ -3590,7 +3610,6 @@ class DelvenASTVisitor extends DelvenVisitor {
         const lhs = this.singleExpression(initialiser)
         const rhs = this.singleExpression(expression)
 
-        console.info(rhs)
         return new Node.AssignmentExpression(operator, lhs, rhs)
     }
 

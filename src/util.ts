@@ -25,7 +25,7 @@ function sanitize(obj: any | null): void {
 export default class Utils {
 
     static toJson = (obj: unknown): string => {
-        const clone = Object.create(obj);
+        const clone = Object.assign({}, obj)// same as clone = {...obj};
         sanitize(clone)
         return JSON.stringify(clone, function replacer(key, value) { return value }, 4)
     };

@@ -1,5 +1,9 @@
 import { Syntax } from "./syntax";
 
+// Parentisis logic based on 'prettier' project
+
+const debug = false
+
 function isStatementOrDeclaration(node: any): boolean {
     if (node === null || node.type === null)
         return false
@@ -36,22 +40,33 @@ function isStatementOrDeclaration(node: any): boolean {
         type === Syntax.WithStatement
     )
 }
+
 /**
- * Check if the node needs wrapping parentheses
+ * Check if the node needs wrapping parenthesis
  * 
  * @param node the node the check
  */
-function needsParens(node: any): boolean {
+function hasParenthesis(node: any, name?: string | null): boolean {
+
+    const type = node.type
+    const parent = node.__parent__
+
+    if (debug) {
+        console.debug(`type = ${type} > ${parent.type}  : ${name}`)
+    }
     // Statements and Declarations don't need brackets
     if (isStatementOrDeclaration(node)) {
         return false
     }
-    const type = node.type
-    console.info('type >>  ' + type)
-    const parent = node.__parent__
-    console.info(`parent.type = ${parent.type}`)
 
     switch (node.type) {
+        case Syntax.Identifier:
+        case Syntax.Literal:
+            return false
+
+        case Syntax.SpreadElement:
+            return true
+
         case Syntax.AssignmentExpression: {
             if (parent.type === Syntax.ExpressionStatement) {
                 return node.left.type === Syntax.ObjectPattern
@@ -61,22 +76,75 @@ function needsParens(node: any): boolean {
             return true
         }
 
-        case Syntax.Literal: {
-            return false
+        case Syntax.BinaryExpression: {
+            if (parent.type === Syntax.UpdateExpression) {
+                return true
+            }
         }
 
-        case Syntax.BinaryExpression:
-            {
-                if (parent.type === Syntax.UpdateExpression) {
-                    return true
-                }
-
-                break;
-            }
-
+        // eslint-disable-next-line no-fallthrough
         case Syntax.LogicalExpression: {
+            switch (parent.type) {
 
+                case Syntax.UnaryExpression:
+                case Syntax.UpdateExpression:
+                case Syntax.AwaitExpression:
+                    return true
+
+                // TODO : Implement operator precedence so we can do better than this
+                case Syntax.BinaryExpression:
+                    return true
+                case Syntax.LogicalExpression: {
+                    if (node.type == Syntax.LogicalExpression) {
+                        return node.operator !== parent.operator
+                    }
+                }
+                // eslint-disable-next-line no-fallthrough
+                default:
+                    return false
+            }
+        }
+
+        case Syntax.ObjectExpression: {
+            switch (parent.type) {
+                case Syntax.ExpressionStatement:
+                case Syntax.ArrowFunctionExpression:
+                    return true
+                default:
+                    return false
+            }
+        }
+
+        case Syntax.SequenceExpression: {
+            switch (parent.type) {
+                case Syntax.ReturnStatement:
+                    return false
+                case Syntax.ForStatement:
+                    return false
+                case Syntax.ExpressionStatement:
+                    return name !== "expression"
+                default:
+                    return true
+            }
+        }
+
+        // This is never hit as the code renders parens directry
+        case Syntax.FunctionExpression: {
             return true;
+        }
+
+        case Syntax.ArrowFunctionExpression: {
+            switch (parent.type) {
+                case Syntax.NewExpression:
+                case Syntax.CallExpression:
+                case Syntax.MemberExpression:
+                case Syntax.LogicalExpression:
+                case Syntax.AwaitExpression:
+                case Syntax.BinaryExpression:
+                    return true
+                default:
+                    return false
+            }
         }
     }
 
@@ -84,5 +152,5 @@ function needsParens(node: any): boolean {
 }
 
 export {
-    needsParens
+    hasParenthesis
 }

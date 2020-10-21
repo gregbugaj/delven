@@ -76,10 +76,28 @@ const codezz = `
     // const code = `{ do { } while (false) false }`
     // const code = `let x = 1 + 2 + 3 / 2`
     // const code = `let k = (1+2) * x++`
-    const code = `let k = (1+2) * (1 * x++)`
-    // const code = `let x= 2 + (2 /2)`
+    // const code = `let k = (1+2) * (1 * x++)`
+    // const code = `(function(){ return x; })()`
+    // const code = `let k = [...(1+1) * 2]`
+    // const code = `[...(fun() + x)]`
+    // const code = `if(zz + 2 == (x == 2 ^ 2)){}`
+    // const code = `e => ({ property: 42 })`
+    // const code = `(x) => ((y, z) => (x, y, z))`
+    // const code = `1+2 * (2+1)`
+    // const code = `k = { *foo() {} }`
+    // const code = `let k = ((x)=> 1, (y)=>2)` 
+    const code = `
+    
+    // class-extends
+    // "ArrowFunctionExpression"
+    class a1 extends (() => {}) {}
+
+    ` 
+    // const code = `x?.y()` 
+
     const ast = ASTParser.parse({ type: "code", value: code });
-    console.info(JSON.stringify(ast))
+    console.info('Serialized')
+    console.info(Utils.toJson(ast))
 
     const generator = new SourceGenerator();
     const script = generator.toSource(ast);
