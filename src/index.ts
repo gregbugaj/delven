@@ -5,6 +5,7 @@ import * as fs from "fs"
 import { resolve } from "path"
 // import * as chalk from "chalk"
 import chalk from "chalk";
+import SourceGeneratorWithBuilder from "./SourceGeneratorWithBuilder";
 
 
 async function main() {
@@ -89,7 +90,7 @@ const codezz = `
     // const code = `1+2 * (2+1)`
     // const code = `k = { *foo() {} }`
     // const code = `let k = ((x)=> 1, (y)=>2)` 
-    const code = `
+    const codeXXX = `
         (function funa() {
         func(() => {thing(); console.info(a);}, identifier);
         })()
@@ -99,9 +100,31 @@ const codezz = `
         }
     ` 
 
-   
-    // const code = `x?.y()` 
+    const code = `
+        let level0 = 2
+        function z(){
+            let level1 = 2
+            function a(){
+                let levela1 = 2
+            }
 
+            function b(){
+                let levelb1 = 2
+
+                function c(){
+                    let levelc1 = 2
+                    let levelc2 = 2
+
+                    function d(){
+                        let leveld2 = 2
+                    }
+                    
+                }
+            }
+        }
+
+   
+    ` 
     const parser_label = chalk.green("parser") 
     console.time(parser_label); 
     const ast = ASTParser.parse({ type: "code", value: code });
@@ -111,7 +134,7 @@ const codezz = `
 
     const generator_label = chalk.green("generator") 
     console.time(generator_label); 
-    const generator = new SourceGenerator();
+    const generator = new SourceGeneratorWithBuilder();
     const script = generator.toSource(ast);
     console.info('-------')
     console.info(script)
