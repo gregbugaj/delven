@@ -69,86 +69,106 @@ export default class SourceGeneratorWithBuilder {
     }
 }
 
-interface Doc {
+JSON.stringifyOnce = function (obj, replacer, indent) {
+    const printedObjects = [];
+    const printedObjectKeys = [];
+
+    function printOnceReplacer(key, value) {
+
+        let printedObjIndex = false;
+        printedObjects.forEach(function (obj, index) {
+            if (obj === value) {
+                printedObjIndex = index;
+            }
+        });
+
+        if (key == '') { //root element
+            printedObjects.push(obj);
+            printedObjectKeys.push("root");
+            return value;
+        }
+
+        else if (printedObjIndex + "" != "false" && typeof (value) == "object") {
+            if (printedObjectKeys[printedObjIndex] == "root") {
+                return "(pointer to root)";
+            } else {
+                return "(see " + ((!!value && !!value.constructor) ? value.constructor.name.toLowerCase() : typeof (value)) + " with key " + printedObjectKeys[printedObjIndex] + ")";
+            }
+        } else {
+
+            const qualifiedKey = key || "(empty key)";
+            printedObjects.push(value);
+            printedObjectKeys.push(qualifiedKey);
+
+            if (replacer) {
+                return replacer(key, value);
+            } else {
+                return value;
+            }
+        }
+    }
+    return JSON.stringify(obj, printOnceReplacer, indent);
+};
+
+
+interface Chunk {
     type: string
     value?: string
-    parts?: Doc[],
+    parts?: Chunk[],
+    parent?: Chunk
 }
 
 class DocumentBuilder {
-    node: Doc
-    current: Doc
-    groupIndex = 0
+    node: Chunk
+    level = 0
 
     constructor() {
         this.node = {
-            type: 'group'
+            type: 'group',
+            parts: [],
         }
-        this.current = this.node
     }
 
-    push(): void {
-        console.info("PUSHING")
+    push() {
+        this.level++
+        // throw new Error("Method not implemented.");
+        console.info(`${this.level}  : push` )
     }
 
-    groupStart() {
-        console.info("  groupStart  ")
-        const group = { type: 'group' }
-        if (this.node.parts === undefined) {
-            this.node.parts = []
-        }
-
-        this.node.parts.push(group)
-        this.current = group
-        this.groupIndex++
+    pop() {
+        this.level--
+        // throw new Error("Method not implemented.");
+        console.info(`${this.level}  : pop` )
     }
 
-    groupEnd() {
-        console.info("  groupEnd  ")
-        if(this.node.parts !== undefined){
-            this.current = this.node.parts[this.groupIndex]
+    write(txt: string) {
+        let pad = "";
+        for (let i = 0; i < this.level; ++i) {
+            pad +=  '  '
         }
 
-        this.groupIndex--
-    }
-
-    write(token: string): void {
-        if (this.current?.parts === undefined) {
-            this.current.parts = []
-        }
-
-        this.current.parts.push({ type: 'string', value: token })
-        // console.info('---- STEP ----')
-        // console.info(Utils.toJson(this.root))
-        // console.info(Utils.toJson(this.root))
+        console.info(`${this.level}  : write >   ${pad} ${txt}`)
+        this.node.parts?.push({ type: 'txt', value: txt })
     }
 
     toSource() {
         console.info('---- Builder source ----')
-        console.info(Utils.toJson(this.node))
-        console.info(JSON.stringify(this.node))
-
+        console.info(JSON.stringifyOnce(this.node))
         return "generated source"
     }
 }
 
-class ExplicitASTNodeVisitor extends ASTVisitor {
+class ExplicitASTNodeVisitor extends ASTVisitor<void> {
     private _buffer: string
     private indentation: number
     private indent_with: string
-    private line: number
-    private indent: string
     private builder: DocumentBuilder
 
     constructor() {
         super()
-
         this._buffer = ""
         this.indentation = 0
         this.indent_with = ""
-        this.indent = ""
-        this.line = 1
-
         this.builder = new DocumentBuilder()
     }
 
@@ -511,6 +531,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitExportAllDeclaration(statement: Node.ExportAllDeclaration) {
         this.write('export * ', false, false)
         this.write('from ', false, false)
+
         this.visitLiteral(statement.source)
     }
 
@@ -529,6 +550,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
     visitExportNamedDeclaration(statement: Node.ExportNamedDeclaration) {
         this.write('export', false, false)
         this.write(' ', false, false)
+
         if (statement.declaration) {
             this.visitStatement(statement.declaration)
         } else if (statement.specifiers && statement.specifiers.length > 0) {
@@ -860,23 +882,17 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
     visitBlockStatement(statement: Node.BlockStatement): void {
         this.assertNotNull(statement)
-
-        if (statement.body.length == 0) {
-            this.write("{}", false, false)
-        } else {
-            this.builder.groupStart()
-            this.write("{", true, true)
-
-            const body = statement.body;
-            if (body != null) {
-                for (let i = 0; i < body.length; ++i) {
-                    this.visitStatement(body[i])
-                }
+        this.builder.push()
+        this.write("{", true, true)
+        const body = statement.body;
+        if (body != null) {
+            for (let i = 0; i < body.length; ++i) {
+                this.visitStatement(body[i])
             }
-
-            this.write("}", true, false)
-            this.builder.groupEnd()
         }
+
+        this.write("}", true, false)
+        this.builder.pop()
     }
 
     visitExpressionStatement(statement: Node.ExpressionStatement): void {
@@ -1092,8 +1108,8 @@ class ExplicitASTNodeVisitor extends ASTVisitor {
 
         this.visitParams(expression.params)
         this.visitBlockStatement(expression.body)
-        
-        this.builder.push()
+
+        this.builder.pop()
     }
 
     visitBinaryExpression(expression: Node.BinaryExpression): void {

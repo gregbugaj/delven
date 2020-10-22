@@ -101,29 +101,7 @@ const codezz = `
     ` 
 
     const code = `
-        let level0 = 2
-        function z(){
-            let level1 = 2
-            function a(){
-                let levela1 = 2
-            }
-
-            function b(){
-                let levelb1 = 2
-
-                function c(){
-                    let levelc1 = 2
-                    let levelc2 = 2
-
-                    function d(){
-                        let leveld2 = 2
-                    }
-                    
-                }
-            }
-        }
-
-   
+     {function a(){{let levela1 = {abc}} {}}}
     ` 
     const parser_label = chalk.green("parser") 
     console.time(parser_label); 
