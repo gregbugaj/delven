@@ -166,7 +166,6 @@ const codezz = `
     return xx
   else if (false) {a}
   else 2
-  
 
     `
 
@@ -175,8 +174,8 @@ const codezz = `
     if (1 == x) return 1+1
     if (1 == x) {
         return 1+1
+    }else if(2 == x) {return 2
     }
-
     // if (1 == x) return 1
     // else if(2 == x) return 2
     // else if(3 == x) return 3
@@ -184,13 +183,16 @@ const codezz = `
     // if(x==y) return 3
     // }
     `
-
-    code = `
-    let x =  (
-        (a,b)=>{ return 2}
-      )
-    `    
-
+ 
+    code = 
+    `
+    if (1 == x) {
+        return 1+1
+    }else if(2 == x) {
+        return 2
+    }
+    `
+ 
     const parser_label = chalk.green("parser") 
     console.time(parser_label); 
     const ast = ASTParser.parse({ type: "code", value: code });
