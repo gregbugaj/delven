@@ -1,7 +1,7 @@
 import { Syntax } from "./syntax";
 
 // Parentisis logic based on 'prettier' project
-const debug = false
+const debug = true
 
 function isStatementOrDeclaration(node: any): boolean {
     if (node === null || node.type === null)
@@ -77,6 +77,7 @@ function hasParenthesis(node: any, name?: string | null): boolean {
         return true
     }
 
+    
     switch (node.type) {
         case Syntax.Identifier:
         case Syntax.Literal:

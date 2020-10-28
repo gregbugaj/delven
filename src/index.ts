@@ -186,11 +186,7 @@ const codezz = `
  
     code = 
     `
-    if (1 == x) {
-        return 1+1
-    }else if(2 == x) {
-        return 2
-    }
+    (async () => {})(a,b)
     `
  
     const parser_label = chalk.green("parser") 

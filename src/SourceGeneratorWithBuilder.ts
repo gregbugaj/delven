@@ -1154,11 +1154,26 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
     expression: Node.CallExpression | Node.OptionalCallExpression
   ) {
     const args = expression.arguments;
-    if (expression.callee.type == Syntax.FunctionExpression) {
+
+    console.info("Callee ***********");
+    if (
+      expression.callee.type === Syntax.FunctionExpression ||
+      expression.callee.type === Syntax.ArrowFunctionExpression
+    ) {
       this.write("(", false);
-      this.visitFunctionExpression(
-        expression.callee as Node.FunctionExpression
-      );
+
+      if (expression.callee.type === Syntax.FunctionExpression) {
+        this.visitFunctionExpression(
+          expression.callee as Node.FunctionExpression
+        );
+      } else if (expression.callee.type === Syntax.ArrowFunctionExpression) {
+        this.visitArrowFunctionExpression(
+          expression.callee as Node.ArrowFunctionExpression
+        );
+      } else {
+        throw new TypeError(`Type not handled  '${expression.callee.type}'`);
+      }
+
       this.write(")", false);
       this.visitParams(args);
     } else if (expression.callee.type == Syntax.Import) {
@@ -1344,7 +1359,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
         break;
       }
       default:
-        throw new TypeError("Type not handled : " + expression.type);
+        throw new TypeError(`Type not handled  '${expression.type}'`);
     }
   }
 
