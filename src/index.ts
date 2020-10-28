@@ -186,7 +186,12 @@ const codezz = `
  
     code = 
     `
-    (async () => {})(a,b)
+    switch (node.type) {
+        case Syntax.UpdateExpression: {
+           
+        }
+    }
+
     `
  
     const parser_label = chalk.green("parser") 

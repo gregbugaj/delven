@@ -754,33 +754,42 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
     const isDefault = _case.test == null;
 
     if (isDefault) {
-      this.write("default :", false);
+      this.write("default : ", false);
     } else {
-      this.write("case ", false);
+      this.write("case", false);
+      this.write(" ", false);
       if (_case.test != null) {
         this.visitExpression(_case.test);
       }
       this.write(" :", false);
     }
 
-    // FIXME : need to fxi grouping for empty blocks
-    if (_case.consequent.length > 0) {
-      for (const statement of _case.consequent) {
-        let st = "{",
-          et = "}";
-        if (
-          statement.type === Syntax.ExpressionStatement ||
-          statement.type === Syntax.BlockStatement
-        ) {
-          st = et = "";
+    // FIXME: push/pop groups need to be reworked
+    // FIXME : Formatting for following cased is borked, syntatically this is correct but visually it is not very pleasing
+    
+    /*
+    // # 1     
+    switch (type) {
+        case 1: {
         }
+    }
 
-        this.builder.push({ flatGroup: true });
-        this.write(st, false);
+    // # 2     
+    switch (type) {
+        case 1: {
+        }
+        {}
+    }
+    */
+    
+    if (_case.consequent.length > 0) {
+      this.builder.push({ flatGroup: true });
+      this.write("", false);
+      for (const statement of _case.consequent) {
         this.visitStatement(statement);
-        this.write(et, false);
-        this.builder.pop();
       }
+      this.write("", false);
+      this.builder.pop();
     }
   }
 
@@ -835,12 +844,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
 
   vistReturnStatement(expression: Node.ReturnStatement): void {
     this.write("return", false);
-    this.write(" ", false);
-    // Parenthesis are not required but we will be adding line splitting
+
     if (expression.argument != null) {
-      this.write("(", false);
+      this.write(" ", false);
       this.visitExpression(expression.argument);
-      this.write(")", false);
     }
   }
 
@@ -983,7 +990,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
       flat = false;
     }
 
-    console.info(`flat = ${flat}`);
     this.builder.push({ flatGroup: flat });
     this.write("{", false);
     const body = statement.body;
