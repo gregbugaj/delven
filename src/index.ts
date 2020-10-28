@@ -186,12 +186,7 @@ const codezz = `
  
     code = 
     `
-    switch (node.type) {
-        case Syntax.UpdateExpression: {
-           
-        }
-    }
-
+       let x = select x from source()
     `
  
     const parser_label = chalk.green("parser") 

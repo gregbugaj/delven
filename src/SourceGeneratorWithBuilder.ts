@@ -4,7 +4,6 @@ import * as Node from "./nodes";
 import { hasParenthesis } from "./ParensUtil";
 import { Syntax } from "./syntax";
 import DocumentBuilder from "./DocumentBuilder";
-import { profile } from "console";
 
 /**
  * Source generator to transform valid AST back into ECMAScript
@@ -264,7 +263,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
         break;
       }
       default:
-        throw new TypeError("Type not handled : " + statement.type);
+        throw new TypeError(`Type not handled : ${statement.type}`);
     }
   }
 
@@ -416,6 +415,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
         );
         break;
       }
+      case Syntax.QueryExpression: {
+        this.visitQueryExpression(expression as Node.QueryExpression);
+        break;
+      }
       default:
         throw new TypeError("Type not handled : " + expression.type);
     }
@@ -441,63 +444,6 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
     if (statement.label) {
       this.write(" ", false);
       this.visitIdentifier(statement.label);
-    }
-  }
-
-  visitSelectStatement(statement: Node.SelectStatement) {
-    const body: Node.QueryExpression = statement.body;
-    const from = body.from;
-    const select = body.select;
-    const where = body.where;
-
-    // console.info(from)
-    // console.info(select)
-    // console.info(where)
-
-    this.write("Select", false);
-    this.write("([ ", false);
-    for (let i = 0; i < select.projections.length; ++i) {
-      const projection = select.projections[i];
-      const expression = projection.expression;
-      this.writeNewLine();
-      this.write("{expr: ", false);
-      this.visitExpression(expression);
-
-      if (projection.alias) {
-        this.write(", alias: ", false);
-        this.visitExpression(projection.alias);
-      }
-
-      this.write("}", false);
-      this.writeConditional(i < select.projections.length - 1, ", ", false);
-      this.writeNewLine();
-    }
-
-    this.write("]", false);
-    this.write(")", false);
-
-    if (from) {
-      this.writeNewLine();
-      const fce: Node.FromClauseElement = from.expressions[0];
-      const exp = fce.expression;
-      console.info(exp);
-      console.info(from.expressions[0]);
-      this.write(".From", false);
-      this.write("(", false);
-      if (exp.type == Syntax.URIIdentifier) {
-        this.write(`URIDataSource.of('${exp.uri}')`, false);
-      }
-      this.write(")", false);
-    }
-
-    if (where) {
-      this.writeNewLine();
-      this.write(".Where", false);
-      this.write("((row)=> {", false);
-      this.write("return (", false);
-      this.visitExpression(where.expression);
-      this.write(")", false);
-      this.write("})", false);
     }
   }
 
@@ -1583,6 +1529,81 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
       this.visitExpression(init);
     }
   }
+
+  visitSelectStatement(statement: Node.SelectStatement) : void{
+      this.assertNotNull(statement)
+      this.visitQueryExpression(statement.body)
+  }
+
+  visitQueryExpression(expression: Node.QueryExpression): void {
+    this.assertNotNull(expression);
+    const body: Node.QueryExpression = expression;
+    const from = body.from;
+    const select = body.select;
+    const where = body.where;
+
+    // console.info(from)
+    // console.info(select)
+    // console.info(where)
+
+    this.write("Select", false);
+    this.write("([ ", false);
+
+    for (let i = 0; i < select.projections.length; ++i) {
+      const projection = select.projections[i];
+      const expression = projection.expression;
+
+    //   this.writeNewLine();
+      this.write("{expr: ", false);
+      this.visitExpression(expression);
+
+      if (projection.alias) {
+        this.write(", alias: ", false);
+        this.visitExpression(projection.alias);
+      }
+
+      this.write("}", false);
+      this.writeConditional(i < select.projections.length - 1, ", ", false);
+    //   this.writeNewLine();
+    }
+
+    this.write("]", false);
+    this.write(")", false);
+
+    if (from) {
+      this.writeNewLine();
+
+      const fce: Node.FromClauseElement = from.expressions[0];
+      const exp = fce.expression;
+      
+      console.info(exp);
+      console.info(from.expressions[0]);
+
+      this.write(".From", false);
+      this.write("(", false);
+      if (exp.type === Syntax.URIIdentifier) {
+        this.write(`URIDataSource.of('${exp.uri}')`, false);
+      }else if(exp.type === Syntax.CallExpression){
+            this.visitCallExpression(exp as Node.CallExpression)
+      }
+      else{
+        throw new TypeError(`From source not handled : ${exp.type}`);
+      }
+      this.write(")", false);
+    }
+
+    if (where) {
+      this.writeNewLine();
+      
+      this.write(".Where", false);
+      this.write("((row)=> {", false);
+      this.write("return (", false);
+      this.visitExpression(where.expression);
+      this.write(")", false);
+      this.write("})", false);
+    }
+  }
+
 
   /**
    * Asserts that a object is not null
