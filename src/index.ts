@@ -100,9 +100,97 @@ const codezz = `
         }
     ` 
 
-    const code = `
-     {function a(){{let levela1 = {abc}} {}}}
+    let code = `
+    {
+        {}
+        function a(){{let levela1 = {abc}} }
+        function b(){
+          function x(){}
+        }
+        {
+          let x = 1
+          let w = {a:1, b:2, z:function(){let k = 1; ()=>{ m++}},z:2}
+          }
+      }
     ` 
+    // const code = `{{} {x = 1}} {} {} let x = 1 + 2`
+    // const code = `{{} {x = 1; y = 1+ 2 / 2}} {} let x = 1 + 2`
+    // const code = `{let x = 1 + 2; y = 2} `
+    // const code = `if( x == 1) {{x =1,y=2, 4}}`
+    code = `{function x(){
+        {{}}
+        let x = {}
+
+    }} `
+
+    // code = `function x(){{}}`
+    // code = `try{} catch(e){} finally{{let x=2}}`
+    // code = `try{} catch(e){} finally{{let x=2}}`
+
+    code = `let x =function(){}`
+    code = `for(let x= 1; x<2;++i){}`
+    // code = `for(let x=1;i<2;){}`
+    // code = `for(let x=1;i<2; k++){}`
+    // code = `for(1;2;3){}`
+    // code = `for(;;){}`
+    code = `while(x<10){}`
+    code = `do {}while(true)`
+    code = `do {x=1}while(true)`
+    code = `
+
+    {
+        if (x) 
+          x
+        else if(y)
+          y
+        else if(z)
+          z, s
+        } 
+
+    `
+    code = ` 
+
+    if(z) z, s
+    {
+        x+q, ad
+      }
+    `
+
+    code = '(1,2),3'
+
+    code = `
+      
+    if (true) 
+    return 1
+  else if (false) 
+    return xx
+  else if (false) {a}
+  else 2
+  
+
+    `
+
+    code = 
+    `
+    if (1 == x) return 1+1
+    if (1 == x) {
+        return 1+1
+    }
+
+    // if (1 == x) return 1
+    // else if(2 == x) return 2
+    // else if(3 == x) return 3
+    // else {
+    // if(x==y) return 3
+    // }
+    `
+
+    code = `
+    let x =  (
+        (a,b)=>{ return 2}
+      )
+    `    
+
     const parser_label = chalk.green("parser") 
     console.time(parser_label); 
     const ast = ASTParser.parse({ type: "code", value: code });

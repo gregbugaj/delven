@@ -1,9 +1,7 @@
-import { NodeBuilderFlags } from "typescript";
 import { Syntax } from "./syntax";
 
 // Parentisis logic based on 'prettier' project
-
-const debug = true
+const debug = false
 
 function isStatementOrDeclaration(node: any): boolean {
     if (node === null || node.type === null)
@@ -48,12 +46,11 @@ function isStatementOrDeclaration(node: any): boolean {
  * @param node the node the check
  */
 function hasParenthesis(node: any, name?: string | null): boolean {
-
     const type = node.type
     const parent = node.__parent__
 
     if (debug) {
-        console.debug(`type = ${type} > ${parent.type}  : ${name}`)
+        console.debug(`type(current, parent, node) = ${type} > ${parent.type}  : ${name}`)
     }
     // Statements and Declarations don't need brackets
     if (isStatementOrDeclaration(node)) {
@@ -94,6 +91,10 @@ function hasParenthesis(node: any, name?: string | null): boolean {
                     ((node.operator === "++" && parent.operator === "+") ||
                         (node.operator === "--" && parent.operator === "-"))
                 )
+            } 
+            // is this correct ?
+            if (parent.type === Syntax.ExpressionStatement){
+                return false
             }
         }
 

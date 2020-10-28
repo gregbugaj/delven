@@ -11,7 +11,7 @@ import { Interval, Recognizer, Token } from "antlr4"
 import Trace, { CallSite } from "./trace"
 import * as fs from "fs"
 import ASTNode from "./ASTNode"
-import { ErrorListener } from "antlr4/error/ErrorListener"
+import { ErrorListener, ConsoleErrorListener } from "antlr4/error/ErrorListener"
 
 /**
  * Version that we generate the AST for. 
@@ -1231,30 +1231,67 @@ class DelvenASTVisitor extends DelvenVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#ForStatement.
+     * Grammar
      * ```
      * For '(' (expressionSequence | variableDeclarationList)? ';' expressionSequence? ';' expressionSequence? ')' statement   # ForStatement
      * ```
+     * Samples
+     * ```
+     * for(let i = 1; i<2; ++i){}
+     * for(i = 1; i<2; ++i){}
+     * for(; i<2; ++i){}
+     * for(; i<2;){}
+     * for(;;){}
+     * ```
+     * 
      * @param ctx 
      */
     visitForStatement(ctx: RuleContext): Node.ForStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ForStatementContext)
+       
         let init: Expression | null = null
-        const vdl = ctx.variableDeclarationList()
-        const es0 = ctx.expressionSequence(0)
-        const es1 = ctx.expressionSequence(1)
-        const es2 = ctx.expressionSequence(2)
+        let test: Node.Expression | null = null
+        let update: Node.Expression | null = null
+        let state:'init'|'test'|'update' = 'init'
 
-        if (vdl) {
-            init = this.visitVariableDeclarationList(vdl)
-        } else if (es0) {
-            init = this.coerceToExpressionOrSequence(this.visitExpressionSequence(es0))
+        for (let i = 0; i < ctx.getChildCount(); ++i) {
+            const node = ctx.getChild(i)
+            const txt = node.getText()
+            
+            if(state === 'init'){
+                if (txt === '(') {
+                    const next = ctx.getChild(++i)
+                    if(next.getText() !== ';'){
+                        // (expressionSequence | variableDeclarationList)? 
+                        if (next instanceof ECMAScriptParser.VariableDeclarationListContext) {
+                            init = this.visitVariableDeclarationList(next)
+                        } else {
+                            init = this.coerceToExpressionOrSequence(this.visitExpressionSequence(next))
+                        }
+                        state = 'test'
+                    }
+                }
+            }else if(state === 'test'){
+                if (txt === ';') {
+                    const next = ctx.getChild(++i)
+                    if(next.getText() !== ';'){
+                        test = this.coerceToExpressionOrSequence(this.visitExpressionSequence(next))  
+                    }
+                    state = 'update'
+                }
+            }else if(state === 'update'){
+                if (txt ===')') {
+                    const prev = ctx.getChild(i-1)
+                    if(prev.getText() !== ';'){
+                        update = this.coerceToExpressionOrSequence(this.visitExpressionSequence(prev))  
+                    }
+                    break
+                }
+            }
         }
 
-        const test: Node.Expression | null = es1 ? this.coerceToExpressionOrSequence(this.visitExpressionSequence(es1)) : null
-        const update: Node.Expression | null = es2 ? this.coerceToExpressionOrSequence(this.visitExpressionSequence(es2)) : null
         const body: Node.Statement = this.visitStatement(ctx.statement())
-
         return new Node.ForStatement(init, test, update, body)
     }
 
