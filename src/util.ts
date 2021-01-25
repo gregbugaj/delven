@@ -77,7 +77,7 @@ export default class Utils {
       function replacer(key, value) {
         return value;
       },
-      4
+      '\t'
     );
   };
 
