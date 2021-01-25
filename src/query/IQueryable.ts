@@ -1,47 +1,39 @@
 /**
  * Provides functionality to evaluate queries against a specific data source
- * 
+ *
  * https://github.com/microsoft/TypeScript/issues/25710
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
- * 
- * Async Generators 
+ *
+ * Async Generators
  * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-3.html
- * 
+ *
  * https://javascript.info/async-iterators-generators
- * 
+ *
  * https://github.com/microsoft/TypeScript/issues/33458
  */
 
 export abstract class IQueryable<T> {
-    // abstract iterator(): IterableIterator<string>;
-    abstract iter(): AsyncGenerator<T, unknown, T | unknown>
+  /**
+   * Return iterator for current datasouce
+   */
+  abstract iter(): AsyncGenerator<T, unknown, T | unknown>;
 
-    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>
-}
+  /**
+   * Return chainable iterator
+   */
+  abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>;
 
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
+  /**
+   * Return current 'async' iterator 
+   */
+  [Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
+    return this.iter();
+  }
 
-export class MockQueryable implements IQueryable<number> {
-
-    constructor() {
-        console.info("entry")
-    }
-
-    async * iterOfIter(): AsyncGenerator<number, unknown, unknown> {
-        for (let i = 0; i < 5; ++i) {
-            await sleep(100);
-            yield* this.iter()
-        }
-        return;
-    }
-
-    async * iter(): AsyncGenerator<number, unknown, unknown> {
-        for (let i = 0; i < 5; ++i) {
-            await sleep(100);
-            yield i;
-        }
-        return;
-    }
+  /**
+   * Prevent default use of non asycn iterator 
+   */
+  [Symbol.iterator](): IterableIterator<T> {
+    throw new Error("Non 'async' iterators not suppoerted");
+  }
 }
