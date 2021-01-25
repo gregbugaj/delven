@@ -17,8 +17,7 @@ nvm use v14.5.0
 npm install --save-dev babel-loader @babel/core
 ```
 
-
-## Start publishing changes 
+ ## Start publishing changes 
 
 ```bash
  ./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts'  --source-maps inline
