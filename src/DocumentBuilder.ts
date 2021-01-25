@@ -107,7 +107,7 @@ export default class DocumentBuilder {
           `isGrouped = ${isGrouped} , isFlat = ${isFlat}, isBracelessGroup = ${isBracelessGroup}`
         );
       }
-      console.info(` --- val  ${node.type} = ${node?.value}`);
+      // console.info(` --- val  ${node.type} = ${node?.value}`);
       if (node.type === "txt") {
         buffer += node?.value;
       } else if (node.type === "indent") {
