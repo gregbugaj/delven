@@ -1,39 +1,15 @@
 /**
  * Provides functionality to evaluate queries against a specific data source
- *
+ * 
+ * Much of the API has been driven the original LINQ implementation
+ * 
  * https://github.com/microsoft/TypeScript/issues/25710
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
- *
- * Async Generators
- * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-3.html
- *
- * https://javascript.info/async-iterators-generators
- *
- * https://github.com/microsoft/TypeScript/issues/33458
+ * https://docs.microsoft.com/en-us/dotnet/api/system.linq.iqueryable-1
  */
 
-export abstract class IQueryable<T> {
-  /**
-   * Return iterator for current datasouce
-   */
-  abstract iter(): AsyncGenerator<T, unknown, T | unknown>;
+import { IEnumerable } from "./IEnumerable";
 
-  /**
-   * Return chainable iterator
-   */
-  abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>;
-
-  /**
-   * Return current 'async' iterator 
-   */
-  [Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
-    return this.iter();
-  }
-
-  /**
-   * Prevent default use of non asycn iterator 
-   */
-  [Symbol.iterator](): IterableIterator<T> {
-    throw new Error("Non 'async' iterators not suppoerted");
-  }
+export abstract class IQueryable<T> extends IEnumerable<T> {
+  
 }

@@ -6,6 +6,7 @@ import { resolve } from "path"
 // import * as chalk from "chalk"
 import chalk from "chalk";
 import SourceGeneratorWithBuilder from "./SourceGenerator";
+import { DefaultQueryable, Enumerable } from "./query/Enumerable";
 
 
 async function main() {
@@ -207,10 +208,40 @@ const codezz = `
     console.info(code)
 
     console.timeEnd(generator_label); 
+
+}
+
+async function query() {
+  // let x = [1, 2, 3, 4]
+  // let q0 = new Enumerable(x)
+  // console.info(q0.Count())
+  // console.info(q0.Take(6).Count())
+
+  let queryNames = new Enumerable([{'name':'Greg', val: 50}, {'name':'Roman', val: 60}, {'name':'Leo', val: 50}])
+  let names = queryNames.Select((val):{name:string} => ({'name': val.name})).toArray()
+  
+  console.info(await names)
+
+  // let t2 = queryNames.Take(2).toArray()
+  // let t3 = queryNames.Take(1).toArray()
+
+  // console.info(await t2)
+  // console.info(await t3)
+
+  // // for await (let x of t3){
+  // //   console.info(x)
+  // // }
+
+  // // for await (let x of names){
+  // //   console.info(x)
+  // // }
+
+  // // console.info(queryNames.toArray())
 }
 
 (async () => {
-    await main()
+    await query()
+  // await main()
 })().catch(err => {
     console.error("error in main", err)
 })
