@@ -7,14 +7,21 @@ export function sleep(ms: number) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
  
+// https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
+// https://www.typescriptlang.org/docs/handbook/interfaces.html
 export class Enumerable<T> extends IEnumerable<T> {
-    source: ArrayLike<T>
+    readonly source: ArrayLike<T>
  
     constructor(source:ArrayLike<T>){
         super()
         this.source = source
     }
-    
+
+    Select<R>(selector: Action<T, R>): IEnumerable<R> {
+        const  enumerable:IEnumerable<R> = new SelectEnumerable<T, R>(this.source, selector);
+        return enumerable
+    }
+
     Any(): boolean {
         throw new Error("Method not implemented.");
     }
@@ -32,11 +39,7 @@ export class Enumerable<T> extends IEnumerable<T> {
         }
         return new Enumerable(data);
     }
-
-    Select<R>(selector: Action<T, R>): IEnumerable<R> {
-        return new SelectEnumerable<T, R>(this.source, selector);
-    }
-    
+   
     Take(count: number): IEnumerable<T> {
         return new TakeEnumerable(this.source, count)
     }
@@ -61,32 +64,31 @@ export class Enumerable<T> extends IEnumerable<T> {
         throw new Error("Method not implemented.");
     }
 }
-
-class TakeEnumerable<T> extends Enumerable<T> {
-    results: T[]
+class TakeEnumerable<TSource> extends Enumerable<TSource> {
+    results: TSource[]
     executed: boolean
     count: number;
 
-    constructor(source: ArrayLike<T>, count: number){
+    constructor(source: ArrayLike<TSource>, count: number){
         super(source)
         this.results = []
         this.executed = false
         this.count = count
     }
 
-    async *asyncIterator(): AsyncGenerator<T, T | unknown, unknown> {
+    async *asyncIterator(): AsyncGenerator<TSource, unknown, unknown> {
         for (let i = 0; i < Math.min(this.count, this.source.length);++i){
             await sleep(1000)
-           yield this.source[i]
+            yield this.source[i]
         }
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<T>> {
+    async toArray(): Promise<ArrayLike<TSource>> {
         if(this.executed){
             return Promise.resolve(this.results)
         }
-        for await (const item of this){
+        for await (const item of this.asyncIterator()){
             this.results.push(item)
         }
         this.executed = true
@@ -94,32 +96,35 @@ class TakeEnumerable<T> extends Enumerable<T> {
     }
 }
 
-
-class SelectEnumerable<T, R> extends Enumerable<T> {
-    results: T[];
+class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
+    readonly selectable: ArrayLike<TSource> // source does not have to have push, pop
+    results: TResult[] // results should have push,pop
     executed: boolean
-    selector: Action<T, R>;
+    selector: Action<TSource, TResult>
 
-    constructor(source: ArrayLike<T>, selector: Action<T, R>){
-        super(source)        
-        this.results =  []
+    constructor(source: ArrayLike<TSource>, selector: Action<TSource, TResult>){
+        super([])        
+        this.selectable = source
+        this.results = []
         this.executed = false
         this.selector = selector
     }
 
-    async *asyncIterator(): AsyncGenerator<T, R|unknown, unknown> {
-        for (let i = 0; i < this.source.length;++i){
-            yield this.selector(this.source[i])
-        }
-        
+    async *asyncIterator(): AsyncGenerator<TResult, unknown, unknown> {
+        for (let i = 0; i < this.selectable.length;++i){
+            // T = unknown
+            const retval:TResult = this.selector(this.selectable[i])
+            yield retval
+        }        
+        // TReturn = any
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<T>> {
+    async toArray(): Promise<ArrayLike<TResult>> {
         if(this.executed){
             return Promise.resolve(this.results)
         }
-        for await (const item of this){
+        for await (const item of this.asyncIterator()){
             this.results.push(item)
         }
         this.executed = true

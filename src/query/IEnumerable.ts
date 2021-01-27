@@ -15,6 +15,7 @@
  * Async Generators
  * 
  * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-3.html
+ * https://fnune.com/typescript/2020/07/31/typescript-series-4-poor-mans-async-await-in-typescript-using-generators/
  * https://javascript.info/async-iterators-generators
  * https://github.com/microsoft/TypeScript/issues/33458
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield
@@ -37,7 +38,7 @@ export interface Action<T = any, R = any> {
   /**
    * Return iterator for current datasouce
    */
-  asyncIterator(): AsyncGenerator<T, unknown, T | unknown>{
+  asyncIterator(): AsyncGenerator<unknown, unknown, unknown>{
     throw new Error("Method not implemented");
   }
 
@@ -53,7 +54,7 @@ export interface Action<T = any, R = any> {
   /**
    * Return current 'async' iterator 
    */
-  [Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
+  [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown> {
     return this.asyncIterator();
   }
 
@@ -68,7 +69,7 @@ export interface Action<T = any, R = any> {
    * Use the toArray method to create an array from results of a query. 
    * Calling toArray also forces immediate execution of the query.
    */
-  abstract toArray(): Promise<ArrayLike<T>> 
+  abstract toArray(): Promise<ArrayLike<any>> 
   
   /**
    * Determines wheter a sequence contains any elements
