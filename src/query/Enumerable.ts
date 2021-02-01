@@ -30,23 +30,7 @@ export class Enumerable<T> extends IEnumerable<T> {
     }
 
     Where(predicate: Action<T, boolean>): IEnumerable<T> {
-        const data = new Array<T>()
-        for (let i = 0; i < this.source.length; ++i) {
-            if (predicate(this.source[i])) {
-                data.push(this.source[i])
-            }
-        }
-        return new WhereEnumerable(data, predicate);
-    }
-    
-    Where__(predicate: Action<T, boolean>): IEnumerable<T> {
-        const data = new Array<T>()
-        for (let i = 0; i < this.source.length; ++i) {
-            if (predicate(this.source[i])) {
-                data.push(this.source[i])
-            }
-        }
-        return new Enumerable(data);
+        return new WhereEnumerable(this.source, predicate);
     }
 
     Take(count: number): IEnumerable<T> {
