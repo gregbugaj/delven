@@ -7,6 +7,7 @@ import { resolve } from "path"
 import chalk from "chalk";
 import SourceGeneratorWithBuilder from "./SourceGenerator";
 import { DefaultQueryable, Enumerable } from "./query/Enumerable";
+import { type } from "os";
 
 
 async function main() {
@@ -219,9 +220,23 @@ async function query() {
 
   let queryNames = new Enumerable([{'name':'Greg', val: 50}, {'name':'Roman', val: 60}, {'name':'Leo', val: 50}])
   let names = queryNames.Select((val):{name:string} => ({'name': val.name})).toArray()
-  
+ 
   console.info(await names)
 
+  let sum0  = querySum.Sum();
+
+  let querySum = new Enumerable(["1", 2, 3])
+  let sum1  = querySum.Sum((val:number | string):number => {
+      if(typeof val == 'string')
+        return parseInt(val)
+      return val
+  });
+
+
+  let queryWhere = new Enumerable([2,2,1,2,3,2,3])
+  let where1  = queryWhere.Where((val:number):boolean => {return val == 2});
+
+  
   // let t2 = queryNames.Take(2).toArray()
   // let t3 = queryNames.Take(1).toArray()
 

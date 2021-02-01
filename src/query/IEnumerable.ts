@@ -19,6 +19,8 @@
  * https://javascript.info/async-iterators-generators
  * https://github.com/microsoft/TypeScript/issues/33458
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield
+ * 
+ * https://www.typescriptlang.org/docs/handbook/generics.html
  */
 
 
@@ -101,10 +103,11 @@ export interface Action<T = any, R = any> {
   abstract Take(count:number): IEnumerable<T>
 
   /**
-   * Returns the sum of all data elements
-   * @param action expression to transform the data
+   * Computes the sum of the sequence of that are obtained by invoking a transform 
+   * function on each element of the input sequence
+   * @param action A transform function to apply to each element.
    */ 
-  abstract Sum<R>(action?:Action<T, R>): number;
+  abstract Sum<R extends number>(action?:Action<T, R>): number;
 
   /**
    * 
