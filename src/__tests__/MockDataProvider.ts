@@ -37,21 +37,17 @@ type TypeCreator<T> = (index: number) => T;
 /**
  * Mock datasource provider
  */
-export default class MockQueryProvider<T> implements IQueryProvider {
+export default class MockDataProvider<T> {
     count: number;
     sleeptime: number;
     creator: TypeCreator<T>;
 
     constructor(count: 0, sleeptime: 0, creator: TypeCreator<T>) {
         // super();
-        console.info(`MockQueryProvider row count : ${count}, ${sleeptime}`);
+        console.info(`MockDataProvider row count : ${count}, ${sleeptime}`);
         this.count = count;
         this.sleeptime = sleeptime;
         this.creator = creator;
-    }
-
-    CreateQuery(expression: Expression): void {
-        throw new Error("Method not implemented.");
     }
 
     async *iterOfIter(): AsyncGenerator<T, unknown, unknown> {
