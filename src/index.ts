@@ -223,9 +223,9 @@ async function query() {
  
   console.info(await names)
 
+  let querySum = new Enumerable(["1", 2, 3])
   let sum0  = querySum.Sum();
 
-  let querySum = new Enumerable(["1", 2, 3])
   let sum1  = querySum.Sum((val:number | string):number => {
       if(typeof val == 'string')
         return parseInt(val)
@@ -233,10 +233,9 @@ async function query() {
   });
 
 
-  let queryWhere = new Enumerable([2,2,1,2,3,2,3])
-  let where1  = queryWhere.Where((val:number):boolean => {return val == 2});
+  let queryWhere = new Enumerable(['A',2,1,2,3,2,3])
+  let where1  = queryWhere.Where((val: string | number) => {return val === 2 || val === 'A'});
 
-  
   // let t2 = queryNames.Take(2).toArray()
   // let t3 = queryNames.Take(1).toArray()
 

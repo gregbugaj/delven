@@ -11,5 +11,5 @@
 import { IEnumerable } from "./IEnumerable";
 
 export abstract class IQueryable<T> extends IEnumerable<T> {
-  
+
 }
