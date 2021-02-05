@@ -15,7 +15,7 @@ describe("Enumerable Select", () => {
         }
 
         let expectedResult = [{ 'name': 'Greg' }, { 'name': 'Roman' }, { 'name': 'Leo' }]
-        expect(JSON.stringify(results)).toBe(JSON.stringify(expectedResult));
+        expect(results).toEqual(expectedResult);
     });
 
     test("select-toArray", async () => {
@@ -25,7 +25,7 @@ describe("Enumerable Select", () => {
         const results = await names
 
         const expectedResult = [{ 'name': 'Greg' }, { 'name': 'Roman' }, { 'name': 'Leo' }]
-        expect(JSON.stringify(results)).toBe(JSON.stringify(expectedResult));
+        expect(results).toEqual(expectedResult);
     });
 
 });

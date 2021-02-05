@@ -221,42 +221,10 @@ async function query() {
   // console.info(q0.Take(6).Count())
 
 
-  if(true){
-
-    let enumerable = new Enumerable([{'name':'Greg', val: 50}, {'name':'Roman', val: 60}, {'name':'Leo', val: 50}])
-    let selection = enumerable.Select((val):{name:string} => ({'name': val.name}))
-    let names = selection.toArray()
-
-    for await(let name of selection){
-        console.info(`name = ${JSON.stringify(name)}`)
-    }
-
-    let results = await names
-    console.info(results)
-  }
-
-  if(false){
-    let querySum = new Enumerable(["1", 2, 3])
-    let sum0  = querySum.Sum();
-
-    let sum1  = querySum.Sum((val:number | string):number => {
-        if(typeof val == 'string')
-            return parseInt(val)
-        return val
-    });
-
-    assert(6 == sum0)
-    assert(6 == sum1)
-
-    console.info(await sum0)
-    console.info(await sum1)
-  }
-
-  return
   let queryWhere = new Enumerable(['A',2,1,2,3,2,3])
   let where1  = queryWhere.Where((val: string | number) => {return val === 2 || val === 'A'});
 
-  for(x of where1){
+  for(const x of where1){
       console.info(x)
   }
   console.info(await where1)
