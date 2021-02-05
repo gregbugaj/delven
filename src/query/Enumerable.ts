@@ -53,7 +53,11 @@ export class Enumerable<T> extends IEnumerable<T> {
 
         let sum = 0
         for (let i = 0; i < this.source.length; ++i) {
-            sum += action(this.source[i]);
+            let val = action(this.source[i])
+            if(val == undefined){
+                continue
+            }
+            sum += val;
         }
         return sum;
     }
