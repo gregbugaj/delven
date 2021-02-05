@@ -1,6 +1,4 @@
-import IQueryProvider from "../query/IQueryProvider";
 import { isNumber, isString } from "util";
-import { Expression } from "../nodes";
 
 /**
  * Sleep for a specific amount of time
@@ -34,15 +32,32 @@ export function populator(index: number, obj: any): any {
 
 type TypeCreator<T> = (index: number) => T;
 
+
+// class IterableWrapper<T> implements AsyncIterable<T> {
+//     private iter: T;
+
+//     constructor(generator:T){
+//         this.iter = generator
+//     }
+
+//     [Symbol.asyncIterator](): AsyncIterator<T, any, undefined> {
+
+
+//     }
+// }
+
 /**
  * Mock datasource provider
+ * ref : https://github.com/microsoft/TypeScript/issues/26959
+ * https://stackoverflow.com/questions/38508172/typescript-make-class-objects-iterable
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
  */
 export default class MockDataProvider<T> {
     count: number;
     sleeptime: number;
     creator: TypeCreator<T>;
 
-    constructor(count: 0, sleeptime: 0, creator: TypeCreator<T>) {
+    constructor(count: number, sleeptime: number, creator: TypeCreator<T>) {
         // super();
         console.info(`MockDataProvider row count : ${count}, ${sleeptime}`);
         this.count = count;
@@ -50,10 +65,10 @@ export default class MockDataProvider<T> {
         this.creator = creator;
     }
 
-    async *iterOfIter(): AsyncGenerator<T, unknown, unknown> {
+    async *iterOfIter() {
         for (let i = 0; i < this.count; ++i) {
             await sleep(this.sleeptime);
-            yield* this.iter();
+            yield this.iter();
         }
         return;
     }
@@ -73,7 +88,7 @@ export default class MockDataProvider<T> {
      * @param count
      * @param timeout
      */
-    static create<T>(count: number, sleeptime: number, creator: TypeCreator<T>): MockQueryProvider<T> {
-        return new MockQueryProvider<T>(count, sleeptime, creator);
+    static create<T>(count: number, sleeptime: number, creator: TypeCreator<T>): MockDataProvider<T> {
+        return new MockDataProvider<T>(count, sleeptime, creator);
     }
 }

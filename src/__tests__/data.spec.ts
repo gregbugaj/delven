@@ -1,9 +1,8 @@
-import ASTParser from "../ASTParser";
 import MockQuerySource from "./MockDataProvider";
 
-describe("Datasource provider", () => {
+describe("Mock datasource provider", () => {
     beforeAll(() => {
-        ASTParser.trace(false);
+        // noop
     });
 
     test("Mock provider", async () => {
@@ -11,7 +10,6 @@ describe("Datasource provider", () => {
         let input = 0;
         const provider = MockQuerySource.create(expectedResult, 0, (index) => index);
         for await (const val of provider.iter()) {
-            //   console.info(`provider iter : ${val}`);
             ++input;
         }
 
@@ -22,11 +20,23 @@ describe("Datasource provider", () => {
         const expectedResult = 5;
         let input = 0;
         const provider = MockQuerySource.create(expectedResult, 0, (index) => index);
-        for await (const val of provider) {
-            console.info(`provider iter : ${val}`);
+        for await (const val of provider.iter()) {
             ++input;
         }
 
         expect(input).toBe(expectedResult);
+    });
+
+    test("Mock provider iterator of iterator", async () => {
+        const expectedResult = 2;
+        let input = 0;
+        const provider = MockQuerySource.create(expectedResult, 0, (index) => index);
+        for await (const iter of provider.iterOfIter()) {
+            for await (const val of iter) {
+                ++input
+            }
+        }
+
+        expect(input).toBe(expectedResult * 2);
     });
 });
