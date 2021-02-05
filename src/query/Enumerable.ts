@@ -1,3 +1,4 @@
+import { SIGUSR2 } from "constants";
 import { Action, IEnumerable } from "./IEnumerable";
 /**
  * Default implementaion of IQueryable
@@ -12,9 +13,17 @@ export function sleep(ms: number): Promise<number> {
 export class Enumerable<T> extends IEnumerable<T> {
     readonly source: ArrayLike<T>
 
-    constructor( source: ArrayLike<T>) {
+    constructor(source: ArrayLike<T>) {
         super()
         this.source = source
+    }
+
+    /**
+     * Crate enumerable 
+     * @param source 
+     */
+    static of<T>(source: ArrayLike<T>): IEnumerable<T> {
+        return new Enumerable(source)
     }
 
     Select<R>(selector: Action<T, R>): IEnumerable<R> {
@@ -54,7 +63,7 @@ export class Enumerable<T> extends IEnumerable<T> {
         let sum = 0
         for (let i = 0; i < this.source.length; ++i) {
             let val = action(this.source[i])
-            if(val == undefined){
+            if (val == undefined) {
                 continue
             }
             sum += val;
@@ -74,10 +83,11 @@ export class Enumerable<T> extends IEnumerable<T> {
         return Promise.resolve(this.source);
     }
 
-    Zip<K, T>(other: IEnumerable<K>): IEnumerable<T> {
-        throw new Error("Method not implemented.");
+    Zip<TSecond, TResult>(other: IEnumerable<TSecond>, action?: Action<T, TSecond>): IEnumerable<TResult> {
+        return new ZipEnumerable<T, TSecond, TResult>(this, other)
     }
 }
+
 class TakeEnumerable<TSource> extends Enumerable<TSource> {
     results: TSource[]
     executed: boolean
@@ -115,7 +125,7 @@ class WhereEnumerable<TSource> extends Enumerable<TSource> {
     results: TSource[]
     executed: boolean;
 
-    constructor(soure: ArrayLike<TSource>, predicate: Action<TSource, boolean>){
+    constructor(soure: ArrayLike<TSource>, predicate: Action<TSource, boolean>) {
         super(soure);
         this.predicate = predicate
         this.results = []
@@ -125,7 +135,7 @@ class WhereEnumerable<TSource> extends Enumerable<TSource> {
     async *asyncIterator(): AsyncGenerator<TSource, unknown, unknown> {
         for (let i = 0; i < this.source.length; ++i) {
             // T = unknown
-            if(this.predicate(this.source[i])){
+            if (this.predicate(this.source[i])) {
                 yield this.source[i]
             }
         }
@@ -164,6 +174,55 @@ class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
             // T = unknown
             const retval: TResult = this.selector(this.selectable[i])
             yield retval
+        }
+        // TReturn = any
+        return undefined
+    }
+
+    async toArray(): Promise<ArrayLike<TResult>> {
+        if (this.executed) {
+            return Promise.resolve(this.results)
+        }
+        for await (const item of this.asyncIterator()) {
+            this.results.push(item)
+        }
+        this.executed = true
+        return Promise.resolve(this.results)
+    }
+}
+
+
+class ZipEnumerable<TSource, TSecond, TResult> extends Enumerable<TResult> {
+    results: TResult[]
+    executed: boolean;
+    first: IEnumerable<TSource>;
+    second: IEnumerable<TSecond>;
+
+    constructor(first: IEnumerable<TSource>, second: IEnumerable<TSecond>) {
+        super([]);
+        this.results = []
+        this.executed = false
+        this.first = first
+        this.second = second
+    }
+
+    async *asyncIterator(): AsyncGenerator<TResult, unknown, unknown> {
+
+        const lhs = this.first.asyncIterator();
+        const rhs = this.second.asyncIterator();
+
+        while (true) {
+            let first = await lhs.next();
+            let second = await rhs.next();
+            
+            if (first == undefined || second == undefined) {
+                break;
+            }
+            if (first.done || second.done) {
+                break;
+            }
+
+            yield { "first": first.value, "second": second.value };
         }
         // TReturn = any
         return undefined

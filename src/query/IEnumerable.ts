@@ -32,107 +32,110 @@
  *   R - the type of the result of the function
  */
 export interface Action<T = any, R = any> {
-  (val: T): R;
+    (val: T): R;
 }
 
- export abstract class IEnumerable<T> {
+export abstract class IEnumerable<T> {
+
+    /**
+     * Return iterator for current datasouce
+     */
+    asyncIterator(): AsyncGenerator<unknown, unknown, unknown> {
+        throw new Error("Method not implemented");
+    }
+
+    iterator(): IterableIterator<T> {
+        throw new Error("Method not implemented");
+    }
+
+    /**
+     * Return chainable iterator
+     */
+    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>;
+
+    /**
+     * Return current 'async' iterator 
+     */
+    [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown> {
+        return this.asyncIterator();
+    }
+
+    /**
+     * Prevent default use of non asycn iterator 
+     */
+    [Symbol.iterator](): IterableIterator<T> {
+        return this.iterator();
+    }
+
+    /**
+     * Use the toArray method to create an array from results of a query. 
+     * Calling toArray also forces immediate execution of the query.
+     */
+    abstract toArray(): Promise<ArrayLike<any>>
+
+    /**
+     * Determines wheter a sequence contains any elements
+     * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
+     */
+    abstract Any(): boolean;
+
+    /**
+     * Gets the number of elements in the collection
+     */
+    abstract Count(): number;
+
+    /**
+     * Filters a sequence of values based on a predicate.
+     * @param predicate 
+     */
+    abstract Where(predicate: Action<T, boolean>): IEnumerable<T>
+
+    /**
+     * Projects each element of a sequence into a new form.
+     * @param selector 
+     */
+    abstract Select<R>(selector: Action<T, R>): IEnumerable<R>
+
+    /**
+     * Return new Enumerable where first n elements are taken
+     * @param count 
+     */
+    abstract Take(count: number): IEnumerable<T>
+
+    /**
+     * Computes the sum of the sequence of that are obtained by invoking a transform 
+     * function on each element of the input sequence
+     * @param action A transform function to apply to each element.
+     */
+    abstract Sum<R extends number>(action?: Action<T, R>): number;
+
+    /**
+     * Produces a sequence of tuples with elements from the two specified sequences.
+     * The function will only iterate over the smallest list passed
+     * 
+     * @param other 
+     * @param action 
+     */
+    abstract Zip<TSecond, TResult>(other: IEnumerable<TSecond>, action?: Action<T, TSecond>): IEnumerable<TResult>
+
+    /*
+    Sample Implemenation
   
-  /**
-   * Return iterator for current datasouce
-   */
-  asyncIterator(): AsyncGenerator<unknown, unknown, unknown>{
-    throw new Error("Method not implemented");
-  }
-
-  iterator(): IterableIterator<T> {
-    throw new Error("Method not implemented");
-  }
-
-  /**
-   * Return chainable iterator
-   */
-  abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>;
-
-  /**
-   * Return current 'async' iterator 
-   */
-  [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown> {
-    return this.asyncIterator();
-  }
-
-  /**
-   * Prevent default use of non asycn iterator 
-   */
-  [Symbol.iterator](): IterableIterator<T> {
-    return this.iterator();
-  }
-
-  /**
-   * Use the toArray method to create an array from results of a query. 
-   * Calling toArray also forces immediate execution of the query.
-   */
-  abstract toArray(): Promise<ArrayLike<any>> 
+     async * iterOfIter(): AsyncGenerator<number, unknown, unknown> {
+          for (let i = 0; i < 5; ++i) {
+              await sleep(100);
+              yield* this.iter()
+          }
+          return;
+      }
   
-  /**
-   * Determines wheter a sequence contains any elements
-   * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
-   */
-  abstract Any(): boolean;
-
-   /**
-    * Gets the number of elements in the collection
+      async * iter(): AsyncGenerator<number, unknown, unknown> {
+          for (let i = 0; i < 5; ++i) {
+              await sleep(100);
+              yield i;
+          }
+          return;
+      }
     */
-  abstract Count(): number;
-
-  /**
-   * Filters a sequence of values based on a predicate.
-   * @param predicate 
-   */
-  abstract Where(predicate:Action<T, boolean>): IEnumerable<T>
-
-  /**
-   * Projects each element of a sequence into a new form.
-   * @param selector 
-   */
-  abstract Select<R>(selector:Action<T, R>): IEnumerable<R>
-
-  /**
-   * Return new Enumerable where first n elements are taken
-   * @param count 
-   */
-  abstract Take(count:number): IEnumerable<T>
-
-  /**
-   * Computes the sum of the sequence of that are obtained by invoking a transform 
-   * function on each element of the input sequence
-   * @param action A transform function to apply to each element.
-   */ 
-  abstract Sum<R extends number>(action?:Action<T, R>): number;
-
-  /**
-   * 
-   * @param other 
-   */
-  abstract Zip<K,T>(other:IEnumerable<K>): IEnumerable<T>
-
-  /*
-  Sample Implemenation
-
-   async * iterOfIter(): AsyncGenerator<number, unknown, unknown> {
-        for (let i = 0; i < 5; ++i) {
-            await sleep(100);
-            yield* this.iter()
-        }
-        return;
-    }
-
-    async * iter(): AsyncGenerator<number, unknown, unknown> {
-        for (let i = 0; i < 5; ++i) {
-            await sleep(100);
-            yield i;
-        }
-        return;
-    }
-  */
 }
 
