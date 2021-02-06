@@ -1,5 +1,9 @@
-import { SIGUSR2 } from "constants";
-import { Action, IEnumerable } from "./IEnumerable";
+import { Action, IEnumerable } from "./internal";
+import { SelectEnumerable } from "./internal";
+import { TakeEnumerable } from "./internal";
+import { WhereEnumerable } from "./internal";
+import { ZipEnumerable } from "./internal";
+
 /**
  * Default implementaion of IQueryable
  */
@@ -83,159 +87,7 @@ export class Enumerable<T> extends IEnumerable<T> {
         return Promise.resolve(this.source);
     }
 
-    Zip<TSecond, TResult>(other: IEnumerable<TSecond>, action?: Action<T, TSecond>): IEnumerable<TResult> {
-        return new ZipEnumerable<T, TSecond, TResult>(this, other)
-    }
-}
-
-class TakeEnumerable<TSource> extends Enumerable<TSource> {
-    results: TSource[]
-    executed: boolean
-    count: number;
-
-    constructor(source: ArrayLike<TSource>, count: number) {
-        super(source)
-        this.results = []
-        this.executed = false
-        this.count = count
-    }
-
-    async *asyncIterator(): AsyncGenerator<TSource, unknown, unknown> {
-        for (let i = 0; i < Math.min(this.count, this.source.length); ++i) {
-            await sleep(1000)
-            yield this.source[i]
-        }
-        return undefined
-    }
-
-    async toArray(): Promise<ArrayLike<TSource>> {
-        if (this.executed) {
-            return Promise.resolve(this.results)
-        }
-        for await (const item of this.asyncIterator()) {
-            this.results.push(item)
-        }
-        this.executed = true
-        return Promise.resolve(this.results)
-    }
-}
-
-class WhereEnumerable<TSource> extends Enumerable<TSource> {
-    predicate: Action<TSource, boolean>;
-    results: TSource[]
-    executed: boolean;
-
-    constructor(soure: ArrayLike<TSource>, predicate: Action<TSource, boolean>) {
-        super(soure);
-        this.predicate = predicate
-        this.results = []
-        this.executed = false
-    }
-
-    async *asyncIterator(): AsyncGenerator<TSource, unknown, unknown> {
-        for (let i = 0; i < this.source.length; ++i) {
-            // T = unknown
-            if (this.predicate(this.source[i])) {
-                yield this.source[i]
-            }
-        }
-        // TReturn = any
-        return undefined
-    }
-
-    async toArray(): Promise<ArrayLike<TSource>> {
-        if (this.executed) {
-            return Promise.resolve(this.results)
-        }
-        for await (const item of this.asyncIterator()) {
-            this.results.push(item)
-        }
-        this.executed = true
-        return Promise.resolve(this.results)
-    }
-}
-
-class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
-    readonly selectable: ArrayLike<TSource> // source does not have to have push, pop
-    results: TResult[] // results should have push,pop
-    executed: boolean
-    selector: Action<TSource, TResult>
-
-    constructor(source: ArrayLike<TSource>, selector: Action<TSource, TResult>) {
-        super([])
-        this.selectable = source
-        this.results = []
-        this.executed = false
-        this.selector = selector
-    }
-
-    async *asyncIterator(): AsyncGenerator<TResult, unknown, unknown> {
-        for (let i = 0; i < this.selectable.length; ++i) {
-            // T = unknown
-            const retval: TResult = this.selector(this.selectable[i])
-            yield retval
-        }
-        // TReturn = any
-        return undefined
-    }
-
-    async toArray(): Promise<ArrayLike<TResult>> {
-        if (this.executed) {
-            return Promise.resolve(this.results)
-        }
-        for await (const item of this.asyncIterator()) {
-            this.results.push(item)
-        }
-        this.executed = true
-        return Promise.resolve(this.results)
-    }
-}
-
-
-class ZipEnumerable<TSource, TSecond, TResult> extends Enumerable<TResult> {
-    results: TResult[]
-    executed: boolean;
-    first: IEnumerable<TSource>;
-    second: IEnumerable<TSecond>;
-
-    constructor(first: IEnumerable<TSource>, second: IEnumerable<TSecond>) {
-        super([]);
-        this.results = []
-        this.executed = false
-        this.first = first
-        this.second = second
-    }
-
-    async *asyncIterator(): AsyncGenerator<TResult, unknown, unknown> {
-
-        const lhs = this.first.asyncIterator();
-        const rhs = this.second.asyncIterator();
-
-        while (true) {
-            let first = await lhs.next();
-            let second = await rhs.next();
-            
-            if (first == undefined || second == undefined) {
-                break;
-            }
-            if (first.done || second.done) {
-                break;
-            }
-
-            yield { "first": first.value, "second": second.value };
-        }
-        // TReturn = any
-        return undefined
-    }
-
-    async toArray(): Promise<ArrayLike<TResult>> {
-        if (this.executed) {
-            return Promise.resolve(this.results)
-        }
-        for await (const item of this.asyncIterator()) {
-            this.results.push(item)
-        }
-        this.executed = true
-        return Promise.resolve(this.results)
+    Zip<TSecond, TResult>(other: IEnumerable<TSecond>, transformer?: Action<T, TSecond>): IEnumerable<TResult> {
+        return new ZipEnumerable<T, TSecond, TResult>(this, other, transformer)
     }
 }

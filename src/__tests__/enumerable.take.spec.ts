@@ -1,6 +1,5 @@
-
-import { Enumerable } from "../query/Enumerable";
-
+import { Enumerable } from "../query/internal";
+ 
 describe("Enumerable Take", () => {
     beforeAll(() => { });
 

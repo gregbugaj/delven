@@ -1,5 +1,4 @@
-
-import { Enumerable } from "../query/Enumerable";
+import { Enumerable } from "../query/internal";
 
 describe("Enumerable Select", () => {
     beforeAll(() => { });

@@ -121,3 +121,25 @@ The order of evaluation for the query is as follows
 
 
 https://tomassetti.me/antlr-mega-tutorial/
+
+
+
+## Circular depndency detection
+
+https://github.com/pahen/madge
+
+```
+npm -g install madge
+apt-get install graphviz
+```
+
+List dependencies from all *.ts files found in a directory
+
+```
+madge --extensions js,ts  ./src/
+```
+
+Graph dependencies
+```
+madge --circular --image graph.svg --extensions js,ts  ./src/__tests__/enumerable.*
+```

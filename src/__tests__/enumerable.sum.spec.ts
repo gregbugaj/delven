@@ -1,5 +1,5 @@
+import { Enumerable } from "../query/internal";
 
-import { Enumerable } from "../query/Enumerable";
 
 describe("Enumerable Sum", () => {
     beforeAll(() => {});
