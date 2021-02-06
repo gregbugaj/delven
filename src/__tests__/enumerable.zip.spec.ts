@@ -12,7 +12,7 @@ describe("Enumerable Zip", () => {
 
         let rs: [number, string][] = []
         for await (const x of results) {
-            console.info(`result : ${[x[0]]} : ${[x[1]]}`)
+            // console.info(`result : ${[x[0]]} : ${[x[1]]}`)
             rs.push(x as [number, string])
         }
         const expectedResult = [[1, 'one'], [2, 'two'], [3, 'three']];
@@ -27,7 +27,7 @@ describe("Enumerable Zip", () => {
         const rs = []
 
         for await (const x of results) {
-            console.info(`result : ${x}`)
+            // console.info(`result : ${x}`)
             rs.push(x)
         }
 
