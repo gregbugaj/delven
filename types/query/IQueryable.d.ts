@@ -11,11 +11,11 @@
  * https://github.com/microsoft/TypeScript/issues/33458
  */
 export declare abstract class IQueryable<T> {
-    abstract iter(): AsyncGenerator<T, unknown, T | unknown>;
-    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>;
+    abstract iter(): AsyncGenerator<T, unknown, T | unknown>
+    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>
 }
 export declare class MockQueryable implements IQueryable<number> {
-    constructor();
-    iterOfIter(): AsyncGenerator<number, unknown, unknown>;
-    iter(): AsyncGenerator<number, unknown, unknown>;
+    constructor()
+    iterOfIter(): AsyncGenerator<number, unknown, unknown>
+    iter(): AsyncGenerator<number, unknown, unknown>
 }

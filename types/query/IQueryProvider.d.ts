@@ -1,4 +1,4 @@
-import * as Node from "../nodes";
+import * as Node from "../nodes"
 /**
  * The query provider responsible for interpreting and executing the query.
  *
@@ -6,5 +6,5 @@ import * as Node from "../nodes";
  * For example, it may involve translating the expression tree to a query language appropriate for an underlying data source.
  */
 export default interface IQueryProvider {
-    CreateQuery(expression: Node.Expression): void;
+    CreateQuery(expression: Node.Expression): void
 }

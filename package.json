@@ -13,6 +13,7 @@
         "build-ts": "./node_modules/.bin/babel src --out-dir dist --extensions '.ts'",
         "lint-fix": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
         "lint": " eslint \"**/*.{js,ts}\" --quiet ",
+        "prettier": "prettier \"*/**/*.ts*\" --ignore-path ./.prettierignore --write",
         "buildXXXX": "npm run build-ts && npm run lint ",
         "package": "webpack --config babel.webpack.config.js",
         "types": "tsc -p tsconfig.build.types.json --outDir ./types"
@@ -47,7 +48,8 @@
         "ts-jest": "^26.1.1",
         "typescript": "^3.9.5",
         "webpack": "^4.44.1",
-        "webpack-cli": "^3.3.11"
+        "webpack-cli": "^3.3.11",
+        "prettier": "^1.9.2"
     },
     "dependencies": {
         "@babel/runtime": "^7.10.2",

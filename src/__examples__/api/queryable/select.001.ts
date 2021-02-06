@@ -1,9 +1,8 @@
-import MockQuerySource, { populator } from "../../../query/Queryable";
+import MockQuerySource, {populator} from "../../../query/Queryable"
+;(async () => {
+    // Query select
 
-(async () => {
-  // Query select
-
-  `
+    ;`
   // source
   let x = select x, y from sourceA()    
   
@@ -12,18 +11,15 @@ import MockQuerySource, { populator } from "../../../query/Queryable";
             .Select((row, index)=> {
                 return {'x': row.x}
             })
-  `;
+  `
 
-  class Dynamic {
-    val: number = 0;
-  }
+    class Dynamic {
+        val: number = 0
+    }
 
-  const provider = MockQuerySource.create<Dynamic>(10, 0, (index) =>
-    populator(index, new Dynamic())
-  );
+    const provider = MockQuerySource.create<Dynamic>(10, 0, index => populator(index, new Dynamic()))
 
-  for await (const val of provider) {
-    console.info(`${Date.now()} : iter : ${JSON.stringify(val)}`);
-  }
-})();
-
+    for await (const val of provider) {
+        console.info(`${Date.now()} : iter : ${JSON.stringify(val)}`)
+    }
+})()

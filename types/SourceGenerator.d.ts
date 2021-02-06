@@ -1,4 +1,4 @@
-import * as Node from "./nodes";
+import * as Node from "./nodes"
 /**
  * Source generator to transform valid AST back into ECMAScript
  * JS does not support overloading, so the visit methods need different names.
@@ -18,5 +18,5 @@ export default class SourceGenerator {
      *
      * @param node
      */
-    toSource(node: Node.Module): string;
+    toSource(node: Node.Module): string
 }

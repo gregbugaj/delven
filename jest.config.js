@@ -23,6 +23,7 @@ module.exports = {
         }
     },
 
+    "collectCoverage": true,
+    "coverageReporters": ["json", "html"],
     "bail": 1
-
 };

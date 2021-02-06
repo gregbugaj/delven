@@ -1,15 +1,14 @@
-import { Enumerable } from "../query/internal";
- 
+import {Enumerable} from "../query/internal"
+
 describe("Enumerable Take", () => {
-    beforeAll(() => { });
+    beforeAll(() => {})
 
     test("take-toArray()", async () => {
         let enumerable = new Enumerable([0, 1, 2, 3, 4, 5, 6, 7, 8])
         let t3 = await enumerable.Take(2).toArray()
         let expectedResult = [0, 1]
-        expect(t3).toEqual(expectedResult);
-    });
-
+        expect(t3).toEqual(expectedResult)
+    })
 
     test("take-iterator", async () => {
         const enumerable = new Enumerable([0, 1, 2, 3, 4, 5, 6, 7, 8])
@@ -19,6 +18,6 @@ describe("Enumerable Take", () => {
             results.push(val)
         }
 
-        expect(results).toEqual(expectedResult);
-    });
-});
+        expect(results).toEqual(expectedResult)
+    })
+})
