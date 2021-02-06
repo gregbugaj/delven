@@ -23,6 +23,10 @@
  * https://www.typescriptlang.org/docs/handbook/generics.html
  */
 
+/**
+ * Tuple can contain two values of different data types.
+ */
+export type Tuple<TFirts, TSecond> = [TFirts, TSecond]
 
 /**
  * Action interface represents a function that accepts one argument and produces a result. 
@@ -35,14 +39,27 @@ export interface Action<T = any, R = any> {
     (val: T): R;
 }
 
+/**
+ * BiAction interface represents a function that accepts two arguments and produces a result. 
+ * 
+ * Type parameters:
+ *   TFirst - the type of the input to the function
+ *   TSecond - the type of the input to the function
+ *   TReturn - the type of the result of the function
+ */
+export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
+    (first: TFirst, second: TSecond): TReturn;
+}
+
 export abstract class IEnumerable<T> {
 
     /**
      * Return iterator for current datasouce
      */
-    asyncIterator(): AsyncGenerator<unknown, unknown, unknown> {
-        throw new Error("Method not implemented");
-    }
+    abstract asyncIterator(): AsyncGenerator<unknown, unknown, unknown>;
+    // {
+    //     throw new Error("Method not implemented");
+    // }
 
     iterator(): IterableIterator<T> {
         throw new Error("Method not implemented");
@@ -114,28 +131,8 @@ export abstract class IEnumerable<T> {
      * The function will only iterate over the smallest list passed
      * 
      * @param other 
-     * @param action 
+     * @param transformer 
      */
-    abstract Zip<TSecond, TResult>(other: IEnumerable<TSecond>, action?: Action<T, TSecond>): IEnumerable<TResult>
-
-    /*
-    Sample Implemenation
-  
-     async * iterOfIter(): AsyncGenerator<number, unknown, unknown> {
-          for (let i = 0; i < 5; ++i) {
-              await sleep(100);
-              yield* this.iter()
-          }
-          return;
-      }
-  
-      async * iter(): AsyncGenerator<number, unknown, unknown> {
-          for (let i = 0; i < 5; ++i) {
-              await sleep(100);
-              yield i;
-          }
-          return;
-      }
-    */
+    abstract Zip<TSecond, TResult>(other: IEnumerable<TSecond>, transformer?: BiAction<T, TSecond, TResult>): IEnumerable<TResult | Tuple<T, TSecond>>
 }
 

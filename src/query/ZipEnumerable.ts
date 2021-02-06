@@ -1,13 +1,13 @@
-import { Action, IEnumerable, Enumerable } from "./internal";
+import { Tuple, Action, IEnumerable, Enumerable, BiAction } from "./internal";
 
-export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult> {
+export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult | Tuple<TFirst, TSecond>> {
     results: TResult[];
     executed: boolean;
     first: IEnumerable<TFirst>;
     second: IEnumerable<TSecond>;
-    transformer: Action<TFirst, TSecond> | undefined;
+    transformer: BiAction<TFirst, TSecond, TResult> | undefined;
 
-    constructor(first: IEnumerable<TFirst>, second: IEnumerable<TSecond>, transformer?: Action<TFirst, TSecond>) {
+    constructor(first: IEnumerable<TFirst>, second: IEnumerable<TSecond>, transformer?: BiAction<TFirst, TSecond, TResult>) {
         super([]);
         this.results = [];
         this.executed = false;
@@ -16,14 +16,14 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult>
         this.transformer = transformer;
     }
 
-    async *asyncIterator(): AsyncGenerator<TResult, unknown, unknown> {
+    async *asyncIterator(): AsyncGenerator<TResult | Tuple<TFirst, TSecond>, unknown, unknown> {
 
         const lhs = this.first.asyncIterator();
         const rhs = this.second.asyncIterator();
 
         while (true) {
-            let first = await lhs.next();
-            let second = await rhs.next();
+            const first = await lhs.next();
+            const second = await rhs.next();
 
             if (first == undefined || second == undefined) {
                 break;
@@ -32,7 +32,11 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult>
                 break;
             }
 
-            yield { "first": first.value, "second": second.value };
+            if (this.transformer === undefined) {
+                yield [first.value, second.value] as Tuple<TFirst, TSecond>
+            } else {
+                yield this.transformer(first.value as TFirst, second.value as TSecond);
+            }
         }
         // TReturn = any
         return undefined;

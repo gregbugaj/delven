@@ -1,4 +1,7 @@
-import { Action, IEnumerable } from "./internal";
+import { Tuple } from "./IEnumerable";
+import { Action } from "./internal";
+import { BiAction } from "./internal";
+import { IEnumerable } from "./internal";
 import { SelectEnumerable } from "./internal";
 import { TakeEnumerable } from "./internal";
 import { WhereEnumerable } from "./internal";
@@ -83,11 +86,18 @@ export class Enumerable<T> extends IEnumerable<T> {
         throw new Error("Method not implemented.");
     }
 
+    async *asyncIterator(): AsyncGenerator<T, unknown, unknown> {
+        for (let i = 0; i < this.source.length; ++i) {
+            yield this.source[i]
+        }
+        return undefined
+    }
+
     async toArray(): Promise<ArrayLike<T>> {
         return Promise.resolve(this.source);
     }
 
-    Zip<TSecond, TResult>(other: IEnumerable<TSecond>, transformer?: Action<T, TSecond>): IEnumerable<TResult> {
+    Zip<TSecond, TResult>(other: IEnumerable<TSecond>, transformer?: BiAction<T, TSecond, TResult>): IEnumerable<TResult | Tuple<T, TSecond>> {
         return new ZipEnumerable<T, TSecond, TResult>(this, other, transformer)
     }
 }
