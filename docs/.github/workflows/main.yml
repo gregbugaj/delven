@@ -1,0 +1,58 @@
+# Build git 
+name: CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+          fetch-depth: 0
+      - name: Setup go
+        uses: actions/setup-go@v2
+        with:
+          stable: 'false'
+          go-version: '1.15.3'
+      - run: go version
+
+      - name: Install Hugo-Extended
+        run: |
+          wget -O /tmp/hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.76.5/hugo_extended_0.76.5_Linux-64bit.deb
+          sudo dpkg -i /tmp/hugo.deb
+          hugo version
+
+      - name: Building docs
+        run: | 
+          ./pull-theme.sh
+          mkdir docs
+          hugo -D
+      - name: Copy and Push files # transfer the new html files back into the repository
+        run: | # git remote set-url --push origin https://gregbugaj:$GITHUB_TOKEN@github.com/gregbugaj/delven-docs 
+          git config --global credential.helper store
+          git config --global user.email "gregbugaj.ci.bot@users.noreply.github.com"
+          git config --global user.name "gregbugaj.ci.bot"
+          git config --global push.default simple
+
+          rm -rf deployment
+          git clone --depth 1 --single-branch --branch docs https://github.com/gregbugaj/delven-docs deployment
+          rsync -av --delete --exclude ".git" docs/ deployment
+          cd deployment
+
+          git add -A
+          git commit -am "action(deploy) : Updating 'docs' branch"
+
+          git remote set-url --push origin https://gregbugaj:$GITHUB_TOKEN@github.com/gregbugaj/delven-docs
+          git push origin docs
+
+          cd ..
+          rm -rf deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
