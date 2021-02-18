@@ -1,0 +1,2 @@
+
+let iter = { *[Symbol.iterator]() {}}

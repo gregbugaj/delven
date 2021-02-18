@@ -1,0 +1,39 @@
+{
+    "compilerOptions": {
+      "target": "ES2020",
+      "lib": [
+        "es2017",
+        "esnext",
+        "esnext.asynciterable"
+      ],
+      "noImplicitAny": false,
+      "noImplicitThis": true,
+      "strictNullChecks": true,
+      "skipLibCheck": true,
+      "esModuleInterop": true,
+      "allowSyntheticDefaultImports": true,
+      "strict": true,
+      "forceConsistentCasingInFileNames": true,
+      "module": "ESNext",
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "isolatedModules": true,
+      "sourceMap": true,
+      "pretty": true,
+
+      "noEmit": false,
+      "declaration": true,
+      "allowJs": true,
+      "checkJs": false,
+      "emitDeclarationOnly": true,
+    },
+    "include": [
+        "src/**/*.ts"
+      ],
+      
+      "exclude": [
+        "node_modules", 
+        "**/*.spec.ts"
+      ]
+  }
+  

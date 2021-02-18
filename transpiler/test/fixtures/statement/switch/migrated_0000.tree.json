@@ -1,0 +1,16 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "SwitchStatement",
+            "discriminant": {
+                "type": "Identifier",
+                "name": "x"
+            },
+            "cases": []
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

@@ -1,0 +1,26 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "BinaryExpression",
+                "operator": "+",
+                "left": {
+                    "type": "Literal",
+                    "value": "",
+                    "raw": "''",
+                    "start": 0,
+                    "end": 0
+                },
+                "right": {
+                    "type": "Identifier",
+                    "name": "bar"
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

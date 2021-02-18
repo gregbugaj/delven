@@ -1,0 +1,43 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "AssignmentExpression",
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                },
+                "right": {
+                    "type": "ConditionalExpression",
+                    "test": {
+                        "type": "Literal",
+                        "value": 0,
+                        "raw": "0",
+                        "start": 0,
+                        "end": 0
+                    },
+                    "consequent": {
+                        "type": "Literal",
+                        "value": 1,
+                        "raw": "1",
+                        "start": 0,
+                        "end": 0
+                    },
+                    "alternate": {
+                        "type": "Literal",
+                        "value": 2,
+                        "raw": "2",
+                        "start": 0,
+                        "end": 0
+                    }
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

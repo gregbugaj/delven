@@ -1,0 +1,40 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "BinaryExpression",
+                "operator": "<<",
+                "left": {
+                    "type": "BinaryExpression",
+                    "operator": "+",
+                    "left": {
+                        "type": "Literal",
+                        "value": 4,
+                        "raw": "4",
+                        "start": 0,
+                        "end": 0
+                    },
+                    "right": {
+                        "type": "Literal",
+                        "value": 5,
+                        "raw": "5",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "right": {
+                    "type": "Literal",
+                    "value": 6,
+                    "raw": "6",
+                    "start": 0,
+                    "end": 0
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

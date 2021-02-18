@@ -1,0 +1,47 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "BinaryExpression",
+                "operator": "+",
+                "left": {
+                    "type": "BinaryExpression",
+                    "operator": "+",
+                    "left": {
+                        "type": "Identifier",
+                        "name": "a"
+                    },
+                    "right": {
+                        "type": "BinaryExpression",
+                        "operator": "<",
+                        "left": {
+                            "type": "Identifier",
+                            "name": "b"
+                        },
+                        "right": {
+                            "type": "BinaryExpression",
+                            "operator": "*",
+                            "left": {
+                                "type": "Identifier",
+                                "name": "c"
+                            },
+                            "right": {
+                                "type": "Identifier",
+                                "name": "d"
+                            }
+                        }
+                    }
+                },
+                "right": {
+                    "type": "Identifier",
+                    "name": "e"
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

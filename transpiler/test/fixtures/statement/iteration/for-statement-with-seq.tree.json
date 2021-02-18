@@ -1,0 +1,35 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ForStatement",
+            "init": {
+                "type": "SequenceExpression",
+                "expressions": [
+                    {
+                        "type": "Identifier",
+                        "name": "a"
+                    },
+                    {
+                        "type": "Identifier",
+                        "name": "b"
+                    },
+                    {
+                        "type": "Identifier",
+                        "name": "c"
+                    }
+                ],
+                "start": 0,
+                "end": 0
+            },
+            "test": null,
+            "update": null,
+            "body": {
+                "type": "EmptyStatement"
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

@@ -1,0 +1,60 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "TryStatement",
+            "block": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "Identifier",
+                                "name": "doThat"
+                            },
+                            "arguments": []
+                        }
+                    }
+                ],
+                "start": 0,
+                "end": 0
+            },
+            "handler": {
+                "type": "CatchClause",
+                "param": {
+                    "type": "Identifier",
+                    "name": "e"
+                },
+                "body": {
+                    "type": "BlockStatement",
+                    "body": [
+                        {
+                            "type": "ExpressionStatement",
+                            "expression": {
+                                "type": "CallExpression",
+                                "callee": {
+                                    "type": "Identifier",
+                                    "name": "say"
+                                },
+                                "arguments": [
+                                    {
+                                        "type": "Identifier",
+                                        "name": "e"
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "start": 0,
+                    "end": 0
+                }
+            },
+            "finalizer": null
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

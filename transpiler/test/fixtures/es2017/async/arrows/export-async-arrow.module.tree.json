@@ -1,0 +1,51 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExportNamedDeclaration",
+            "declaration": {
+                "type": "VariableDeclaration",
+                "declarations": [
+                    {
+                        "type": "VariableDeclarator",
+                        "id": {
+                            "type": "Identifier",
+                            "name": "square"
+                        },
+                        "init": {
+                            "type": "ArrowFunctionExpression",
+                            "id": null,
+                            "params": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "x"
+                                }
+                            ],
+                            "body": {
+                                "type": "BinaryExpression",
+                                "operator": "*",
+                                "left": {
+                                    "type": "Identifier",
+                                    "name": "x"
+                                },
+                                "right": {
+                                    "type": "Identifier",
+                                    "name": "x"
+                                }
+                            },
+                            "generator": false,
+                            "expression": true,
+                            "async": true
+                        }
+                    }
+                ],
+                "kind": "const"
+            },
+            "specifiers": [],
+            "source": null
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

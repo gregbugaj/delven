@@ -1,0 +1,15 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ThrowStatement",
+            "argument": {
+                "type": "Identifier",
+                "name": "x"
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

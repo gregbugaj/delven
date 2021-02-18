@@ -1,0 +1,42 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "FunctionDeclaration",
+            "id": {
+                "type": "Identifier",
+                "name": "f"
+            },
+            "params": [],
+            "body": {
+                "type": "BlockStatement",
+                "body": [
+                    {
+                        "type": "ExpressionStatement",
+                        "expression": {
+                            "type": "CallExpression",
+                            "callee": {
+                                "type": "MetaProperty",
+                                "meta": {
+                                    "type": "Identifier",
+                                    "name": "new"
+                                },
+                                "property": {
+                                    "type": "Identifier",
+                                    "name": "target"
+                                }
+                            },
+                            "arguments": []
+                        }
+                    }
+                ]
+            },
+            "generator": false,
+            "expression": false,
+            "async": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

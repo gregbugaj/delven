@@ -1,0 +1,38 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "ArrayPattern",
+                        "elements": [
+                            {
+                                "type": "RestElement",
+                                "argument": {
+                                    "type": "ArrayPattern",
+                                    "elements": [
+                                        {
+                                            "type": "Identifier",
+                                            "name": "x"
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "init": {
+                        "type": "Identifier",
+                        "name": "y"
+                    }
+                }
+            ],
+            "kind": "let"
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

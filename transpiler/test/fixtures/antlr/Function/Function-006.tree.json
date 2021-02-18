@@ -1,0 +1,46 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "Identifier",
+                    "name": "f"
+                },
+                "arguments": [
+                    {
+                        "type": "Literal",
+                        "value": 4,
+                        "raw": "4",
+                        "start": 0,
+                        "end": 0
+                    },
+                    {
+                        "type": "SpreadElement",
+                        "argument": {
+                            "type": "Identifier",
+                            "name": "a"
+                        }
+                    },
+                    {
+                        "type": "SpreadElement",
+                        "argument": {
+                            "type": "ArrayExpression",
+                            "elements": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "b"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

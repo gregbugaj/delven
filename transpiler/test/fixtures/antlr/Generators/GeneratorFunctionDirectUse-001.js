@@ -1,0 +1,2 @@
+
+let fibonacci = function* (numbers) {}
