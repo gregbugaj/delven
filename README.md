@@ -1,6 +1,6 @@
 # Delven
 
-Delven is a Domain Specific Language (DSL) designed for mining content from static and dynamic sources, It closely resembles SQL with features borrowed from other popular languages. Delven is ECMA2020 compatible as it uses Source-To-Source transpiller so at the end of the day there are no special runtimes required.
+Delven is a Domain Specific Language (DSL) designed for mining content from static and dynamic sources, It closely resembles SQL with features borrowed from other popular languages. Delven is ECMAScript2020 compatible as it uses Source-To-Source transpiller so at the end of the day there are no special runtimes required.
 
 
 Installation
