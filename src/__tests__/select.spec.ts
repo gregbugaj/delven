@@ -1,16 +1,18 @@
 import ASTParser from "../ASTParser"
-import ASTNode from "../ASTNode"
-import SourceGenerator from "../SourceGenerator";
+import UserQuery, {Select} from "../query/UserQuery"
 
-describe('Select Expression', () => {
+describe("Basic Select Expression", () => {
     beforeAll(() => {
         ASTParser.trace(false)
-    });
+    })
 
-    test('Basic select', () => {
-        const input = 1.59
-        const expectedResult = 1.59
+    test("Basic select", () => {
+        let x = Select({expressions: [{expr: "x"}]})
+        console.info(x)
 
+        // let x = Select([{ expr: 'z' }]).From(MockQuerySource.create(5));
+        let input = 1
+        let expectedResult = 1
         expect(input).toBe(expectedResult)
     })
 })

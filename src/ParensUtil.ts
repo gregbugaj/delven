@@ -1,13 +1,10 @@
-import { NodeBuilderFlags } from "typescript";
-import { Syntax } from "./syntax";
+import {Syntax} from "./syntax"
 
 // Parentisis logic based on 'prettier' project
-
 const debug = true
 
 function isStatementOrDeclaration(node: any): boolean {
-    if (node === null || node.type === null)
-        return false
+    if (node === null || node.type === null) return false
     const type = node.type
     return (
         type === Syntax.BlockStatement ||
@@ -44,26 +41,26 @@ function isStatementOrDeclaration(node: any): boolean {
 
 /**
  * Check if the node needs wrapping parenthesis
- * 
+ *
  * @param node the node the check
  */
 function hasParenthesis(node: any, name?: string | null): boolean {
-
     const type = node.type
     const parent = node.__parent__
 
     if (debug) {
-        console.debug(`type = ${type} > ${parent.type}  : ${name}`)
+        console.debug(`type(current, parent, node) = ${type} > ${parent.type}  : ${name}`)
     }
     // Statements and Declarations don't need brackets
     if (isStatementOrDeclaration(node)) {
         return false
     }
 
-    // Add parens around the extends clause of a class. 
-    if ((parent.type === Syntax.ClassDeclaration || parent.type == Syntax.ClassExpression) &&
-        parent.superClass == node && (
-            node.type == Syntax.ArrowFunctionExpression ||
+    // Add parens around the extends clause of a class.
+    if (
+        (parent.type === Syntax.ClassDeclaration || parent.type == Syntax.ClassExpression) &&
+        parent.superClass == node &&
+        (node.type == Syntax.ArrowFunctionExpression ||
             node.type == Syntax.AssignmentExpression ||
             node.type == Syntax.AwaitExpression ||
             node.type == Syntax.BinaryExpression ||
@@ -90,10 +87,15 @@ function hasParenthesis(node: any, name?: string | null): boolean {
 
         case Syntax.UpdateExpression: {
             if (parent.type === Syntax.UnaryExpression) {
-                return (node.prefix &&
+                return (
+                    node.prefix &&
                     ((node.operator === "++" && parent.operator === "+") ||
                         (node.operator === "--" && parent.operator === "-"))
                 )
+            }
+            // is this correct ?
+            if (parent.type === Syntax.ExpressionStatement) {
+                return false
             }
         }
 
@@ -116,7 +118,6 @@ function hasParenthesis(node: any, name?: string | null): boolean {
         // eslint-disable-next-line no-fallthrough
         case Syntax.LogicalExpression: {
             switch (parent.type) {
-
                 case Syntax.UnaryExpression:
                 case Syntax.UpdateExpression:
                 case Syntax.AwaitExpression:
@@ -161,7 +162,7 @@ function hasParenthesis(node: any, name?: string | null): boolean {
 
         // This is never hit as the code renders parens directry
         case Syntax.FunctionExpression: {
-            return true;
+            return true
         }
 
         case Syntax.ArrowFunctionExpression: {
@@ -182,6 +183,4 @@ function hasParenthesis(node: any, name?: string | null): boolean {
     return false
 }
 
-export {
-    hasParenthesis
-}
+export {hasParenthesis}

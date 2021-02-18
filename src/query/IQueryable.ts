@@ -1,47 +1,13 @@
 /**
  * Provides functionality to evaluate queries against a specific data source
- * 
+ *
+ * Much of the API has been driven the original LINQ implementation
+ *
  * https://github.com/microsoft/TypeScript/issues/25710
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
- * 
- * Async Generators 
- * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-3.html
- * 
- * https://javascript.info/async-iterators-generators
- * 
- * https://github.com/microsoft/TypeScript/issues/33458
+ * https://docs.microsoft.com/en-us/dotnet/api/system.linq.iqueryable-1
  */
 
-export abstract class IQueryable<T> {
-    // abstract iterator(): IterableIterator<string>;
-    abstract iter(): AsyncGenerator<T, unknown, T | unknown>
+import {IEnumerable} from "./IEnumerable"
 
-    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>
-}
-
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-export class MockQueryable implements IQueryable<number> {
-
-    constructor() {
-        console.info("entry")
-    }
-
-    async * iterOfIter(): AsyncGenerator<number, unknown, unknown> {
-        for (let i = 0; i < 5; ++i) {
-            await sleep(100);
-            yield* this.iter()
-        }
-        return;
-    }
-
-    async * iter(): AsyncGenerator<number, unknown, unknown> {
-        for (let i = 0; i < 5; ++i) {
-            await sleep(100);
-            yield i;
-        }
-        return;
-    }
-}
+export abstract class IQueryable<T> extends IEnumerable<T> {}
