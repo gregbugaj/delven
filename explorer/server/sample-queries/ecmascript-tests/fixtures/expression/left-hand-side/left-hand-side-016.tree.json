@@ -1,0 +1,37 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "MemberExpression",
+                "computed": false,
+                "object": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "Identifier",
+                        "name": "universe"
+                    },
+                    "arguments": [
+                        {
+                            "type": "Literal",
+                            "value": 42,
+                            "raw": "42",
+                            "start": 0,
+                            "end": 0
+                        }
+                    ]
+                },
+                "property": {
+                    "type": "Identifier",
+                    "name": "galaxies",
+                    "start": 0,
+                    "end": 0
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

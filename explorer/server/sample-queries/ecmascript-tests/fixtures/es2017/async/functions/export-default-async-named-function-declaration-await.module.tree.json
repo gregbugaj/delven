@@ -1,0 +1,42 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExportDefaultDeclaration",
+            "declaration": {
+                "type": "FunctionDeclaration",
+                "id": {
+                    "type": "Identifier",
+                    "name": "f"
+                },
+                "params": [
+                    {
+                        "type": "Identifier",
+                        "name": "a"
+                    }
+                ],
+                "body": {
+                    "type": "BlockStatement",
+                    "body": [
+                        {
+                            "type": "ExpressionStatement",
+                            "expression": {
+                                "type": "AwaitExpression",
+                                "argument": {
+                                    "type": "Identifier",
+                                    "name": "a"
+                                }
+                            }
+                        }
+                    ]
+                },
+                "generator": false,
+                "expression": false,
+                "async": true
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

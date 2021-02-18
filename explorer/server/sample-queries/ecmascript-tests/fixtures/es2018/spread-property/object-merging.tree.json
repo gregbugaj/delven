@@ -1,0 +1,40 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "xy"
+                    },
+                    "init": {
+                        "type": "ObjectExpression",
+                        "properties": [
+                            {
+                                "type": "SpreadElement",
+                                "argument": {
+                                    "type": "Identifier",
+                                    "name": "x"
+                                }
+                            },
+                            {
+                                "type": "SpreadElement",
+                                "argument": {
+                                    "type": "Identifier",
+                                    "name": "y"
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "kind": "let"
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

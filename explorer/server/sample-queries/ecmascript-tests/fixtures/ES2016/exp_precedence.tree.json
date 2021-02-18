@@ -1,0 +1,36 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "BinaryExpression",
+                "operator": "*",
+                "left": {
+                    "type": "Identifier",
+                    "name": "x"
+                },
+                "right": {
+                    "type": "BinaryExpression",
+                    "operator": "**",
+                    "left": {
+                        "type": "Identifier",
+                        "name": "y"
+                    },
+                    "right": {
+                        "type": "UnaryExpression",
+                        "operator": "-",
+                        "argument": {
+                            "type": "Identifier",
+                            "name": "z"
+                        },
+                        "prefix": true
+                    }
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

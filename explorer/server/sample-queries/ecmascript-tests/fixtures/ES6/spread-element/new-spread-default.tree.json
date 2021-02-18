@@ -1,0 +1,39 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "NewExpression",
+                "callee": {
+                    "type": "Identifier",
+                    "name": "f"
+                },
+                "arguments": [
+                    {
+                        "type": "Identifier",
+                        "name": "g"
+                    },
+                    {
+                        "type": "SpreadElement",
+                        "argument": {
+                            "type": "AssignmentExpression",
+                            "operator": "=",
+                            "left": {
+                                "type": "Identifier",
+                                "name": "h"
+                            },
+                            "right": {
+                                "type": "Identifier",
+                                "name": "i"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

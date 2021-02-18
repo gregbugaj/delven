@@ -1,0 +1,25 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "ArrayExpression",
+                "elements": [
+                    {
+                        "type": "Literal",
+                        "value": {},
+                        "raw": "/q/",
+                        "regex": {
+                            "pattern": "q",
+                            "flags": ""
+                        }
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

@@ -1,0 +1,28 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "Identifier",
+                    "name": "foo"
+                },
+                "arguments": [
+                    {
+                        "type": "Identifier",
+                        "name": "bar"
+                    },
+                    {
+                        "type": "Identifier",
+                        "name": "baz"
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

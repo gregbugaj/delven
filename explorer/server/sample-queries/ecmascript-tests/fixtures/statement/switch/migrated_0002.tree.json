@@ -1,0 +1,54 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "SwitchStatement",
+            "discriminant": {
+                "type": "Identifier",
+                "name": "answer"
+            },
+            "cases": [
+                {
+                    "type": "SwitchCase",
+                    "test": {
+                        "type": "Literal",
+                        "value": 42,
+                        "raw": "42",
+                        "start": 0,
+                        "end": 0
+                    },
+                    "consequent": [
+                        {
+                            "type": "ExpressionStatement",
+                            "expression": {
+                                "type": "CallExpression",
+                                "callee": {
+                                    "type": "Identifier",
+                                    "name": "hi"
+                                },
+                                "arguments": []
+                            }
+                        },
+                        {
+                            "type": "BreakStatement",
+                            "label": null
+                        }
+                    ]
+                },
+                {
+                    "type": "SwitchCase",
+                    "test": null,
+                    "consequent": [
+                        {
+                            "type": "BreakStatement",
+                            "label": null
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

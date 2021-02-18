@@ -1,0 +1,104 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "Identifier",
+                        "name": "nums"
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "forEach",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "arguments": [
+                    {
+                        "type": "ArrowFunctionExpression",
+                        "id": null,
+                        "params": [
+                            {
+                                "type": "Identifier",
+                                "name": "v"
+                            }
+                        ],
+                        "body": {
+                            "type": "BlockStatement",
+                            "body": [
+                                {
+                                    "type": "IfStatement",
+                                    "test": {
+                                        "type": "BinaryExpression",
+                                        "operator": "===",
+                                        "left": {
+                                            "type": "BinaryExpression",
+                                            "operator": "%",
+                                            "left": {
+                                                "type": "Identifier",
+                                                "name": "v"
+                                            },
+                                            "right": {
+                                                "type": "Literal",
+                                                "value": 5,
+                                                "raw": "5",
+                                                "start": 0,
+                                                "end": 0
+                                            }
+                                        },
+                                        "right": {
+                                            "type": "Literal",
+                                            "value": 0,
+                                            "raw": "0",
+                                            "start": 0,
+                                            "end": 0
+                                        }
+                                    },
+                                    "consequent": {
+                                        "type": "ExpressionStatement",
+                                        "expression": {
+                                            "type": "CallExpression",
+                                            "callee": {
+                                                "type": "MemberExpression",
+                                                "computed": false,
+                                                "object": {
+                                                    "type": "Identifier",
+                                                    "name": "fives"
+                                                },
+                                                "property": {
+                                                    "type": "Identifier",
+                                                    "name": "push",
+                                                    "start": 0,
+                                                    "end": 0
+                                                }
+                                            },
+                                            "arguments": [
+                                                {
+                                                    "type": "Identifier",
+                                                    "name": "v"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "alternate": null
+                                }
+                            ]
+                        },
+                        "generator": false,
+                        "expression": false,
+                        "async": false
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

@@ -1,0 +1,218 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "AssignmentExpression",
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "odds"
+                },
+                "right": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "MemberExpression",
+                        "computed": false,
+                        "object": {
+                            "type": "Identifier",
+                            "name": "evens"
+                        },
+                        "property": {
+                            "type": "Identifier",
+                            "name": "map",
+                            "start": 0,
+                            "end": 0
+                        }
+                    },
+                    "arguments": [
+                        {
+                            "type": "ArrowFunctionExpression",
+                            "id": null,
+                            "params": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "v"
+                                }
+                            ],
+                            "body": {
+                                "type": "BinaryExpression",
+                                "operator": "+",
+                                "left": {
+                                    "type": "Identifier",
+                                    "name": "v"
+                                },
+                                "right": {
+                                    "type": "Literal",
+                                    "value": 1,
+                                    "raw": "1",
+                                    "start": 0,
+                                    "end": 0
+                                }
+                            },
+                            "generator": false,
+                            "expression": true,
+                            "async": false
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "AssignmentExpression",
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "pairs"
+                },
+                "right": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "MemberExpression",
+                        "computed": false,
+                        "object": {
+                            "type": "Identifier",
+                            "name": "evens"
+                        },
+                        "property": {
+                            "type": "Identifier",
+                            "name": "map",
+                            "start": 0,
+                            "end": 0
+                        }
+                    },
+                    "arguments": [
+                        {
+                            "type": "ArrowFunctionExpression",
+                            "id": null,
+                            "params": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "v"
+                                }
+                            ],
+                            "body": {
+                                "type": "ObjectExpression",
+                                "properties": [
+                                    {
+                                        "type": "Property",
+                                        "key": {
+                                            "type": "Identifier",
+                                            "name": "even",
+                                            "start": 0,
+                                            "end": 0
+                                        },
+                                        "computed": false,
+                                        "value": {
+                                            "type": "Identifier",
+                                            "name": "v"
+                                        },
+                                        "kind": "init",
+                                        "method": false,
+                                        "shorthand": false
+                                    },
+                                    {
+                                        "type": "Property",
+                                        "key": {
+                                            "type": "Identifier",
+                                            "name": "odd",
+                                            "start": 0,
+                                            "end": 0
+                                        },
+                                        "computed": false,
+                                        "value": {
+                                            "type": "BinaryExpression",
+                                            "operator": "+",
+                                            "left": {
+                                                "type": "Identifier",
+                                                "name": "v"
+                                            },
+                                            "right": {
+                                                "type": "Literal",
+                                                "value": 1,
+                                                "raw": "1",
+                                                "start": 0,
+                                                "end": 0
+                                            }
+                                        },
+                                        "kind": "init",
+                                        "method": false,
+                                        "shorthand": false
+                                    }
+                                ]
+                            },
+                            "generator": false,
+                            "expression": true,
+                            "async": false
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "AssignmentExpression",
+                "operator": "=",
+                "left": {
+                    "type": "Identifier",
+                    "name": "nums"
+                },
+                "right": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "MemberExpression",
+                        "computed": false,
+                        "object": {
+                            "type": "Identifier",
+                            "name": "evens"
+                        },
+                        "property": {
+                            "type": "Identifier",
+                            "name": "map",
+                            "start": 0,
+                            "end": 0
+                        }
+                    },
+                    "arguments": [
+                        {
+                            "type": "ArrowFunctionExpression",
+                            "id": null,
+                            "params": [
+                                {
+                                    "type": "Identifier",
+                                    "name": "v"
+                                },
+                                {
+                                    "type": "Identifier",
+                                    "name": "i"
+                                }
+                            ],
+                            "body": {
+                                "type": "BinaryExpression",
+                                "operator": "+",
+                                "left": {
+                                    "type": "Identifier",
+                                    "name": "v"
+                                },
+                                "right": {
+                                    "type": "Identifier",
+                                    "name": "i"
+                                }
+                            },
+                            "generator": false,
+                            "expression": true,
+                            "async": false
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

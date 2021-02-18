@@ -1,0 +1,36 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ForInStatement",
+            "left": {
+                "type": "Identifier",
+                "name": "x"
+            },
+            "right": {
+                "type": "Identifier",
+                "name": "list"
+            },
+            "body": {
+                "type": "ExpressionStatement",
+                "expression": {
+                    "type": "CallExpression",
+                    "callee": {
+                        "type": "Identifier",
+                        "name": "process"
+                    },
+                    "arguments": [
+                        {
+                            "type": "Identifier",
+                            "name": "x"
+                        }
+                    ]
+                }
+            },
+            "each": false
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

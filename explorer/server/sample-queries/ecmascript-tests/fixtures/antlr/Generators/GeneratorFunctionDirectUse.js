@@ -1,0 +1,2 @@
+
+function* range (start) { }

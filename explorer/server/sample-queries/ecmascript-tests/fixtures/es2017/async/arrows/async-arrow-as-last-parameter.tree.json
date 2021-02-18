@@ -1,0 +1,44 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "Identifier",
+                    "name": "f"
+                },
+                "arguments": [
+                    {
+                        "type": "Identifier",
+                        "name": "a"
+                    },
+                    {
+                        "type": "ArrowFunctionExpression",
+                        "id": null,
+                        "params": [
+                            {
+                                "type": "Identifier",
+                                "name": "b"
+                            }
+                        ],
+                        "body": {
+                            "type": "AwaitExpression",
+                            "argument": {
+                                "type": "Identifier",
+                                "name": "b"
+                            }
+                        },
+                        "generator": false,
+                        "expression": true,
+                        "async": true
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

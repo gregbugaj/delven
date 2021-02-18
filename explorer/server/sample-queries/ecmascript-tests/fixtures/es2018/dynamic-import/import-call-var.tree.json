@@ -1,0 +1,70 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "m"
+                    },
+                    "init": {
+                        "type": "Literal",
+                        "value": "library.js",
+                        "raw": "'library.js'",
+                        "start": 0,
+                        "end": 0
+                    }
+                }
+            ],
+            "kind": "const"
+        },
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "CallExpression",
+                "callee": {
+                    "type": "MemberExpression",
+                    "computed": false,
+                    "object": {
+                        "type": "CallExpression",
+                        "callee": {
+                            "type": "Import"
+                        },
+                        "arguments": [
+                            {
+                                "type": "Identifier",
+                                "name": "m"
+                            }
+                        ]
+                    },
+                    "property": {
+                        "type": "Identifier",
+                        "name": "then",
+                        "start": 0,
+                        "end": 0
+                    }
+                },
+                "arguments": [
+                    {
+                        "type": "ArrowFunctionExpression",
+                        "id": null,
+                        "params": [],
+                        "body": {
+                            "type": "BlockStatement",
+                            "body": []
+                        },
+                        "generator": false,
+                        "expression": false,
+                        "async": false
+                    }
+                ]
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

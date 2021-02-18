@@ -1,0 +1,154 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "ExpressionStatement",
+            "expression": {
+                "type": "ArrowFunctionExpression",
+                "id": null,
+                "params": [
+                    {
+                        "type": "ArrayPattern",
+                        "elements": [
+                            {
+                                "type": "ArrayPattern",
+                                "elements": [
+                                    {
+                                        "type": "ArrayPattern",
+                                        "elements": [
+                                            {
+                                                "type": "ArrayPattern",
+                                                "elements": [
+                                                    {
+                                                        "type": "ArrayPattern",
+                                                        "elements": [
+                                                            {
+                                                                "type": "ArrayPattern",
+                                                                "elements": [
+                                                                    {
+                                                                        "type": "ArrayPattern",
+                                                                        "elements": [
+                                                                            {
+                                                                                "type": "ArrayPattern",
+                                                                                "elements": [
+                                                                                    {
+                                                                                        "type": "ArrayPattern",
+                                                                                        "elements": [
+                                                                                            {
+                                                                                                "type": "ArrayPattern",
+                                                                                                "elements": [
+                                                                                                    {
+                                                                                                        "type": "ArrayPattern",
+                                                                                                        "elements": [
+                                                                                                            {
+                                                                                                                "type": "ArrayPattern",
+                                                                                                                "elements": [
+                                                                                                                    {
+                                                                                                                        "type": "ArrayPattern",
+                                                                                                                        "elements": [
+                                                                                                                            {
+                                                                                                                                "type": "ArrayPattern",
+                                                                                                                                "elements": [
+                                                                                                                                    {
+                                                                                                                                        "type": "ArrayPattern",
+                                                                                                                                        "elements": [
+                                                                                                                                            {
+                                                                                                                                                "type": "ArrayPattern",
+                                                                                                                                                "elements": [
+                                                                                                                                                    {
+                                                                                                                                                        "type": "ArrayPattern",
+                                                                                                                                                        "elements": [
+                                                                                                                                                            {
+                                                                                                                                                                "type": "ArrayPattern",
+                                                                                                                                                                "elements": [
+                                                                                                                                                                    {
+                                                                                                                                                                        "type": "ArrayPattern",
+                                                                                                                                                                        "elements": [
+                                                                                                                                                                            {
+                                                                                                                                                                                "type": "ArrayPattern",
+                                                                                                                                                                                "elements": [
+                                                                                                                                                                                    {
+                                                                                                                                                                                        "type": "ObjectPattern",
+                                                                                                                                                                                        "properties": [
+                                                                                                                                                                                            {
+                                                                                                                                                                                                "type": "Property",
+                                                                                                                                                                                                "key": {
+                                                                                                                                                                                                    "type": "Identifier",
+                                                                                                                                                                                                    "name": "a"
+                                                                                                                                                                                                },
+                                                                                                                                                                                                "computed": false,
+                                                                                                                                                                                                "value": {
+                                                                                                                                                                                                    "type": "AssignmentPattern",
+                                                                                                                                                                                                    "left": {
+                                                                                                                                                                                                        "type": "Identifier",
+                                                                                                                                                                                                        "name": "a"
+                                                                                                                                                                                                    },
+                                                                                                                                                                                                    "right": {
+                                                                                                                                                                                                        "type": "Identifier",
+                                                                                                                                                                                                        "name": "b"
+                                                                                                                                                                                                    }
+                                                                                                                                                                                                },
+                                                                                                                                                                                                "kind": "init",
+                                                                                                                                                                                                "method": false,
+                                                                                                                                                                                                "shorthand": true
+                                                                                                                                                                                            }
+                                                                                                                                                                                        ]
+                                                                                                                                                                                    }
+                                                                                                                                                                                ]
+                                                                                                                                                                            }
+                                                                                                                                                                        ]
+                                                                                                                                                                    }
+                                                                                                                                                                ]
+                                                                                                                                                            }
+                                                                                                                                                        ]
+                                                                                                                                                    }
+                                                                                                                                                ]
+                                                                                                                                            }
+                                                                                                                                        ]
+                                                                                                                                    }
+                                                                                                                                ]
+                                                                                                                            }
+                                                                                                                        ]
+                                                                                                                    }
+                                                                                                                ]
+                                                                                                            }
+                                                                                                        ]
+                                                                                                    }
+                                                                                                ]
+                                                                                            }
+                                                                                        ]
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                ]
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "body": {
+                    "type": "Literal",
+                    "value": 0,
+                    "raw": "0",
+                    "start": 0,
+                    "end": 0
+                },
+                "generator": false,
+                "expression": true,
+                "async": false
+            }
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}

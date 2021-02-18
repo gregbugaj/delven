@@ -1,0 +1,31 @@
+{
+    "type": "Program",
+    "body": [
+        {
+            "type": "IfStatement",
+            "test": {
+                "type": "Identifier",
+                "name": "x"
+            },
+            "consequent": {
+                "type": "FunctionDeclaration",
+                "id": {
+                    "type": "Identifier",
+                    "name": "f"
+                },
+                "params": [],
+                "body": {
+                    "type": "BlockStatement",
+                    "body": []
+                },
+                "generator": false,
+                "expression": false,
+                "async": true
+            },
+            "alternate": null
+        }
+    ],
+    "sourceType": "module",
+    "start": 0,
+    "end": 0
+}
