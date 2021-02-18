@@ -8,7 +8,7 @@
             "type": "node",
             "name": "Jest Tests",
             "request": "launch",
-            "program": "${workspaceFolder}/node_modules/jest/bin/jest",
+            "program": "${workspaceFolder}/transpiler/node_modules/jest/bin/jest",
             "args": [
                 "./src/__tests__/enumerable.zip.spec.ts"
             ],
@@ -24,7 +24,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/src/index.ts",
+            "program": "${workspaceFolder}/transpiler/src/index.ts",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]
