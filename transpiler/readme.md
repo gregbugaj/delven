@@ -1,6 +1,6 @@
 # Delven transpiler setup
 
-This is a Source-to-source transpiller that takes Delvenized JavaScript and produces valid ECMA2020 script. 
+This is a Source-to-source transpiler that takes Delvenized JavaScript and produces valid ECMA2020 script. 
 
 
 ## Setup
