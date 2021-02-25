@@ -6,8 +6,13 @@ Delven is a Domain Specific Language (DSL) designed for mining content from stat
 Installation
 ----------------
 
-Currently each project is installed via specific instructions located in each sub-project.
+`setup.sh` script can be used to perform initial install
 
+```bash
+. ./setup.sh
+```
+
+Invidual project can be installed via specific instructions located in each sub-project.
 
 
 Documentation
