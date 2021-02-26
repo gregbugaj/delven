@@ -27,7 +27,7 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, 'npm-dist'),
+                    from: path.resolve(__dirname, 'lib'),
                 }
             ],
         }),

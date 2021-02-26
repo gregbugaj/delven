@@ -29,8 +29,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-
-  
   "eslintConfig": {
     "extends": "react-app",
     "eslint-disable-next-line": "no-restricted-globals"

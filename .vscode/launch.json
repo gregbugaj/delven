@@ -20,13 +20,16 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Transpiller",
+            "name": "Launch Transpiler",
             "skipFiles": [
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/transpiler/src/index.ts",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
+            ],
+            "runtimeArgs": [
+                "--preserve-symlinks"
             ]
         }
     ]

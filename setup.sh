@@ -1,22 +1,75 @@
 #!/usr/bin/env bash
-echo "Starting setup"
 
-MIN_VERSION='v14.5.0'
-printf "Target NodeJS version : %s\n" $MIN_VERSION
+# Failfast on any errors
+set -eu -o pipefail
 
-if command -v nvm &> /dev/null
-then
-    nvm cache clear
-    nvm install v14.5.0
-    nvm use v14.5.0
-fi
+function dependency_check(){
+    MIN_VERSION='v14.5.0'
+    printf "Target NodeJS version : %s\n" $MIN_VERSION
 
-# Verfiy that the node is present
-if ! command -v node &> /dev/null 
-then
-    echo "Node is not present"
-    exit 1
-fi
+    if command -v nvm &> /dev/null
+    then
+        printf "Installing Node version : %s\n" $MIN_VERSION
+        nvm cache clear
+        nvm install v14.5.0
+        nvm use v14.5.0
+    fi
 
-VERSION=$(node --version)
-printf "Using version : %s\n" $VERSION
+    # Verfiy that the node is present
+    if ! command -v node &> /dev/null 
+    then
+        printf "Node is not present"
+        exit 1
+    fi
+
+    VERSION=$(node --version)
+    printf "Using version : %s\n" $VERSION
+}
+
+# Silent pushd/popd
+pushd () {
+    command pushd "$@" > /dev/null
+}
+
+popd () {
+    command popd "$@" > /dev/null
+}
+
+function install_transpiller(){
+    printf '\e[1;32m%-6s\e[m\n' "Installing : Transpiler"
+    (
+        cd  "./transpiler"
+        npm install
+    )
+}
+
+function install_runner(){
+    printf '\e[1;32m%-6s\e[m\n' "Installing : Runner-Executor"
+    (
+        cd "./runner/executors"
+        npm install
+    )
+}
+
+function install_explorer_server(){
+    printf '\e[1;32m%-6s\e[m\n' "Installing : Explorer Server"
+    (
+        cd "./explorer-server"
+        npm install
+    )
+}
+
+function install_explorer_ui(){
+    printf '\e[1;32m%-6s\e[m\n' "Installing : Explorer UI"
+    (
+        cd "./explorer-ui"
+        npm install
+    )
+}
+
+printf '\e[1;32m%-6s\e[m\n' "Starting setup"
+dependency_check
+install_transpiller
+install_runner
+install_explorer_server
+install_explorer_ui
