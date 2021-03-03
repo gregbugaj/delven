@@ -1,10 +1,35 @@
 #!/usr/bin/env bash
-printf "Starting Explorer Environment\n"
+printf '\e[1;32m%-6s\e[m\n' "Starting Explorer Environment"
 
 # Verfiy that the node is present
 if ! command -v tmux &> /dev/null 
 then
-    printf "tmux not present"
+    printf '\e[1;31m%-6s\e[m\n' "Command 'tmux' not found, but can be installed with:"
+    printf "\n"
+
+    PS3='Please enter your choice: '
+    options=("Install via 'apt'" "Install via 'snap'" "Quit")
+
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "Install via 'apt'")
+                printf '\e[1;32m%-6s\e[m\n' "Installing via apt"
+                sudo apt  install tmux 
+                break
+                ;;
+            "Install via 'snap'")
+                printf '\e[1;32m%-6s\e[m\n' "Installing via snap"
+                sudo snap install tmux 
+                break
+                ;;
+            "Quit")
+                break
+                ;;
+            *) echo "invalid option $REPLY";;
+        esac
+    done
+
     exit 1
 fi
 
