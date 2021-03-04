@@ -1,5 +1,5 @@
 import { IExecutor, CallbackFunction, CompilationUnit, EvaluationResult } from './executor';
-import { ASTParser, SourceGenerator } from "@delven-transpiler";
+import { ASTParser, SourceGenerator } from "delven-transpiler";
 const stream = require('stream')
 const { VM, NodeVM, VMScript } = require('vm2');
 
