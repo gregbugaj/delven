@@ -89,7 +89,7 @@ declare class ECMAScriptParser {
     sql_union(): Sql_unionContext;
     querySpecification(): QuerySpecificationContext;
     select_list(): Select_listContext;
-    select_list_elem(): Select_list_elemContext;
+    select_list_elem(...args: any[]): Select_list_elemContext;
     fromClause(): FromClauseContext;
     whereClause(): WhereClauseContext;
     dataSources(): DataSourcesContext;
@@ -1463,7 +1463,7 @@ declare class Select_list_elemContext {
     As(): any;
     identifierName(): any;
     singleExpression(): any;
-    argument(): any;
+    arguments(): any;
     accept(visitor: any): any;
 }
 declare function FromClauseContext(parser: any, parent: any, invokingState: any): any;

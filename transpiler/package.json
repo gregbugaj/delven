@@ -2,7 +2,8 @@
     "name": "delven-transpiler",
     "version": "1.0.0",
     "description": "delven transpiler",
-    "main": "src/index.ts",
+    "main-ts": "src/index.ts",
+    "main": "dist/index.js",
     "scripts": {
         "g4": "java -Xmx500M -cp \"/usr/local/lib/antlr/antlr-4.8-complete.jar:$CLASSPATH\" org.antlr.v4.Tool -Dlanguage=JavaScript ./src/grammar/*.g4 -visitor -o ./src/parser",
         "test": "jest",

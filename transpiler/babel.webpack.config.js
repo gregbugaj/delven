@@ -5,9 +5,9 @@ module.exports = {
     entry: path.resolve(__dirname, 'src/index.ts'),
     output: {
         path: path.resolve(__dirname, 'lib'),
-        filename: 'delven.js',
+        filename: 'delven-transpiler.js',
         libraryTarget: 'umd2',
-        library: "delven",
+        library: "delven-transpiler",
     },
 
     module: {

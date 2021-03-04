@@ -30,6 +30,7 @@ then
         esac
     done
 
+    printf '\e[1;32m%-6s\e[m\n' "Restart devenv"
     exit 1
 fi
 
