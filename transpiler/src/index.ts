@@ -6,7 +6,6 @@ import {resolve} from "path"
 // import * as chalk from "chalk"
 import chalk from "chalk"
 import SourceGeneratorWithBuilder from "./SourceGenerator"
-import {Enumerable} from "./query/Enumerable"
 import {type} from "os"
 import {PrintVisitor} from "./PrintVisitor"
 import {assert} from "console"
@@ -209,42 +208,9 @@ async function main() {
     console.timeEnd(generator_label)
 }
 
-async function query() {
-    // let x = [1, 2, 3, 4]
-    // let q0 = new Enumerable(x)
-    // console.info(q0.Count())
-    // console.info(q0.Take(6).Count())
-
-    let queryWhere = new Enumerable(["A", 2, 1, 2, 3, 2, 3])
-    let where1 = queryWhere.Where((val: string | number) => {
-        return val === 2 || val === "A"
-    })
-
-    for (const x of where1) {
-        console.info(x)
-    }
-    console.info(await where1)
-
-    // let t2 = queryNames.Take(2).toArray()
-    // let t3 = queryNames.Take(1).toArray()
-
-    // console.info(await t2)
-    // console.info(await t3)
-
-    // // for await (let x of t3){
-    // //   console.info(x)
-    // // }
-
-    // // for await (let x of names){
-    // //   console.info(x)
-    // // }
-
-    // // console.info(queryNames.toArray())
-}
-
 ;(async () => {
-    await query()
-    // await main()
+    // await query()
+    await main()
 })().catch(err => {
     console.error("error in main", err)
 })
