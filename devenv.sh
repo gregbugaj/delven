@@ -108,18 +108,19 @@ fi
 ## 3) link dist directory
 ## 3) link destincation directory via 'npm link'
 
-log "Compiling / Linking shared libs"
 
-cd ./transpiler 
-npx babel src --out-dir dist --extensions '.ts,.js' --source-maps inline
-cd ./dist
-cp ../package.json .
-npm link 
+# log "Compiling / Linking shared libs"
 
-cd ../runner/executors
-npm link delven-transpiler
+# cd ./transpiler 
+# npx babel src --out-dir dist --extensions '.ts,.js' --source-maps inline
+# cd ./dist
+# cp ../package.json .
+# npm link 
 
-cd ../..
+# cd ../runner/executors
+# npm link delven-transpiler
+
+# cd ../..
 
 pane_cmd_1='cd ./explorer-ui && npm run start'
 pane_cmd_2='cd ./runner/executors && npm run dev'
@@ -128,37 +129,49 @@ pane_cmd_4='cd ./runner/executors && npm run watch-ts'
 pane_cmd_5='cd ./explorer-server && npm run watch-ts'
 pane_cmd_6="cd ./transpiler && npx babel --watch src --out-dir dist --extensions '.ts,.js' --source-maps inline"
 
+# pane_cmd_1='echo 1'
+# pane_cmd_2='echo 2'
+# pane_cmd_3='echo 3'
+# pane_cmd_4='echo 4'
+# pane_cmd_5='echo 5'
+# pane_cmd_6='echo 6'
+
 session='devenv-explorer'
+window=1 # Configured to start windows at 1 not 0
+
 # start new detached tmux session
-tmux new-session -d -s "$session";   
+tmux -f devenv-tmux.conf new-session -d -s "$session" # -d "/usr/bin/env bash -i"
 tmux rename-window 'Devenv'
 
-tmux split-pane -h
-tmux select-pane -t ${session}:1.1
+# setup layout
+tmux split-pane -h 
+tmux select-pane -t ${session}:${window}.1
 tmux split-pane -v 
 
-tmux select-pane -t ${session}:1.3
+tmux select-pane -t ${session}:${window}.3
 tmux split-pane -v 
 
-tmux select-pane -t ${session}:1.4
+tmux select-pane -t ${session}:${window}.4
 tmux split-pane -v 
 tmux split-pane -v 
 
-tmux select-pane -t ${session}:1.3
-tmux resize-pane -D -t ${session}:1.3 10 # (Resizes the current pane down by 10 cells)
+tmux select-pane -t ${session}:${window}.3
+tmux resize-pane -D -t ${session}:${window}.3 10 # (Resizes the current pane down by 10 cells)
 
-tmux send -t ${session}:1.1 "$pane_cmd_1" ENTER;                
-tmux send -t ${session}:1.2 "$pane_cmd_2" ENTER;                 
-tmux send -t ${session}:1.3 "$pane_cmd_3" ENTER;                 
-tmux send -t ${session}:1.4 "$pane_cmd_4" ENTER;             
-tmux send -t ${session}:1.5 "$pane_cmd_5" ENTER;                 
-tmux send -t ${session}:1.6 "$pane_cmd_6" ENTER;        
+tmux send -t ${session}:${window}.1 "$pane_cmd_1" ENTER;                
+tmux send -t ${session}:${window}.2 "$pane_cmd_2" ENTER;                 
+tmux send -t ${session}:${window}.3 "$pane_cmd_3" ENTER;                 
+tmux send -t ${session}:${window}.4 "$pane_cmd_4" ENTER;             
+tmux send -t ${session}:${window}.5 "$pane_cmd_5" ENTER;                 
+tmux send -t ${session}:${window}.6 "$pane_cmd_6" ENTER;        
 
 # Focus and attach
-tmux select-pane -t ${session}:1.1
+tmux select-pane -t ${session}:${window}.1
 tmux attach-session -t "$session"
  
 # Usefull commands
 # tmux list-panes -a
+# tmux kill-session -t devenv-explorer
+
 # Press : Ctrl+B, and then X  to Display Pane number
 
