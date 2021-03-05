@@ -96,7 +96,7 @@ fi
 
 if [ $hasErrors == 1 ]; then
     log "ERROR" "" "Preflight failed, Please fix all issues before continuing"
-    # exit 1
+    exit 1
 fi
 
 # setup shared development using `npm link`
