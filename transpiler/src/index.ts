@@ -210,7 +210,9 @@ async function main() {
 
 ;(async () => {
     // await query()
-    await main()
+    // await main()
+
+    console.info("Transpiler")
 })().catch(err => {
     console.error("error in main", err)
 })

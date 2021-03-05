@@ -62,7 +62,10 @@ async function main() {
     app.post('/runner/compile', async (req: Request, res: Response) => {
         setJsonHeaders(res);
      
+        console.info("Compile request recived")
         let unit = JSON.parse(req.body['code'])
+
+        console.info(unit)
         const executor = new CodeExecutor()
         const compiled = await executor.compile(unit)
 

@@ -136,6 +136,10 @@ export default class LocalExecutor implements IExecutor {
         }
 
         return new Promise((resolve, reject) => {
+    
+            console.info("Sending request ; compile")
+            console.info(options)
+
             request.post(options, (err, res, body) => {
                 if (err) {
                     console.log(err);
@@ -143,6 +147,7 @@ export default class LocalExecutor implements IExecutor {
                 }
 
                 const result = JSON.parse(body)
+                console.info(`Result : ${result}`)
                 resolve(result)
             })
         })
