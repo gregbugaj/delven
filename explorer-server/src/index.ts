@@ -101,26 +101,32 @@ async function main() {
     app.ws('/ws', async (ws, req) => {
         ws.on('message', async function (payload: string) {
             let msg: { 'type': string, data?: any } = JSON.parse(payload)
-            console.log('Incomming message', msg);
+            console.log('Incomming message', msg)
+
             let type: string = msg.type
             let data: any = msg['data'] ? msg['data'] : ''
             let reply: {
                 type: string
                 data?: any
-            } = {type:'unhandled'};
+            } = { type: 'unhandled' };
 
             switch (type) {
                 case 'code:compile':
                     reply.type = 'compile.reply'
-                    reply.data = await executor.compile(data)
-                    break;              
+                    executor.compile(data)
+                        .then(compilation => {
+                            reply.data = compilation
+                            ws.send(JSON.stringify(reply))
+                        }).catch(e => {
+                            console.error(e)
+                        })
+                    break;
                 case 'code:evaluate':
                     reply.type = 'evaluate.reply'
                     reply.data = await executor.evaluate(data)
                     break;
                 default: reply.data = 'unhandled'
             }
-            ws.send(JSON.stringify(reply))
         });
 
         ws.on('close', () => {

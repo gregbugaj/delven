@@ -74,23 +74,26 @@ expected_port_ui_dev=3000
 expected_port_ui_server=8080
 expected_port_ws_server=5000
 
+# Can also use ss util from
+# ss -l -p -n | grep 3000
+
 port_ui_dev=$(netstat --all --listening --numeric --tcp | awk '{split($0, a,":"); print a[4]}' | grep $expected_port_ui_dev | xargs)
 port_ui_server=$(netstat --all --listening --numeric --tcp | awk '{split($0, a,":"); print a[4]}' | grep $expected_port_ui_server | xargs)
 port_ws_server=$(netstat --all --listening --numeric --tcp | awk '{split($0, a,":"); print a[4]}' | grep $expected_port_ws_server | xargs)
 
 hasErrors=0 
 if [ "$port_ui_dev" == "$expected_port_ui_dev" ]; then
-    log "ERROR" "Explorel Dev UI" "Port #$port_ui_dev already in use"
+    log "ERROR" "Explorer UI" "Port #$port_ui_dev already in use"
     hasErrors=1
 fi
 
 if [ "$port_ui_server" == "$expected_port_ui_server" ]; then
-    log "ERROR" "Explorel Dev UI" "Port #$port_ui_server already in use"
+    log "ERROR" "Explorer Server" "Port #$port_ui_server already in use"
     hasErrors=1
 fi
 
 if [ "$port_ws_server" == "$expected_port_ws_server" ]; then
-    log "ERROR" "Explorel Dev UI" "Port #$port_ws_server already in use"
+    log "ERROR" "Explorer Runner" "Port #$port_ws_server already in use"
     hasErrors=1
 fi
 

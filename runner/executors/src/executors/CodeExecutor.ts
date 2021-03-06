@@ -78,33 +78,29 @@ export default class CodeExecutor implements IExecutor {
             try {
                 const status = new VMScript(script, 'sandbox.js').compile();
                 console.info('Compilation status', status)
-            } catch (err) {
-                console.error('Failed to compile script.', err);
-                return resolve({ "exception": err, stdout: "", stderr: "" })
-            }
 
-            const start = Date.now();
-            const vm = new VM({
-                require: {
-                    external: true
-                },
-                console: 'inherit',
-                compiler: 'javascript',
-                fixAsync: false,
-                sandbox: {
-                    done: (arg) => {
-                        console.info('Sandbox complete : ' + Date.now())
+                const start = Date.now();
+                const vm = new VM({
+                    require: {
+                        external: true
+                    },
+                    console: 'inherit',
+                    compiler: 'javascript',
+                    fixAsync: false,
+                    sandbox: {
+                        done: (arg) => {
+                            console.info('Sandbox complete : ' + Date.now())
+                        }
                     }
-                }
-            });
+                });
 
-            process.on('uncaughtException', function (err) {
-                console.log('Caught exception: ' + err);
-            });
+                process.on('uncaughtException', function (err) {
+                    console.log('Caught exception: ' + err);
+                });
 
-            let buff = this.capture(()=>{
-                try {
-                    let code = `
+                let buff = this.capture(() => {
+                    try {
+                        let code = `
                         async function main() {
                             console.info('Eval : start')
                             ${script}
@@ -119,21 +115,28 @@ export default class CodeExecutor implements IExecutor {
                             console.error("error in main", err)
                         })
                     `
-                    let exec = vm.run(code);
-                } catch (err) {
-                    console.error('Failed to execute script.', err);
-                }
-            })
+                        let exec = vm.run(code);
+                    } catch (err) {
+                        console.error('Failed to execute script.', err);
+                    }
+                })
 
-            console.info('LOG 2')
-            console.info(buff)
-            return resolve({ "exception": null, stdout: buff, stderr: "" })
+                console.info('LOG 2')
+                console.info(buff)
+                return resolve({ "exception": null, stdout: buff, stderr: "" })
+
+            } catch (err) {
+                console.error('Failed to compile script.', err);
+                return resolve({ "exception": err, stdout: "", stderr: "" })
+            }
         });
     }
 
     async compile(unit: CompilationUnit): Promise<CompilationUnit> {
         return new Promise((resolve, reject) => {
             try {
+                throw new Error("Borked")
+
                 const code = unit.code
                 const start = Date.now()
                 const generator = new SourceGenerator();

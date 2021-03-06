@@ -116,9 +116,7 @@ export default class LocalExecutor implements IExecutor {
                 resolve(result)
             })
         })
-
     }
-
 
     async compile(script: string): Promise<CompilationUnit> {
         console.info('Compiling script')
@@ -136,19 +134,21 @@ export default class LocalExecutor implements IExecutor {
         }
 
         return new Promise((resolve, reject) => {
-    
-            console.info("Sending request ; compile")
+            console.info("Sending request : compile")
             console.info(options)
-
             request.post(options, (err, res, body) => {
                 if (err) {
-                    console.log(err);
+                    console.error(err);
                     reject(err)
                 }
 
-                const result = JSON.parse(body)
-                console.info(`Result : ${result}`)
-                resolve(result)
+                try {
+                    const result = JSON.parse(body)
+                    console.info(`Result : ${JSON.stringify(result)}`)
+                    resolve(result)
+                } catch (e) {
+                    reject(e)
+                }
             })
         })
     }

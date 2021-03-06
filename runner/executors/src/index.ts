@@ -2,7 +2,10 @@ import bodyParser from "body-parser"
 import express, { Request, Response } from "express"
 import expressWs from "express-ws"
 import CodeExecutor from './executors/CodeExecutor'
-import { toJson  } from "./util";
+import { CompilationUnit } from "./executors/executor"
+import { Utils } from "./util"
+
+const toJson = Utils.toJson
 
 async function main() {
     const serverOptions = {
@@ -45,7 +48,7 @@ async function main() {
     app.ws('/ws/log', function (ws, req) {
         ws.on('message', function (msg) {
             console.log(msg);
-            ws.send(JSON.stringify('reply'))
+            ws.send(toJson('reply'))
         });
 
         ws.on('close', () => {
@@ -55,33 +58,43 @@ async function main() {
 
     app.get('/runner/info', async (req: Request, res: Response) => {
         setJsonHeaders(res);
-        res.send(JSON.stringify({ 'name': 'Delven Runner' }));
+        res.send(toJson({ 'name': 'Delven Runner' }));
     });
 
 
     app.post('/runner/compile', async (req: Request, res: Response) => {
         setJsonHeaders(res);
-     
         console.info("Compile request recived")
-        let unit = JSON.parse(req.body['code'])
-
+        let unit: CompilationUnit = JSON.parse(req.body['code'])
         console.info(unit)
-        const executor = new CodeExecutor()
-        const compiled = await executor.compile(unit)
 
-        res.send(toJson(compiled));
+        const executor = new CodeExecutor()
+        executor.compile(unit)
+            .then(compiled => {
+                console.info('Compiled response')
+                console.info(compiled)
+                res.send(toJson(compiled));
+            }).catch(e => {
+                if (unit === undefined) {
+                    unit = { id: "0000", code: "//Exception", compileTime: 0}
+                }
+                unit.exception = e
+                res.send(toJson(unit));
+            })
     });
 
     app.post('/runner/evaluate', async (req: Request, res: Response) => {
         let unit = JSON.parse(req.body['code'])
         const executor = new CodeExecutor()
-        const compiled = await executor.evaluate(unit)
-
-        console.info('Evaluated response')
-        console.info(toJson(compiled))
-        console.info(compiled)
-
-        res.send(toJson(compiled));
+        executor.evaluate(unit)
+            .then(compiled => {
+                console.info('Evaluated response')
+                console.info(toJson(compiled))
+                console.info(compiled)
+                res.send(toJson(compiled));
+            }).catch(e => {
+                res.sendStatus(500);
+            })
     });
 
     const port = process.env.PORT || 5000;
