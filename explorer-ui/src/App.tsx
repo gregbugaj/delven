@@ -150,6 +150,7 @@ export function Application() {
   return (
     <div>
       <CssBaseline />
+
       <Router>
         <Route path='/runner' component={RunnerApplication} />
         <Route path='/explorer' component={AstExplorerApplication} />
@@ -166,7 +167,7 @@ export function Application() {
                       D-SQL Runner
                       </Typography>
                     <Typography variant="body2" color="textSecondary" component="p">
-                      
+
                     </Typography>
                   </CardContent>
                   <CardActions>
@@ -208,7 +209,7 @@ export function Application() {
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      
+
     </Typography>
   );
 }

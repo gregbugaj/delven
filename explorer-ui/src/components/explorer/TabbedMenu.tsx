@@ -26,7 +26,6 @@ interface RenderTree {
 }
 
 function SideTreeView(props: {}) {
-
     console.info("SideTreeView")
     const classes = useStyles();
     const [treeData, setTreeDataState] = useState({} as RenderTree);
@@ -176,7 +175,7 @@ export default function FullWidthTabs() {
             </AppBar>
 
             <TabPanel value={value} index={0}>
-                <Link href="#" onClick={preventDefault}>Share</Link>  
+                <Link href="#" onClick={preventDefault}>Share</Link>
 
                 <Link href="#" onClick={preventDefault}>Expand All</Link>
 

@@ -18,77 +18,6 @@ export default class LocalExecutor implements IExecutor {
         console.info(`Setting up executor`)
     }
 
-    evaluateXXXX(script: string): EvaluationResult {
-
-        const _org = console;
-
-        const original = {
-            stdout: process.stdout,
-            stderr: process.stderr
-        }
-
-        const collection = {
-            stdout: new stream.Writable(),
-            stderr: new stream.Writable()
-        }
-
-        let buffer = ""
-
-        Object.keys(collection).forEach((name) => {
-            collection[name].write = function (chunk, encoding, callback) {
-                _org.log(chunk)
-                buffer += chunk;
-                original[name].write(chunk, encoding, callback)
-            }
-        })
-
-        const options = {}
-        const overwrites = Object.assign({}, {
-            stdout: collection.stdout,
-            stderr: collection.stderr
-        }, options)
-
-        let exception: string | undefined
-        try {
-
-            const Console = console.Console
-            console = new Console(overwrites)
-            let _eval = (str) => {
-                return Function(` ${str}`)
-            }
-
-            const fragment = `
-                'use strict'; 
-                try {
-                    ${script}
-                } catch(e){
-                    console.error(e)
-                }
-            `
-
-            _eval(fragment)()
-
-        } catch (ex) {
-            exception = ex
-            console.log(ex)
-        } finally {
-            console = _org
-        }
-
-        console.info('\x1B[96mCaptured stdout\x1B[00m' + new Date().getTime())
-        console.log(buffer)
-
-        let fs = require('fs')
-        fs.writeFile('./buffer.txt', buffer, { encoding: 'utf8', flag: "a" },
-            (err) => {
-                if (err) {
-                    return console.log(err);
-                }
-            });
-
-        return { "exception": exception, stdout: buffer, stderr: "" }
-    }
-
     async evaluate(script: string): Promise<EvaluationResult> {
 
         console.info('Evaluating script')
@@ -145,6 +74,7 @@ export default class LocalExecutor implements IExecutor {
                 try {
                     const result = JSON.parse(body)
                     console.info(`Result : ${JSON.stringify(result)}`)
+
                     resolve(result)
                 } catch (e) {
                     reject(e)
@@ -170,4 +100,4 @@ function create_UUID() {
         return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
     return uuid;
-} 
+}

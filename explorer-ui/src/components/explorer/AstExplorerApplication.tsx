@@ -36,6 +36,7 @@ import BreadcrumModule from '../shared/breadcrumbs';
 
 import Editor from './Editor'
 import FullWidthTabs from './TabbedMenu'
+import { EventTypeCompileReply } from "../bus/message-bus-events";
 
 const drawerWidth = 240;
 
@@ -175,6 +176,8 @@ const breadcrumbNameMap: { [key: string]: string } = {
 
 function AstExplorerApplication() {
   const classes = useStyles();
+  const [compileTime, setCompileTime] = React.useState(0);
+
   const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
@@ -191,6 +194,14 @@ function AstExplorerApplication() {
     setOpenAdmin(!openAdmin);
   };
 
+  let eventBus = globalThis.services.eventBus
+  eventBus.on(EventTypeCompileReply,
+    (event: EventTypeCompileReply): void => {
+      // console.info(`event == ${JSON.stringify(event)}  ${new Date()}`)
+      const compileTime = event.data.compileTime;
+      setCompileTime(compileTime);
+    }
+  )
 
   return (
 
@@ -308,27 +319,26 @@ function AstExplorerApplication() {
           </Container>
         </main>
       </div>
-      <Footer></Footer>
+
+
+      <div className="footer">
+        <Grid container direction="row" justify="space-between">
+          <Grid item>
+            <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
+              <Button>Execution time : {compileTime}ms</Button>
+            </ButtonGroup>
+          </Grid>
+          <Grid item>
+            <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
+              <Button>Build : ####</Button>
+            </ButtonGroup>
+          </Grid>
+        </Grid>
+      </div>
+
+
     </div>
   );
 }
-
-const Footer = () => (
-  <div className="footer">
-    <Grid container direction="row" justify="space-between">
-      <Grid item>
-        <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
-          <Button>Execution time : 122ms</Button>
-        </ButtonGroup>
-      </Grid>
-      <Grid item>
-        <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
-          <Button>Build : ####</Button>
-          <Button>Runtime : ###</Button>
-        </ButtonGroup>
-      </Grid>
-    </Grid>
-  </div>
-);
 
 export default AstExplorerApplication;

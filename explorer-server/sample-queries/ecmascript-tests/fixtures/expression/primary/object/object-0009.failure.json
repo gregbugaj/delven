@@ -1,5 +1,5 @@
 {
-    "errror": {
+    "error": {
         "line": 1,
         "column": 35,
         "msg": "no viable alternative at input '}'"

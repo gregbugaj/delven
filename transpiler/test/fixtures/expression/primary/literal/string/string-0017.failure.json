@@ -1,5 +1,5 @@
 {
-    "errror": {
+    "error": {
         "line": 2,
         "column": 0,
         "msg": "no viable alternative at input 'world'"

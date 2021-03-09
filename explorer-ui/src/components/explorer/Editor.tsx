@@ -12,10 +12,20 @@ import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
-import { EventTypeSampleQuery } from "../bus/message-bus-events";
+import { EventTypeCompileReply, EventTypeEvaluateReply, EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
 import { ServerExecutor } from "../../executors";
+
+import { GlobalHotKeys, HotKeys } from 'react-hotkeys';
+import { configure } from 'react-hotkeys';
+import { exception } from 'console';
+
+configure({
+  ignoreTags: ['input', 'select', 'textarea'],
+  ignoreEventsCondition: (event) => { return false }
+});
+
 
 // https://reactsvgicons.com/search?q=arrow
 const BxsRightArrowIcon = (props: React.SVGProps<SVGSVGElement>) => {
@@ -48,6 +58,14 @@ type EditorProps = {
 interface IState {
   display?: string
 }
+
+type ServiceReplyEventType = {
+  status: string,
+  msg?: string
+  data?: any
+}
+
+const stringify = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
 class Editor extends React.Component<EditorProps, IState> {
 
   private ecmaEditor?: CodeMirrorManager;
@@ -124,20 +142,12 @@ class Editor extends React.Component<EditorProps, IState> {
       EventTypeSampleQuery,
       (event): void => {
         let id = event.payload.id
-
           ; (async () => {
-            type ServiceReplyType = {
-              status: string,
-              msg?: string
-              data?: any
-            }
-
-            const reply = await http<ServiceReplyType>(`/api/v1/samples/${id}`);
-            if (reply.status === 'errror') {
+            const reply = await http<ServiceReplyEventType>(`/api/v1/samples/${id}`);
+            if (reply.status === 'error') {
               alert(reply.msg)
             } else if (reply.status === 'ok') {
-              const code = reply.data;
-              editor.setValue(code);
+              editor.setValue(reply.data);
             }
           }
           )()
@@ -147,18 +157,43 @@ class Editor extends React.Component<EditorProps, IState> {
     const hostname = window.location.hostname
     const host = `ws://${hostname}:8080/ws`
 
+    // All the messages from executor will be pumped onto the Even Bus specific event
+    // this converts from server side message event to client side EventBus message
+    // compile.reply  evaluate.reply
     this.executor.on("*", msg => {
-      console.info(`Received from backend : ${msg}`)
+      console.group(`Received from backend`)
       console.info(msg)
+
+      switch (msg.type) {
+        case "compile.reply":
+          eventBus.emit(new EventTypeCompileReply(msg.data));
+          break;
+          case "evaluate.reply":
+            eventBus.emit(new EventTypeEvaluateReply(msg.data));
+          break;
+        default:
+          throw new Error("Event not handled : " + msg)
+      }
+
+      console.groupEnd();
+
     })
 
     this.executor.on('compile.reply', msg => {
-      console.info(`Received compile backend : ${msg}`)
-      let unit = msg.data
-      if (this.astEditor && this.jsonEditor) {
-        const toJson = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
-        this.jsonEditor.setValue(toJson(unit.ast))
-        this.astEditor.setValue(unit.generated)
+      console.info(`Received compile backend : ${stringify(msg)}`)
+      const data = msg.data
+      if (data.exception != undefined) {
+        let exception = data.exception
+        this.log("raw", exception.message)
+        this.log("raw", exception.stack)
+        if (this.jsonEditor) {
+          this.jsonEditor.setValue(stringify(data))
+        }
+      } else {
+        if (this.astEditor && this.jsonEditor) {
+          this.jsonEditor.setValue(stringify(data.ast))
+          this.astEditor.setValue(data.generated)
+        }
       }
     })
 
@@ -228,115 +263,131 @@ class Editor extends React.Component<EditorProps, IState> {
       return
     this.setState({ display: renderType });
   }
-  
+
   render() {
+    const handlers = {
+      COMPILE: this.compile.bind(this),
+      EVALUATE: this.evaluate.bind(this),
+    };
+
+    const keyMap = {
+      COMPILE: ['command+enter', 'ctrl+enter'],
+      EVALUATE: "ctrl+alt+enter", // Issues with this.
+    };
+
     let messages: ConsoleMessage[] = []
     return (
-      <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-        <Grid container style={{ padding: "4px", border: "1px solid purple", backgroundColor: '#f7f7f7' }}>
-          <Grid item sm={12} md={6}>
-            <Grid container justify="space-between" style={{ padding: "0px", border: "1px solid green" }} >
+      <React.StrictMode>
+        <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
 
-              <Grid item>
-                <Button size="medium" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
-                  endIcon={< BlurLinearIcon fontSize="large" />}
-                  onClick={this.compile}>Compile</Button>
+        <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+          <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
+            <Grid item sm={12} md={6}>
+              <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
 
-                <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
-                  endIcon={
-                
-                    <BxsRightArrowIcon />
-                
-                }
-                  onClick={this.evaluate}>Run</Button>
+                <Grid item>
+                  <Button size="medium" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
+                    endIcon={< BlurLinearIcon fontSize="large" />}
+                    onClick={this.compile}>Compile</Button>
+
+                  <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
+                    endIcon={
+
+                      <BxsRightArrowIcon />
+
+                    }
+                    onClick={this.evaluate}>Run</Button>
+                </Grid>
+
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="checkedB"
+                        color="primary"
+                      />
+                    }
+                    label="Query optimizer"
+                  />
+
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="checkedB"
+                        color="primary"
+                      />
+                    }
+                    label="Mock provider"
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="Query optimizer"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="Mock provider"
-                />
-              </Grid>
             </Grid>
+            <Grid item sm={12} md={6}>
+              <ToggleButtonGroup size="small" exclusive onChange={this.handleViewChange} value={this.state.display} aria-label="text primary button group">
+                {/* <ToggleButton value="tree">Tree</ToggleButton> */}
+                <ToggleButton size="small" value="json">JSON</ToggleButton>
+                <ToggleButton size="small" value="compiled">Compiled</ToggleButton>
+                <ToggleButton size="small" value="console">Console</ToggleButton>
+                <ToggleButton size="small" value="graph">Job Graph / Query Optimizer</ToggleButton>
+              </ToggleButtonGroup >
 
+            </Grid>
           </Grid>
-          <Grid item sm={12} md={6}>
-            <ToggleButtonGroup size="small" exclusive onChange={this.handleViewChange} value={this.state.display} aria-label="text primary button group">
-              {/* <ToggleButton value="tree">Tree</ToggleButton> */}
-              <ToggleButton size="small" value="json">JSON</ToggleButton>
-              <ToggleButton size="small" value="compiled">Compiled</ToggleButton>
-              <ToggleButton size="small" value="console">Console</ToggleButton>
-              <ToggleButton size="small" value="graph">Job Graph</ToggleButton>
-            </ToggleButtonGroup >
 
-          </Grid>
-        </Grid>
+          <div style={{ display: 'flex', flex: '1 1 auto', overflowY: 'auto' }}>
+            <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
+              <textarea
+                name={this.props.ecmaName}
+                id={this.props.ecmaName}
+                defaultValue={this.props.ecmaValue}
+                autoComplete="off"
+                autoFocus={this.props.ecmaAutoFocus}
+              />
+            </div>
 
-        <div style={{ display: 'flex', flex: '1 1 auto', overflowY: 'auto' }}>
-          <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
-            <textarea
-              name={this.props.ecmaName}
-              id={this.props.ecmaName}
-              defaultValue={this.props.ecmaValue}
-              autoComplete="off"
-              autoFocus={this.props.ecmaAutoFocus}
-            />
-          </div>
+            <div style={{ flex: ' 1 1 0%', border: "0px solid purple", overflowY: 'auto' }}>
+              <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+                <div style={{ flex: ' 1 0 50%', border: "0px solid purple", overflowY: 'auto' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
-          <div style={{ flex: ' 1 1 0%', border: "0px solid purple", overflowY: 'auto' }}>
-            <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-              <div style={{ flex: ' 1 0 50%', border: "0px solid purple", overflowY: 'auto' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                    <div id='json-container' style={{ display: this.state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                      <textarea
+                        name={this.props.jsonName}
+                        id={this.props.jsonName}
+                        defaultValue=''
+                        autoComplete="off"
+                      />
 
-                  <div id='json-container' style={{ display: this.state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <textarea
-                      name={this.props.jsonName}
-                      id={this.props.jsonName}
-                      defaultValue=''
-                      autoComplete="off"
-                    />
+                    </div>
+
+                    <div id='compiled-container' style={{ display: this.state.display == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                      <textarea
+                        name={this.props.astName}
+                        id={this.props.astName}
+                        defaultValue={this.props.astValue}
+                        autoComplete="off"
+                        autoFocus={this.props.astAutoFocus}
+                      />
+                    </div>
+
+                    <div id='console-container' style={{ display: this.state.display == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                      <ConsoleDisplay messages={messages} ref="child"></ConsoleDisplay>
+                    </div>
+
+                    <div id='graph-container' style={{ display: this.state.display == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+
+                      Job Graph / Query Optimizer
 
                   </div>
-
-                  <div id='compiled-container' style={{ display: this.state.display == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <textarea
-                      name={this.props.astName}
-                      id={this.props.astName}
-                      defaultValue={this.props.astValue}
-                      autoComplete="off"
-                      autoFocus={this.props.astAutoFocus}
-                    />
-                  </div>
-
-                  <div id='console-container' style={{ display: this.state.display == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <ConsoleDisplay messages={messages} ref="child"></ConsoleDisplay>
-                  </div>
-
-                  <div id='graph-container' style={{ display: this.state.display == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    Graph
                   </div>
                 </div>
-              </div>
 
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </React.StrictMode>
     )
   }
 }

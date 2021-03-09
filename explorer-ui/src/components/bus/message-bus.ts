@@ -13,6 +13,7 @@ interface NewableType<T> {
 class ErrorHandler {
     public handleError(error: any): void {
         console.info('Error : ' + error);
+        console.error(error)
     }
 }
 
@@ -30,7 +31,7 @@ export class MessageBusService {
 
     /**
      * push the given event onto the message bus.
-     * @param event 
+     * @param event
      */
     public emit(event: any): void {
         this.eventStream.next(event);
@@ -98,7 +99,7 @@ export class MessageBusGroup {
 
     /**
      *  Push the given event onto the message bus.
-     * @param event 
+     * @param event
      */
     public emit(event: any): MessageBusGroup {
         this.messageBus.emit(event);
@@ -108,9 +109,9 @@ export class MessageBusGroup {
     /**
      * subscribe to the message bus, but only invoke the callback when the event is
      *  of the given newable type (ie, it's a Class definition, not an instance).
-     * @param typeFilter 
-     * @param callback 
-     * @param callbackContext 
+     * @param typeFilter
+     * @param callback
+     * @param callbackContext
      */
     public on<T>(typeFilter: NewableType<T>, callback: CallbackFunction<T>, callbackContext: any = null): MessageBusGroup {
         this.subscriptions.push(this.messageBus.on(typeFilter, callback, callbackContext))

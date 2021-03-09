@@ -4,7 +4,6 @@ import express, { Request, Response } from "express"
 import expressWs from "express-ws"
 import * as path from "path"
 import * as crypto from "crypto"
-import http from "http"
 import LocalExecutor from './executors/LocalExecutor'
 
 export interface NodeInfo {
@@ -106,9 +105,10 @@ async function main() {
             let type: string = msg.type
             let data: any = msg['data'] ? msg['data'] : ''
             let reply: {
+                status:'ok'|'error',
                 type: string
                 data?: any
-            } = { type: 'unhandled' };
+            } = {status:'ok', type: 'unhandled' };
 
             switch (type) {
                 case 'code:compile':
@@ -161,7 +161,7 @@ async function main() {
                 res.send({ "status": "ok", "data": code })
             }
         } else {
-            res.send({ "status": "errror", "msg": 'Unable to load hash : ' + hash })
+            res.send({ "status": "error", "msg": 'Unable to load hash : ' + hash })
         }
     });
 

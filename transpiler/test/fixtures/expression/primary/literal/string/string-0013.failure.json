@@ -1,5 +1,5 @@
 {
-    "errror": {
+    "error": {
         "line": 1,
         "column": 7,
         "msg": "no viable alternative at input '412'"

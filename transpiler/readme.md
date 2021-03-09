@@ -1,6 +1,6 @@
 # Delven transpiler setup
 
-This is a Source-to-source transpiler that takes Delvenized JavaScript and produces valid ECMA2020 script. 
+This is a Source-to-source transpiler that takes Delvenized JavaScript and produces valid ECMA2020 script.
 
 
 ## Setup
@@ -19,7 +19,7 @@ nvm use v14.5.0
 npm install --save-dev babel-loader @babel/core
 ```
 
- ## Start publishing changes 
+ ## Start publishing changes
 
 ```bash
  ./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts'  --source-maps inline
@@ -27,7 +27,7 @@ npm install --save-dev babel-loader @babel/core
  antlr4 -Dlanguage=JavaScript *.g4 -o ../parser -visitor -no-listener
 ```
 
-## Run ESLint 
+## Run ESLint
 
 ```bash
 npx eslint ./src/
@@ -55,7 +55,7 @@ https://tomassetti.me/category/language-engineering/
 https://tomassetti.me/writing-a-browser-based-editor-using-monaco-and-antlr/
 
 
-## Tests based  
+## Tests based
 
 https://github.com/jquery/esprima
 
@@ -76,7 +76,7 @@ https://babeljs.io/videos
 https://dzone.com/articles/create-a-transpiler-from-vba-to-vbnet
 https://tomassetti.me/parse-tree-abstract-syntax-tree/
 
-estree 
+estree
 https://astexplorer.net/
 
 https://github.com/dat2/ecmascript
@@ -91,7 +91,7 @@ https://webdriver.io/
 https://github.com/webdriverio/webdriverio
 https://docs.microsoft.com/en-us/azure/data-lake-analytics/data-lake-analytics-u-sql-get-started
 https://www.w3.org/TR/webdriver1
- 
+
 
 ## Footnotes
 
@@ -120,7 +120,7 @@ let x = new z(...k)
     | singleExpression arguments                                            # ArgumentsExpression
 ```
 
-### 5.  Arrow function 
+### 5.  Arrow function
 
 Issue  with `() => {}` resolving as object literal
 
@@ -151,7 +151,7 @@ yieldDeclaration
     ;
 ```
 
-Reference : 
+Reference :
 [https://tc39.es/ecma262/#prod-YieldExpression]
 [https://tc39.es/ecma262/#sec-generator-function-definitions-runtime-semantics-evaluation]
 
@@ -213,7 +213,7 @@ AST should be equivalent for all the expressions
 
 ```javascript
 new {}
-new {}() 
+new {}()
 
 new []
 new []()
@@ -274,7 +274,7 @@ RangeError: Maximum call stack size exceeded
 
 
 
-Causes ERRROR ::
+Causes ERROR ::
 ```JavaScript
 class x extends y { }
 class x extends function() {} {}

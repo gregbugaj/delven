@@ -4,7 +4,7 @@ export interface CallbackFunction<T = any> {
 
 
 export type EvaluationResult = {
-    exception?: string | Error
+    exception?: string | Error | undefined
     stdout?: string
     stderr?: string
 }
