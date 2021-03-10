@@ -77,9 +77,9 @@ expected_port_ws_server=5000
 # Can also use ss util from
 # ss -l -p -n | grep 3000
 
-port_ui_dev=$(netstat --all --listening --numeric --tcp | awk '{split($0, a," "); print a[4]}' | awk '{split($0, a,":"); print a[2]}' | grep $expected_port_ui_dev | xargs)
-port_ui_server=$(netstat --all --listening --numeric --tcp | awk '{split($0, a," "); print a[4]}' | awk '{split($0, a,":"); print a[2]}' | grep $expected_port_ui_server | xargs)
-port_ws_server=$(netstat --all --listening --numeric --tcp | awk '{split($0, a," "); print a[4]}' | awk '{split($0, a,":"); print a[2]}' | grep $expected_port_ws_server | xargs)
+port_ui_dev=$(netstat --all --listening --numeric --tcp | awk '{split($0, a," "); print a[4]}' | awk '{n=split($0, a,":"); print a[n]}' | grep $expected_port_ui_dev | xargs)
+port_ui_server=$(netstat --all --listening --numeric --tcp | awk '{split($0, a," "); print a[4]}' | awk '{n=split($0, a,":"); print a[n]}' | grep $expected_port_ui_server | xargs)
+port_ws_server=$(netstat --all --listening --numeric --tcp | awk '{split($0, a," "); print a[4]}' | awk '{n=split($0, a,":"); print a[n]}' | grep $expected_port_ws_server | xargs)
 
 hasErrors=0
 if [ "$port_ui_dev" == "$expected_port_ui_dev" ]; then
@@ -98,13 +98,12 @@ if [ "$port_ws_server" == "$expected_port_ws_server" ]; then
 fi
 
 if [ $hasErrors == 1 ]; then
-    log "ERROR" "" "Preflight failed, Please fix all issues before continuing"
+    log "ERROR" "" "Preflight failed, fix all issues before continuing"
     exit 1
 fi
 
 log "Preflight check complete"
 
-exit 1
 # setup shared development using `npm link`
 ## This is somewhat hacky but because we are using TypeScript it is necessary
 ## 1) Precompile
