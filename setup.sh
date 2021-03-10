@@ -3,9 +3,15 @@
 # Failfast on any errors
 set -eu -o pipefail
 
+
+
 function dependency_check(){
     MIN_VERSION='v14.5.0'
     printf "Target NodeJS version : %s\n" $MIN_VERSION
+
+    # source the NVM to make it available to our shell
+    . ~/.nvm/nvm.sh --version
+
     if ! command -v nvm &> /dev/null
     then
       printf '\e[1;91m%-6s\e[0m \n' "nvm command not found or not available to the script"

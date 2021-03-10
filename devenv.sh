@@ -68,6 +68,10 @@ then
     exit 1
 fi
 
+
+VERSION=$(node --version)
+printf "Using node version : %s\n" $VERSION
+
 # Check if all ports are good to go before starting the application (# | xargs is uses to trim space)
 
 expected_port_ui_dev=3000
