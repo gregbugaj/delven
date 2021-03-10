@@ -3,8 +3,6 @@
 # Failfast on any errors
 set -eu -o pipefail
 
-
-
 function dependency_check(){
     MIN_VERSION='v14.5.0'
     printf "Target NodeJS version : %s\n" $MIN_VERSION

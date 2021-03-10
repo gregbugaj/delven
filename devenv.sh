@@ -68,10 +68,6 @@ then
     exit 1
 fi
 
-
-VERSION=$(node --version)
-printf "Using node version : %s\n" $VERSION
-
 # Check if all ports are good to go before starting the application (# | xargs is uses to trim space)
 
 expected_port_ui_dev=3000
@@ -108,6 +104,7 @@ fi
 
 log "Preflight check complete"
 
+exit 1
 # setup shared development using `npm link`
 ## This is somewhat hacky but because we are using TypeScript it is necessary
 ## 1) Precompile
@@ -117,6 +114,14 @@ log "Preflight check complete"
 ## 3) link dist directory
 ## 3) link destincation directory via 'npm link'
 
+# setup NVM to use correct node version
+# We should not depend on NVM being present
+NVM_MIN_VERSION='v14.5.0'
+# source the NVM to make it available to our shell
+. ~/.nvm/nvm.sh --version
+nvm use $NVM_MIN_VERSION
+VERSION=$(node --version)
+printf "Using node version : %s\n" $VERSION
 
 log "Compiling / Linking shared libs"
 
