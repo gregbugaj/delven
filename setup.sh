@@ -6,6 +6,12 @@ set -eu -o pipefail
 function dependency_check(){
     MIN_VERSION='v14.5.0'
     printf "Target NodeJS version : %s\n" $MIN_VERSION
+    if ! command -v nvm &> /dev/null
+    then
+      printf '\e[1;91m%-6s\e[0m \n' "nvm command not found or not available to the script"
+      printf '\e[1;91m%-6s\e[0m \n' "Try executing as '. ./setup.sh'"
+      exit 1
+    fi
 
     if command -v nvm &> /dev/null
     then
@@ -16,7 +22,7 @@ function dependency_check(){
     fi
 
     # Verfiy that the node is present
-    if ! command -v node &> /dev/null 
+    if ! command -v node &> /dev/null
     then
         printf "Node is not present"
         exit 1
