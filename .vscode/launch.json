@@ -11,7 +11,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/transpiler/node_modules/jest/bin/jest",
             "args": [
-                "./src/__tests__/enumerable.zip.spec.ts"
+                "./src/__tests__/enumerable.firstordefault.spec.ts"
             ],
             "cwd": "${workspaceFolder}/transpiler",
             "console": "integratedTerminal",
