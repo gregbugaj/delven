@@ -6,13 +6,13 @@
     "configurations": [
         {
             "type": "node",
-            "name": "Jest Tests",
+            "name": "Transpiler Jest Tests",
             "request": "launch",
             "program": "${workspaceFolder}/transpiler/node_modules/jest/bin/jest",
             "args": [
                 "./src/__tests__/enumerable.zip.spec.ts"
             ],
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/transpiler",
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true
