@@ -113,6 +113,12 @@ export abstract class IEnumerable<T> {
   abstract Select<R>(selector: Action<T, R>): IEnumerable<R>
 
   /**
+   * Concatenates two sequences.
+   * @param selector
+  */
+  abstract Concat<T>(secondSource:IEnumerable<T>): IEnumerable<T>
+
+  /**
    * Return new Enumerable where first n elements are taken
    * @param count
    */
@@ -137,7 +143,7 @@ export abstract class IEnumerable<T> {
    * @param predicate A function to test each element for a condition.
    */
   //  abstract FirstOrDefault(predicate?: Action<T, boolean> | Action<T, Tuple<boolean, T>>): T
-   abstract FirstOrDefault(predicate?: Action<T, boolean>): T
+  abstract FirstOrDefault(predicate?: Action<T, boolean>): T
 
   /**
    * Produces a sequence of tuples with elements from the two specified sequences.
