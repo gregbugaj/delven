@@ -31,13 +31,12 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
 
     async toArray(): Promise<ArrayLike<TSource>> {
         if (this.state === "COMPLETED") {
-            return Promise.resolve(this.results)
+            return this.results
         }
 
         for await (const item of this.asyncIterator()) {
             // NOOP to invoke evaluation
         }
-
-        return Promise.resolve(this.results)
+        return this.results
     }
 }

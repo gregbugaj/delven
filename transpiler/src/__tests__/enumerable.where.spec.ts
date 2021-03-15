@@ -28,4 +28,17 @@ describe("Enumerable Where", () => {
 
         expect(results).toEqual(expectedResult)
     })
+
+
+    test("where-iterator-composite", async () => {
+      let queryWhere = new Enumerable([1, 2, "A", 1, 2, 3, 2, 3])
+      let results = await queryWhere.
+      Where((val: string | number) => {
+          return val === 2
+      }).Take(2).toArray()
+
+      console.info(results)
+      let expectedResult = [2, 2]
+      expect(results).toEqual(expectedResult)
+  })
 })
