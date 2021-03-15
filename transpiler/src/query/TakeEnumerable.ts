@@ -14,7 +14,6 @@ export class TakeEnumerable<TSource> extends Enumerable<TSource> {
 
     async *asyncIterator(): AsyncGenerator<TSource, unknown, unknown> {
         for (let i = 0; i < Math.min(this.count, this.source.length); ++i) {
-            await sleep(1000)
             yield this.source[i]
         }
         return undefined

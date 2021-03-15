@@ -1,5 +1,5 @@
-import { type } from "os"
 import ArgumentNullException from "./ArgumentNullException"
+import InvalidOperationException from "./InvalidOperationException"
 import { Tuple } from "./IEnumerable"
 import { Action } from "./internal"
 import { BiAction } from "./internal"
@@ -8,7 +8,7 @@ import { SelectEnumerable } from "./internal"
 import { TakeEnumerable } from "./internal"
 import { WhereEnumerable } from "./internal"
 import { ZipEnumerable } from "./internal"
-import InvalidOperationException from "./InvalidOperationException"
+import { ConcatEnumerable } from "./internal"
 
 /**
  * Default implementaion of IQueryable
@@ -21,6 +21,7 @@ export function sleep(ms: number): Promise<number> {
 // https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
 // https://www.typescriptlang.org/docs/handbook/interfaces.html
 export class Enumerable<T> extends IEnumerable<T> {
+
   readonly source: ArrayLike<T>
 
   constructor(source: ArrayLike<T>) {
@@ -139,6 +140,10 @@ export class Enumerable<T> extends IEnumerable<T> {
       sum += val
     }
     return sum
+  }
+
+  Concat(secondSource: IEnumerable<T>): IEnumerable<T> {
+    return new ConcatEnumerable<T>(this.source, secondSource)
   }
 
   iter(): AsyncGenerator<T, unknown, unknown> {
