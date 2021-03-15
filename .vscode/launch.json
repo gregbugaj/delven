@@ -19,7 +19,8 @@
                 // "./src/__tests__/enumerable.selectmany.spec.ts"
                 // "./src/__tests__/enumerable.sum.spec.ts"
                 // "./src/__tests__/enumerable.take.spec.ts"
-                "./src/__tests__/enumerable.where.spec.ts"
+                // "./src/__tests__/enumerable.where.spec.ts"
+                "./src/__tests__/enumerable.zip.spec.ts"
             ],
             "cwd": "${workspaceFolder}/transpiler",
             "console": "integratedTerminal",

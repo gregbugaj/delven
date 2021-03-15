@@ -69,7 +69,7 @@ export class Enumerable<T> extends IEnumerable<T> {
         } else {
             for await (let val of this.source) {
                 if (predicate(val)) {
-                    return Promise.resolve(val)
+                    return val
                 }
             }
         }
@@ -141,7 +141,7 @@ export class Enumerable<T> extends IEnumerable<T> {
             }
             sum += val
         }
-        return Promise.resolve(sum)
+        return sum
     }
 
     Concat(secondSource: IterableDataSource<T>): IEnumerable<T> {
@@ -168,7 +168,7 @@ export class Enumerable<T> extends IEnumerable<T> {
         for await (const item of this.asyncIterator()) {
             results.push(item)
         }
-        return Promise.resolve(results)
+        return results
     }
 
     Zip<TSecond, TResult>(

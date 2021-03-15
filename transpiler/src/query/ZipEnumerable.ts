@@ -1,5 +1,4 @@
-import {Tuple, Action, IEnumerable, Enumerable, BiAction} from "./internal"
-import { IterableDataSource } from "./IEnumerable"
+import {Tuple, Enumerable, BiAction, IterableDataSource} from "./internal"
 
 export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult | Tuple<TFirst, TSecond>> {
     results: TResult[]
@@ -22,6 +21,7 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult 
     }
 
     async *asyncIterator(): AsyncGenerator<TResult | Tuple<TFirst, TSecond>, unknown, unknown> {
+
         const lhs = this.first.asyncIterator()
         const rhs = this.second.asyncIterator()
 
