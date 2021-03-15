@@ -40,7 +40,6 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
     }
 
     async toArray(): Promise<ArrayLike<TSource>> {
-      console.info(this.state)
         if (this.state === "COMPLETED") {
             return Promise.resolve(this.results)
         }

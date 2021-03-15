@@ -52,14 +52,15 @@ export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
 }
 
 export abstract class IEnumerable<T> {
+
     /**
-     * Return iterator for current datasouce
+     * Return async iterator for current datasouce
      */
     abstract asyncIterator(): AsyncGenerator<T, unknown, unknown>
-    // {
-    //     throw new Error("Method not implemented");
-    // }
 
+    /**
+     * Return iterator for current datasource
+     */
     iterator(): IterableIterator<T> {
         throw new Error("Method not implemented")
     }

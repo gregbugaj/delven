@@ -84,7 +84,7 @@ export class Enumerable<T> extends IEnumerable<T> {
         const name = keys[key]
         if (obj[name] && typeof obj[name] === "object") {
           _defaults(obj[name])
-        } if (typeof obj[name] === "string") {
+        } else if (typeof obj[name] === "string") {
           obj[name] = ""
         } else if (typeof obj[name] === "number") {
           obj[name] = 0

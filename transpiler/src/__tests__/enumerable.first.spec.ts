@@ -19,7 +19,7 @@ describe("Enumerable First", () => {
   test("first-predicate-003", async () => {
     const numbers = Enumerable.of([2, 6, 4, 8])
     const results = numbers.First(k => k > 6)
-    expect(results).toEqual(2)
+    expect(results).toEqual(8)
   })
 
   test("first-predicate-004", async () => {
