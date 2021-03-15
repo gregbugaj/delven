@@ -14,7 +14,7 @@ export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
         this.selector = selector
     }
 
-    async *asyncIterator(): AsyncGenerator<TResult, unknown, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TResult, unknown, unknown> {
         for await (let val of this.selectable) {
             // T = unknown
             const retval: TResult = this.selector(val)
@@ -26,12 +26,12 @@ export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
 
     async toArray(): Promise<ArrayLike<TResult>> {
         if (this.executed) {
-            return Promise.resolve(this.results)
+            return this.results
         }
-        for await (const item of this.asyncIterator()) {
+        for await (const item of this) {
             this.results.push(item)
         }
         this.executed = true
-        return Promise.resolve(this.results)
+        return this.results
     }
 }

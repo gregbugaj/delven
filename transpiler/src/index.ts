@@ -9,6 +9,7 @@ import SourceGeneratorWithBuilder from "./SourceGenerator"
 import {type} from "os"
 import {PrintVisitor} from "./PrintVisitor"
 import {assert} from "console"
+import { Enumerable } from "./query/internal"
 
 async function main() {
     /*
@@ -41,7 +42,7 @@ async function main() {
     // let n  = class cls { set [method](x){} }
     // let o = {'x': function foo(n) {return 1}};
 
-    const codeX = `    
+    const codeX = `
   let ℮
 `
     //    const code = "`$` "
@@ -95,7 +96,7 @@ async function main() {
         (function funa() {
         func(() => {thing(); console.info(a);}, identifier);
         })()
-        
+
         function z(){
         let z = 1
         }
@@ -140,16 +141,16 @@ async function main() {
     code = `
 
     {
-        if (x) 
+        if (x)
           x
         else if(y)
           y
         else if(z)
           z, s
-        } 
+        }
 
     `
-    code = ` 
+    code = `
 
     if(z) z, s
     {
@@ -160,10 +161,10 @@ async function main() {
     code = "(1,2),3"
 
     code = `
-      
-    if (true) 
+
+    if (true)
     return 1
-  else if (false) 
+  else if (false)
     return xx
   else if (false) {a}
   else 2
@@ -208,10 +209,40 @@ async function main() {
     console.timeEnd(generator_label)
 }
 
+async function enumerable001(){
+  let queryWhere = new Enumerable([1, 2, "A", 1, 2, 3, 2, 3])
+  // let results = await queryWhere.Where((val: string | number) => {return val === 2}).Take(2).toArray()
+  let results = await queryWhere.Where((val: string | number) => {return val === 2}).Take(3).toArray()
+
+  console.info(results)
+}
+
+async function enumerable002(){
+  let queryWhere = new Enumerable([1, 2, "A", 1, 2, 3, 2, 3])
+  // let results = await queryWhere.Where((val: string | number) => {return val === 2}).Take(2).toArray()
+  let results = queryWhere.Where((val: string | number) => {return val === 2}).Take(3).Take(1)
+
+  for await(let x of results){
+    console.info(x)
+  }
+}
+
+async function enumerable(){
+  let queryWhere = [1, 2, "A", ()=>{return 1}].asEnumerable()
+
+  console.info(queryWhere)
+  // let results = await queryWhere.Where((val: string | number) => {return val === 2}).Take(2).toArray()
+  let results = queryWhere.Select()
+  for await(let x of results){
+    console.info(x)
+  }
+}
+
 ;(async () => {
     // await query()
     // await main()
 
+    await enumerable()
     console.info("Transpiler")
 })().catch(err => {
     console.error("error in main", err)

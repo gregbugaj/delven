@@ -55,38 +55,26 @@ export interface Action<T = any, R = any> {
 export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
     (first: TFirst, second: TSecond): TReturn
 }
-
 export abstract class IEnumerable<T> {
     /**
      * Return async iterator for current datasouce
      */
-    abstract asyncIterator(): AsyncGenerator<T, unknown, unknown>
+    // abstract asyncIterator(): AsyncGenerator<T, unknown, unknown>
 
     /**
      * Return iterator for current datasource
      */
-    iterator(): IterableIterator<T> {
-        throw new Error("Method not implemented")
-    }
-
-    /**
-     * Return chainable iterator
-     */
-    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>
+    // abstract iterator(): IterableIterator<T>
 
     /**
      * Return current 'async' iterator
      */
-    [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown> {
-        return this.asyncIterator()
-    }
+    abstract [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown>
 
     /**
-     * Prevent default use of non async iterator
+     * Return current iterator by invoking the to
      */
-    [Symbol.iterator](): IterableIterator<T> {
-        return this.iterator()
-    }
+    // abstract [Symbol.iterator](): IterableIterator<T>
 
     /**
      * Use the toArray method to create an array from results of a query.
@@ -98,18 +86,19 @@ export abstract class IEnumerable<T> {
      * Determines wheter a sequence contains any elements
      * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
      */
-    abstract async Any(): Promise<boolean>
+    abstract Any(): Promise<boolean>
 
     /**
      * Gets the number of elements in the collection
      */
-    abstract async Count(): Promise<number>
+    abstract Count(): Promise<number>
 
     /**
      * Filters a sequence of values based on a predicate.
      * @param predicate
      */
     abstract Where(predicate: Action<T, boolean>): IEnumerable<T>
+
 
     /**
      * Projects each element of a sequence into a new form.
@@ -121,7 +110,7 @@ export abstract class IEnumerable<T> {
      * Concatenates two sequences.
      * @param selector
      */
-    abstract Concat(secondSource: IEnumerable<T>): IEnumerable<T>
+    // abstract Concat(secondSource: IEnumerable<T>): IEnumerable<T>
 
     /**
      * Return new Enumerable where first n elements are taken
@@ -134,21 +123,21 @@ export abstract class IEnumerable<T> {
      * function on each element of the input sequence
      * @param action A transform function to apply to each element.
      */
-    abstract async Sum<R extends number>(action?: Action<T, R>): Promise<number>
+    abstract Sum<R extends number>(action?: Action<T, R>): Promise<number>
 
     /**
      * Returns the first element of a sequence that satisfies a specified condition.
      * Method throws an exception if no matching element is found in source.
      * @param predicate A function to test each element for a condition.
      */
-    abstract async First(predicate?: Action<T, boolean>): Promise<T>
+    abstract First(predicate?: Action<T, boolean>): Promise<T>
 
     /**
      * Returns the first element of the sequence that satisfies a condition or a default value if no such element is found.
      * @param predicate A function to test each element for a condition.
      */
     //  abstract FirstOrDefault(predicate?: Action<T, boolean> | Action<T, Tuple<boolean, T>>): T
-    abstract async FirstOrDefault(predicate?: Action<T, boolean>): Promise<T>
+    abstract FirstOrDefault(predicate?: Action<T, boolean>): Promise<T>
     /**
      * Produces a sequence of tuples with elements from the two specified sequences.
      * The function will only iterate over the smallest list passed
@@ -161,3 +150,4 @@ export abstract class IEnumerable<T> {
         transformer?: BiAction<T, TSecond, TResult>
     ): IEnumerable<TResult | Tuple<T, TSecond>>
 }
+

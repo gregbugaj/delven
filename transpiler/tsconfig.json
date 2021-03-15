@@ -24,12 +24,11 @@
       "pretty": true,
     },
     "include": [
-        "src/**/*.ts"
+        "src/**/*.ts", "types/extensions.d.ts",
       ],
-      
+
       "exclude": [
-        "node_modules", 
+        "node_modules",
         "**/*.spec.ts"
       ]
   }
-  

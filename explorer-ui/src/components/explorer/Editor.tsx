@@ -191,6 +191,8 @@ class Editor extends React.Component<EditorProps, IState> {
         }
       } else {
         if (this.astEditor && this.jsonEditor) {
+
+          this.log("success", `Compilation completed in : ${data.compileTime} ms`)
           this.jsonEditor.setValue(stringify(data.ast))
           this.astEditor.setValue(data.generated)
         }
@@ -232,7 +234,6 @@ class Editor extends React.Component<EditorProps, IState> {
     if (consoleDisplay) {
       if (message instanceof Array) {
         for (let chunk of message) {
-          console.info(chunk)
           combined.push(this._log(level, chunk))
         }
       } else {
