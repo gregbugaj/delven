@@ -29,6 +29,11 @@
 export type Tuple<TFirts, TSecond> = [TFirts, TSecond]
 
 /**
+ * Datasource that should be used with the IEnumerable
+ */
+export type IterableDataSource<TSource> = Iterable<TSource> | AsyncIterable<TSource>
+
+/**
  * Action interface represents a function that accepts one argument and produces a result.
  *
  * Type parameters:
@@ -52,7 +57,6 @@ export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
 }
 
 export abstract class IEnumerable<T> {
-
     /**
      * Return async iterator for current datasouce
      */
@@ -94,12 +98,12 @@ export abstract class IEnumerable<T> {
      * Determines wheter a sequence contains any elements
      * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
      */
-    abstract Any(): boolean
+    abstract async Any(): Promise<boolean>
 
     /**
      * Gets the number of elements in the collection
      */
-    abstract Count(): number
+    abstract async Count(): Promise<number>
 
     /**
      * Filters a sequence of values based on a predicate.
@@ -130,22 +134,21 @@ export abstract class IEnumerable<T> {
      * function on each element of the input sequence
      * @param action A transform function to apply to each element.
      */
-    abstract Sum<R extends number>(action?: Action<T, R>): number
+    abstract async Sum<R extends number>(action?: Action<T, R>): Promise<number>
 
     /**
      * Returns the first element of a sequence that satisfies a specified condition.
      * Method throws an exception if no matching element is found in source.
      * @param predicate A function to test each element for a condition.
      */
-    abstract First(predicate?: Action<T, boolean>): T
+    abstract async First(predicate?: Action<T, boolean>): Promise<T>
 
     /**
      * Returns the first element of the sequence that satisfies a condition or a default value if no such element is found.
      * @param predicate A function to test each element for a condition.
      */
     //  abstract FirstOrDefault(predicate?: Action<T, boolean> | Action<T, Tuple<boolean, T>>): T
-    abstract FirstOrDefault(predicate?: Action<T, boolean>): T
-
+    abstract async FirstOrDefault(predicate?: Action<T, boolean>): Promise<T>
     /**
      * Produces a sequence of tuples with elements from the two specified sequences.
      * The function will only iterate over the smallest list passed

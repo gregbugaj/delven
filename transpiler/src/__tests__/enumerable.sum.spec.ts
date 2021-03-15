@@ -3,20 +3,18 @@ import {Enumerable} from "../query/internal"
 describe("Enumerable Sum", () => {
     beforeAll(() => {})
 
-    test("sum-generic", () => {
+    test("sum-generic", async () => {
         let expectedResult = 6
-
         let querySum = new Enumerable(["1", 2, 3])
-        let sum0 = querySum.Sum()
+        let sum0 = await querySum.Sum()
 
         expect(sum0).toBe(expectedResult)
     })
 
-    test("sum-function", () => {
+    test("sum-function", async () => {
         let expectedResult = 6
-
         let querySum = new Enumerable(["1", 2, 3])
-        let sum1 = querySum.Sum((val: number | string): number => {
+        let sum1 = await querySum.Sum((val: number | string): number => {
             if (typeof val == "string") return parseInt(val)
             return val
         })
@@ -24,11 +22,10 @@ describe("Enumerable Sum", () => {
         expect(sum1).toBe(expectedResult)
     })
 
-    test("sum-undefined", () => {
+    test("sum-undefined", async () => {
         let expectedResult = 2
-
         let querySum = new Enumerable(["1", "1", 2, 3])
-        let sum1 = querySum.Sum((val: number | string): number => {
+        let sum1 = await querySum.Sum((val: number | string): number => {
             if (typeof val == "string") return parseInt(val)
             return undefined
         })

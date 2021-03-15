@@ -1,12 +1,12 @@
-import {Action, Enumerable} from "./internal"
+import {Action, Enumerable, IterableDataSource} from "./internal"
 
 export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
-    readonly selectable: ArrayLike<TSource> // source does not have to have push, pop
+    readonly selectable: IterableDataSource<TSource> // source does not have to have push, pop
     results: TResult[] // results should have push,pop
     executed: boolean
     selector: Action<TSource, TResult>
 
-    constructor(source: ArrayLike<TSource>, selector: Action<TSource, TResult>) {
+    constructor(source: IterableDataSource<TSource>, selector: Action<TSource, TResult>) {
         super([])
         this.selectable = source
         this.results = []
@@ -15,9 +15,9 @@ export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
     }
 
     async *asyncIterator(): AsyncGenerator<TResult, unknown, unknown> {
-        for (let i = 0; i < this.selectable.length; ++i) {
+        for await (let val of this.selectable) {
             // T = unknown
-            const retval: TResult = this.selector(this.selectable[i])
+            const retval: TResult = this.selector(val)
             yield retval
         }
         // TReturn = any

@@ -13,6 +13,13 @@
             "args": [
                 // "./src/__tests__/enumerable.firstordefault.spec.ts"
                 // "./src/__tests__/enumerable.concat.spec.ts"
+                // "./src/__tests__/enumerable.first.spec.ts"
+                // "./src/__tests__/enumerable.firstordefault.spec.ts"
+                // "./src/__tests__/enumerable.select.spec.ts"
+                // "./src/__tests__/enumerable.selectmany.spec.ts"
+                // "./src/__tests__/enumerable.sum.spec.ts"
+                // "./src/__tests__/enumerable.take.spec.ts"
+                "./src/__tests__/enumerable.where.spec.ts"
             ],
             "cwd": "${workspaceFolder}/transpiler",
             "console": "integratedTerminal",

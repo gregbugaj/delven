@@ -1,36 +1,43 @@
-import {Action, Enumerable} from "./internal"
+import {Action, Enumerable, IterableDataSource} from "./internal"
 
 export class WhereEnumerable<TSource> extends Enumerable<TSource> {
     predicate: Action<TSource, boolean>
     results: TSource[]
-    executed: boolean
 
-    constructor(soure: ArrayLike<TSource>, predicate: Action<TSource, boolean>) {
-        super(soure)
+    constructor(source: IterableDataSource<TSource>, predicate: Action<TSource, boolean>) {
+        super(source)
         this.predicate = predicate
         this.results = []
-        this.executed = false
+    }
+
+    push(item: TSource): void {
+        if (this.state === "STARTED") {
+            this.results.push(item)
+        }
     }
 
     async *asyncIterator(): AsyncGenerator<TSource, unknown, unknown> {
-        for (let i = 0; i < this.source.length; ++i) {
-            // T = unknown
-            if (this.predicate(this.source[i])) {
-                yield this.source[i]
+        this.state = "STARTED"
+        for await (let val of this.source) {
+            if (this.predicate(val)) {
+                this.push(val)
+                yield val
             }
         }
+        this.state = "COMPLETED"
         // TReturn = any
         return undefined
     }
 
     async toArray(): Promise<ArrayLike<TSource>> {
-        if (this.executed) {
+        if (this.state === "COMPLETED") {
             return Promise.resolve(this.results)
         }
+
         for await (const item of this.asyncIterator()) {
-            this.results.push(item)
+            // NOOP to invoke evaluation
         }
-        this.executed = true
+
         return Promise.resolve(this.results)
     }
 }

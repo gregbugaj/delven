@@ -1,17 +1,17 @@
-import {IEnumerable, Enumerable} from "./internal"
+import {IEnumerable, Enumerable, IterableDataSource} from "./internal"
 
+/**
+ * Concatenate two iterable datasources
+ */
 export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
-    // readonly secondSource: ArrayLike<TSource> // source does not have to have push, pop
-    readonly secondSource: IEnumerable<TSource>
+    readonly secondSource: IterableDataSource<TSource>
 
     results: TSource[] // results should have push,pop
-    state: "NEW" | "STARTED" | "COMPLETED"
 
-    constructor(source: ArrayLike<TSource>, secondSource: IEnumerable<TSource>) {
+    constructor(source: IterableDataSource<TSource>, secondSource: IterableDataSource<TSource>) {
         super(source)
         this.secondSource = secondSource
         this.results = []
-        this.state = "NEW"
     }
 
     push(item: TSource): void {
@@ -22,14 +22,14 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
 
     async *asyncIterator(): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
-        for (let i = 0; i < this.source.length; ++i) {
+        for await (let val of this.source) {
             // T = unknown
-            const retval: TSource = this.source[i]
+            const retval: TSource = val
             this.push(retval)
             yield retval
         }
 
-        const si = this.secondSource.asyncIterator()
+        const si = this.secondSource
         for await (const item of si) {
             this.push(item)
             yield item
