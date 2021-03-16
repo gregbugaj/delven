@@ -1,6 +1,6 @@
 import ArgumentNullException from "./ArgumentNullException"
 import InvalidOperationException from "./InvalidOperationException"
-import { Tuple, IterableDataSource } from "./internal"
+import { Tuple, IterableDataSource, TakeWhileEnumerable } from "./internal"
 import { Action } from "./internal"
 import { BiAction } from "./internal"
 import { IEnumerable } from "./internal"
@@ -66,6 +66,10 @@ export class Enumerable<T> extends IEnumerable<T> {
 
   Where(predicate: Action<T, boolean>): IEnumerable<T> {
     return new WhereEnumerable(this, predicate)
+  }
+
+  TakeWhile(predicate: Action<T, boolean>): IEnumerable<T> {
+    return new TakeWhileEnumerable(this, predicate)
   }
 
   async All(predicate: Action<T, boolean>): Promise<boolean> {

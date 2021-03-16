@@ -44,7 +44,7 @@ export interface Action<T = any, R = any> {
   (val: T): R
 }
 
-export const identityAction = <T = any, R = any>(val: T) : R => val as unknown as R;
+export const identityAction = <T = any, R = any>(val: T): R => val as unknown as R;
 
 /**
  * BiAction interface represents a function that accepts two arguments and produces a result.
@@ -98,9 +98,18 @@ export abstract class IEnumerable<T> {
   /**
    * Filters a sequence of values based on a predicate.
    * @alias Array.filter
-   * @param predicate
+   * @param predicate a function to test each element for a condition
+   * @returns
    */
   abstract Where(predicate: Action<T, boolean>): IEnumerable<T>
+
+
+  /**
+   * Returns elements from an Enumerable as long as a specified condition is true, and then skips the remaining elements
+   * @param predicate a function to test each element for a condition
+   * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
+   */
+  abstract TakeWhile(predicate: Action<T, boolean>): IEnumerable<T>
 
   /**
    * Determines whether all elements of a sequence satisfy a condition.

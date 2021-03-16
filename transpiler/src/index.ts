@@ -212,7 +212,7 @@ async function main() {
 async function enumerable001() {
   let queryWhere = new Enumerable([1, 2, "A", 1, 2, 3, 2, 3])
   // let results = await queryWhere.Where((val: string | number) => {return val === 2}).Take(2).toArray()
-  let results = await queryWhere.where((val: string | number) => { return val === 2 }).Take(3).toArray()
+  let results = await queryWhere.Where((val: string | number) => { return val === 2 }).Take(3).toArray()
 
   console.info(results)
 }
@@ -220,7 +220,7 @@ async function enumerable001() {
 async function enumerable002() {
   let queryWhere = new Enumerable([1, 2, "A", 1, 2, 3, 2, 3])
   // let results = await queryWhere.Where((val: string | number) => {return val === 2}).Take(2).toArray()
-  let results = queryWhere.where((val: string | number) => { return val === 2 }).Take(3).Take(1)
+  let results = queryWhere.Where((val: string | number) => { return val === 2 }).Take(3).Take(1)
 
   for await (let x of results) {
     console.info(x)
@@ -228,7 +228,7 @@ async function enumerable002() {
 }
 async function enumerable003() {
   let queryWhere = [1, 2, "A", () => 3].asEnumerable()
-  let results = queryWhere.where((val: string | number) => { return val === 2 }).Select()
+  let results = queryWhere.Where((val: string | number) => { return val === 2 }).Select()
   for await (let x of results) {
     console.info(x)
   }
@@ -237,7 +237,7 @@ async function enumerable003() {
 async function enumerable() {
   let enumerables = [1, 2, 2, 3, 3].asEnumerable()
   // lazy evaluated
-  let results = enumerables.where((val: number) => val === 2).Select(x => `item-${x}`).Take(1)
+  let results = enumerables.Where(x => x === 2).Select(x => `item-${x}`).Take(1)
   for await (let x of results) {
     console.info(x)
   }
