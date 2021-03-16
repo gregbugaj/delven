@@ -36,7 +36,7 @@ export class Enumerable<T> extends IEnumerable<T> {
    * @param val the value to unwrap
    * @returns val or evaluated function value
    */
-   protected unwrap(val: any): any {
+  protected unwrap(val: any): any {
     if (typeof val === 'function') {
       return val()
     }
@@ -64,8 +64,18 @@ export class Enumerable<T> extends IEnumerable<T> {
     throw new Error("Method not implemented.")
   }
 
-  where(predicate: Action<T, boolean>): IEnumerable<T> {
+  Where(predicate: Action<T, boolean>): IEnumerable<T> {
     return new WhereEnumerable(this, predicate)
+  }
+
+  async All(predicate: Action<T, boolean>): Promise<boolean> {
+    for await (const item of this) {
+      const val = this.unwrap(item)
+      if (!predicate(val)) {
+        return false
+      }
+    }
+    return true
   }
 
   Take(count: number): IEnumerable<T> {
@@ -79,7 +89,8 @@ export class Enumerable<T> extends IEnumerable<T> {
     if (typeof predicate === "undefined") {
       return this[0]
     } else {
-      for await (let val of this) {
+      for await (const item of this) {
+        const val = this.unwrap(item)
         if (predicate(val)) {
           return val
         }

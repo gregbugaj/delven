@@ -97,10 +97,16 @@ export abstract class IEnumerable<T> {
 
   /**
    * Filters a sequence of values based on a predicate.
+   * @alias Array.filter
    * @param predicate
    */
   abstract Where(predicate: Action<T, boolean>): IEnumerable<T>
 
+  /**
+   * Determines whether all elements of a sequence satisfy a condition.
+   * @param predicate A function to test each element for a condition.
+   */
+  abstract All(predicate: Action<T, boolean>): Promise<boolean>
 
   /**
    * Projects each element of a sequence into a new form.
