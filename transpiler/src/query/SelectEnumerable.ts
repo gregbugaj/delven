@@ -1,4 +1,4 @@
-import {Action, Enumerable, IterableDataSource} from "./internal"
+import {Action, Enumerable, identityAction, IterableDataSource} from "./internal"
 
 export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
     readonly selectable: IterableDataSource<TSource> // source does not have to have push, pop
@@ -6,7 +6,7 @@ export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
     executed: boolean
     selector: Action<TSource, TResult>
 
-    constructor(source: IterableDataSource<TSource>, selector: Action<TSource, TResult>) {
+    constructor(source: IterableDataSource<TSource>, selector: Action<TSource, TResult> = identityAction) {
         super([])
         this.selectable = source
         this.results = []
