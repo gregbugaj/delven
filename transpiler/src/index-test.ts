@@ -42,7 +42,7 @@ async function main() {
     // let n  = class cls { set [method](x){} }
     // let o = {'x': function foo(n) {return 1}};
 
-    const codeX = `    
+    const codeX = `
   let ℮
 `
     //    const code = "`$` "
@@ -96,7 +96,7 @@ async function main() {
         (function funa() {
         func(() => {thing(); console.info(a);}, identifier);
         })()
-        
+
         function z(){
         let z = 1
         }
@@ -141,16 +141,16 @@ async function main() {
     code = `
 
     {
-        if (x) 
+        if (x)
           x
         else if(y)
           y
         else if(z)
           z, s
-        } 
+        }
 
     `
-    code = ` 
+    code = `
 
     if(z) z, s
     {
@@ -161,10 +161,10 @@ async function main() {
     code = "(1,2),3"
 
     code = `
-      
-    if (true) 
+
+    if (true)
     return 1
-  else if (false) 
+  else if (false)
     return xx
   else if (false) {a}
   else 2
@@ -216,7 +216,7 @@ async function query() {
     // console.info(q0.Take(6).Count())
 
     let queryWhere = new Enumerable(["A", 2, 1, 2, 3, 2, 3])
-    let where1 = queryWhere.Where((val: string | number) => {
+    let where1 = queryWhere.where((val: string | number) => {
         return val === 2 || val === "A"
     })
 

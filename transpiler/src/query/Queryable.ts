@@ -28,7 +28,7 @@ export default class Queryable<T> extends IQueryable<T> {
     Count(): number {
         throw new Error("Method not implemented.")
     }
-    Where(predicate: Action<T, boolean>): IEnumerable<T> {
+    where(predicate: Action<T, boolean>): IEnumerable<T> {
         throw new Error("Method not implemented.")
     }
     Select<R>(selector: Action<T, R>): IEnumerable<R> {

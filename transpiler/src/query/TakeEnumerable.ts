@@ -17,20 +17,18 @@ export class TakeEnumerable<TSource> extends Enumerable<TSource> {
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
-    console.info("TAKE : asyncIterator START")
-
     this.state = "STARTED"
     let index = 0
-    for await (const val of this.source) {
+    for await (const item of this.source) {
       if (index++ >= this.count) {
         break
       }
+      const val = this.unwrap(item)
       this.push(val)
       yield val
     }
 
     this.state = "COMPLETED"
-    console.info("TAKE : asyncIterator END")
     return undefined
   }
 

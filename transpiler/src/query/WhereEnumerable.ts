@@ -9,7 +9,6 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
     super(source)
     this.predicate = predicate
     this.results = []
-    console.info("where source : " + source)
   }
 
   push(item: TSource): void {
@@ -19,9 +18,9 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
   }
 
   async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
-    // console.info("WHERE : asyncIterator START")
     this.state = "STARTED"
-    for await (let val of this.source) {
+    for await (const item of this.source) {
+      const val = this.unwrap(item);
       if (this.predicate(val)) {
         this.push(val)
         yield val
@@ -29,7 +28,6 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
     }
     this.state = "COMPLETED"
     // TReturn = any
-    // console.info("WHERE : asyncIterator END")
     return undefined
   }
 

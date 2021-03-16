@@ -21,14 +21,26 @@ export function sleep(ms: number): Promise<number> {
 // https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
 // https://www.typescriptlang.org/docs/handbook/interfaces.html
 export class Enumerable<T> extends IEnumerable<T> {
-  readonly source: IterableDataSource<T>
+  // source can be of any type and it should not be bount to type T
+  readonly source: IterableDataSource<any>
   state: "NEW" | "STARTED" | "COMPLETED"
 
-  constructor(source: IterableDataSource<T>) {
+  constructor(source: IterableDataSource<any>) {
     super()
     this.source = source
     this.state = "NEW"
-    console.info(source)
+  }
+
+  /**
+   * Unwrap and evalute item
+   * @param val the value to unwrap
+   * @returns val or evaluated function value
+   */
+   protected unwrap(val: any): any {
+    if (typeof val === 'function') {
+      return val()
+    }
+    return val
   }
 
   /**
@@ -52,13 +64,11 @@ export class Enumerable<T> extends IEnumerable<T> {
     throw new Error("Method not implemented.")
   }
 
-  Where(predicate: Action<T, boolean>): IEnumerable<T> {
-    console.trace("where")
+  where(predicate: Action<T, boolean>): IEnumerable<T> {
     return new WhereEnumerable(this, predicate)
   }
 
   Take(count: number): IEnumerable<T> {
-    console.trace("take")
     return new TakeEnumerable(this, count)
   }
 
