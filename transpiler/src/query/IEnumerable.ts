@@ -132,9 +132,15 @@ export abstract class IEnumerable<T> {
 
   /**
    * Return new Enumerable where first n elements are taken
-   * @param count
+   * @param count The number of elements to skip before returning the remaining elements.
    */
   abstract Take(count: number): IEnumerable<T>
+
+  /**
+   * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
+   * @param count
+   */
+  abstract Skip(count: number): IEnumerable<T>
 
   /**
    * Computes the sum of the sequence of that are obtained by invoking a transform
