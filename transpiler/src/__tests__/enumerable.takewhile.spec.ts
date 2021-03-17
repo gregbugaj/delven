@@ -24,4 +24,15 @@ describe("Enumerable TakeWhile", () => {
     expect(results).toEqual(data)
   })
 
+
+  // https://docs.microsoft.com/en-us/dotnet/api/system.linq.enumerable.takewhile
+  test("TakeWhile-003 with index", async () => {
+    const data = ["apple", "passionfruit", "banana", "mango","orange", "blueberry", "grape", "strawberry"]
+    const expectedResult = ["apple", "passionfruit", "banana", "mango","orange", "blueberry"]
+    let enumerable = data.asEnumerable()
+    let results = await enumerable.TakeWhile((fruit, index) => fruit.length >= index).toArray()
+    expect(results).toEqual(expectedResult)
+  })
+
+
 })

@@ -108,7 +108,7 @@ export abstract class IEnumerable<T> {
    * @param predicate a function to test each element for a condition
    * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
    */
-  abstract TakeWhile(predicate: Action<T, boolean>): IEnumerable<T>
+  abstract TakeWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T>
 
   /**
    * Determines whether all elements of a sequence satisfy a condition.

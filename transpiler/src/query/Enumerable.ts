@@ -68,7 +68,7 @@ export class Enumerable<T> extends IEnumerable<T> {
     return new WhereEnumerable(this, predicate)
   }
 
-  TakeWhile(predicate: Action<T, boolean>): IEnumerable<T> {
+  TakeWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T> {
     return new TakeWhileEnumerable(this, predicate)
   }
 

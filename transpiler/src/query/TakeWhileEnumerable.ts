@@ -1,11 +1,11 @@
-import { Action, Enumerable, IterableDataSource } from "./internal"
+import { Action, BiAction, Enumerable, IterableDataSource } from "./internal"
 
 export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
-  predicate: Action<TSource, boolean>
+  predicate: BiAction<TSource, number, boolean>
 
   results: TSource[]
 
-  constructor(source: IterableDataSource<TSource>, predicate: Action<TSource, boolean>) {
+  constructor(source: IterableDataSource<TSource>, predicate: BiAction<TSource, number, boolean>) {
     super(source)
     this.predicate = predicate
     this.results = []
@@ -19,9 +19,10 @@ export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
 
   async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
     this.state = "STARTED"
+    let index = 0
     for await (const item of this.source) {
       const val = this.unwrap(item);
-      if (!this.predicate(val)) {
+      if (!this.predicate(val, index++)) {
         return undefined
       }
       this.push(val)
