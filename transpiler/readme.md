@@ -93,6 +93,12 @@ https://docs.microsoft.com/en-us/azure/data-lake-analytics/data-lake-analytics-u
 https://www.w3.org/TR/webdriver1
 
 
+# Async iterators
+https://observablehq.com/@ehouais/es2018-asynchronous-iterators
+
+Transucers / Streams
+https://medium.com/javascript-scene/transducers-efficient-data-processing-pipelines-in-javascript-7985330fe73d
+
 ## Footnotes
 
 
