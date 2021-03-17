@@ -1,6 +1,6 @@
 import ArgumentNullException from "./ArgumentNullException"
 import InvalidOperationException from "./InvalidOperationException"
-import { Tuple, IterableDataSource, TakeWhileEnumerable, SkipEnumerable, SkipWhileEnumerable } from "./internal"
+import { Tuple, IterableDataSource, TakeWhileEnumerable, SkipEnumerable, SkipWhileEnumerable, SelectManyEnumerable } from "./internal"
 import { Action } from "./internal"
 import { BiAction } from "./internal"
 import { IEnumerable } from "./internal"
@@ -55,6 +55,11 @@ export class Enumerable<T> extends IEnumerable<T> {
     return new SelectEnumerable<T, R>(this, selector)
   }
 
+  // SelectMany<R, K=any>(selector: Action<T, R>, transform?: Action<R, K>): IEnumerable<R>
+  SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IEnumerable<K> {
+    return new SelectManyEnumerable<T, R, K>(this, selector, transform)
+  }
+
   async Any(): Promise<boolean> {
     throw new Error("Method not implemented.")
   }
@@ -68,7 +73,7 @@ export class Enumerable<T> extends IEnumerable<T> {
     return new WhereEnumerable(this, predicate)
   }
 
-  TakeWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T> {
+  TakeWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
     return new TakeWhileEnumerable(this, predicate)
   }
 
@@ -90,7 +95,7 @@ export class Enumerable<T> extends IEnumerable<T> {
     return new SkipEnumerable(this, count)
   }
 
-  SkipWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T>{
+  SkipWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
     return new SkipWhileEnumerable(this, predicate)
   }
 

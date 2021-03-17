@@ -1,41 +1,62 @@
-import {Enumerable} from "../query/internal"
+import { Enumerable } from "../query/internal"
 
-describe("Enumerable Select", () => {
-    beforeAll(() => {})
+describe("Enumerable SelectMany", () => {
+  beforeAll(() => { })
 
-    test("select-iterator", async () => {
-        const enumerable = Enumerable.of([
-            {name: "Greg", val: 50},
-            {name: "Roman", val: 60},
-            {name: "Leo", val: 50}
-        ])
-        const selection = enumerable.Select((val): {name: string} => ({
-            name: val.name
-        }))
-        const results = []
-
-        for await (const result of selection) {
-            // console.info(`Result : ${JSON.stringify(result)}`)
-            results.push(result)
-        }
-
-        let expectedResult = [{name: "Greg"}, {name: "Roman"}, {name: "Leo"}]
-        expect(results).toEqual(expectedResult)
+    test("SelectMany-Flatten", async () => {
+      const enumerable = Enumerable.of([{ 'name': 'Greg', 'items': [10, 20, 30] }, { 'name': 'Roman', 'items': [40, 50, 60] }])
+      const selection = enumerable.SelectMany(x => x.items)
+      const results = await selection.toArray()
+      const expectedResult = [10, 20, 30, 40, 50, 60]
+      expect(results).toEqual(expectedResult)
     })
 
-    test("select-toArray", async () => {
-        const enumerable = Enumerable.of([
-            {name: "Greg", val: 50},
-            {name: "Roman", val: 60},
-            {name: "Leo", val: 50}
-        ])
-        const selection = enumerable.Select((val): {name: string} => ({
-            name: val.name
-        }))
-        const names = selection.toArray()
-        const results = await names
+    test("SelectMany-Transform Directly", async () => {
+      const enumerable = Enumerable.of([
+        { 'name': 'Higa', 'pets': ["Scruffy", "Sam"] },
+        { 'name': 'Ashkenazi', 'pets': ["Walker", "Sugar"] },
+        { 'name': 'Price', 'pets': ["Scratches", "Diesel"] },
+        { 'name': 'Hines', 'pets': ["Dusty"] },
+      ])
 
-        const expectedResult = [{name: "Greg"}, {name: "Roman"}, {name: "Leo"}]
-        expect(results).toEqual(expectedResult)
+      const selection = enumerable.SelectMany(x => x.pets, (owner, name) => ({ 'owner': owner.name, 'name': name }))
+      const results = await selection.toArray()
+
+      const expectedResult = [
+        { "owner": "Higa", "name": "Scruffy" },
+        { "owner": "Higa", "name": "Sam" },
+        { "owner": "Ashkenazi", "name": "Walker" },
+        { "owner": "Ashkenazi", "name": "Sugar" },
+        { "owner": "Price", "name": "Scratches" },
+        { "owner": "Price", "name": "Diesel" },
+        { "owner": "Hines", "name": "Dusty" }]
+
+      expect(results).toEqual(expectedResult)
     })
+
+
+  test("SelectMany-Transform with object transfer", async () => {
+    const enumerable = Enumerable.of([
+      { 'name': 'Higa', 'pets': ["Scruffy", "Sam"] },
+      { 'name': 'Ashkenazi', 'pets': ["Walker", "Sugar"] },
+      { 'name': 'Price', 'pets': ["Scratches", "Diesel"] },
+      { 'name': 'Hines', 'pets': ["Dusty"] },
+    ])
+
+    const selection = enumerable
+      .SelectMany(x => x.pets, (owner, name) => ({ 'owner': owner, 'name': name }))
+      .Where(ownerAndPet => ownerAndPet.owner.name === 'Price')
+      .Select(ownerAndPet => (
+        { 'owner': ownerAndPet.owner.name, 'pet': ownerAndPet.name }
+      ))
+
+    const results = await selection.toArray()
+    const expectedResult = [
+      { "owner": "Price", "pet": "Scratches" },
+      { "owner": "Price", "pet": "Diesel" }
+    ]
+
+    expect(results).toEqual(expectedResult)
+  })
+
 })

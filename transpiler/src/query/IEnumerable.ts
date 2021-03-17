@@ -108,7 +108,7 @@ export abstract class IEnumerable<T> {
    * @param predicate a function to test each element for a condition
    * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
    */
-  abstract TakeWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T>
+  abstract TakeWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T>
 
   /**
    * Determines whether all elements of a sequence satisfy a condition.
@@ -123,6 +123,13 @@ export abstract class IEnumerable<T> {
    */
   abstract Select<R>(selector?: Action<T, R>): IEnumerable<R>
 
+  /**
+   * Projects each element of a sequence to an IEnumerable and flattens the resulting sequences into one sequence.
+   * If no `selector` has been provided an idenity function will be used to return a value
+   * @param selector
+   * @param transform
+   */
+  abstract SelectMany<R, K = any>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IEnumerable<K>
   /**
    * Concatenates two sequences.
    * @param selector
@@ -150,7 +157,7 @@ export abstract class IEnumerable<T> {
    * @param predicate a function to test each element for a condition
    * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
    */
-   abstract SkipWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T>
+  abstract SkipWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T>
 
   /**
    * Computes the sum of the sequence of that are obtained by invoking a transform
@@ -184,4 +191,3 @@ export abstract class IEnumerable<T> {
     transformer?: BiAction<T, TSecond, TResult>
   ): IEnumerable<TResult | Tuple<T, TSecond>>
 }
-
