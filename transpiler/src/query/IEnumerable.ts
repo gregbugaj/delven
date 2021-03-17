@@ -103,7 +103,6 @@ export abstract class IEnumerable<T> {
    */
   abstract Where(predicate: Action<T, boolean>): IEnumerable<T>
 
-
   /**
    * Returns elements from an Enumerable as long as a specified condition is true, and then skips the remaining elements
    * @param predicate a function to test each element for a condition
@@ -132,15 +131,26 @@ export abstract class IEnumerable<T> {
 
   /**
    * Return new Enumerable where first n elements are taken
+   *
    * @param count The number of elements to skip before returning the remaining elements.
    */
   abstract Take(count: number): IEnumerable<T>
 
   /**
    * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
+   *
    * @param count
    */
   abstract Skip(count: number): IEnumerable<T>
+
+  /**
+   * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
+   * If predicate returns true for all elements in the sequence, an empty IEnumerable<T> is returned.
+   *
+   * @param predicate a function to test each element for a condition
+   * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
+   */
+   abstract SkipWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T>
 
   /**
    * Computes the sum of the sequence of that are obtained by invoking a transform

@@ -1,6 +1,6 @@
 import ArgumentNullException from "./ArgumentNullException"
 import InvalidOperationException from "./InvalidOperationException"
-import { Tuple, IterableDataSource, TakeWhileEnumerable, SkipEnumerable } from "./internal"
+import { Tuple, IterableDataSource, TakeWhileEnumerable, SkipEnumerable, SkipWhileEnumerable } from "./internal"
 import { Action } from "./internal"
 import { BiAction } from "./internal"
 import { IEnumerable } from "./internal"
@@ -90,6 +90,9 @@ export class Enumerable<T> extends IEnumerable<T> {
     return new SkipEnumerable(this, count)
   }
 
+  SkipWhile(predicate: BiAction<T,number,boolean>): IEnumerable<T>{
+    return new SkipWhileEnumerable(this, predicate)
+  }
 
   async First(predicate?: Action<T, boolean>): Promise<T> {
     if (this.source == undefined) {
