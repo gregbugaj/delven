@@ -36,6 +36,7 @@ import BreadcrumModule from '../shared/breadcrumbs';
 
 import Editor from './Editor'
 import FullWidthTabs from './TabbedMenu'
+import FullWidthTabbedEditor from './TabbedEditor'
 import { EventTypeCompileReply } from "../bus/message-bus-events";
 
 const drawerWidth = 240;
@@ -137,7 +138,7 @@ const useStyles = makeStyles(theme => ({
 const DefaultComponent = () => {
   return (
     <div style={{ border: '0px solid red', height: '100%' }}>
-      <Editor></Editor>
+      <FullWidthTabbedEditor></FullWidthTabbedEditor>
     </div>
   );
 };
@@ -149,7 +150,7 @@ const SettingsComponent = () => {
     <div>
       <Typography variant="h6">
         Settings Component
-            </Typography>
+        </Typography>
     </div>
   );
 };
@@ -205,8 +206,6 @@ function AstExplorerApplication() {
 
   return (
 
-    // style={{ height: 40, minHeight:40 }}
-    // style={{ height: 40, minHeight:40 }}
     <div style={{ border: '0px solid green', padding: '0px' }} >
       <CssBaseline />
 

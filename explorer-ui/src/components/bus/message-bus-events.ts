@@ -25,6 +25,7 @@ abstract class EventWithPayload<T> extends MessageBusEvent {
 export interface EventTypeSampleQueryPayload {
   name: string;
   id: string;
+  type: string
 }
 export class EventTypeSampleQuery extends EventWithPayload<EventTypeSampleQueryPayload> {
   static readonly type = "EventTypeSampleQuery"

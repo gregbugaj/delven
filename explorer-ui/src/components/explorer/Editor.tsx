@@ -141,7 +141,7 @@ class Editor extends React.Component<EditorProps, IState> {
     eventBus.on(
       EventTypeSampleQuery,
       (event): void => {
-        let id = event.payload.id
+        let id = event.data.id
           ; (async () => {
             const reply = await http<ServiceReplyEventType>(`/api/v1/samples/${id}`);
             if (reply.status === 'error') {

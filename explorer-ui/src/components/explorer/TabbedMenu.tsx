@@ -33,7 +33,13 @@ function SideTreeView(props: {}) {
 
     const nodeClicked = (event: React.SyntheticEvent, node: RenderTree) => {
         event.preventDefault();
-        eventBus.emit(new EventTypeSampleQuery({ name: node.name, id: node.id }));
+        console.info(`Clicked Tree : ${JSON.stringify(node)}`)
+        let _type = "folder"
+        if(node.children && node.children.length == 0){
+          _type = "file"
+        }
+
+        eventBus.emit(new EventTypeSampleQuery({ name: node.name, id: node.id, type: _type}));
     }
 
     const renderTree = (nodes: RenderTree) => (
@@ -52,7 +58,6 @@ function SideTreeView(props: {}) {
 
     React.useEffect(() => {
         let exec = async () => {
-            console.info('Render exec')
             const data = await http<RenderTree>('/api/v1/samples')
             setTreeDataState(data)
         }
@@ -176,9 +181,7 @@ export default function FullWidthTabs() {
 
             <TabPanel value={value} index={0}>
                 <Link href="#" onClick={preventDefault}>Share</Link>
-
                 <Link href="#" onClick={preventDefault}>Expand All</Link>
-
                 <Link href="#" onClick={preventDefault}>Collapse All</Link>
 
                 <Divider />

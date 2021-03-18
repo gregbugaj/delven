@@ -7,21 +7,35 @@ import 'codemirror/theme/monokai.css';
 import 'codemirror/mode/javascript/javascript';
 import '../../styles/_codemirror.css';
 
+// https://stackoverflow.com/questions/29291024/codemirror-onkeyevent-not-firing
 export class CodeMirrorManager {
 
     public editor: CodeMirror.Editor;
 
     config: CodeMirror.EditorConfiguration = {
-        tabSize: 3,
+        tabSize: 4,
+        // gutters: ["note-gutter", "CodeMirror-linenumbers"],
         lineNumbers: true,
         fixedGutter: true,
         mode: { name: "javascript", json: true },
-        // theme:'monokai'
+        // scrollbarStyle:'native',
+        // theme:'darcula',
+        onKeyEvent: function(editor, event){
+            console.info(`key ` + event)
+            return true
+        }
     };
 
     // CTOR
     constructor(private readonly tagElement: HTMLTextAreaElement) {
         this.editor = CodeMirror.fromTextArea(this.tagElement, this.config);
+        // keypress  mousedown
+        this.editor.on("keydown" , (cm, change)=> {
+          console.log("something changed!");
+          console.log(change)
+          let cursor  = cm.getCursor()
+          console.log(cursor)
+        });
     }
 
     setValue(text: string) {
