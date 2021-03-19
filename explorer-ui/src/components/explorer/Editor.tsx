@@ -45,8 +45,6 @@ const BxsRightArrowIcon = (props: React.SVGProps<SVGSVGElement>) => {
 }
 
 
-
-
 const stringify = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
 // class Editor extends React.Component<EditorProps, IState> {
 interface TabPanelProps {
@@ -150,7 +148,11 @@ export default function Editor() {
   // Similar to componentDidMount and componentDidUpdate
   // https://reacttraining.com/blog/useEffect-is-not-the-new-componentDidMount/
   useLayoutEffect(() => {
-    componentDidMount();
+    setTimeout(() => {
+
+      // componentDidMount();
+
+    }, 10);
   }, []);
 
   useEffect(() => {
@@ -158,11 +160,39 @@ export default function Editor() {
     console.log("useEffect newValue--->", value);
   }, [value]);//run every time value changes
 
-   function componentDidMount() {
+  function TextAreaCodeEditor(){
+    let ref = React.createRef<HTMLTextAreaElement>();
+    let editor:CodeMirrorManager
+    useLayoutEffect(()=>{
+      console.info('Textaread Editor init')
+      console.info(ref.current)
+      if(ref.current == null){
+        return
+      }
+
+      editor = new CodeMirrorManager(ref.current)
+    }, [])
+
+    return (
+      <div>
+            <textarea
+              ref={ref}
+              name={props.ecmaName}
+              id={props.ecmaName}
+              defaultValue={props.ecmaValue}
+              autoComplete="off"
+              autoFocus={props.ecmaAutoFocus}
+            />
+      </div>
+    )
+  }
+
+  function componentDidMount() {
     console.info("componentDidMount")
-    const ecmaNode: HTMLTextAreaElement = document.getElementById(props.ecmaName) as HTMLTextAreaElement;
-    const astNode: HTMLTextAreaElement = document.getElementById(props.astName) as HTMLTextAreaElement;
-    const jsonNode: HTMLTextAreaElement = document.getElementById(props.jsonName) as HTMLTextAreaElement;
+
+    let ecmaNode: HTMLTextAreaElement = document.getElementById(props.ecmaName) as HTMLTextAreaElement;
+    let astNode: HTMLTextAreaElement = document.getElementById(props.astName) as HTMLTextAreaElement;
+    let jsonNode: HTMLTextAreaElement = document.getElementById(props.jsonName) as HTMLTextAreaElement;
 
     console.info(ecmaNode)
     console.info(astNode)
@@ -426,12 +456,13 @@ export default function Editor() {
               <Tab label="Graph" {...a11TabProps(4)} className={classes.tab} ></Tab>
             </Tabs>
 
-{/*             <TabPanel value={value} index={0} label={'JSON'}></TabPanel>
+            <TabPanel value={value} index={0} label={'JSON'}></TabPanel>
             <TabPanel value={value} index={1} label={'Script x'}>a-1</TabPanel>
             <TabPanel value={value} index={2} label={'Script x'}>a-2</TabPanel>
             <TabPanel value={value} index={3} label={'Script x'}>a-3</TabPanel>
             <TabPanel value={value} index={4} label={'Script x'}>a-4</TabPanel>
- */}
+
+
             {/* <TabContainer id={0} active={selectedTab === 0} >
               Item One
              </TabContainer>
@@ -478,21 +509,17 @@ export default function Editor() {
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
 
-          TEST {showPanelJson}        {showPanelJson && <div>Hi JSON
+          JSON {showPanelJson}        {showPanelJson && <div>Hi JSON
 
-            <div id='json-container' style={{ display: state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <textarea
-                      name={props.jsonName}
-                      id={props.jsonName}
-                      defaultValue=''
-                      autoComplete="off"
-                    />
-
-             </div>
+              <TextAreaCodeEditor></TextAreaCodeEditor>
 
             </div>}
 
-          TEST {showPanelConsole}     {showPanelConsole && <div>Hi Console</div>}
+          CONSOLE {showPanelConsole}     {showPanelConsole && <div>Hi Console
+
+              <TextAreaCodeEditor></TextAreaCodeEditor>
+
+            </div>}
 
 
 {/*                   <div id='json-container' style={{ display: state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
