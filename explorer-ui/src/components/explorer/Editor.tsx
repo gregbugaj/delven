@@ -54,7 +54,6 @@ interface TabPanelProps {
   label: string;
 }
 
-
 const tabHeight = '48px' // default: '48px'
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
@@ -160,7 +159,16 @@ export default function Editor() {
     console.log("useEffect newValue--->", value);
   }, [value]);//run every time value changes
 
-  function TextAreaCodeEditor() {
+
+  interface TextAreaCodeEditorProps {
+    name: string;
+    id: string;
+    value:string;
+    focus:boolean;
+  }
+
+  function TextAreaCodeEditor(props: TextAreaCodeEditorProps) {
+    const { name, value, id, focus, ...other } = props;
     let ref = React.createRef<HTMLTextAreaElement>();
     let editor: CodeMirrorManager
     useLayoutEffect(() => {
@@ -177,11 +185,11 @@ export default function Editor() {
       <div>
         <textarea
           ref={ref}
-          name={props.ecmaName}
-          id={props.ecmaName}
-          defaultValue={props.ecmaValue}
+          name={name}
+          id={id}
+          defaultValue={value}
           autoComplete="off"
-          autoFocus={props.ecmaAutoFocus}
+          autoFocus={focus}
         />
       </div>
     )
@@ -530,19 +538,19 @@ export default function Editor() {
 
 
                   <TabPanel value={value} index={0} label={'JSON'}>
-                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'json' "></TextAreaCodeEditor>
                   </TabPanel>
                   <TabPanel value={value} index={1} label={'Script x'}>
-                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Compiled' "></TextAreaCodeEditor>
                   </TabPanel>
                   <TabPanel value={value} index={2} label={'Script x'}>
-                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Console' "></TextAreaCodeEditor>
                   </TabPanel>
                   <TabPanel value={value} index={3} label={'Script x'}>
-                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Results' "></TextAreaCodeEditor>
                   </TabPanel>
                   <TabPanel value={value} index={4} label={'Script x'}>
-                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Graph' "></TextAreaCodeEditor>
                   </TabPanel>
 
 
