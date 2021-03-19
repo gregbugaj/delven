@@ -160,13 +160,13 @@ export default function Editor() {
     console.log("useEffect newValue--->", value);
   }, [value]);//run every time value changes
 
-  function TextAreaCodeEditor(){
+  function TextAreaCodeEditor() {
     let ref = React.createRef<HTMLTextAreaElement>();
-    let editor:CodeMirrorManager
-    useLayoutEffect(()=>{
+    let editor: CodeMirrorManager
+    useLayoutEffect(() => {
       console.info('Textaread Editor init')
       console.info(ref.current)
-      if(ref.current == null){
+      if (ref.current == null) {
         return
       }
 
@@ -175,14 +175,14 @@ export default function Editor() {
 
     return (
       <div>
-            <textarea
-              ref={ref}
-              name={props.ecmaName}
-              id={props.ecmaName}
-              defaultValue={props.ecmaValue}
-              autoComplete="off"
-              autoFocus={props.ecmaAutoFocus}
-            />
+        <textarea
+          ref={ref}
+          name={props.ecmaName}
+          id={props.ecmaName}
+          defaultValue={props.ecmaValue}
+          autoComplete="off"
+          autoFocus={props.ecmaAutoFocus}
+        />
       </div>
     )
   }
@@ -355,17 +355,17 @@ export default function Editor() {
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     console.info(newValue)
-    if(newValue == 0){
-      state.display =  'json'
+    if (newValue == 0) {
+      state.display = 'json'
       toggleShowPanelJson(true)
       toggleShowPanelConsole(false)
       // jsonEditor.refresh()
     }
 
-    else if(newValue== 1)
-      state.display =  'compiled'
-    else if(newValue == 2){
-      state.display =  'console'
+    else if (newValue == 1)
+      state.display = 'compiled'
+    else if (newValue == 2) {
+      state.display = 'console'
       toggleShowPanelJson(false)
       toggleShowPanelConsole(true)
       // ecmaEditor.refresh()
@@ -374,7 +374,7 @@ export default function Editor() {
     setValue(newValue);
     // setSelectedTab(newValue);
 
-    console.info("state.display : " + state.display )
+    console.info("state.display : " + state.display)
   };
 
   const useTabContainerStyles = makeStyles(() => createStyles({
@@ -386,6 +386,33 @@ export default function Editor() {
     }
   })
   );
+
+
+  function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`query-tabpanel-${index}`}
+        aria-labelledby={`query-tab-${index}`}
+        style={{
+          overflowY: 'auto',
+          padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column'
+        }}
+        {...other}
+      >
+        {value === index && (
+          <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column' }}>
+
+            {children}
+          </div>
+        )}
+      </div>
+    );
+  }
+
 
 
   return (
@@ -456,13 +483,6 @@ export default function Editor() {
               <Tab label="Graph" {...a11TabProps(4)} className={classes.tab} ></Tab>
             </Tabs>
 
-            <TabPanel value={value} index={0} label={'JSON'}></TabPanel>
-            <TabPanel value={value} index={1} label={'Script x'}>a-1</TabPanel>
-            <TabPanel value={value} index={2} label={'Script x'}>a-2</TabPanel>
-            <TabPanel value={value} index={3} label={'Script x'}>a-3</TabPanel>
-            <TabPanel value={value} index={4} label={'Script x'}>a-4</TabPanel>
-
-
             {/* <TabContainer id={0} active={selectedTab === 0} >
               Item One
              </TabContainer>
@@ -509,29 +529,23 @@ export default function Editor() {
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
 
-          JSON {showPanelJson}        {showPanelJson && <div>Hi JSON
+                  <TabPanel value={value} index={0} label={'JSON'}>
+                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                  </TabPanel>
+                  <TabPanel value={value} index={1} label={'Script x'}>
+                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                  </TabPanel>
+                  <TabPanel value={value} index={2} label={'Script x'}>
+                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                  </TabPanel>
+                  <TabPanel value={value} index={3} label={'Script x'}>
+                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                  </TabPanel>
+                  <TabPanel value={value} index={4} label={'Script x'}>
+                    <TextAreaCodeEditor></TextAreaCodeEditor>
+                  </TabPanel>
 
-              <TextAreaCodeEditor></TextAreaCodeEditor>
 
-            </div>}
-
-          CONSOLE {showPanelConsole}     {showPanelConsole && <div>Hi Console
-
-              <TextAreaCodeEditor></TextAreaCodeEditor>
-
-            </div>}
-
-
-{/*                   <div id='json-container' style={{ display: state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <textarea
-                      name={props.jsonName}
-                      id={props.jsonName}
-                      defaultValue=''
-                      autoComplete="off"
-                    />
-
-                  </div>
- */}
                   <div id='compiled-container' style={{ display: state.display == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                     <textarea
                       name={props.astName}
