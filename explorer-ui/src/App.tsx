@@ -7,7 +7,7 @@ import './App.css';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
+import { createStyles, Theme, makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -35,6 +35,7 @@ import AstExplorerApplication from "./components/explorer/AstExplorerApplication
 import { BrowserRouter as Router, Route, Link, withRouter } from "react-router-dom"
 
 import { mainListItems, secondaryListItems } from './listItems';
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 const drawerWidth = 240;
 
@@ -141,12 +142,57 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-
 export function Application() {
   const classes = useStyles();
 
+//create a theme
+// https://fonts.google.com/specimen/Source+Code+Pro?preview.text_type=custom#standard-styles
+  const myTheme = createMuiTheme({
+    typography: {
+        fontFamily: ['"Source Code Pro"', 'monospace'].join(','),
+     },
+  });
+
+  function pxToRem(value) {
+    return `${value / 16}rem`;
+  }
+
+  // Generate breakpoints so we can use them in the theme definition
+  const breakpoints = createBreakpoints({});
+  const theme = createMuiTheme({
+    breakpoints,
+    typography: {
+      fontFamily: ['"Source Code Pro"', 'monospace'].join(','),
+    },
+    overrides: {
+      MuiTypography: {
+
+        body1: {
+          fontSize: pxToRem(12),
+          [breakpoints.up("md")]: {
+            fontSize: pxToRem(14)
+          }
+        },
+        body2: {
+          fontSize: pxToRem(12),
+          [breakpoints.up("md")]: {
+            fontSize: pxToRem(14)
+          }
+        },
+        button: {
+          fontSize: pxToRem(12),
+          [breakpoints.up("md")]: {
+            fontSize: pxToRem(14)
+          }
+        }
+      }
+    }
+  });
+
+
   return (
     <div>
+   <ThemeProvider theme={theme}>
       <CssBaseline />
 
       <Router>
@@ -199,10 +245,10 @@ export function Application() {
           </div>
         </Route>
       </Router>
+      </ThemeProvider>
     </div>
   );
 }
-
 
 function Copyright() {
   return (

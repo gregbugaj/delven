@@ -1,29 +1,31 @@
-import React from 'react'
-import { fade, makeStyles } from '@material-ui/core/styles';
+import React, { useMemo } from 'react'
 import Grid from '@material-ui/core/Grid';
 import { CodeMirrorManager } from './CodeMirror'
 import Button from '@material-ui/core/Button';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import Icon from '@material-ui/core/Icon';
-import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
 import BlurLinearIcon from '@material-ui/icons/BlurLinear';
 
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
-import { EventTypeCompileReply, EventTypeEvaluateReply, EventTypeSampleQuery } from "../bus/message-bus-events";
-import "../globalServices"
-import { http } from "../../http"
+import { EventTypeCompileReply, EventTypeEvaluateReply } from "../bus/message-bus-events";
 import { ServerExecutor } from "../../executors";
 
-import { GlobalHotKeys, HotKeys } from 'react-hotkeys';
+import { GlobalHotKeys } from 'react-hotkeys';
 import { configure } from 'react-hotkeys';
-import { exception } from 'console';
+
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+
+import { useEffect, useLayoutEffect } from 'react';
+import { makeStyles, Theme } from '@material-ui/core/styles';
+import globalServices from '../globalServices';
+import { useRef } from "react";
+import { createStyles, Typography } from '@material-ui/core';
+import classNames from "classnames";
 
 configure({
   ignoreTags: ['input', 'select', 'textarea'],
-  ignoreEventsCondition: (event) => { return false }
+  ignoreEventsCondition: () => { return false }
 });
 
 
@@ -43,70 +45,98 @@ const BxsRightArrowIcon = (props: React.SVGProps<SVGSVGElement>) => {
 }
 
 
-type EditorProps = {
-  ecmaName: string
-  ecmaValue: string
-  ecmaAutoFocus: boolean
 
-  astName: string
-  astValue: string
-  astAutoFocus: boolean
-
-  jsonName: string
-}
-
-interface IState {
-  display?: string
-}
-
-type ServiceReplyEventType = {
-  status: string,
-  msg?: string
-  data?: any
-}
 
 const stringify = (obj: unknown): string => JSON.stringify(obj, function replacer(key, value) { return value }, 4);
-class Editor extends React.Component<EditorProps, IState> {
+// class Editor extends React.Component<EditorProps, IState> {
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+  label: string;
+}
 
-  private ecmaEditor?: CodeMirrorManager;
 
-  private astEditor?: CodeMirrorManager;
+const tabHeight = '48px' // default: '48px'
+const useStyles = makeStyles((theme: Theme) => ({
+  root: {
+    flexGrow: 1,
+    width: '100%',
+    height: '100%',
+    backgroundColor: theme.palette.background.paper,
+  },
 
-  private jsonEditor?: CodeMirrorManager;
+  tab: {
 
-  private executor: ServerExecutor;
+    minHeight: tabHeight,
+    height: tabHeight,
+    textTransform: 'none',
+    minWidth: 120,
+    fontWeight: theme.typography.fontWeightMedium,
+    marginRight: theme.spacing(2),
+    fontFamily: [
+      '"Source Code Pro"',
+      'monospace'
+    ].join(','),
+    '&:hover': {
+      color: '#40a9ff',
+      opacity: 1,
+    },
+    '&$selected': {
+      color: '#1890ff',
+      fontWeight: theme.typography.fontWeightBold,
+    },
+    '&:focus': {
+      color: '#40a9ff',
+    },
+  },
 
-  static defaultProps = {
-    ecmaName: 'editor-ecma',
-    ecmaValue: 'let x = 1',
-    ecmaAutoFocus: true,
+}));
 
-    astName: 'editor-ast',
-    astValue: 'let x = 1',
-    astAutoFocus: true,
 
-    jsonName: 'editor-json',
+let defaultProps = {
+  ecmaName: 'editor-ecma',
+  ecmaValue: 'let x = 1',
+  ecmaAutoFocus: true,
+  astName: 'editor-ast',
+  astValue: 'let x = 1',
+  astAutoFocus: true,
+  jsonName: 'editor-json',
+}
+
+// props:EditorProps
+export default function Editor() {
+
+  let ecmaEditor: CodeMirrorManager;
+
+  let astEditor: CodeMirrorManager;
+
+  let jsonEditor: CodeMirrorManager;
+
+  let executor: ServerExecutor;
+
+  let state = {
+    display: 'compiled',
   }
 
-  classes?: Record<never, string>;
+  let props = defaultProps
+  const classes = useStyles();
+  const inputRef = useRef(null);
+  const [value, setValue] = React.useState(0);
 
-  constructor(props: EditorProps) {
-    super(props)
-    this.state = {
-      display: 'compiled',
-    }
+  //  handleViewChange  = handleViewChange.bind(this)
+  //  compile = compile.bind(this)
+  //  evaluate = evaluate.bind(this)
+  executor = new ServerExecutor();
 
-    this.handleViewChange = this.handleViewChange.bind(this)
-    this.compile = this.compile.bind(this)
-    this.evaluate = this.evaluate.bind(this)
+  function observeEditorChange(targetNode: HTMLElement) {
 
-    this.executor = new ServerExecutor();
-  }
-
-  observeEditorChange(targetNode: HTMLElement) {
-    let e1 = this.jsonEditor
-    let e2 = this.astEditor
+    console.info(targetNode)
+    let e1 = jsonEditor
+    let e2 = astEditor
     let observer = new MutationObserver(function (mutations) {
+
+      console.info(mutations)
       if (targetNode?.style.display != 'none') {
         if (targetNode.id == 'json-container')
           e1?.refresh()
@@ -117,50 +147,66 @@ class Editor extends React.Component<EditorProps, IState> {
 
     observer.observe(targetNode, { attributes: true, childList: true });
   }
+  // Similar to componentDidMount and componentDidUpdate
+  // https://reacttraining.com/blog/useEffect-is-not-the-new-componentDidMount/
+  useLayoutEffect(() => {
+    componentDidMount();
+  }, []);
 
-  async componentDidMount() {
-    const ecmaNode: HTMLTextAreaElement = document.getElementById(this.props.ecmaName) as HTMLTextAreaElement;
-    const astNode: HTMLTextAreaElement = document.getElementById(this.props.astName) as HTMLTextAreaElement;
-    const jsonNode: HTMLTextAreaElement = document.getElementById(this.props.jsonName) as HTMLTextAreaElement;
+  useEffect(() => {
+    // const { user } = props;
+    console.log("useEffect newValue--->", value);
+  }, [value]);//run every time value changes
+
+   function componentDidMount() {
+    console.info("componentDidMount")
+    const ecmaNode: HTMLTextAreaElement = document.getElementById(props.ecmaName) as HTMLTextAreaElement;
+    const astNode: HTMLTextAreaElement = document.getElementById(props.astName) as HTMLTextAreaElement;
+    const jsonNode: HTMLTextAreaElement = document.getElementById(props.jsonName) as HTMLTextAreaElement;
+
+    console.info(ecmaNode)
+    console.info(astNode)
+    console.info(jsonNode)
+
+    // nodes will be null if they are set with 'display:none' as initial state
+    // https://stackoverflow.com/questions/38093760/how-to-access-a-dom-element-in-react-what-is-the-equilvalent-of-document-getele
 
     // var $this = ReactDOM.findDOMNode(this)
-    this.ecmaEditor = new CodeMirrorManager(ecmaNode)
-    this.astEditor = new CodeMirrorManager(astNode)
-    this.jsonEditor = new CodeMirrorManager(jsonNode)
+    ecmaEditor = new CodeMirrorManager(ecmaNode)
+    astEditor = new CodeMirrorManager(astNode)
+    jsonEditor = new CodeMirrorManager(jsonNode)
 
-    this.jsonEditor.setValue('')
-    this.astEditor.setValue('')
+    jsonEditor.setValue('')
+    astEditor.setValue('')
 
-    this.observeEditorChange(document.getElementById('json-container') as HTMLElement)
-    this.observeEditorChange(document.getElementById('compiled-container') as HTMLElement)
+    observeEditorChange(document.getElementById('json-container') as HTMLElement)
+    observeEditorChange(document.getElementById('compiled-container') as HTMLElement)
 
     // get message bus
-    let eventBus = globalThis.services.eventBus
-    let editor = this.ecmaEditor
+    let eventBus = globalServices.eventBus
 
-    eventBus.on(
-      EventTypeSampleQuery,
-      (event): void => {
-        let id = event.data.id
-          ; (async () => {
-            const reply = await http<ServiceReplyEventType>(`/api/v1/samples/${id}`);
-            if (reply.status === 'error') {
-              alert(reply.msg)
-            } else if (reply.status === 'ok') {
-              editor.setValue(reply.data);
-            }
-          }
-          )()
-      }
-    )
+    // eventBus.on(
+    //   EventTypeSampleQuery,
+    //   (event): void => {
+    //     let id = event.data.id
+    //       ; (async () => {
+    //         const reply = await http<ServiceReplyEventType>(`/api/v1/samples/${id}`);
+    //         if (reply.status === 'error') {
+    //           alert(reply.msg)
+    //         } else if (reply.status === 'ok') {
+    //           editor.setValue(reply.data);
+    //         }
+    //       }
+    //       )()
+    //   }
+    // )
 
     const hostname = window.location.hostname
-    const host = `ws://${hostname}:8080/ws`
 
     // All the messages from executor will be pumped onto the Even Bus specific event
     // this converts from server side message event to client side EventBus message
     // compile.reply  evaluate.reply
-    this.executor.on("*", msg => {
+    executor.on("*", msg => {
       console.group(`Received from backend`)
       console.info(msg)
 
@@ -168,229 +214,327 @@ class Editor extends React.Component<EditorProps, IState> {
         case "compile.reply":
           eventBus.emit(new EventTypeCompileReply(msg.data));
           break;
-          case "evaluate.reply":
-            eventBus.emit(new EventTypeEvaluateReply(msg.data));
+        case "evaluate.reply":
+          eventBus.emit(new EventTypeEvaluateReply(msg.data));
           break;
         default:
           throw new Error("Event not handled : " + msg)
       }
 
       console.groupEnd();
-
     })
 
-    this.executor.on('compile.reply', msg => {
+    executor.on('compile.reply', msg => {
       console.info(`Received compile backend : ${stringify(msg)}`)
       const data = msg.data
       if (data.exception != undefined) {
         let exception = data.exception
-        this.log("raw", exception.message)
-        this.log("raw", exception.stack)
-        if (this.jsonEditor) {
-          this.jsonEditor.setValue(stringify(data))
+
+        if (jsonEditor) {
+          jsonEditor.setValue(stringify(data))
         }
       } else {
-        if (this.astEditor && this.jsonEditor) {
+        if (astEditor && jsonEditor) {
 
-          this.log("success", `Compilation completed in : ${data.compileTime} ms`)
-          this.jsonEditor.setValue(stringify(data.ast))
-          this.astEditor.setValue(data.generated)
+          log()
+          jsonEditor.setValue(stringify(data.ast))
+          astEditor.setValue(data.generated)
         }
       }
     })
 
-    this.executor.on('evaluate.reply', msg => {
+    executor.on('evaluate.reply', msg => {
       console.info(`Received evaluate backend : ${msg}`)
       let data = msg.data
       if (data.exception) {
         let exception = data.exception
-        this.log("raw", exception.message)
-        this.log("raw", exception.stack)
+        log()
+        log()
       } else if (data.stdout) {
         console.info(data.stdout)
-        this.log("raw", "------------------------------------")
+        log()
         let chunks = data.stdout.split('\r')
-        this.log("raw", chunks)
-        this.log("raw", "------------------------------------")
+        log()
+        log()
       }
     })
 
-    let status = await this.executor.setup({ "uri": host })
-    console.debug(`Executor ready : ${status}`);
+    // let status = await executor.setup({ "uri": host })
+    // console.debug(`Executor ready : ${status}`);
   }
 
-  _log(level: ConsoleMessageLevel, message: string): ConsoleMessage {
-    if (level == 'raw') {
-      return { level, message }
-    } else {
-      return { time: new Date().toISOString(), level, message }
+
+  function log() {
+    // const consoleDisplay = refs.child as ConsoleDisplay
+    // const combined: ConsoleMessage[] = []
+
+    // if (consoleDisplay) {
+    //   if (message instanceof Array) {
+    //     for (let chunk of message) {
+    //       combined.push(_log(level, chunk))
+    //     }
+    //   } else {
+    //     combined.push(_log(level, message))
+    //   }
+    //   consoleDisplay.append(combined)
+    // }
+  }
+
+  async function compile() {
+    log()
+    if (ecmaEditor) {
+      const txt = ecmaEditor.getValue()
+      executor.emit('code:compile', txt)
     }
   }
 
-  log(level: ConsoleMessageLevel, message: string | string[]) {
-    const consoleDisplay = this.refs.child as ConsoleDisplay
-    const combined: ConsoleMessage[] = []
-
-    if (consoleDisplay) {
-      if (message instanceof Array) {
-        for (let chunk of message) {
-          combined.push(this._log(level, chunk))
-        }
-      } else {
-        combined.push(this._log(level, message))
-      }
-      consoleDisplay.append(combined)
+  async function evaluate() {
+    log()
+    if (ecmaEditor) {
+      const txt = ecmaEditor.getValue()
+      executor.emit('code:evaluate', txt)
     }
   }
 
-  async compile() {
-    this.log("success", "Compiling Script")
-    if (this.ecmaEditor) {
-      const txt = this.ecmaEditor.getValue()
-      this.executor.emit('code:compile', txt)
-    }
-  }
 
-  async evaluate() {
-    this.log("success", "Evaluating Script")
-    if (this.ecmaEditor) {
-      const txt = this.ecmaEditor.getValue()
-      this.executor.emit('code:evaluate', txt)
-    }
-  }
+  const handlers = {
+    COMPILE: compile,
+    EVALUATE: evaluate,
+  };
 
-  handleViewChange(event: any, renderType: string) {
-    if (renderType == null)
-      return
-    this.setState({ display: renderType });
-  }
+  const keyMap = {
+    COMPILE: ['command+enter', 'ctrl+enter'],
+    EVALUATE: "ctrl+alt+enter", // Issues with
+  };
 
-  render() {
-    const handlers = {
-      COMPILE: this.compile.bind(this),
-      EVALUATE: this.evaluate.bind(this),
+
+  function a11TabProps(index: any) {
+    return {
+      id: `result-tab-${index}`,
+      'aria-controls': `result-tabpanel-${index}`,
     };
+  }
 
-    const keyMap = {
-      COMPILE: ['command+enter', 'ctrl+enter'],
-      EVALUATE: "ctrl+alt+enter", // Issues with this.
-    };
+  let messages: ConsoleMessage[] = []
 
-    let messages: ConsoleMessage[] = []
-    return (
-      <React.StrictMode>
-        <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
+  const [] = React.useState(0);
 
-        <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-          <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
-            <Grid item sm={12} md={6}>
-              <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
+  const [showPanelConsole, toggleShowPanelConsole] = React.useState(false);
+  const [showPanelJson, toggleShowPanelJson] = React.useState(false);
 
-                <Grid item>
-                  <Button size="medium" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
-                    endIcon={< BlurLinearIcon fontSize="large" />}
-                    onClick={this.compile}>Compile</Button>
 
-                  <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
-                    endIcon={
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    console.info(newValue)
+    if(newValue == 0){
+      state.display =  'json'
+      toggleShowPanelJson(true)
+      toggleShowPanelConsole(false)
+      // jsonEditor.refresh()
+    }
 
-                      <BxsRightArrowIcon />
+    else if(newValue== 1)
+      state.display =  'compiled'
+    else if(newValue == 2){
+      state.display =  'console'
+      toggleShowPanelJson(false)
+      toggleShowPanelConsole(true)
+      // ecmaEditor.refresh()
+    }
 
-                    }
-                    onClick={this.evaluate}>Run</Button>
-                </Grid>
+    setValue(newValue);
+    // setSelectedTab(newValue);
 
-                <Grid item>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="checkedB"
-                        color="primary"
-                      />
-                    }
-                    label="Query optimizer"
-                  />
+    console.info("state.display : " + state.display )
+  };
 
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="checkedB"
-                        color="primary"
-                      />
-                    }
-                    label="Mock provider"
-                  />
-                </Grid>
+  const useTabContainerStyles = makeStyles(() => createStyles({
+    root: {
+      padding: 8 * 3
+    },
+    tabcontainerInActive: {
+      display: "none"
+    }
+  })
+  );
+
+
+  return (
+    <React.StrictMode>
+      <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
+
+      <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+        <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
+          <Grid item sm={12} md={6}>
+            <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
+
+              <Grid item>
+                <Button size="medium" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
+                  endIcon={< BlurLinearIcon fontSize="large" />}
+                  onClick={compile}>Compile</Button>
+
+                <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
+                  endIcon={
+                    <BxsRightArrowIcon />
+                  }
+                  onClick={evaluate}>Run</Button>
               </Grid>
 
+              <Grid item>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="checkedB"
+                      color="primary"
+                    />
+                  }
+                  label="Query optimizer"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="checkedB"
+                      color="primary"
+                    />
+                  }
+                  label="Mock provider"
+                />
+              </Grid>
             </Grid>
-            <Grid item sm={12} md={6}>
-              <ToggleButtonGroup size="small" exclusive onChange={this.handleViewChange} value={this.state.display} aria-label="text primary button group">
-                {/* <ToggleButton value="tree">Tree</ToggleButton> */}
-                <ToggleButton size="small" value="json">JSON</ToggleButton>
+
+          </Grid>
+          <Grid item sm={12} md={6}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="Query samples"
+              style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
+              TabIndicatorProps={{
+                style: {
+                  height: "4px",
+                }
+              }}
+            >
+              <Tab label="JSON-AST" {...a11TabProps(0)} className={classes.tab} ></Tab>
+              <Tab label="Compiled" {...a11TabProps(1)} className={classes.tab}  ></Tab>
+              <Tab label="Console" {...a11TabProps(2)} className={classes.tab} ></Tab>
+              <Tab label="Results" {...a11TabProps(3)} className={classes.tab}  ></Tab>
+              <Tab label="Graph" {...a11TabProps(4)} className={classes.tab} ></Tab>
+            </Tabs>
+
+{/*             <TabPanel value={value} index={0} label={'JSON'}></TabPanel>
+            <TabPanel value={value} index={1} label={'Script x'}>a-1</TabPanel>
+            <TabPanel value={value} index={2} label={'Script x'}>a-2</TabPanel>
+            <TabPanel value={value} index={3} label={'Script x'}>a-3</TabPanel>
+            <TabPanel value={value} index={4} label={'Script x'}>a-4</TabPanel>
+ */}
+            {/* <TabContainer id={0} active={selectedTab === 0} >
+              Item One
+             </TabContainer>
+            <TabContainer id={1} active={selectedTab === 1}>
+              Item Two
+                </TabContainer>
+            <TabContainer id={2} active={selectedTab === 2}>
+              Item Three
+            </TabContainer>
+
+            <TabContainer id={3} active={selectedTab === 3}>
+              Item Four
+            </TabContainer>
+
+            <TabContainer id={4} active={selectedTab === 4}>
+              Item Five
+            </TabContainer> */}
+
+            {/* <ToggleButtonGroup size="small" exclusive onChange={handleViewChange} value={state.display} aria-label="text primary button group">
+                <ToggleButton size="small" value="json">JSON - AST</ToggleButton>
                 <ToggleButton size="small" value="compiled">Compiled</ToggleButton>
                 <ToggleButton size="small" value="console">Console</ToggleButton>
-                <ToggleButton size="small" value="graph">Job Graph / Query Optimizer</ToggleButton>
-              </ToggleButtonGroup >
+                <ToggleButton size="small" value="results">Results</ToggleButton>
+                <ToggleButton size="small" value="graph">Job Graph</ToggleButton>
+              </ToggleButtonGroup > */}
 
-            </Grid>
           </Grid>
+        </Grid>
 
-          <div style={{ display: 'flex', flex: '1 1 auto', overflowY: 'auto' }}>
-            <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
-              <textarea
-                name={this.props.ecmaName}
-                id={this.props.ecmaName}
-                defaultValue={this.props.ecmaValue}
-                autoComplete="off"
-                autoFocus={this.props.ecmaAutoFocus}
-              />
-            </div>
+        <div style={{ display: 'flex', flex: '1 1 auto', overflowY: 'auto' }}>
+          <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
+            <textarea
+              name={props.ecmaName}
+              id={props.ecmaName}
+              defaultValue={props.ecmaValue}
+              autoComplete="off"
+              autoFocus={props.ecmaAutoFocus}
+            />
+          </div>
 
-            <div style={{ flex: ' 1 1 0%', border: "0px solid purple", overflowY: 'auto' }}>
-              <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-                <div style={{ flex: ' 1 0 50%', border: "0px solid purple", overflowY: 'auto' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <div style={{ flex: ' 1 1 0%', border: "0px solid purple", overflowY: 'auto' }}>
+            <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+              <div style={{ flex: ' 1 0 50%', border: "0px solid purple", overflowY: 'auto' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
-                    <div id='json-container' style={{ display: this.state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                      <textarea
-                        name={this.props.jsonName}
-                        id={this.props.jsonName}
-                        defaultValue=''
-                        autoComplete="off"
-                      />
 
-                    </div>
+          TEST {showPanelJson}        {showPanelJson && <div>Hi JSON
 
-                    <div id='compiled-container' style={{ display: this.state.display == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                      <textarea
-                        name={this.props.astName}
-                        id={this.props.astName}
-                        defaultValue={this.props.astValue}
-                        autoComplete="off"
-                        autoFocus={this.props.astAutoFocus}
-                      />
-                    </div>
+            <div id='json-container' style={{ display: state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    <textarea
+                      name={props.jsonName}
+                      id={props.jsonName}
+                      defaultValue=''
+                      autoComplete="off"
+                    />
 
-                    <div id='console-container' style={{ display: this.state.display == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                      <ConsoleDisplay messages={messages} ref="child"></ConsoleDisplay>
-                    </div>
+             </div>
 
-                    <div id='graph-container' style={{ display: this.state.display == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+            </div>}
 
-                      Job Graph / Query Optimizer
+          TEST {showPanelConsole}     {showPanelConsole && <div>Hi Console</div>}
+
+
+{/*                   <div id='json-container' style={{ display: state.display == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    <textarea
+                      name={props.jsonName}
+                      id={props.jsonName}
+                      defaultValue=''
+                      autoComplete="off"
+                    />
 
                   </div>
+ */}
+                  <div id='compiled-container' style={{ display: state.display == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    <textarea
+                      name={props.astName}
+                      id={props.astName}
+                      defaultValue={props.astValue}
+                      autoComplete="off"
+                      autoFocus={props.astAutoFocus}
+                    />
                   </div>
+
+                  <div id='console-container' style={{ display: state.display == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    <ConsoleDisplay messages={messages} ref={inputRef} />
+                  </div>
+
+                  <div id='graph-container' style={{ display: state.display == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    Job Graph / Query Optimizer
+                    </div>
+                  <div id='results' style={{ display: state.display == 'results' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                    Job Graph / Query Optimizer
+                    </div>
+
                 </div>
-
               </div>
+
             </div>
           </div>
         </div>
-      </React.StrictMode>
-    )
-  }
+      </div>
+    </React.StrictMode>
+  )
 }
 
-export default Editor;
+// export default Editor;

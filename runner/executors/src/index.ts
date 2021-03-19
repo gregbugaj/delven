@@ -58,7 +58,7 @@ async function main() {
 
     app.get('/runner/info', async (req: Request, res: Response) => {
         setJsonHeaders(res);
-        res.send(toJson({ 'name': 'Delven Runner' }));
+        res.send(toJson({ 'name': 'Delven Runner v1.0.0' }));
     });
 
 

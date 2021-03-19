@@ -143,8 +143,6 @@ const DefaultComponent = () => {
   );
 };
 
-//<Editor></Editor>
-
 const SettingsComponent = () => {
   return (
     <div>

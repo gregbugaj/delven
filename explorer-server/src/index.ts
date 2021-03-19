@@ -4,7 +4,6 @@ import express, { Request, Response } from "express"
 import expressWs from "express-ws"
 import * as path from "path"
 import * as crypto from "crypto"
-import LocalExecutor from './executors/LocalExecutor'
 
 export interface NodeInfo {
     name: string,
@@ -16,7 +15,7 @@ function getAllFilesJson(dir: string): NodeInfo[] {
     const files = fs.readdirSync(dir);
     const nodes: NodeInfo[] = [];
 
-    files.forEach(function (file) {
+    files.forEach(file=>{
         const name = path.join(dir, "/", file);
         const hash = crypto.createHash('md5').update(name).digest('hex');
         const data: NodeInfo = { name: file, id: hash, children: [] };
@@ -40,7 +39,7 @@ function locateFileByHash(dir: string, predicateHash: string): string | null {
     for (const key in files) {
         const name = path.join(dir, "/", files[key]);
         const hash = crypto.createHash('md5').update(name).digest('hex');
-        if (hash == predicateHash) {
+        if (hash === predicateHash) {
             return name;
         }
 
@@ -59,10 +58,7 @@ async function main() {
         // cert: fs.readFileSync('cert.pem')
     }
 
-    const executor = new LocalExecutor()
-    let expressServer = express()
-    // const server = http.createServer(serverOptions, expressServer)
-    // const wss = expressWs(expressServer, server);
+    const expressServer = express()
     const wss = expressWs(expressServer);
     const app = wss.app
 
@@ -97,42 +93,6 @@ async function main() {
         next();
     });
 
-    app.ws('/ws', async (ws, req) => {
-        ws.on('message', async function (payload: string) {
-            let msg: { 'type': string, data?: any } = JSON.parse(payload)
-            console.log('Incomming message', msg)
-
-            let type: string = msg.type
-            let data: any = msg['data'] ? msg['data'] : ''
-            let reply: {
-                status:'ok'|'error',
-                type: string
-                data?: any
-            } = {status:'ok', type: 'unhandled' };
-
-            switch (type) {
-                case 'code:compile':
-                    reply.type = 'compile.reply'
-                    executor.compile(data)
-                        .then(compilation => {
-                            reply.data = compilation
-                            ws.send(JSON.stringify(reply))
-                        }).catch(e => {
-                            console.error(e)
-                        })
-                    break;
-                case 'code:evaluate':
-                    reply.type = 'evaluate.reply'
-                    reply.data = await executor.evaluate(data)
-                    break;
-                default: reply.data = 'unhandled'
-            }
-        });
-
-        ws.on('close', () => {
-            console.log('WebSocket was closed')
-        })
-    });
 
     app.get('/api/v1/samples', async (req: Request, res: Response) => {
         setJsonHeaders(res);
@@ -140,12 +100,6 @@ async function main() {
         res.send(JSON.stringify({ 'name': 'Root', 'id': '0000', children: samples }));
     });
 
-    app.get('/api/v1/execute', async (req: Request, res: Response) => {
-        setJsonHeaders(res);
-        const execId = await executor.compile('let x = 1')
-        console.info(`execId : : ${execId}`)
-        res.send(JSON.stringify({ 'executionId': execId }));
-    });
 
     app.get('/api/v1/samples/:id', async (req: Request, res: Response) => {
         setJsonHeaders(res);
