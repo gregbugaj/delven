@@ -7,7 +7,7 @@ import BlurLinearIcon from '@material-ui/icons/BlurLinear';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
-import { EventTypeCompileReply, EventTypeEvaluateReply } from "../bus/message-bus-events";
+import { EventTypeEditorKeyDown, EventTypeCompileReply, EventTypeEvaluateReply } from "../bus/message-bus-events";
 import { ServerExecutor } from "../../executors";
 
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -20,8 +20,9 @@ import { useEffect, useLayoutEffect } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import globalServices from '../globalServices';
 import { useRef } from "react";
-import { createStyles, Typography } from '@material-ui/core';
+import { Box, createStyles, Typography } from '@material-ui/core';
 import classNames from "classnames";
+import TextAreaCodeEditor from './TextAreaCodeEditor';
 
 configure({
   ignoreTags: ['input', 'select', 'textarea'],
@@ -112,46 +113,26 @@ export default function Editor() {
 
   let executor: ServerExecutor;
 
-  let state = {
-    display: 'compiled',
-  }
+  let eventBus = globalServices.eventBus
 
   let props = defaultProps
   const classes = useStyles();
   const inputRef = useRef(null);
   const [value, setValue] = React.useState(0);
 
-  //  handleViewChange  = handleViewChange.bind(this)
-  //  compile = compile.bind(this)
-  //  evaluate = evaluate.bind(this)
   executor = new ServerExecutor();
 
-  function observeEditorChange(targetNode: HTMLElement) {
-
-    console.info(targetNode)
-    let e1 = jsonEditor
-    let e2 = astEditor
-    let observer = new MutationObserver(function (mutations) {
-
-      console.info(mutations)
-      if (targetNode?.style.display != 'none') {
-        if (targetNode.id == 'json-container')
-          e1?.refresh()
-        else if (targetNode.id == 'json-container')
-          e2?.refresh()
-      }
-    });
-
-    observer.observe(targetNode, { attributes: true, childList: true });
-  }
   // Similar to componentDidMount and componentDidUpdate
   // https://reacttraining.com/blog/useEffect-is-not-the-new-componentDidMount/
   useLayoutEffect(() => {
-    setTimeout(() => {
+    const hostname = window.location.hostname
+    const host = `ws://${hostname}:8080/ws` as string
 
-      // componentDidMount();
+    (async ()=>{
+      let status = await executor.setup({ "uri": host })
+      console.debug(`Executor ready : ${status}`);
+    })()
 
-    }, 10);
   }, []);
 
   useEffect(() => {
@@ -160,39 +141,23 @@ export default function Editor() {
   }, [value]);//run every time value changes
 
 
-  interface TextAreaCodeEditorProps {
-    name: string;
-    id: string;
-    value:string;
-    focus:boolean;
-  }
+  const EcmaTextEditor = ()=>{
+    // let manager:CodeMirrorManager | null = null
 
-  function TextAreaCodeEditor(props: TextAreaCodeEditorProps) {
-    const { name, value, id, focus, ...other } = props;
-    let ref = React.createRef<HTMLTextAreaElement>();
-    let editor: CodeMirrorManager
-    useLayoutEffect(() => {
-      console.info('Textaread Editor init')
-      console.info(ref.current)
-      if (ref.current == null) {
-        return
-      }
+    const onEditorReady = (instance: CodeMirrorManager) => {
+      console.info('onEditorReady ** ')
+      ecmaEditor = instance
+    };
 
-      editor = new CodeMirrorManager(ref.current)
-    }, [])
+    let texteditor = <TextAreaCodeEditor
+      onEditorReady = {onEditorReady}
+      onKeyDown = {onEditorKeyDown}
+      name='editor-ecma'
+      id='editor-ecma'
+      focus={true}
+      value="let x = 0 " />
 
-    return (
-      <div>
-        <textarea
-          ref={ref}
-          name={name}
-          id={id}
-          defaultValue={value}
-          autoComplete="off"
-          autoFocus={focus}
-        />
-      </div>
-    )
+    return texteditor
   }
 
   function componentDidMount() {
@@ -216,9 +181,6 @@ export default function Editor() {
 
     jsonEditor.setValue('')
     astEditor.setValue('')
-
-    observeEditorChange(document.getElementById('json-container') as HTMLElement)
-    observeEditorChange(document.getElementById('compiled-container') as HTMLElement)
 
     // get message bus
     let eventBus = globalServices.eventBus
@@ -273,8 +235,7 @@ export default function Editor() {
         }
       } else {
         if (astEditor && jsonEditor) {
-
-          log()
+          log("success", "Compile reply")
           jsonEditor.setValue(stringify(data.ast))
           astEditor.setValue(data.generated)
         }
@@ -286,14 +247,14 @@ export default function Editor() {
       let data = msg.data
       if (data.exception) {
         let exception = data.exception
-        log()
-        log()
+        log("raw", exception.message)
+        log("raw", exception.stack)
       } else if (data.stdout) {
         console.info(data.stdout)
-        log()
+        log("raw", "------------------------------------")
         let chunks = data.stdout.split('\r')
-        log()
-        log()
+        log("raw", chunks)
+        log("raw", "------------------------------------")
       }
     })
 
@@ -302,7 +263,7 @@ export default function Editor() {
   }
 
 
-  function log() {
+    function log(level: ConsoleMessageLevel, message: string | string[]) {
     // const consoleDisplay = refs.child as ConsoleDisplay
     // const combined: ConsoleMessage[] = []
 
@@ -319,7 +280,10 @@ export default function Editor() {
   }
 
   async function compile() {
-    log()
+    console.info("Compiling script")
+    log("success", "Compiling Script")
+    console.info(ecmaEditor)
+
     if (ecmaEditor) {
       const txt = ecmaEditor.getValue()
       executor.emit('code:compile', txt)
@@ -327,13 +291,12 @@ export default function Editor() {
   }
 
   async function evaluate() {
-    log()
+    log("success", "Compiling Script")
     if (ecmaEditor) {
       const txt = ecmaEditor.getValue()
       executor.emit('code:evaluate', txt)
     }
   }
-
 
   const handlers = {
     COMPILE: compile,
@@ -355,35 +318,18 @@ export default function Editor() {
 
   let messages: ConsoleMessage[] = []
 
-  const [] = React.useState(0);
-
-  const [showPanelConsole, toggleShowPanelConsole] = React.useState(false);
-  const [showPanelJson, toggleShowPanelJson] = React.useState(false);
-
-
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     console.info(newValue)
-    if (newValue == 0) {
-      state.display = 'json'
-      toggleShowPanelJson(true)
-      toggleShowPanelConsole(false)
-      // jsonEditor.refresh()
-    }
-
-    else if (newValue == 1)
-      state.display = 'compiled'
-    else if (newValue == 2) {
-      state.display = 'console'
-      toggleShowPanelJson(false)
-      toggleShowPanelConsole(true)
-      // ecmaEditor.refresh()
-    }
-
-    setValue(newValue);
-    // setSelectedTab(newValue);
-
-    console.info("state.display : " + state.display)
+    setValue(newValue)
   };
+
+  const onEditorKeyDown = (instance: CodeMirror.Editor, event: KeyboardEvent) => {
+    console.info('onEditorKeyDown')
+    let cursor = instance.getCursor()
+    let {ch, line} = cursor
+    eventBus.emit(new EventTypeEditorKeyDown(cursor));
+  };
+
 
   const useTabContainerStyles = makeStyles(() => createStyles({
     root: {
@@ -395,14 +341,30 @@ export default function Editor() {
   })
   );
 
+  // const  TabPanelXX = React.memo((props:TabPanelProps)=>{
+  //   console.info(props)
+  //   return TabPanelInner(props)
+  // });
 
-  function TabPanel(props: TabPanelProps) {
+  const getVisibilityStyle = (hiddenCondition: boolean): any => {
+    if (hiddenCondition) {
+      return {
+        visibility: 'hidden',
+        height: 0,
+      };
+    }
+    return {
+      visibility: 'visible',
+      height: 'inherit',
+      border: "1px solid purple"
+    };
+  };
+
+  const TabPanel = React.memo((props: TabPanelProps) => {
     const { children, value, index, ...other } = props;
-
     return (
       <div
         role="tabpanel"
-        hidden={value !== index}
         id={`query-tabpanel-${index}`}
         aria-labelledby={`query-tab-${index}`}
         style={{
@@ -411,7 +373,7 @@ export default function Editor() {
         }}
         {...other}
       >
-        {value === index && (
+        {(
           <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column' }}>
 
             {children}
@@ -419,14 +381,11 @@ export default function Editor() {
         )}
       </div>
     );
-  }
-
-
+  });
 
   return (
     <React.StrictMode>
       <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
-
       <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
         <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
@@ -491,44 +450,14 @@ export default function Editor() {
               <Tab label="Graph" {...a11TabProps(4)} className={classes.tab} ></Tab>
             </Tabs>
 
-            {/* <TabContainer id={0} active={selectedTab === 0} >
-              Item One
-             </TabContainer>
-            <TabContainer id={1} active={selectedTab === 1}>
-              Item Two
-                </TabContainer>
-            <TabContainer id={2} active={selectedTab === 2}>
-              Item Three
-            </TabContainer>
-
-            <TabContainer id={3} active={selectedTab === 3}>
-              Item Four
-            </TabContainer>
-
-            <TabContainer id={4} active={selectedTab === 4}>
-              Item Five
-            </TabContainer> */}
-
-            {/* <ToggleButtonGroup size="small" exclusive onChange={handleViewChange} value={state.display} aria-label="text primary button group">
-                <ToggleButton size="small" value="json">JSON - AST</ToggleButton>
-                <ToggleButton size="small" value="compiled">Compiled</ToggleButton>
-                <ToggleButton size="small" value="console">Console</ToggleButton>
-                <ToggleButton size="small" value="results">Results</ToggleButton>
-                <ToggleButton size="small" value="graph">Job Graph</ToggleButton>
-              </ToggleButtonGroup > */}
-
           </Grid>
         </Grid>
 
         <div style={{ display: 'flex', flex: '1 1 auto', overflowY: 'auto' }}>
           <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
-            <textarea
-              name={props.ecmaName}
-              id={props.ecmaName}
-              defaultValue={props.ecmaValue}
-              autoComplete="off"
-              autoFocus={props.ecmaAutoFocus}
-            />
+
+            <EcmaTextEditor></EcmaTextEditor>
+
           </div>
 
           <div style={{ flex: ' 1 1 0%', border: "0px solid purple", overflowY: 'auto' }}>
@@ -537,44 +466,25 @@ export default function Editor() {
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
 
-                  <TabPanel value={value} index={0} label={'JSON'}>
-                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'json' "></TextAreaCodeEditor>
-                  </TabPanel>
-                  <TabPanel value={value} index={1} label={'Script x'}>
-                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Compiled' "></TextAreaCodeEditor>
-                  </TabPanel>
-                  <TabPanel value={value} index={2} label={'Script x'}>
-                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Console' "></TextAreaCodeEditor>
-                  </TabPanel>
-                  <TabPanel value={value} index={3} label={'Script x'}>
-                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Results' "></TextAreaCodeEditor>
-                  </TabPanel>
-                  <TabPanel value={value} index={4} label={'Script x'}>
-                    <TextAreaCodeEditor name='json' id='r-json' focus={true} value="let x = 'Graph' "></TextAreaCodeEditor>
-                  </TabPanel>
-
-
-                  <div id='compiled-container' style={{ display: state.display == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <textarea
-                      name={props.astName}
-                      id={props.astName}
-                      defaultValue={props.astValue}
-                      autoComplete="off"
-                      autoFocus={props.astAutoFocus}
-                    />
+                  <div style={getVisibilityStyle(value != 0)} >
+                    <TextAreaCodeEditor name='astName-0' id='area-0' focus={true} value="let x = 'json' "></TextAreaCodeEditor>
                   </div>
 
-                  <div id='console-container' style={{ display: state.display == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <ConsoleDisplay messages={messages} ref={inputRef} />
+                  <div style={getVisibilityStyle(value != 1)}>
+                    <TextAreaCodeEditor name='area-1' id='area-1' focus={true} value="let x = 'Compiled' "></TextAreaCodeEditor>
                   </div>
 
-                  <div id='graph-container' style={{ display: state.display == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    Job Graph / Query Optimizer
-                    </div>
-                  <div id='results' style={{ display: state.display == 'results' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  <div style={getVisibilityStyle(value != 2)}>
+                    <ConsoleDisplay ref={inputRef} />
+                  </div>
+
+                  <div style={getVisibilityStyle(value != 3)}>
                     Job Graph / Query Optimizer
                     </div>
 
+                  <div style={getVisibilityStyle(value != 4)}>
+                    Results
+                    </div>
                 </div>
               </div>
 
@@ -585,5 +495,3 @@ export default function Editor() {
     </React.StrictMode>
   )
 }
-
-// export default Editor;

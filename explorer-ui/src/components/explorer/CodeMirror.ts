@@ -20,10 +20,6 @@ export class CodeMirrorManager {
     mode: { name: "javascript", json: true },
     // scrollbarStyle:'native',
     // theme:'darcula',
-    onKeyEvent: function (editor, event) {
-      console.info(`key ` + event)
-      return true
-    }
   };
 
   // CTOR
@@ -36,12 +32,12 @@ export class CodeMirrorManager {
 
     this.editor = CodeMirror.fromTextArea(tagElement, this.config);
     // keypress  mousedown
-    this.editor.on("keydown", (cm, change) => {
-      console.log("something changed!");
-      console.log(change)
-      let cursor = cm.getCursor()
-      console.log(cursor)
-    });
+    // this.editor.on("keydown", (cm, change) => {
+    //   console.log("something changed!");
+    //   console.log(change)
+    //   let cursor = cm.getCursor()
+    //   console.log(cursor)
+    // });
   }
 
   setValue(text: string) {

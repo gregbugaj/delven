@@ -34,10 +34,9 @@ import { AdapterLink } from "../utils/NavLinkMui";
 import ModuleSelect from '../shared/select-modules';
 import BreadcrumModule from '../shared/breadcrumbs';
 
-import Editor from './Editor'
 import FullWidthTabs from './TabbedMenu'
 import FullWidthTabbedEditor from './TabbedEditor'
-import { EventTypeCompileReply } from "../bus/message-bus-events";
+import { EventTypeCompileReply, EventTypeEditorKeyDown } from "../bus/message-bus-events";
 
 const drawerWidth = 240;
 
@@ -177,6 +176,10 @@ function AstExplorerApplication() {
   const classes = useStyles();
   const [compileTime, setCompileTime] = React.useState(0);
 
+  // https://kentcdodds.com/blog/how-to-use-react-context-effectively
+  // const CountContext = React.createContext({ch:1, line:1})
+  let [pos, setEditorPosition] = React.useState({ch:0, line:0});
+
   const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
@@ -194,12 +197,21 @@ function AstExplorerApplication() {
   };
 
   let eventBus = globalThis.services.eventBus
+
   eventBus.on(EventTypeCompileReply,
     (event: EventTypeCompileReply): void => {
       // console.info(`event == ${JSON.stringify(event)}  ${new Date()}`)
       const compileTime = event.data.compileTime;
       setCompileTime(compileTime);
     }
+  )
+
+  eventBus.on(EventTypeEditorKeyDown, (event: EventTypeEditorKeyDown): void => {
+    let data = event.data
+    let { ch, line } = data
+    // console.info(`Data : ${ch} , ${line}`)
+    setEditorPosition(data)
+  }
   )
 
   return (
@@ -323,6 +335,7 @@ function AstExplorerApplication() {
           <Grid item>
             <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
               <Button>Execution time : {compileTime}ms</Button>
+              <Button>Line  {pos.line}, Column {pos.ch}</Button>
             </ButtonGroup>
           </Grid>
           <Grid item>
@@ -333,9 +346,9 @@ function AstExplorerApplication() {
         </Grid>
       </div>
 
-
     </div>
   );
 }
+
 
 export default AstExplorerApplication;

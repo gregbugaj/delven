@@ -41,6 +41,13 @@ export class EventTypeEvaluateReply extends EventWithPayload<any> {
   static readonly type = "evaluate.reply"
   public readonly type = EventTypeEvaluateReply.type
 }
+
+
+export class EventTypeEditorKeyDown extends EventWithPayload<any> {
+  static readonly type = "editor.keydown"
+  public readonly type = EventTypeEditorKeyDown .type
+}
+
 // ----------------------------------------------------------------------------------- //
 // ----------------------------------------------------------------------------------- //
 
@@ -52,5 +59,6 @@ export class EventTypeEvaluateReply extends EventWithPayload<any> {
 export type EventTypes =
   EventTypeCompileReply |
   EventTypeEvaluateReply |
-  EventTypeSampleQuery
+  EventTypeSampleQuery  |
+  EventTypeEditorKeyDown
   ;

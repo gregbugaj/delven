@@ -11,7 +11,7 @@ import { AdapterLink } from "../utils/NavLinkMui";
 
 interface ComponentProps {
   label?: string,
-  breadcrumbs:{[key:string]:string}, 
+  breadcrumbs:{[key:string]:string},
 }
 
 class BreadcrumModule extends Component<ComponentProps, {}> {
@@ -24,24 +24,24 @@ class BreadcrumModule extends Component<ComponentProps, {}> {
   constructor(props: any) {
     super(props);
   }
-    
-  render() { 
+
+  render() {
    const breadcrumbNameMap = this.props.breadcrumbs;
    const handleClick = (event: any) => {
       // TODO : this need to be handled via router
-      console.info('You clicked a breadcrumb.');
+      // console.info('You clicked a breadcrumb.');
     };
 
     // eslint-disable-next-line no-restricted-globals
     const pathnames = location.pathname.split('/').filter(x => x);
-    console.info(`paths : ${pathnames}`);
+    // console.info(`paths : ${pathnames}`);
     return (
           <Breadcrumbs  color="inherit" aria-label="breadcrumb">
             <Link color="inherit" href="/" onClick={handleClick}>
               Modules
             </Link>
             {pathnames.map((value, index)=>{
-                console.info(`Val / Index = ${value}, ${index}`)
+                // console.info(`Val / Index = ${value}, ${index}`)
                 const last = index === pathnames.length - 1;
                 const to = `/${pathnames.slice(0, index + 1).join('/')}`;
                 return last ? (
@@ -59,4 +59,4 @@ class BreadcrumModule extends Component<ComponentProps, {}> {
   }
 }
 
-export default BreadcrumModule; 
+export default BreadcrumModule;
