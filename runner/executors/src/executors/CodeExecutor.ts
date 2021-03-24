@@ -133,26 +133,24 @@ export default class CodeExecutor implements IExecutor {
   }
 
   async compile(unit: CompilationUnit): Promise<CompilationUnit> {
-    return new Promise((resolve, reject) => {
-      try {
-        const code = unit.code
-        const start = Date.now()
-        const generator = new SourceGenerator();
+    try {
+      console.info(unit)
+      const code = unit.code
+      const start = Date.now()
+      const generator = new SourceGenerator();
+      console.info('Compiling script')
+      console.info('---------------')
+      console.log(code);
+      console.info('---------------')
 
-        console.info('Compiling script')
-        console.info('---------------')
-        console.log(code);
-        console.info('---------------')
+      unit.ast = ASTParser.parse({ type: "code", value: code });
+      unit.generated = generator.toSource(unit.ast);
+      unit.compileTime = Date.now() - start
 
-        unit.ast = ASTParser.parse({ type: "code", value: code });
-        unit.generated = generator.toSource(unit.ast);
-        unit.compileTime = Date.now() - start
-
-        return resolve(unit)
-      } catch (e) {
-        reject(e)
-      }
-    })
+      return unit;
+    } catch (e) {
+      throw e
+    }
   }
 
   public async dispose() {

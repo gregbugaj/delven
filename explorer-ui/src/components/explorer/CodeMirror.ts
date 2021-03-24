@@ -7,6 +7,7 @@ import 'codemirror/theme/monokai.css';
 import 'codemirror/mode/javascript/javascript';
 import '../../styles/_codemirror.css';
 
+
 // https://stackoverflow.com/questions/29291024/codemirror-onkeyevent-not-firing
 export class CodeMirrorManager {
 
@@ -14,12 +15,12 @@ export class CodeMirrorManager {
 
   config: CodeMirror.EditorConfiguration = {
     tabSize: 4,
-    // gutters: ["note-gutter", "CodeMirror-linenumbers"],
+    gutters: ["note-gutter", "CodeMirror-linenumbers"],
     lineNumbers: true,
     fixedGutter: true,
     mode: { name: "javascript", json: true },
     // scrollbarStyle:'native',
-    // theme:'darcula',
+    theme:'darcula',
   };
 
   // CTOR

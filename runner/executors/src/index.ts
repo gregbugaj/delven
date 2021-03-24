@@ -7,6 +7,12 @@ import { Utils } from "./util"
 
 const toJson = Utils.toJson
 
+interface Reply {
+  status: 'ok' | 'error',
+  type: string
+  data?: any
+}
+
 async function main() {
   const serverOptions = {
     // key: fs.readFileSync('key.pem'),
@@ -60,60 +66,62 @@ async function main() {
   app.ws('/ws', async (ws, req) => {
 
     ws.on('message', async function (payload: string) {
-      console.log('Incomming message :', payload)
+      console.log(`Incomming message : ${payload}`)
       let msg: { 'type': string, data?: any }
 
       try {
         msg = JSON.parse(payload)
       } catch (e) {
         console.error(e)
-        ws.send(toJson({ id: "0001", code:`// Exception : ${e.message}`, compileTime: 0 }));
+        ws.send(toJson({ id: "0001", code: `// Exception : ${e.message}`, compileTime: 0 }));
         return
       }
 
-      let type: string = msg.type
+      const type: string = msg.type
       let data: any = msg['data'] ? msg['data'] : ''
-      let reply: {
-        status: 'ok' | 'error',
-        type: string
-        data?: any
-      } = { status: 'ok', type: 'unhandled' };
+      const reply:Reply = { status: 'ok', type: 'unhandled' };
 
       switch (type) {
-        case 'code:compile':
+        case 'code:compile': {
           reply.type = 'compile.reply'
           executor.compile(data)
             .then(compiled => {
               console.info('Compiled response')
-              console.info(compiled)
-              ws.send(toJson(compiled));
+              reply.data = compiled
+              console.info(reply)
+              ws.send(toJson(reply));
             }).catch(e => {
               if (data === undefined) {
-                data ={ id: "0002", code:`// Exception : ${e.message}`, compileTime: 0 }
+                data = { id: "0002", code: `// Exception : ${e.message}`, compileTime: 0 }
               }
               data.exception = e
               ws.send(toJson(data));
             })
 
           break;
-        case 'code:evaluate':
+        }
+        case 'code:evaluate': {
           reply.type = 'evaluate.reply'
           executor.evaluate(data)
-          .then(compiled => {
-            console.info('Evaluated response')
-            console.info(toJson(compiled))
-            console.info(compiled)
-            ws.send(toJson(compiled));
-          }).catch(e => {
-            if (data === undefined) {
-              data ={ id: "0002", code:`// Exception : ${e.message}`, compileTime: 0 }
-            }
-            data.exception = e
-            ws.send(toJson(data));
-          })
+            .then(compiled => {
+              console.info('Evaluated response')
+              console.info(toJson(compiled))
+              console.info(compiled)
+              ws.send(toJson(compiled));
+            }).catch(e => {
+              if (data === undefined) {
+                data = { id: "0002", code: `// Exception : ${e.message}`, compileTime: 0 }
+              }
+              data.exception = e
+              ws.send(toJson(data));
+            })
           break;
+        } case 'terminal:message':{
+          console.warn(`terminal:message : ${data}`)
+        }
+
         default: {
-          data = { id: "0003", code:`Unhandled type : ${type}`, compileTime: 0 }
+          data = { id: "0003", code: `Unhandled type : ${type}`, compileTime: 0 }
           ws.send(toJson(data));
         }
       }

@@ -2,7 +2,6 @@ export interface CallbackFunction<T = any> {
     (event: T): void;
 }
 
-
 export type EvaluationResult = {
     exception?: string | Error | undefined
     stdout?: string

@@ -40,10 +40,11 @@ export class ServerExecutor implements IExecutor {
     }
 
     if (this.ws?.readyState == WebSocket.OPEN) {
-      this.ws.send(JSON.stringify({ type: event, data: data }));
+      // send CompilationUnit
+      this.ws.send(JSON.stringify({ type: event, data: data}));
     }
 
-    return Promise.resolve(undefined)
+    return undefined;
   }
 
   public async setup(params: ISetupParams): Promise<boolean> {
@@ -51,8 +52,9 @@ export class ServerExecutor implements IExecutor {
     const uri = params.uri
     console.info(`Attempting to setup connection for : ${uri}`)
     if (this.ws?.readyState === WebSocket.OPEN) {
-      return Promise.resolve(true)
+      return true
     }
+
     let self = this
     return new Promise<boolean>((resolve, reject) => {
       try {

@@ -24,6 +24,9 @@ import { Box, createStyles, Typography } from '@material-ui/core';
 import classNames from "classnames";
 import TextAreaCodeEditor from './TextAreaCodeEditor';
 
+import { v4 as uuidv4 } from 'uuid';
+
+// keyboard shortcuts
 configure({
   ignoreTags: ['input', 'select', 'textarea'],
   ignoreEventsCondition: () => { return false }
@@ -102,14 +105,46 @@ let defaultProps = {
   jsonName: 'editor-json',
 }
 
+// https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
+export default function Editor(){
+  return (
+    <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
+
+    <div style={{ border: "1px solid purple"}} >
+      <p>Header 1</p>
+      <p>Header 2</p>
+      <p>Header 3</p>
+    </div>
+
+    <div style={{ padding: "0px", border: "1px solid purple", height: '100%', width:'100%', flex:'1', overflow:'auto', background:'lightgreen'}} >
+
+      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+
+    </div>
+
+    <div style={{ border: "1px solid purple"}} >
+      <p>Footer 1</p>
+      <p>Footer 2</p>
+      <p>Footer 3</p>
+    </div>
+
+   </div>
+  )
+}
 // props:EditorProps
-export default function Editor() {
+export function EditorXXX() {
 
   let ecmaEditor: CodeMirrorManager;
 
   let astEditor: CodeMirrorManager;
 
-  let jsonEditor: CodeMirrorManager;
+  let generatorEditor: CodeMirrorManager;
 
   let executor: ServerExecutor;
 
@@ -123,15 +158,55 @@ export default function Editor() {
   executor = new ServerExecutor();
 
   // Similar to componentDidMount and componentDidUpdate
+  // This function will onyl run once after DOM components have been layedout
   // https://reacttraining.com/blog/useEffect-is-not-the-new-componentDidMount/
   useLayoutEffect(() => {
+    // host responsible for executing scripts
     const hostname = window.location.hostname
-    const host = `ws://${hostname}:8080/ws` as string
+    const host = `ws://${hostname}:5000/ws` as string
 
-    (async ()=>{
+    (async () => {
       let status = await executor.setup({ "uri": host })
       console.debug(`Executor ready : ${status}`);
     })()
+
+    // hook up events
+
+    // All the messages from executor will be pumped onto the Even Bus specific event
+    // this converts from server side message event to client side EventBus message
+    // compile.reply  evaluate.reply
+    if(false){
+      executor.on("*", msg => {
+        console.group(`Received from backend`)
+        console.info(msg)
+        switch (msg.type) {
+          case "compile.reply":
+            eventBus.emit(new EventTypeCompileReply(msg.data));
+            break;
+          case "evaluate.reply":
+            eventBus.emit(new EventTypeEvaluateReply(msg.data));
+            break;
+          default:
+            throw new Error(`Event not handled : ${stringify(msg)}`)
+        }
+        console.groupEnd();
+      })
+    }
+
+    executor.on('compile.reply', msg => {
+      console.info(`Received compile backend : ${stringify(msg)}`)
+      const data = msg.data
+      if (data.exception != undefined) {
+        let exception = data.exception
+        if (generatorEditor) {
+          generatorEditor.setValue(stringify(data))
+        }
+      } else {
+          log("success", "Compile reply")
+          astEditor.setValue(stringify(data.ast))
+          generatorEditor.setValue(data.generated)
+      }
+    })
 
   }, []);
 
@@ -141,23 +216,49 @@ export default function Editor() {
   }, [value]);//run every time value changes
 
 
-  const EcmaTextEditor = ()=>{
-    // let manager:CodeMirrorManager | null = null
-
+  const EcmaTextEditor = () => {
     const onEditorReady = (instance: CodeMirrorManager) => {
-      console.info('onEditorReady ** ')
+      console.info('onEditorReady ECMA** ')
       ecmaEditor = instance
     };
 
-    let texteditor = <TextAreaCodeEditor
-      onEditorReady = {onEditorReady}
-      onKeyDown = {onEditorKeyDown}
+    return <TextAreaCodeEditor
+      onEditorReady={onEditorReady}
+      onKeyDown={onEditorKeyDown}
       name='editor-ecma'
       id='editor-ecma'
       focus={true}
-      value="let x = 0 " />
+      value="let x = 0 + 1" />
+  }
 
-    return texteditor
+  const AstTextEditor = () => {
+    const onEditorReady = (instance: CodeMirrorManager) => {
+      console.info('onEditorReady AST ** ')
+      astEditor = instance
+    };
+
+    return <TextAreaCodeEditor
+      onEditorReady={onEditorReady}
+      onKeyDown={onEditorKeyDown}
+      name='editor-ast'
+      id='editor-ast'
+      focus={false}
+      value="AST Viewer" />
+  }
+
+  const GeneratorTextEditor = () => {
+    const onEditorReady = (instance: CodeMirrorManager) => {
+      console.info('onEditorReady Generator ** ')
+      generatorEditor = instance
+    };
+
+    return <TextAreaCodeEditor
+      onEditorReady={onEditorReady}
+      onKeyDown={onEditorKeyDown}
+      name='editor-generator'
+      id='editor-generator'
+      focus={false}
+      value="// Generated" />
   }
 
   function componentDidMount() {
@@ -177,9 +278,9 @@ export default function Editor() {
     // var $this = ReactDOM.findDOMNode(this)
     ecmaEditor = new CodeMirrorManager(ecmaNode)
     astEditor = new CodeMirrorManager(astNode)
-    jsonEditor = new CodeMirrorManager(jsonNode)
+    generatorEditor = new CodeMirrorManager(jsonNode)
 
-    jsonEditor.setValue('')
+    generatorEditor.setValue('')
     astEditor.setValue('')
 
     // get message bus
@@ -230,13 +331,13 @@ export default function Editor() {
       if (data.exception != undefined) {
         let exception = data.exception
 
-        if (jsonEditor) {
-          jsonEditor.setValue(stringify(data))
+        if (generatorEditor) {
+          generatorEditor.setValue(stringify(data))
         }
       } else {
-        if (astEditor && jsonEditor) {
+        if (astEditor && generatorEditor) {
           log("success", "Compile reply")
-          jsonEditor.setValue(stringify(data.ast))
+          generatorEditor.setValue(stringify(data.ast))
           astEditor.setValue(data.generated)
         }
       }
@@ -262,8 +363,7 @@ export default function Editor() {
     // console.debug(`Executor ready : ${status}`);
   }
 
-
-    function log(level: ConsoleMessageLevel, message: string | string[]) {
+  function log(level: ConsoleMessageLevel, message: string | string[]) {
     // const consoleDisplay = refs.child as ConsoleDisplay
     // const combined: ConsoleMessage[] = []
 
@@ -282,20 +382,27 @@ export default function Editor() {
   async function compile() {
     console.info("Compiling script")
     log("success", "Compiling Script")
-    console.info(ecmaEditor)
-
-    if (ecmaEditor) {
-      const txt = ecmaEditor.getValue()
-      executor.emit('code:compile', txt)
+    if (ecmaEditor === undefined) {
+      console.error("EMCA editor not available")
+      return
     }
+
+    const txt = ecmaEditor.getValue()
+    const unit = { id: uuidv4(), code: txt }
+    executor.emit('code:compile', unit)
   }
 
   async function evaluate() {
-    log("success", "Compiling Script")
-    if (ecmaEditor) {
-      const txt = ecmaEditor.getValue()
-      executor.emit('code:evaluate', txt)
+    log("success", "Evaluating Script")
+
+    if (ecmaEditor === undefined) {
+      console.error("EMCA editor not available")
+      return
     }
+
+    const txt = ecmaEditor.getValue()
+    const unit = { id: uuidv4(), code: txt }
+    executor.emit('code:evaluate', unit)
   }
 
   const handlers = {
@@ -326,8 +433,7 @@ export default function Editor() {
   const onEditorKeyDown = (instance: CodeMirror.Editor, event: KeyboardEvent) => {
     console.info('onEditorKeyDown')
     let cursor = instance.getCursor()
-    let {ch, line} = cursor
-    eventBus.emit(new EventTypeEditorKeyDown(cursor));
+    // eventBus.emit(new EventTypeEditorKeyDown(cursor));
   };
 
 
@@ -375,7 +481,6 @@ export default function Editor() {
       >
         {(
           <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column' }}>
-
             {children}
           </div>
         )}
@@ -384,13 +489,101 @@ export default function Editor() {
   });
 
   return (
-    <React.StrictMode>
-      <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
-      <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-        <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
+
+    <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column', flex: '1'}} >
+
+      <div >
+        <p>Header 1</p>
+        <p>Header 2</p>
+        <p>Header 3</p>
+      </div>
+
+      <div style={{ height: '100%', width:'100%'}} >
+        {/* // Full height */}
+        <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width:'100%' }} >
+          {/*
+            it is important that this container has the 'height' set to get the scrolling working
+          // Split horizontally with full height
+          */}
+          <div style={{ padding: "0px", border: "1px solid blue", display: 'flex', flex: '1 auto', height: '100%'}}>
+
+            {/* LHS Panel */}
+            <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor: '#CCC', overflowY: 'auto' }}>
+              <EcmaTextEditor />
+            </div>
+
+            {/* RHS Panel */}
+            <div style={{ padding: "0px", border: "1px solid blue", display: 'flex', flex: '1 auto', height: '100%'}}>
+
+              <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor: '#CCC', overflowY: 'auto' }}>
+                <AstTextEditor />
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div>
+
+          <p>footer</p>
+      </div>
+
+    </div>
+  )
+}
+
+
+/*
+
+return (
+
+
+  <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+
+    <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+
+      <div style={{padding: "0px", border: "2px solid blue", display: 'flex', flex: '1 1 auto'}}>
+          <div style={{ flex: ' 1 0 0%', border: "2px solid purple" }}>
+            <EcmaTextEditor />
+          </div>
+
+           <div style={{ flex: ' 1 0 0%', border: "2px solid red" }}>
+            <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column' }}>
+               <AstTextEditor />
+            </div>
+
+              <div style={getVisibilityStyle(value != 1)}>
+                <GeneratorTextEditor />
+              </div>
+
+              <div style={getVisibilityStyle(value != 2)}>
+                <ConsoleDisplay ref={inputRef} />
+              </div>
+
+              <div style={getVisibilityStyle(value != 3)}>
+                Job Graph / Query Optimizer
+                </div>
+
+              <div style={getVisibilityStyle(value != 4)}>
+                Results
+                </div>
+         </div>
+
+      </div>
+    </div>
+  </div>
+)
+*/
+
+{/*
+
+
+    <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
+      <Grid container style={{ padding: "4px", border: "2px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
-
               <Grid item>
                 <Button size="medium" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
                   endIcon={< BlurLinearIcon fontSize="large" />}
@@ -428,6 +621,7 @@ export default function Editor() {
 
           </Grid>
           <Grid item sm={12} md={6}>
+
             <Tabs
               value={value}
               onChange={handleChange}
@@ -443,55 +637,188 @@ export default function Editor() {
                 }
               }}
             >
-              <Tab label="JSON-AST" {...a11TabProps(0)} className={classes.tab} ></Tab>
-              <Tab label="Compiled" {...a11TabProps(1)} className={classes.tab}  ></Tab>
-              <Tab label="Console" {...a11TabProps(2)} className={classes.tab} ></Tab>
-              <Tab label="Results" {...a11TabProps(3)} className={classes.tab}  ></Tab>
-              <Tab label="Graph" {...a11TabProps(4)} className={classes.tab} ></Tab>
+              <Tab label="JSON-AST" {...a11TabProps(0)} className={classes.tab}></Tab>
+              <Tab label="Compiled" {...a11TabProps(1)} className={classes.tab}></Tab>
+              <Tab label="Console" {...a11TabProps(2)} className={classes.tab}></Tab>
+              <Tab label="Results" {...a11TabProps(3)} className={classes.tab}></Tab>
+              <Tab label="Graph" {...a11TabProps(4)} className={classes.tab}></Tab>
             </Tabs>
 
           </Grid>
         </Grid>
 
-        <div style={{ display: 'flex', flex: '1 1 auto', overflowY: 'auto' }}>
-          <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
 
-            <EcmaTextEditor></EcmaTextEditor>
 
-          </div>
+*/}
 
+
+
+{/*
           <div style={{ flex: ' 1 1 0%', border: "0px solid purple", overflowY: 'auto' }}>
             <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+
               <div style={{ flex: ' 1 0 50%', border: "0px solid purple", overflowY: 'auto' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
 
-                  <div style={getVisibilityStyle(value != 0)} >
-                    <TextAreaCodeEditor name='astName-0' id='area-0' focus={true} value="let x = 'json' "></TextAreaCodeEditor>
-                  </div>
-
-                  <div style={getVisibilityStyle(value != 1)}>
-                    <TextAreaCodeEditor name='area-1' id='area-1' focus={true} value="let x = 'Compiled' "></TextAreaCodeEditor>
-                  </div>
-
-                  <div style={getVisibilityStyle(value != 2)}>
-                    <ConsoleDisplay ref={inputRef} />
-                  </div>
-
-                  <div style={getVisibilityStyle(value != 3)}>
-                    Job Graph / Query Optimizer
-                    </div>
-
-                  <div style={getVisibilityStyle(value != 4)}>
-                    Results
-                    </div>
                 </div>
               </div>
 
             </div>
           </div>
+*/}
+
+
+
+
+
+
+export  function EditorXXXXX(){
+
+
+  return (
+    <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
+
+    <div >
+      <p>Header 1</p>
+      <p>Header 2</p>
+      <p>Header 3</p>
+    </div>
+
+    <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width:'100%', flex:'1'}} >
+      {/*
+        it is important that this container has the 'height' set to get the scrolling working
+      // Split horizontally with full height
+      */}
+        <div style={{ padding: "0px", border: "1px solid red", display: 'flex', flex: '1 auto', height: '100%'}}>
+          <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor:'#CCC', overflowY:'auto'}}>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
         </div>
+
+        <div style={{ padding: "0px", border: "1px solid red", display: 'flex', flex: '1 auto', height: '100%'}}>
+          <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor:'#CCC', overflowY:'auto'}}>
+
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+            <p>test</p>
+
+
+           </div>
+        </div>
+
+       </div>
       </div>
-    </React.StrictMode>
+    </div>
   )
 }

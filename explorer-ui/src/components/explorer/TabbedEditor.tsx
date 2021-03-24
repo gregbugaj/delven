@@ -23,18 +23,25 @@ function TabPanel(props: TabPanelProps) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`query-tabpanel-${index}`}
-      aria-labelledby={`query-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
       style={{
         overflowY: 'auto',
-        padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column'
+        padding: "0px", border: "2px solid green", height: '100%', width: '100%', flexDirection: 'column'
       }}
       {...other}
     >
       {value === index && (
-        <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column' }}>
-          {/* {children} */}
-          <Editor />
+        <div style={{ padding: "0px", border: "2px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
+        {/* {children} */}
+
+          <Editor/>
+
+          {/* Full Size panel */}
+          {/* <div style={{ padding: "0px", border: "2px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
+              Main
+          </div> */}
+
         </div>
       )}
     </div>

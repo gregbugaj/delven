@@ -6,5 +6,11 @@
 }
 
 
+/* .CodeMirror-scroll {
+  overflow-y: auto;
+  overflow-x: auto;
+} */
+
 /* Define a gutter style */
-.note-gutter { width: 3em; background: cyan; }
+.note-gutter { width: 2em; background: cyan; }
+
