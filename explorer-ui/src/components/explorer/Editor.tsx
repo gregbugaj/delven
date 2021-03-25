@@ -108,15 +108,16 @@ let defaultProps = {
 // https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
 export default function Editor(){
   return (
-    <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
+    // <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
+    <div className='Editor-Container' >
 
-    <div style={{ border: "1px solid purple"}} >
+    <div className='Editor-Container-Header'>
       <p>Header 1</p>
       <p>Header 2</p>
       <p>Header 3</p>
     </div>
 
-    <div style={{ padding: "0px", border: "1px solid purple", height: '100%', width:'100%', flex:'1', overflow:'auto', background:'lightgreen'}} >
+    <div className='Editor-Content' >
 
       <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
       <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
@@ -128,7 +129,7 @@ export default function Editor(){
 
     </div>
 
-    <div style={{ border: "1px solid purple"}} >
+    <div className='Editor-Container-Footer'>
       <p>Footer 1</p>
       <p>Footer 2</p>
       <p>Footer 3</p>

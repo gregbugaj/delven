@@ -123,5 +123,34 @@ code {
 }
 
 
+/*
+ Editor container
+*/
+
+.Editor-Container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  border: 1px solid purple;
+}
+
+.Editor-Content{
+  padding: 0px;
+  border: 1px solid purple;
+  height: 100%;
+  width:100%;
+  flex:1;
+  overflow:auto;
+  background-color: lightgreen;
+}
+
+.Editor-Container-Header{
+  border: 1px solid purple;
+}
+
+.Editor-Container-Footer{
+  border: 1px solid purple;
+}
 
 /*# sourceMappingURL=index.css.map*/
