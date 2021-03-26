@@ -7,46 +7,42 @@ import { EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import Editor from './Editor';
 import { Grid, IconButton } from '@material-ui/core';
+import { stringify } from 'node:querystring';
 
-
+/**
+ * Prevent React component from re-rendering
+ * https://stackoverflow.com/questions/40909902/shouldcomponentupdate-in-function-components/40910993
+ */
 interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
-  value: any;
   label: string;
 }
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+const TabPanel = React.memo((props: TabPanelProps) => {
+  const { children, index, ...other } = props;
+  console.info(`Rendering TabPanel : ${index}`)
 
   return (
     <div
       role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
+      id={`editorview-tabpanel-${index}`}
+      aria-labelledby={`editorview-tabpanel-${index}`}
       style={{
         overflowY: 'auto',
-        padding: "0px", border: "2px solid green", height: '100%', width: '100%', flexDirection: 'column'
+        padding: "0px", border: "0px solid green", height: '100%', width: '100%', flexDirection: 'column'
       }}
       {...other}
     >
-      {value === index && (
-        <div style={{ padding: "0px", border: "2px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
-        {/* {children} */}
-
-          <Editor/>
-
-          {/* Full Size panel */}
-          {/* <div style={{ padding: "0px", border: "2px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-              Main
-          </div> */}
-
+      {(
+        <div style={{ padding: "0px", border: "0px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
+          {/* Index : { index } ; {Date.now()} */}
+          <Editor />
         </div>
       )}
     </div>
   );
-}
+}, (prev, next) => true)
 
 function a11TabProps(index: any) {
   return {
@@ -106,12 +102,12 @@ export default function FullWidthTabbedEditor() {
   eventBus.on(
     EventTypeSampleQuery,
     (event): void => {
- (async () => {
-          if (event.data.type === 'file') {
-            addTab(event.data.id, event.data.name)
-          }
+      (async () => {
+        if (event.data.type === 'file') {
+          addTab(event.data.id, event.data.name)
         }
-        )()
+      }
+      )()
     }
   )
 
@@ -133,6 +129,22 @@ export default function FullWidthTabbedEditor() {
     addTab(`${new Date().getTime()}`, 'New Tab')
   };
 
+  const getVisibilityStyle = (hiddenCondition: boolean): any => {
+    if (hiddenCondition) {
+      return {
+        visibility: 'hidden',
+        height: 0,
+      };
+    }
+    return {
+      visibility: 'visible',
+      height: 'inherit',
+      border: "0px solid purple"
+    };
+  };
+
+
+  const MemoChild = React.memo(Editor, (p, n) => { return true });
 
   return (
     <div className={classes.root}
@@ -160,7 +172,8 @@ export default function FullWidthTabbedEditor() {
               }
             }}
           >
-            <Tab label="Script" {...a11TabProps(0)} className={classes.tab} ></Tab>
+            <Tab label="Script #1" {...a11TabProps(0)} className={classes.tab} ></Tab>
+            <Tab label="Script #2" {...a11TabProps(1)} className={classes.tab} ></Tab>
 
             {
               tabList?.map((tab) => (
@@ -184,7 +197,14 @@ export default function FullWidthTabbedEditor() {
       </Grid>
 
       {/* Initial panel */}
-      <TabPanel value={value} index={0} label={'Script x'} />
+      <div style={getVisibilityStyle(value != 0)}>
+        <TabPanel index={0} label={'Script 0'} />
+      </div>
+
+      <div style={getVisibilityStyle(value != 1)}>
+        <TabPanel index={1} label={'Script 1'} />
+      </div>
+
     </div>
   );
 }

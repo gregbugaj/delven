@@ -15,12 +15,12 @@ export class CodeMirrorManager {
 
   config: CodeMirror.EditorConfiguration = {
     tabSize: 4,
-    gutters: ["note-gutter", "CodeMirror-linenumbers"],
+    // gutters: ["note-gutter", "CodeMirror-linenumbers"],
     lineNumbers: true,
-    fixedGutter: true,
+    // fixedGutter: true,
     mode: { name: "javascript", json: true },
-    // scrollbarStyle:'native',
-    theme:'darcula',
+    scrollbarStyle:'native',
+    // theme:'darcula',
   };
 
   // CTOR

@@ -340,6 +340,9 @@ function AstExplorerApplication() {
           </Grid>
           <Grid item>
             <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
+              <Button>Shortcuts</Button>
+              <Button>Fork</Button>
+              <Button>Share</Button>
               <Button>Build : ####</Button>
             </ButtonGroup>
           </Grid>

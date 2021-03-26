@@ -32,6 +32,7 @@ export class ServerExecutor implements IExecutor {
   }
 
   public async emit(event: string, data?: any): Promise<undefined> {
+
     if (this.ws?.readyState == WebSocket.CLOSED) {
       console.info("Connection closed")
       if (this.params != undefined) {
@@ -39,11 +40,15 @@ export class ServerExecutor implements IExecutor {
       }
     }
 
+    console.info(this.ws)
+
     if (this.ws?.readyState == WebSocket.OPEN) {
       // send CompilationUnit
       this.ws.send(JSON.stringify({ type: event, data: data}));
+      return
     }
 
+    console.warn(`Unable to emit message : ${event} >  ${JSON.stringify(data)}`)
     return undefined;
   }
 
@@ -59,6 +64,7 @@ export class ServerExecutor implements IExecutor {
     return new Promise<boolean>((resolve, reject) => {
       try {
         this.ws = new WebSocket(uri);
+
         this.ws.onopen = event => {
           console.log("Connected ", event)
           this.terminalMessage('System ready')
@@ -66,7 +72,7 @@ export class ServerExecutor implements IExecutor {
         }
 
         this.ws.onerror = event => {
-          console.log("Error ", event)
+          console.error("Error ", event)
           reject(event)
         }
 

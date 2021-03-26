@@ -20,11 +20,12 @@ import { useEffect, useLayoutEffect } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import globalServices from '../globalServices';
 import { useRef } from "react";
-import { Box, createStyles, Typography } from '@material-ui/core';
+import { Box, ButtonGroup, createStyles, Typography } from '@material-ui/core';
 import classNames from "classnames";
 import TextAreaCodeEditor from './TextAreaCodeEditor';
 
 import { v4 as uuidv4 } from 'uuid';
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 
 // keyboard shortcuts
 configure({
@@ -95,68 +96,63 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 
-let defaultProps = {
-  ecmaName: 'editor-ecma',
-  ecmaValue: 'let x = 1',
-  ecmaAutoFocus: true,
-  astName: 'editor-ast',
-  astValue: 'let x = 1',
-  astAutoFocus: true,
-  jsonName: 'editor-json',
-}
-
 // https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
-export default function Editor(){
+function EditorZ(props) {
+  console.info(`Editor Z : ${Date.now()} `)
+
   return (
     // <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
     <div className='Editor-Container' >
 
-    <div className='Editor-Container-Header'>
-      <p>Header 1</p>
-      <p>Header 2</p>
-      <p>Header 3</p>
+      <div className='Editor-Container-Header'>
+        <p>Header 1</p>
+        <p>Header 2</p>
+        <p>Header 3</p>
+      </div>
+
+      <div className='Editor-Content' >
+
+        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
+
+      </div>
+
+      <div className='Editor-Container-Footer'>
+        <p>Footer 1</p>
+        <p>Footer 2</p>
+        <p>Footer 3</p>
+      </div>
+
     </div>
-
-    <div className='Editor-Content' >
-
-      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-
-    </div>
-
-    <div className='Editor-Container-Footer'>
-      <p>Footer 1</p>
-      <p>Footer 2</p>
-      <p>Footer 3</p>
-    </div>
-
-   </div>
   )
 }
-// props:EditorProps
-export function EditorXXX() {
 
-  let ecmaEditor: CodeMirrorManager;
+const executor = new ServerExecutor();
+
+// props:EditorProps
+function EditorImpl(props) {
+
+  console.info("------------- EDITOR -----------------")
+
+  // let ecmaEditor: CodeMirrorManager;
 
   let astEditor: CodeMirrorManager;
 
   let generatorEditor: CodeMirrorManager;
 
-  let executor: ServerExecutor;
-
   let eventBus = globalServices.eventBus
 
-  let props = defaultProps
   const classes = useStyles();
   const inputRef = useRef(null);
   const [value, setValue] = React.useState(0);
 
-  executor = new ServerExecutor();
+  // let : CodeMirrorManager;
+  const [ecmaEditor, setEcmaEditor] = React.useState<CodeMirrorManager>();
 
   // Similar to componentDidMount and componentDidUpdate
   // This function will onyl run once after DOM components have been layedout
@@ -176,7 +172,7 @@ export function EditorXXX() {
     // All the messages from executor will be pumped onto the Even Bus specific event
     // this converts from server side message event to client side EventBus message
     // compile.reply  evaluate.reply
-    if(false){
+    if (false) {
       executor.on("*", msg => {
         console.group(`Received from backend`)
         console.info(msg)
@@ -203,9 +199,9 @@ export function EditorXXX() {
           generatorEditor.setValue(stringify(data))
         }
       } else {
-          log("success", "Compile reply")
-          astEditor.setValue(stringify(data.ast))
-          generatorEditor.setValue(data.generated)
+        log("success", "Compile reply")
+        astEditor.setValue(stringify(data.ast))
+        generatorEditor.setValue(data.generated)
       }
     })
 
@@ -216,153 +212,6 @@ export function EditorXXX() {
     console.log("useEffect newValue--->", value);
   }, [value]);//run every time value changes
 
-
-  const EcmaTextEditor = () => {
-    const onEditorReady = (instance: CodeMirrorManager) => {
-      console.info('onEditorReady ECMA** ')
-      ecmaEditor = instance
-    };
-
-    return <TextAreaCodeEditor
-      onEditorReady={onEditorReady}
-      onKeyDown={onEditorKeyDown}
-      name='editor-ecma'
-      id='editor-ecma'
-      focus={true}
-      value="let x = 0 + 1" />
-  }
-
-  const AstTextEditor = () => {
-    const onEditorReady = (instance: CodeMirrorManager) => {
-      console.info('onEditorReady AST ** ')
-      astEditor = instance
-    };
-
-    return <TextAreaCodeEditor
-      onEditorReady={onEditorReady}
-      onKeyDown={onEditorKeyDown}
-      name='editor-ast'
-      id='editor-ast'
-      focus={false}
-      value="AST Viewer" />
-  }
-
-  const GeneratorTextEditor = () => {
-    const onEditorReady = (instance: CodeMirrorManager) => {
-      console.info('onEditorReady Generator ** ')
-      generatorEditor = instance
-    };
-
-    return <TextAreaCodeEditor
-      onEditorReady={onEditorReady}
-      onKeyDown={onEditorKeyDown}
-      name='editor-generator'
-      id='editor-generator'
-      focus={false}
-      value="// Generated" />
-  }
-
-  function componentDidMount() {
-    console.info("componentDidMount")
-
-    let ecmaNode: HTMLTextAreaElement = document.getElementById(props.ecmaName) as HTMLTextAreaElement;
-    let astNode: HTMLTextAreaElement = document.getElementById(props.astName) as HTMLTextAreaElement;
-    let jsonNode: HTMLTextAreaElement = document.getElementById(props.jsonName) as HTMLTextAreaElement;
-
-    console.info(ecmaNode)
-    console.info(astNode)
-    console.info(jsonNode)
-
-    // nodes will be null if they are set with 'display:none' as initial state
-    // https://stackoverflow.com/questions/38093760/how-to-access-a-dom-element-in-react-what-is-the-equilvalent-of-document-getele
-
-    // var $this = ReactDOM.findDOMNode(this)
-    ecmaEditor = new CodeMirrorManager(ecmaNode)
-    astEditor = new CodeMirrorManager(astNode)
-    generatorEditor = new CodeMirrorManager(jsonNode)
-
-    generatorEditor.setValue('')
-    astEditor.setValue('')
-
-    // get message bus
-    let eventBus = globalServices.eventBus
-
-    // eventBus.on(
-    //   EventTypeSampleQuery,
-    //   (event): void => {
-    //     let id = event.data.id
-    //       ; (async () => {
-    //         const reply = await http<ServiceReplyEventType>(`/api/v1/samples/${id}`);
-    //         if (reply.status === 'error') {
-    //           alert(reply.msg)
-    //         } else if (reply.status === 'ok') {
-    //           editor.setValue(reply.data);
-    //         }
-    //       }
-    //       )()
-    //   }
-    // )
-
-    const hostname = window.location.hostname
-
-    // All the messages from executor will be pumped onto the Even Bus specific event
-    // this converts from server side message event to client side EventBus message
-    // compile.reply  evaluate.reply
-    executor.on("*", msg => {
-      console.group(`Received from backend`)
-      console.info(msg)
-
-      switch (msg.type) {
-        case "compile.reply":
-          eventBus.emit(new EventTypeCompileReply(msg.data));
-          break;
-        case "evaluate.reply":
-          eventBus.emit(new EventTypeEvaluateReply(msg.data));
-          break;
-        default:
-          throw new Error("Event not handled : " + msg)
-      }
-
-      console.groupEnd();
-    })
-
-    executor.on('compile.reply', msg => {
-      console.info(`Received compile backend : ${stringify(msg)}`)
-      const data = msg.data
-      if (data.exception != undefined) {
-        let exception = data.exception
-
-        if (generatorEditor) {
-          generatorEditor.setValue(stringify(data))
-        }
-      } else {
-        if (astEditor && generatorEditor) {
-          log("success", "Compile reply")
-          generatorEditor.setValue(stringify(data.ast))
-          astEditor.setValue(data.generated)
-        }
-      }
-    })
-
-    executor.on('evaluate.reply', msg => {
-      console.info(`Received evaluate backend : ${msg}`)
-      let data = msg.data
-      if (data.exception) {
-        let exception = data.exception
-        log("raw", exception.message)
-        log("raw", exception.stack)
-      } else if (data.stdout) {
-        console.info(data.stdout)
-        log("raw", "------------------------------------")
-        let chunks = data.stdout.split('\r')
-        log("raw", chunks)
-        log("raw", "------------------------------------")
-      }
-    })
-
-    // let status = await executor.setup({ "uri": host })
-    // console.debug(`Executor ready : ${status}`);
-  }
 
   function log(level: ConsoleMessageLevel, message: string | string[]) {
     // const consoleDisplay = refs.child as ConsoleDisplay
@@ -390,12 +239,15 @@ export function EditorXXX() {
 
     const txt = ecmaEditor.getValue()
     const unit = { id: uuidv4(), code: txt }
+
+    console.info('Compilation Unit')
+    console.info(ecmaEditor)
+    console.info(unit)
     executor.emit('code:compile', unit)
   }
 
   async function evaluate() {
     log("success", "Evaluating Script")
-
     if (ecmaEditor === undefined) {
       console.error("EMCA editor not available")
       return
@@ -416,14 +268,6 @@ export function EditorXXX() {
     EVALUATE: "ctrl+alt+enter", // Issues with
   };
 
-
-  function a11TabProps(index: any) {
-    return {
-      id: `result-tab-${index}`,
-      'aria-controls': `result-tabpanel-${index}`,
-    };
-  }
-
   let messages: ConsoleMessage[] = []
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
@@ -437,152 +281,55 @@ export function EditorXXX() {
     // eventBus.emit(new EventTypeEditorKeyDown(cursor));
   };
 
+  // This is the prop children are interested in
+  const [clicks, setClicks] = React.useState(0);
+  const [ticks, setTicks] = React.useState(0);
+  const [renderType, setRenderType] = React.useState('compiled');
 
-  const useTabContainerStyles = makeStyles(() => createStyles({
-    root: {
-      padding: 8 * 3
-    },
-    tabcontainerInActive: {
-      display: "none"
-    }
-  })
-  );
+  // setTimeout(() => setTicks(ticks + 1), 1500);
+  const tickRef = React.useRef<{ ticks: number, value: number }>();
 
-  // const  TabPanelXX = React.memo((props:TabPanelProps)=>{
-  //   console.info(props)
-  //   return TabPanelInner(props)
-  // });
+  tickRef.current = {
+    ticks: ticks,
+    value: value
+  }
 
-  const getVisibilityStyle = (hiddenCondition: boolean): any => {
-    if (hiddenCondition) {
-      return {
-        visibility: 'hidden',
-        height: 0,
-      };
-    }
-    return {
-      visibility: 'visible',
-      height: 'inherit',
-      border: "1px solid purple"
-    };
+
+  function handleViewChange(event: any, renderType: string) {
+    if (renderType == null)
+      return
+    console.info(renderType)
+    setRenderType(renderType)
+    // this.setState({ display: renderType });
+  }
+
+  const onEditorReadyEcma = (instance: CodeMirrorManager) => {
+    console.info('onEditorReady ECMA :: PARENT ')
+    console.info(instance)
+    // ecmaEditor = instance
+
+    setEcmaEditor(instance)
   };
 
-  const TabPanel = React.memo((props: TabPanelProps) => {
-    const { children, value, index, ...other } = props;
-    return (
-      <div
-        role="tabpanel"
-        id={`query-tabpanel-${index}`}
-        aria-labelledby={`query-tab-${index}`}
-        style={{
-          overflowY: 'auto',
-          padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column'
-        }}
-        {...other}
-      >
-        {(
-          <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column' }}>
-            {children}
-          </div>
-        )}
-      </div>
-    );
-  });
+  const onEditorReadyAst = (instance: CodeMirrorManager) => {
+    console.info('onEditorReady AST :: PARENT ')
+    console.info(instance)
+    astEditor = instance
+  };
+
+  const onEditorReadyCompiled = (instance: CodeMirrorManager) => {
+    console.info('onEditorReady Compiled :: PARENT ')
+    console.info(instance)
+    generatorEditor = instance
+  };
+
 
   return (
+    <div className='Editor-Container' >
+      <div className='Editor-Container-Header'>
 
-    <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column', flex: '1'}} >
-
-      <div >
-        <p>Header 1</p>
-        <p>Header 2</p>
-        <p>Header 3</p>
-      </div>
-
-      <div style={{ height: '100%', width:'100%'}} >
-        {/* // Full height */}
-        <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width:'100%' }} >
-          {/*
-            it is important that this container has the 'height' set to get the scrolling working
-          // Split horizontally with full height
-          */}
-          <div style={{ padding: "0px", border: "1px solid blue", display: 'flex', flex: '1 auto', height: '100%'}}>
-
-            {/* LHS Panel */}
-            <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor: '#CCC', overflowY: 'auto' }}>
-              <EcmaTextEditor />
-            </div>
-
-            {/* RHS Panel */}
-            <div style={{ padding: "0px", border: "1px solid blue", display: 'flex', flex: '1 auto', height: '100%'}}>
-
-              <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor: '#CCC', overflowY: 'auto' }}>
-                <AstTextEditor />
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <div>
-
-          <p>footer</p>
-      </div>
-
-    </div>
-  )
-}
-
-
-/*
-
-return (
-
-
-  <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-
-    <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-
-      <div style={{padding: "0px", border: "2px solid blue", display: 'flex', flex: '1 1 auto'}}>
-          <div style={{ flex: ' 1 0 0%', border: "2px solid purple" }}>
-            <EcmaTextEditor />
-          </div>
-
-           <div style={{ flex: ' 1 0 0%', border: "2px solid red" }}>
-            <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width: '100%', flexDirection: 'column' }}>
-               <AstTextEditor />
-            </div>
-
-              <div style={getVisibilityStyle(value != 1)}>
-                <GeneratorTextEditor />
-              </div>
-
-              <div style={getVisibilityStyle(value != 2)}>
-                <ConsoleDisplay ref={inputRef} />
-              </div>
-
-              <div style={getVisibilityStyle(value != 3)}>
-                Job Graph / Query Optimizer
-                </div>
-
-              <div style={getVisibilityStyle(value != 4)}>
-                Results
-                </div>
-         </div>
-
-      </div>
-    </div>
-  </div>
-)
-*/
-
-{/*
-
-
-    <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
-      <Grid container style={{ padding: "4px", border: "2px solid purple", backgroundColor: '#f7f7f7' }}>
+        <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
+        <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
               <Grid item>
@@ -623,203 +370,168 @@ return (
           </Grid>
           <Grid item sm={12} md={6}>
 
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="scrollable"
-              scrollButtons="auto"
-              aria-label="Query samples"
-              style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
-              TabIndicatorProps={{
-                style: {
-                  height: "4px",
-                }
-              }}
-            >
-              <Tab label="JSON-AST" {...a11TabProps(0)} className={classes.tab}></Tab>
-              <Tab label="Compiled" {...a11TabProps(1)} className={classes.tab}></Tab>
-              <Tab label="Console" {...a11TabProps(2)} className={classes.tab}></Tab>
-              <Tab label="Results" {...a11TabProps(3)} className={classes.tab}></Tab>
-              <Tab label="Graph" {...a11TabProps(4)} className={classes.tab}></Tab>
-            </Tabs>
+            <ToggleButtonGroup size="small" exclusive onChange={handleViewChange} value={renderType} aria-label="text primary button group" className='btn-group special'>
+              <ToggleButton className='btn btn-default' size="small" value="json">AST</ToggleButton>
+              <ToggleButton className='btn btn-default' size="small" value="compiled">Compiled</ToggleButton>
+              <ToggleButton className='btn btn-default' size="small" value="console">Console</ToggleButton>
+              <ToggleButton className='btn btn-default' size="small" value="results">Results</ToggleButton>
+              <ToggleButton className='btn btn-default' size="small" value="graph">Query Optimizer</ToggleButton>
+            </ToggleButtonGroup>
 
           </Grid>
         </Grid>
 
+        {/* <h2>Parent Rendered at tick {tickRef.current.ticks} with clicks {clicks}.</h2>
+        <button onClick={() => setClicks(clicks + 1)}>Add extra click</button>
+        <p>Header 1</p>
+        <p>Header 2</p>
+        <p>Header 3</p> */}
+      </div>
 
+      <div className='Editor-Content'>
+        {/* <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} > */}
+        <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red" }} >
+          <div className='Editor-Container-Header'>
+            RenderType :  {renderType}  {Date.now()}
+          </div>
 
-*/}
+          <div className='Editor-Content' style={{}} >
+            <div style={{ padding: "0px", border: "0px solid blue", display: 'flex', flex: '1 1 auto', height: '100%' }}>
 
-
-
-{/*
-          <div style={{ flex: ' 1 1 0%', border: "0px solid purple", overflowY: 'auto' }}>
-            <div style={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} >
-
-              <div style={{ flex: ' 1 0 50%', border: "0px solid purple", overflowY: 'auto' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-
-
-                </div>
+              <div style={{ flex: ' 1 0 0%', border: "0px solid purple", overflowY: 'auto' }}>
+                <EcmaEditorContentMemo id={"1"}  onEditorReady={onEditorReadyEcma} />
               </div>
 
+              <div style={{ flex: ' 1 0 0%', border: "2px solid purple" }}>
+
+                <div id='json-container' style={{ display: renderType == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  JSON {Date.now()}
+                  <AstEditorContentMemo id={"2"}  onEditorReady={onEditorReadyAst}/>
+                </div>
+
+                <div id='compiled-container' style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  compiled  {Date.now()}
+                  <CompiledEditorContentMemo id={"3"} onEditorReady={onEditorReadyCompiled}/>
+                </div>
+
+                <div id='console-container' style={{ display: renderType == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  CONSOLE  {Date.now()}
+                  {/* <EditorContentMemo id={0} tickRef={tickRef} renderType='console' /> */}
+                </div>
+
+                <div id='graph-container' style={{ display: renderType == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  Job Graph / Query Optimizer  {Date.now()}
+                  {/* <EditorContentMemo id={0} tickRef={tickRef} renderType='graph' /> */}
+                </div>
+
+                <div id='results-container' style={{ display: renderType == 'results' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  Results  {Date.now()}
+                  {/* <EditorContentMemo id={0} tickRef={tickRef} renderType='results' /> */}
+                </div>
+
+              </div>
             </div>
           </div>
-*/}
 
-
-
-
-
-
-export  function EditorXXXXX(){
-
-
-  return (
-    <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
-
-    <div >
-      <p>Header 1</p>
-      <p>Header 2</p>
-      <p>Header 3</p>
-    </div>
-
-    <div style={{ padding: "0px", border: "0px solid purple", height: '100%', width:'100%', flex:'1'}} >
-      {/*
-        it is important that this container has the 'height' set to get the scrolling working
-      // Split horizontally with full height
-      */}
-        <div style={{ padding: "0px", border: "1px solid red", display: 'flex', flex: '1 auto', height: '100%'}}>
-          <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor:'#CCC', overflowY:'auto'}}>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
+          {/* <div className='Editor-Container-Footer'>
+                Footer : {renderType}  {Date.now()}
+             </div> */}
         </div>
+      </div>
 
-        <div style={{ padding: "0px", border: "1px solid red", display: 'flex', flex: '1 auto', height: '100%'}}>
-          <div style={{ flex: '1 0 0%', border: "1px solid purple", backgroundColor:'#CCC', overflowY:'auto'}}>
-
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-            <p>test</p>
-
-
-           </div>
-        </div>
-
-       </div>
+      <div className='Editor-Container-Footer'>
+        <p>footer</p>
       </div>
     </div>
   )
 }
+
+const EditorContentMemo = React.memo(EditorContent)
+const EcmaEditorContentMemo = React.memo(EcmaEditorContent, (prev, next)=>true)
+const AstEditorContentMemo = React.memo(AstEditorContent, (prev, next)=>true)
+const CompiledEditorContentMemo = React.memo(CompiledEditorContent, (prev, next)=>true)
+
+function EditorContent(props: { id: number, tickRef: any, value: number, renderType: string }) {
+
+  console.info('EditorContent')
+  const { id, tickRef, renderType } = props
+
+  console.info(renderType)
+  return (<div>REF {renderType} ::   {Date.now()} </div>)
+}
+
+function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
+  console.info('EcmaEditorContent')
+  const { id, onEditorReady } = props
+  let eventBus = globalServices.eventBus
+
+  const _onEditorReady = (instance: CodeMirrorManager) => {
+    console.info('onEditorReady ECMA** ')
+    if(onEditorReady){
+      onEditorReady(instance)
+    }
+  };
+
+  const onEditorKeyDown = (instance: CodeMirror.Editor, event: KeyboardEvent) => {
+    console.info('onEditorKeyDown')
+    eventBus.emit(new EventTypeEditorKeyDown(instance.getCursor()));
+  };
+
+  return (
+    <TextAreaCodeEditor
+      onEditorReady={_onEditorReady}
+      onKeyDown={onEditorKeyDown}
+      name='editor-ecma'
+      id='editor-ecma'
+      focus={true}
+      value="let x = 0 + 1" />
+  )
+}
+
+
+function CompiledEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
+  console.info('CompiledEditorContent')
+  const { id, onEditorReady } = props
+
+  const _onEditorReady = (instance: CodeMirrorManager) => {
+    console.info('onEditorReady COMPILED** ')
+    if(onEditorReady){
+      onEditorReady(instance)
+    }
+  };
+
+  return (
+    <TextAreaCodeEditor
+      onEditorReady={_onEditorReady}
+      name='editor-compiled'
+      id='editor-compiled'
+      focus={true}
+      value="// GENERATED" />
+  )
+}
+
+
+function AstEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void  }) {
+  console.info('ASTEditorContent')
+  const { id, onEditorReady } = props
+  let editor: CodeMirrorManager;
+
+  const _onEditorReady = (instance: CodeMirrorManager) => {
+    console.info('onEditorReady AST** ')
+    if(onEditorReady){
+      onEditorReady(instance)
+    }
+  };
+
+  return (
+    <TextAreaCodeEditor
+      onEditorReady={_onEditorReady}
+      name='editor-ast'
+      id='editor-ast'
+      focus={false}
+      value="AST" />
+  )
+}
+
+
+export default EditorImpl
