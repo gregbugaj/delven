@@ -102,7 +102,7 @@ function EditorZ(props) {
 
   return (
     // <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
-    <div className='Editor-Container' >
+    <div className='Editor-Container'   style={{ height:'100%', backgroundColor:'red'}}>
 
       <div className='Editor-Container-Header'>
         <p>Header 1</p>
@@ -110,7 +110,7 @@ function EditorZ(props) {
         <p>Header 3</p>
       </div>
 
-      <div className='Editor-Content' >
+      <div className='Editor-Content' style={{ height:'100%', backgroundColor:'blue'}} >
 
         <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
         <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
@@ -402,7 +402,7 @@ function EditorImpl(props) {
                 <EcmaEditorContentMemo id={"1"}  onEditorReady={onEditorReadyEcma} />
               </div>
 
-              <div style={{ flex: ' 1 0 0%', border: "2px solid purple" }}>
+              <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
 
                 <div id='json-container' style={{ display: renderType == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   JSON {Date.now()}
@@ -535,3 +535,4 @@ function AstEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (c
 
 
 export default EditorImpl
+// export default EditorZ

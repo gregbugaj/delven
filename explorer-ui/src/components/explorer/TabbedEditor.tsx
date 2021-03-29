@@ -19,7 +19,7 @@ interface TabPanelProps {
   label: string;
 }
 
-const TabPanel = React.memo((props: TabPanelProps) => {
+const TabPanelXX = React.memo((props: TabPanelProps) => {
   const { children, index, ...other } = props;
   console.info(`Rendering TabPanel : ${index}`)
 
@@ -36,13 +36,39 @@ const TabPanel = React.memo((props: TabPanelProps) => {
     >
       {(
         <div style={{ padding: "0px", border: "0px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
-          {/* Index : { index } ; {Date.now()} */}
+          Index : { index} ; {Date.now()}
           <Editor />
         </div>
       )}
     </div>
   );
 }, (prev, next) => true)
+
+
+const TabPanel = React.memo((props: TabPanelProps) => {
+  const { children, index, ...other } = props;
+  console.info(`Rendering TabPanel : ${index}`)
+
+  return (
+    <div
+      role="tabpanel"
+      id={`editorview-tabpanel-${index}`}
+      aria-labelledby={`editorview-tabpanel-${index}`}
+      style={{
+        overflowY: 'auto',
+        padding: "0px", border: "0px solid green", height: '100%', width: '100%', flexDirection: 'column'
+      }}
+      {...other}
+    >
+      {
+        <div style={{ padding: "0px", border: "0px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
+          <Editor />
+        </div>
+      }
+    </div>
+  );
+}, (prev, next) => true)
+
 
 function a11TabProps(index: any) {
   return {
@@ -147,64 +173,60 @@ export default function FullWidthTabbedEditor() {
   const MemoChild = React.memo(Editor, (p, n) => { return true });
 
   return (
-    <div className={classes.root}
-      style={{
-        padding: "0px", border: "0px solid purple",
-        display: 'flex', height: '100%', width: '100%', flexDirection: 'column'
-      }}
-    >
+    <div className='Editor-Container'>
+      <div className='Editor-Container-Header'>
+        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
+          <Grid item>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="Query samples"
+              style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
 
-      <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
-        <Grid item>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            textColor="primary"
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="Query samples"
-            style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
+              TabIndicatorProps={{
+                style: {
+                  height: "4px",
+                }
+              }}
+            >
+              <Tab label="Script #1" {...a11TabProps(0)} className={classes.tab} ></Tab>
+              <Tab label="Script #2" {...a11TabProps(1)} className={classes.tab} ></Tab>
 
-            TabIndicatorProps={{
-              style: {
-                height: "4px",
+              {
+                tabList?.map((tab) => (
+                  <Tab
+                    value={tab.index}
+                    label={tab.label}
+                    {...a11TabProps(tab.index)}
+                    className={classes.tab}
+                  />
+                ))
               }
-            }}
-          >
-            <Tab label="Script #1" {...a11TabProps(0)} className={classes.tab} ></Tab>
-            <Tab label="Script #2" {...a11TabProps(1)} className={classes.tab} ></Tab>
-
-            {
-              tabList?.map((tab) => (
-                <Tab
-                  value={tab.index}
-                  label={tab.label}
-                  {...a11TabProps(tab.index)}
-                  className={classes.tab}
-                />
-              ))
-            }
-          </Tabs>
-
+            </Tabs>
+          </Grid>
+          <Grid item>
+            <IconButton color="primary" aria-label="add tab" component="span" onClick={handleChangeTabAdd}>
+              <AddIcon />
+            </IconButton>
+          </Grid>
         </Grid>
-
-        <Grid item>
-          <IconButton color="primary" aria-label="add tab" component="span" onClick={handleChangeTabAdd}>
-            <AddIcon />
-          </IconButton>
-        </Grid>
-      </Grid>
-
-      {/* Initial panel */}
-      <div style={getVisibilityStyle(value != 0)}>
-        <TabPanel index={0} label={'Script 0'} />
       </div>
 
-      <div style={getVisibilityStyle(value != 1)}>
-        <TabPanel index={1} label={'Script 1'} />
-      </div>
 
+      <div className='Editor-Content'>
+        {/* Initial panel */}
+        <div style={getVisibilityStyle(value != 0)}>
+          <TabPanel index={0} label={'Script 0'} />
+        </div>
+
+        <div style={getVisibilityStyle(value != 1)}>
+          <TabPanel index={1} label={'Script 1'} />
+        </div>
+      </div>
     </div>
   );
 }

@@ -159,12 +159,12 @@ End Scorllbars
   height: 100%;
   width: 100%;
   flex-direction: column;
-  border: 1px solid purple;
+  border: 0px solid purple;
 }
 
 .Editor-Content{
   padding: 0px;
-  border: 1px solid purple;
+  border: 0px solid rgb(252, 206, 0);
   height: 100%;
   width:100%;
   flex:1;
@@ -173,11 +173,11 @@ End Scorllbars
 }
 
 .Editor-Container-Header{
-  border: 1px solid purple;
+  border: 0px solid purple;
 }
 
 .Editor-Container-Footer{
-  border: 1px solid purple;
+  border: 0px solid purple;
 }
 
 
