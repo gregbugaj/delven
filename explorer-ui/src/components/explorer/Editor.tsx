@@ -58,6 +58,9 @@ interface TabPanelProps {
   value: any;
   label: string;
 }
+interface EditorProps {
+  id: string;
+}
 
 const tabHeight = '48px' // default: '48px'
 const useStyles = makeStyles((theme: Theme) => ({
@@ -102,7 +105,7 @@ function EditorZ(props) {
 
   return (
     // <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
-    <div className='Editor-Container'   style={{ height:'100%', backgroundColor:'red'}}>
+    <div className='Editor-Container' style={{ height: '100%', backgroundColor: 'red' }}>
 
       <div className='Editor-Container-Header'>
         <p>Header 1</p>
@@ -110,7 +113,7 @@ function EditorZ(props) {
         <p>Header 3</p>
       </div>
 
-      <div className='Editor-Content' style={{ height:'100%', backgroundColor:'blue'}} >
+      <div className='Editor-Content' style={{ height: '100%', backgroundColor: 'blue' }} >
 
         <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
         <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
@@ -135,9 +138,11 @@ function EditorZ(props) {
 const executor = new ServerExecutor();
 
 // props:EditorProps
-function EditorImpl(props) {
+function EditorImpl(props: EditorProps) {
 
   console.info("------------- EDITOR -----------------")
+  console.info(props)
+  const { id } = props
 
   // let ecmaEditor: CodeMirrorManager;
 
@@ -399,19 +404,19 @@ function EditorImpl(props) {
             <div style={{ padding: "0px", border: "0px solid blue", display: 'flex', flex: '1 1 auto', height: '100%' }}>
 
               <div style={{ flex: ' 1 0 0%', border: "0px solid purple", overflowY: 'auto' }}>
-                <EcmaEditorContentMemo id={"1"}  onEditorReady={onEditorReadyEcma} />
+                <EcmaEditorContentMemo id={id} onEditorReady={onEditorReadyEcma} />
               </div>
 
               <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
 
                 <div id='json-container' style={{ display: renderType == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   JSON {Date.now()}
-                  <AstEditorContentMemo id={"2"}  onEditorReady={onEditorReadyAst}/>
+                  <AstEditorContentMemo id={"2"} onEditorReady={onEditorReadyAst} />
                 </div>
 
                 <div id='compiled-container' style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   compiled  {Date.now()}
-                  <CompiledEditorContentMemo id={"3"} onEditorReady={onEditorReadyCompiled}/>
+                  <CompiledEditorContentMemo id={"3"} onEditorReady={onEditorReadyCompiled} />
                 </div>
 
                 <div id='console-container' style={{ display: renderType == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
@@ -447,9 +452,9 @@ function EditorImpl(props) {
 }
 
 const EditorContentMemo = React.memo(EditorContent)
-const EcmaEditorContentMemo = React.memo(EcmaEditorContent, (prev, next)=>true)
-const AstEditorContentMemo = React.memo(AstEditorContent, (prev, next)=>true)
-const CompiledEditorContentMemo = React.memo(CompiledEditorContent, (prev, next)=>true)
+const EcmaEditorContentMemo = React.memo(EcmaEditorContent, (prev, next) => true)
+const AstEditorContentMemo = React.memo(AstEditorContent, (prev, next) => true)
+const CompiledEditorContentMemo = React.memo(CompiledEditorContent, (prev, next) => true)
 
 function EditorContent(props: { id: number, tickRef: any, value: number, renderType: string }) {
 
@@ -467,7 +472,7 @@ function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (
 
   const _onEditorReady = (instance: CodeMirrorManager) => {
     console.info('onEditorReady ECMA** ')
-    if(onEditorReady){
+    if (onEditorReady) {
       onEditorReady(instance)
     }
   };
@@ -481,8 +486,8 @@ function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (
     <TextAreaCodeEditor
       onEditorReady={_onEditorReady}
       onKeyDown={onEditorKeyDown}
-      name='editor-ecma'
-      id='editor-ecma'
+      name={`editor-ecma:${id}`}
+      id={`editor-ecma:${id}`}
       focus={true}
       value="let x = 0 + 1" />
   )
@@ -495,7 +500,7 @@ function CompiledEditorContent(props: { id: string, tickRef?: any, onEditorReady
 
   const _onEditorReady = (instance: CodeMirrorManager) => {
     console.info('onEditorReady COMPILED** ')
-    if(onEditorReady){
+    if (onEditorReady) {
       onEditorReady(instance)
     }
   };
@@ -503,22 +508,22 @@ function CompiledEditorContent(props: { id: string, tickRef?: any, onEditorReady
   return (
     <TextAreaCodeEditor
       onEditorReady={_onEditorReady}
-      name='editor-compiled'
-      id='editor-compiled'
+      name={`editor-compiled:${id}`}
+      id={`editor-compiled:${id}`}
       focus={true}
       value="// GENERATED" />
   )
 }
 
 
-function AstEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void  }) {
+function AstEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
   console.info('ASTEditorContent')
   const { id, onEditorReady } = props
   let editor: CodeMirrorManager;
 
   const _onEditorReady = (instance: CodeMirrorManager) => {
     console.info('onEditorReady AST** ')
-    if(onEditorReady){
+    if (onEditorReady) {
       onEditorReady(instance)
     }
   };
@@ -526,13 +531,12 @@ function AstEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (c
   return (
     <TextAreaCodeEditor
       onEditorReady={_onEditorReady}
-      name='editor-ast'
-      id='editor-ast'
+      name={`editor-ast:${id}`}
+      id={`editor-ast:${id}`}
       focus={false}
       value="AST" />
   )
 }
-
 
 export default EditorImpl
 // export default EditorZ

@@ -8,7 +8,7 @@ import "../globalServices"
 import Editor from './Editor';
 import { Grid, IconButton } from '@material-ui/core';
 import { stringify } from 'node:querystring';
-
+import { v4 as uuidv4 } from 'uuid';
 /**
  * Prevent React component from re-rendering
  * https://stackoverflow.com/questions/40909902/shouldcomponentupdate-in-function-components/40910993
@@ -18,32 +18,6 @@ interface TabPanelProps {
   index: any;
   label: string;
 }
-
-const TabPanelXX = React.memo((props: TabPanelProps) => {
-  const { children, index, ...other } = props;
-  console.info(`Rendering TabPanel : ${index}`)
-
-  return (
-    <div
-      role="tabpanel"
-      id={`editorview-tabpanel-${index}`}
-      aria-labelledby={`editorview-tabpanel-${index}`}
-      style={{
-        overflowY: 'auto',
-        padding: "0px", border: "0px solid green", height: '100%', width: '100%', flexDirection: 'column'
-      }}
-      {...other}
-    >
-      {(
-        <div style={{ padding: "0px", border: "0px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
-          Index : { index} ; {Date.now()}
-          <Editor />
-        </div>
-      )}
-    </div>
-  );
-}, (prev, next) => true)
-
 
 const TabPanel = React.memo((props: TabPanelProps) => {
   const { children, index, ...other } = props;
@@ -62,7 +36,7 @@ const TabPanel = React.memo((props: TabPanelProps) => {
     >
       {
         <div style={{ padding: "0px", border: "0px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
-          <Editor />
+          <Editor id={ uuidv4() }/>
         </div>
       }
     </div>
