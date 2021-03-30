@@ -11,7 +11,7 @@ import '../../styles/_codemirror.css';
 // https://stackoverflow.com/questions/29291024/codemirror-onkeyevent-not-firing
 export class CodeMirrorManager {
 
-  public editor: CodeMirror.Editor;
+  editor: CodeMirror.Editor;
 
   config: CodeMirror.EditorConfiguration = {
     tabSize: 4,
@@ -20,7 +20,17 @@ export class CodeMirrorManager {
     // fixedGutter: true,
     mode: { name: "javascript", json: true },
     scrollbarStyle:'native',
+    readOnly:false,
     // theme:'darcula',
+
+    // extraKeys: {
+    //   'Shift-Enter': (cm) => {
+    //     console.log('This works normally')
+    //   },
+    //   'Ctrl-Enter Cmd-Enter': (cm) => {
+    //     console.log('This is called... sometimes')
+    //   },
+    // },
   };
 
   // CTOR

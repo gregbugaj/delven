@@ -139,7 +139,6 @@ export default function FullWidthTabbedEditor() {
     return {
       visibility: 'visible',
       height: 'inherit',
-      border: "0px solid purple"
     };
   };
 
@@ -196,10 +195,10 @@ export default function FullWidthTabbedEditor() {
         <div style={getVisibilityStyle(value != 0)}>
           <TabPanel index={0} label={'Script 0'} />
         </div>
-
+{/*
         <div style={getVisibilityStyle(value != 1)}>
           <TabPanel index={1} label={'Script 1'} />
-        </div>
+        </div> */}
       </div>
     </div>
   );

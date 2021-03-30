@@ -169,7 +169,7 @@ End Scorllbars
   width:100%;
   flex:1;
   overflow:auto;
-  background-color: lightgreen;
+  /* background-color: lightgreen; */
 }
 
 .Editor-Container-Header{

@@ -135,29 +135,115 @@ function EditorZ(props) {
   )
 }
 
+interface EditorSet {
+  ecma: CodeMirrorManager | undefined,
+  ast: CodeMirrorManager | undefined,
+  generator: CodeMirrorManager | undefined
+}
+
 const executor = new ServerExecutor();
+const editorSets = new Map<String, EditorSet>();
+
+
+// observeEditorChange(targetNode: HTMLElement) {
+//   let e1 = this.jsonEditor
+//   let e2 = this.astEditor
+//   let observer = new MutationObserver(function (mutations) {
+//     if (targetNode?.style.display != 'none') {
+//       if (targetNode.id == 'json-container')
+//         e1?.refresh()
+//       else if (targetNode.id == 'json-container')
+//         e2?.refresh()
+//     }
+//   });
+
+//   observer.observe(targetNode, { attributes: true, childList: true });
+// }
+
 
 // props:EditorProps
 function EditorImpl(props: EditorProps) {
-
   console.info("------------- EDITOR -----------------")
   console.info(props)
-  const { id } = props
+  console.info(editorSets)
 
-  // let ecmaEditor: CodeMirrorManager;
+  const { id, ...other } = props
 
-  let astEditor: CodeMirrorManager;
-
-  let generatorEditor: CodeMirrorManager;
-
-  let eventBus = globalServices.eventBus
+  const eventBus = globalServices.eventBus
 
   const classes = useStyles();
   const inputRef = useRef(null);
   const [value, setValue] = React.useState(0);
 
-  // let : CodeMirrorManager;
-  const [ecmaEditor, setEcmaEditor] = React.useState<CodeMirrorManager>();
+  let ecmaEditor: CodeMirrorManager;
+  let astEditor: CodeMirrorManager;
+  let generatorEditor: CodeMirrorManager;
+
+  if (editorSets.has(id)) {
+    const editorSet = editorSets.get(id)
+    if (editorSet) {
+
+      if (editorSet.ecma) {
+        ecmaEditor = editorSet.ecma
+      } else {
+        throw new Error("ECMA editor not defined for : " + id)
+      }
+
+      if (editorSet.ast) {
+        astEditor = editorSet.ast
+      } else {
+        throw new Error("AST editor not defined for : " + id)
+      }
+
+      if (editorSet.generator) {
+        generatorEditor = editorSet.generator
+      } else {
+        throw new Error("GENERATOR editor not defined for : " + id)
+      }
+    }
+  } else {
+    console.info("Adding empty editorset : " + id)
+    editorSets.set(id, { ecma: undefined, ast: undefined, generator: undefined })
+  }
+
+  const setEcmaEditor = (cm: CodeMirrorManager) => {
+    const editorSet = editorSets.get(id)
+    if (editorSet) {
+      editorSet.ecma = ecmaEditor = cm
+    }
+  }
+
+  const setAstEditor = (cm: CodeMirrorManager) => {
+    const editorSet = editorSets.get(id)
+    if (editorSet) {
+      editorSet.ast = astEditor = cm
+    }
+  }
+
+  const setGeneratorEditor = (cm: CodeMirrorManager) => {
+    const editorSet = editorSets.get(id)
+    if (editorSet) {
+      editorSet.generator = generatorEditor = cm
+    }
+  }
+
+
+  // this.observeEditorChange(document.getElementById('json-container') as HTMLElement)
+  // this.observeEditorChange(document.getElementById('compiled-container') as HTMLElement)
+
+  // const setAstEditor = (cm) => astEditor = cm
+  // const setGeneratorEditor = (cm) => generatorEditor = cm
+
+  // let astEditor: CodeMirrorManager;
+  // let generatorEditor: CodeMirrorManager;
+
+  // const setEcmaEditor = (cm) => ecmaEditor = cm
+  // const setAstEditor = (cm) => astEditor = cm
+  // const setGeneratorEditor = (cm) => generatorEditor = cm
+
+  // const [ecmaEditor, setEcmaEditor] = React.useState<CodeMirrorManager>();
+  // const [astEditor, setAstEditor] = React.useState<CodeMirrorManager>();
+  // const [generatorEditor, setGeneratorEditor] = React.useState<CodeMirrorManager>();
 
   // Similar to componentDidMount and componentDidUpdate
   // This function will onyl run once after DOM components have been layedout
@@ -205,8 +291,17 @@ function EditorImpl(props: EditorProps) {
         }
       } else {
         log("success", "Compile reply")
-        astEditor.setValue(stringify(data.ast))
-        generatorEditor.setValue(data.generated)
+        if (astEditor !== undefined) {
+          astEditor.setValue(stringify(data.ast))
+        } else {
+          console.warn("AST Editor is undefined")
+        }
+
+        if (generatorEditor !== undefined) {
+          generatorEditor.setValue(data.generated)
+        } else {
+          console.warn("Generator Editor is undefined")
+        }
       }
     })
 
@@ -236,6 +331,7 @@ function EditorImpl(props: EditorProps) {
 
   async function compile() {
     console.info("Compiling script")
+    console.info(ecmaEditor)
     log("success", "Compiling Script")
     if (ecmaEditor === undefined) {
       console.error("EMCA editor not available")
@@ -309,23 +405,21 @@ function EditorImpl(props: EditorProps) {
   }
 
   const onEditorReadyEcma = (instance: CodeMirrorManager) => {
-    console.info('onEditorReady ECMA :: PARENT ')
-    console.info(instance)
-    // ecmaEditor = instance
-
+    // console.info('onEditorReady ECMA :: PARENT ')
+    // console.info(instance)
     setEcmaEditor(instance)
   };
 
   const onEditorReadyAst = (instance: CodeMirrorManager) => {
-    console.info('onEditorReady AST :: PARENT ')
-    console.info(instance)
-    astEditor = instance
+    // console.info('onEditorReady AST :: PARENT ')
+    // console.info(instance)
+    setAstEditor(instance)
   };
 
   const onEditorReadyCompiled = (instance: CodeMirrorManager) => {
-    console.info('onEditorReady Compiled :: PARENT ')
-    console.info(instance)
-    generatorEditor = instance
+    // console.info('onEditorReady Compiled :: PARENT ')
+    // console.info(instance)
+    setGeneratorEditor(instance)
   };
 
 
@@ -334,6 +428,7 @@ function EditorImpl(props: EditorProps) {
       <div className='Editor-Container-Header'>
 
         <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
+
         <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
@@ -394,9 +489,8 @@ function EditorImpl(props: EditorProps) {
       </div>
 
       <div className='Editor-Content'>
-        {/* <div style={{ padding: "0px", border: "0px solid purple", display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }} > */}
         <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red" }} >
-          <div className='Editor-Container-Header'>
+          <div className='Editor-Container-Header' style={{ border: "1px solid blue", display: "none" }}>
             RenderType :  {renderType}  {Date.now()}
           </div>
 
@@ -410,13 +504,25 @@ function EditorImpl(props: EditorProps) {
               <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
 
                 <div id='json-container' style={{ display: renderType == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                  JSON {Date.now()}
-                  <AstEditorContentMemo id={"2"} onEditorReady={onEditorReadyAst} />
+                  <div style={{ border: "1px solid blue", height: '32px', display: 'none' }}>
+                    Navbar[JSON] {Date.now()}
+                    <Button size="small" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
+                      endIcon={< BlurLinearIcon fontSize="small" />}
+                      onClick={compile}>Compile</Button>
+                  </div>
+
+                  <AstEditorContentMemo id={id} onEditorReady={onEditorReadyAst} />
                 </div>
 
                 <div id='compiled-container' style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                  compiled  {Date.now()}
-                  <CompiledEditorContentMemo id={"3"} onEditorReady={onEditorReadyCompiled} />
+                  <div style={{ border: "1px solid blue", height: '32px', display: 'none' }}>
+                    Navbar[Compliled] {Date.now()}
+                    <Button size="small" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
+                      endIcon={< BlurLinearIcon fontSize="small" />}
+                      onClick={compile}>Compile</Button>
+                  </div>
+
+                  <CompiledEditorContentMemo id={id} onEditorReady={onEditorReadyCompiled} />
                 </div>
 
                 <div id='console-container' style={{ display: renderType == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
@@ -438,14 +544,16 @@ function EditorImpl(props: EditorProps) {
             </div>
           </div>
 
-          {/* <div className='Editor-Container-Footer'>
-                Footer : {renderType}  {Date.now()}
-             </div> */}
+          {/* No footers currently */}
+          <div className='Editor-Container-Footer' style={{ border: "1px solid purple", display: "none" }}>
+            Footer Inner : {renderType}  {Date.now()}
+          </div>
         </div>
       </div>
 
-      <div className='Editor-Container-Footer'>
-        <p>footer</p>
+      {/* No footers currently */}
+      <div className='Editor-Container-Footer' style={{ border: "1px solid purple", display: "none" }}>
+        Footer Outter : {renderType}  {Date.now()}
       </div>
     </div>
   )
@@ -493,7 +601,6 @@ function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (
   )
 }
 
-
 function CompiledEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
   console.info('CompiledEditorContent')
   const { id, onEditorReady } = props
@@ -514,7 +621,6 @@ function CompiledEditorContent(props: { id: string, tickRef?: any, onEditorReady
       value="// GENERATED" />
   )
 }
-
 
 function AstEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
   console.info('ASTEditorContent')
