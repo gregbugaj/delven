@@ -1,4 +1,4 @@
-import React, { useMemo, useLayoutEffect } from 'react'
+import React, { useLayoutEffect } from 'react'
 import { CodeMirrorManager } from './CodeMirror'
 
 interface TextAreaCodeEditorProps {
@@ -21,10 +21,10 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
   let cme: CodeMirrorManager
 
   useLayoutEffect(() => {
-    console.info('TextAreaCodeEditor init ')
+    console.info(`TextAreaCodeEditor init : ${id}`)
     console.info(ref.current)
-    if (ref.current == null) {
-      return
+    if (ref.current === null) {
+      throw new Error('ref.current is null exptected HTMLTextArea')
     }
 
     cme = new CodeMirrorManager(ref.current)
@@ -38,7 +38,7 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
       });
     }
 
-    if(onEditorReady){
+    if (onEditorReady) {
       onEditorReady(cme)
     }
   }, [])
