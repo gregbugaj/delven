@@ -14,7 +14,7 @@ export class ServerExecutor implements IExecutor {
     this.eventStream = new Subject();
   }
 
-  public on(eventNameFilter: string, callback: CallbackFunction<WebSocketMessage>): Subscription {
+  public on( eventNameFilter: string, callback: CallbackFunction<WebSocketMessage>): Subscription {
     return this.eventStream
       .pipe(map((event: MessageEvent): WebSocketMessage => {
         return JSON.parse(event.data);
@@ -39,8 +39,6 @@ export class ServerExecutor implements IExecutor {
         await this.setup(this.params)
       }
     }
-
-    console.info(this.ws)
 
     if (this.ws?.readyState == WebSocket.OPEN) {
       // send CompilationUnit
