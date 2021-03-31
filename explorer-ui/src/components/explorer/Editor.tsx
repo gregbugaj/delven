@@ -109,23 +109,6 @@ interface EditorSet {
 const executor = new ServerExecutor();
 const editorSets = new Map<String, EditorSet>();
 
-
-// observeEditorChange(targetNode: HTMLElement) {
-//   let e1 = this.jsonEditor
-//   let e2 = this.astEditor
-//   let observer = new MutationObserver(function (mutations) {
-//     if (targetNode?.style.display != 'none') {
-//       if (targetNode.id == 'json-container')
-//         e1?.refresh()
-//       else if (targetNode.id == 'json-container')
-//         e2?.refresh()
-//     }
-//   });
-
-//   observer.observe(targetNode, { attributes: true, childList: true });
-// }
-
-
 // props:EditorProps
 function EditorImpl(props: EditorProps) {
   console.info("------------- EDITOR -----------------")
@@ -220,30 +203,27 @@ function EditorImpl(props: EditorProps) {
 
     // hook up events
 
-    // All the messages from executor will be pumped onto the Even Bus specific event
+    // All the messages from executor for this ID will be pumped onto the Even Bus specific event
     // this converts from server side message event to client side EventBus message
     // compile.reply  evaluate.reply
-    if (false) {
-      executor.on("*", msg => {
-        console.group(`Received from backend`)
-        console.info(msg)
-        switch (msg.type) {
-          case "compile.reply":
-            eventBus.emit(new EventTypeCompileReply(msg.data));
-            break;
-          case "evaluate.reply":
-            eventBus.emit(new EventTypeEvaluateReply(msg.data));
-            break;
-          default:
-            throw new Error(`Event not handled : ${stringify(msg)}`)
-        }
-        console.groupEnd();
-      })
-    }
+    executor.on(id, "*", msg => {
+      console.info(`Received from backend : ${stringify(msg)}`)
+      switch (msg.type) {
+        case "compile.reply":
+          eventBus.emit(new EventTypeCompileReply(msg.data));
+          break;
+        case "evaluate.reply":
+          eventBus.emit(new EventTypeEvaluateReply(msg.data));
+          break;
+        default:
+          throw new Error(`Event not handled : ${stringify(msg)}`)
+      }
+    })
 
-    executor.on('compile.reply', msg => {
-      console.info(`Received compile backend : ${stringify(msg)}`)
+    executor.on(id, 'compile.reply', msg => {
+      console.info(`Received compile backend ${id} : ${stringify(msg)}`)
       const data = msg.data
+
       if (data.exception != undefined) {
         let exception = data.exception
         if (generatorEditor) {
@@ -265,7 +245,7 @@ function EditorImpl(props: EditorProps) {
       }
     })
 
-    // CodeMirror does not update properly
+    // CodeMirror does not update properly so we are forcing refresh after the layout has been udpated
     observeNodeChange(jsonContainerRef.current, mutations => astEditor.refresh() )
     observeNodeChange(compiledContainerRef.current, mutations => generatorEditor.refresh())
 
@@ -304,11 +284,9 @@ function EditorImpl(props: EditorProps) {
 
     const txt = ecmaEditor.getValue()
     const unit = { id: uuidv4(), code: txt }
-
     console.info('Compilation Unit')
-    console.info(ecmaEditor)
     console.info(unit)
-    executor.emit('code:compile', unit)
+    executor.emit(id, 'code:compile', unit)
   }
 
   async function evaluate() {
@@ -320,7 +298,7 @@ function EditorImpl(props: EditorProps) {
 
     const txt = ecmaEditor.getValue()
     const unit = { id: uuidv4(), code: txt }
-    executor.emit('code:evaluate', unit)
+    executor.emit(id, 'code:evaluate', unit)
   }
 
   const handlers = {

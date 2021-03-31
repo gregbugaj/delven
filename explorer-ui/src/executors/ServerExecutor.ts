@@ -4,23 +4,48 @@ import { filter, map } from "rxjs/operators";
 import { Subject } from "rxjs";
 import { Subscription } from "rxjs";
 
+// https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
+// https://medium.com/javascript-everyday/yet-another-way-to-handle-rxjs-subscriptions-1f15554ce3b5
 export class ServerExecutor implements IExecutor {
   id?: string
   ws?: WebSocket
-  private eventStream: Subject<MessageEvent>
   params: ISetupParams | undefined;
 
+  private eventStreamSink: Subject<MessageEvent>
+  private messageMap: Map<String, String>
+
   constructor() {
-    this.eventStream = new Subject();
+    this.eventStreamSink = new Subject()
+    this.messageMap = new Map<String, String>()
   }
 
-  public on( eventNameFilter: string, callback: CallbackFunction<WebSocketMessage>): Subscription {
-    return this.eventStream
+  public on(target: string, eventNameFilter: string, callback: CallbackFunction<WebSocketMessage>): Subscription {
+    let sub = this.eventStreamSink
       .pipe(map((event: MessageEvent): WebSocketMessage => {
         return JSON.parse(event.data);
       }))
       .pipe(filter((event: WebSocketMessage): boolean => {
         return eventNameFilter === "*" || event?.type === eventNameFilter
+      }))
+      .pipe(filter((event: WebSocketMessage): boolean => {
+
+        console.info(event)
+        // check if we are the designated recipient
+        if (target && target !== "*") {
+          let data = event.data
+          if (data && data.hasOwnProperty("id")) {
+            const replyId = data["id"]
+            const targetId = this.messageMap.get(replyId);
+            console.warn(`Event Id : '${replyId}  target = ${targetId}' `)
+
+            if (replyId && targetId !== target) {
+              return false
+            } else {
+              // this.messageMap.delete(replyId)
+            }
+          }
+        }
+        return true
       }))
       .subscribe((event: WebSocketMessage): void => {
         try {
@@ -29,9 +54,12 @@ export class ServerExecutor implements IExecutor {
           console.error('Unable to handle envent', error)
         }
       })
+
+    console.info(sub)
+    return sub
   }
 
-  public async emit(event: string, data?: any): Promise<undefined> {
+  public async emit(source: string, event: string, data?: any): Promise<undefined> {
 
     if (this.ws?.readyState == WebSocket.CLOSED) {
       console.info("Connection closed")
@@ -41,8 +69,15 @@ export class ServerExecutor implements IExecutor {
     }
 
     if (this.ws?.readyState == WebSocket.OPEN) {
+      if (data && data.hasOwnProperty("id")) {
+        this.messageMap.set(data["id"], source)
+      } else {
+        console.warn(`Event : '${event}' does not have a unique id`)
+      }
+
+      console.info(this.messageMap)
       // send CompilationUnit
-      this.ws.send(JSON.stringify({ type: event, data: data}));
+      this.ws.send(JSON.stringify({ type: event, data: data }));
       return
     }
 
@@ -76,7 +111,7 @@ export class ServerExecutor implements IExecutor {
 
         this.ws.onmessage = (message: MessageEvent) => {
           console.log('onmessage', message);
-          self.eventStream.next(message);
+          self.eventStreamSink.next(message);
         };
       } catch (e) {
         console.error("Error connecting", e)

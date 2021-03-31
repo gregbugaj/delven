@@ -50,10 +50,12 @@ export interface IExecutor {
 
   /**
    * Emit message to the executor backend
+   *
+   * @param source
    * @param event
    * @param data
    */
-  emit(event: string, data?: any): void;
+  emit(source: string, event: string, data?: any): void;
 
   /**
    * Subscribe to the message bus, but only invoke the callback when the event is of specific type,
@@ -64,8 +66,9 @@ export interface IExecutor {
    * executor.on('eventA', (message)=> console.info(`Incomming message type A = ${message}`)
    * </code>
    *
+   * @param target
    * @param eventNameFilter
    * @param callback
    */
-  on( eventNameFilter: string | null, callback: CallbackFunction<WebSocketMessage>): Subscription;
+  on(target: string, eventNameFilter: string | null, callback: CallbackFunction<WebSocketMessage>): Subscription;
 }
