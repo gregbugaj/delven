@@ -21,7 +21,7 @@ export class CodeMirrorManager {
     mode: { name: "javascript", json: true },
     scrollbarStyle:'native',
     readOnly:false,
-    // theme:'darcula',
+    smartIndent: true
 
     // extraKeys: {
     //   'Shift-Enter': (cm) => {
@@ -53,7 +53,7 @@ export class CodeMirrorManager {
 
   setValue(text: string) {
     this.editor.setValue(text)
-    this.editor.refresh()
+    setTimeout(() => { this.editor.refresh() }, 100)
   }
 
   refresh() {

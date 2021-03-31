@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react'
+import React, { RefObject, useLayoutEffect } from 'react'
 import { CodeMirrorManager } from './CodeMirror'
 
 interface TextAreaCodeEditorProps {
@@ -8,7 +8,10 @@ interface TextAreaCodeEditorProps {
   focus: boolean
   onKeyDown?: (instance: CodeMirror.Editor, event: KeyboardEvent) => void,
   onEditorReady?: (cme: CodeMirrorManager) => void,
+  containerRef?: RefObject<HTMLDivElement>,
 }
+
+
 
 const TextAreaCodeEditor = React.memo((props: TextAreaCodeEditorProps) => {
   return TextAreaCodeEditorInner(props)
@@ -16,7 +19,6 @@ const TextAreaCodeEditor = React.memo((props: TextAreaCodeEditorProps) => {
 
 function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
   const { name, value, id, focus, onKeyDown, onEditorReady, ...other } = props;
-
   const ref = React.createRef<HTMLTextAreaElement>();
   let cme: CodeMirrorManager
 
@@ -40,6 +42,7 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
     if (onEditorReady) {
       onEditorReady(cme)
     }
+
   }, [])
 
   return (

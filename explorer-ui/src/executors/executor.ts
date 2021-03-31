@@ -50,7 +50,6 @@ export interface IExecutor {
 
   /**
    * Emit message to the executor backend
-   *
    * @param event
    * @param data
    */
@@ -68,5 +67,5 @@ export interface IExecutor {
    * @param eventNameFilter
    * @param callback
    */
-  on(eventNameFilter: string | null, callback: CallbackFunction<WebSocketMessage>): Subscription;
+  on( eventNameFilter: string | null, callback: CallbackFunction<WebSocketMessage>): Subscription;
 }

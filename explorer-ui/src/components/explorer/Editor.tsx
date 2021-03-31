@@ -13,9 +13,6 @@ import { ServerExecutor } from "../../executors";
 import { GlobalHotKeys } from 'react-hotkeys';
 import { configure } from 'react-hotkeys';
 
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-
 import { useEffect, useLayoutEffect } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import globalServices from '../globalServices';
@@ -26,6 +23,9 @@ import TextAreaCodeEditor from './TextAreaCodeEditor';
 
 import { v4 as uuidv4 } from 'uuid';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+
+// https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
+
 
 // keyboard shortcuts
 configure({
@@ -99,41 +99,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 
-// https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
-function EditorZ(props) {
-  console.info(`Editor Z : ${Date.now()} `)
-
-  return (
-    // <div style={{ border: "0px solid purple", display: 'flex', height: '100%', width:'100%', flexDirection: 'column'}} >
-    <div className='Editor-Container' style={{ height: '100%', backgroundColor: 'red' }}>
-
-      <div className='Editor-Container-Header'>
-        <p>Header 1</p>
-        <p>Header 2</p>
-        <p>Header 3</p>
-      </div>
-
-      <div className='Editor-Content' style={{ height: '100%', backgroundColor: 'blue' }} >
-
-        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-        <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>      <p>xx</p>
-
-      </div>
-
-      <div className='Editor-Container-Footer'>
-        <p>Footer 1</p>
-        <p>Footer 2</p>
-        <p>Footer 3</p>
-      </div>
-
-    </div>
-  )
-}
 
 interface EditorSet {
   ecma: CodeMirrorManager | undefined,
@@ -165,7 +130,9 @@ const editorSets = new Map<String, EditorSet>();
 function EditorImpl(props: EditorProps) {
   console.info("------------- EDITOR -----------------")
   console.info(props)
-  console.info(editorSets)
+
+  const jsonContainerRef = React.createRef<HTMLDivElement>();
+  const compiledContainerRef = React.createRef<HTMLDivElement>();
 
   const { id, ...other } = props
 
@@ -227,23 +194,16 @@ function EditorImpl(props: EditorProps) {
     }
   }
 
+  const observeNodeChange = (targetNode: HTMLElement | null, observer: (args: MutationRecord[]) => void) => {
+    console.info(targetNode)
+    if (targetNode === null) {
+      console.warn('Observable node is null')
+      return
+    }
+    const observable = new MutationObserver(mutations => observer(mutations));
+    observable.observe(targetNode, { attributes: true, childList: true });
+  }
 
-  // this.observeEditorChange(document.getElementById('json-container') as HTMLElement)
-  // this.observeEditorChange(document.getElementById('compiled-container') as HTMLElement)
-
-  // const setAstEditor = (cm) => astEditor = cm
-  // const setGeneratorEditor = (cm) => generatorEditor = cm
-
-  // let astEditor: CodeMirrorManager;
-  // let generatorEditor: CodeMirrorManager;
-
-  // const setEcmaEditor = (cm) => ecmaEditor = cm
-  // const setAstEditor = (cm) => astEditor = cm
-  // const setGeneratorEditor = (cm) => generatorEditor = cm
-
-  // const [ecmaEditor, setEcmaEditor] = React.useState<CodeMirrorManager>();
-  // const [astEditor, setAstEditor] = React.useState<CodeMirrorManager>();
-  // const [generatorEditor, setGeneratorEditor] = React.useState<CodeMirrorManager>();
 
   // Similar to componentDidMount and componentDidUpdate
   // This function will onyl run once after DOM components have been layedout
@@ -304,6 +264,10 @@ function EditorImpl(props: EditorProps) {
         }
       }
     })
+
+    // CodeMirror does not update properly
+    observeNodeChange(jsonContainerRef.current, mutations => astEditor.refresh() )
+    observeNodeChange(compiledContainerRef.current, mutations => generatorEditor.refresh())
 
   }, []);
 
@@ -401,34 +365,17 @@ function EditorImpl(props: EditorProps) {
       return
     console.info(renderType)
     setRenderType(renderType)
-    // this.setState({ display: renderType });
   }
 
-  const onEditorReadyEcma = (instance: CodeMirrorManager) => {
-    // console.info('onEditorReady ECMA :: PARENT ')
-    // console.info(instance)
-    setEcmaEditor(instance)
-  };
-
-  const onEditorReadyAst = (instance: CodeMirrorManager) => {
-    // console.info('onEditorReady AST :: PARENT ')
-    // console.info(instance)
-    setAstEditor(instance)
-  };
-
-  const onEditorReadyCompiled = (instance: CodeMirrorManager) => {
-    // console.info('onEditorReady Compiled :: PARENT ')
-    // console.info(instance)
-    setGeneratorEditor(instance)
-  };
-
+  const onEditorReadyEcma = (cme: CodeMirrorManager) => setEcmaEditor(cme);
+  const onEditorReadyAst = (cme: CodeMirrorManager) => setAstEditor(cme);
+  const onEditorReadyCompiled = (cme: CodeMirrorManager) => setGeneratorEditor(cme);
 
   return (
     <div className='Editor-Container' >
       <div className='Editor-Container-Header'>
 
         <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
-
         <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
@@ -502,8 +449,7 @@ function EditorImpl(props: EditorProps) {
               </div>
 
               <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
-
-                <div id='json-container' style={{ display: renderType == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div ref={jsonContainerRef} id={`json-container:${id}`} style={{ display: renderType == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   <div style={{ border: "1px solid blue", height: '32px', display: 'none' }}>
                     Navbar[JSON] {Date.now()}
                     <Button size="small" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
@@ -511,10 +457,10 @@ function EditorImpl(props: EditorProps) {
                       onClick={compile}>Compile</Button>
                   </div>
 
-                  <AstEditorContentMemo id={id} onEditorReady={onEditorReadyAst} />
+                  <AstEditorContentMemo id={id} onEditorReady={onEditorReadyAst}  />
                 </div>
 
-                <div id='compiled-container' style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div ref={compiledContainerRef}  id={`compiled-container:${id}`} style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   <div style={{ border: "1px solid blue", height: '32px', display: 'none' }}>
                     Navbar[Compliled] {Date.now()}
                     <Button size="small" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
@@ -525,7 +471,7 @@ function EditorImpl(props: EditorProps) {
                   <CompiledEditorContentMemo id={id} onEditorReady={onEditorReadyCompiled} />
                 </div>
 
-                <div id='console-container' style={{ display: renderType == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div id={`console-container:${id}`} style={{ display: renderType == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   CONSOLE  {Date.now()}
                   {/* <EditorContentMemo id={0} tickRef={tickRef} renderType='console' /> */}
                 </div>
@@ -601,7 +547,7 @@ function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (
   )
 }
 
-function CompiledEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
+function CompiledEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorManager) => void }) {
   console.info('CompiledEditorContent')
   const { id, onEditorReady } = props
 
@@ -622,11 +568,10 @@ function CompiledEditorContent(props: { id: string, tickRef?: any, onEditorReady
   )
 }
 
-function AstEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
+function AstEditorContent(props: { id: string,  onEditorReady?: (cme: CodeMirrorManager) => void }) {
   console.info('ASTEditorContent')
   const { id, onEditorReady } = props
   let editor: CodeMirrorManager;
-
   const _onEditorReady = (instance: CodeMirrorManager) => {
     console.info('onEditorReady AST** ')
     if (onEditorReady) {
