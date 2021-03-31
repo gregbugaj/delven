@@ -22,7 +22,6 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
 
   useLayoutEffect(() => {
     console.info(`TextAreaCodeEditor init : ${id}`)
-    console.info(ref.current)
     if (ref.current === null) {
       throw new Error('ref.current is null exptected HTMLTextArea')
     }
