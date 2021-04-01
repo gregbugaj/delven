@@ -13,7 +13,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import { EventTypeAddTab, EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import Editor from './Editor';
-import { Grid, IconButton } from '@material-ui/core';
+import { AppBar, Grid, IconButton } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -198,39 +198,39 @@ export default function FullWidthTabbedEditor() {
   return (
     <div className='Editor-Container'>
       <div className='Editor-Container-Header'>
-        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
-          <Grid item>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="scrollable"
-              scrollButtons="auto"
-              aria-label="Query samples"
-              style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
+        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} xs={12}>
+          <Grid item xs={11} style={{ padding: "0px", border: "0px solid green" }}>
 
-              TabIndicatorProps={{
-                style: {
-                  height: "4px",
-                }
-              }}
-            >
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label="Query samples"
+                // style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
+                TabIndicatorProps={{
+                  style: {
+                    height: "4px",
+                  }
+                }}
+              >
 
-              {/* <Tab label="Script #1" {...a11TabProps(0)} className={classes.tab} ></Tab> */}
-              {/* <Tab label="Script #2" {...a11TabProps(1)} className={classes.tab} ></Tab> */}
+                {/* <Tab label="Script #1" {...a11TabProps(0)} className={classes.tab} ></Tab> */}
+                {/* <Tab label="Script #2" {...a11TabProps(1)} className={classes.tab} ></Tab> */}
 
-              {
-                tabList?.map((tab, i) => (
-                  <Tab
+                {
+                  tabList?.map((tab, i) => (
+                    <Tab
                       value={tab.index}
                       label={tab.label}
                       {...a11TabProps(tab.index)}
                       className={classes.tab}
                     />
-                ))
-              }
-{/*
+                  ))
+                }
+                {/*
 
               {
                 tabList?.map((tab, i) => (
@@ -248,10 +248,9 @@ export default function FullWidthTabbedEditor() {
                 ))
               } */}
 
-
-            </Tabs>
+              </Tabs>
           </Grid>
-          <Grid item>
+          <Grid item xs={1}>
             <IconButton color="primary" aria-label="add tab" component="span" onClick={handleTabAdd}>
               <AddIcon />
             </IconButton>
