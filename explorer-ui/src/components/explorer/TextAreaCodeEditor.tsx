@@ -31,10 +31,6 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
     cme = new CodeMirrorManager(ref.current)
     if (onKeyDown) {
       cme.editor.on("keydown", (cm, change) => {
-        // console.log("something changed xx ");
-        // console.log(change)
-        // let cursor = cm.getCursor()
-        // console.log(cursor)
         onKeyDown(cm, change)
       });
     }

@@ -7,7 +7,7 @@ import BlurLinearIcon from '@material-ui/icons/BlurLinear';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
-import { EventTypeEditorKeyDown, EventTypeCompileReply, EventTypeEvaluateReply } from "../bus/message-bus-events";
+import { EventTypeEditorKeyDown, EventTypeCompileReply, EventTypeEvaluateReply, EventTypeSampleQuery } from "../bus/message-bus-events";
 import { ServerExecutor } from "../../executors";
 
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -23,6 +23,7 @@ import TextAreaCodeEditor from './TextAreaCodeEditor';
 
 import { v4 as uuidv4 } from 'uuid';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
+import { http } from '../../http';
 
 // https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
 
@@ -99,7 +100,11 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 
-
+type ServiceReplyEventType = {
+  status: string,
+  msg?: string
+  data?: any
+}
 interface EditorSet {
   ecma: CodeMirrorManager | undefined,
   ast: CodeMirrorManager | undefined,
@@ -178,7 +183,6 @@ function EditorImpl(props: EditorProps) {
   }
 
   const observeNodeChange = (targetNode: HTMLElement | null, observer: (args: MutationRecord[]) => void) => {
-    console.info(targetNode)
     if (targetNode === null) {
       console.warn('Observable node is null')
       return
@@ -202,12 +206,32 @@ function EditorImpl(props: EditorProps) {
     })()
 
     // hook up events
+    let editor = ecmaEditor
+    eventBus.on(
+      EventTypeSampleQuery,
+      (event): void => {
+        if (event.data.type !== "file") {
+          return;
+        }
+        let id = event.data.id
+          ; (async () => {
+            const reply = await http<ServiceReplyEventType>(`/api/v1/samples/${id}`);
+            if (reply.status === 'error') {
+              alert(reply.msg)
+            } else if (reply.status === 'ok') {
+              editor.setValue(reply.data);
+            }
+          }
+          )()
+      }
+    )
+
 
     // All the messages from executor for this ID will be pumped onto the Even Bus specific event
     // this converts from server side message event to client side EventBus message
     // compile.reply  evaluate.reply
     executor.on(id, "*", msg => {
-      console.info(`Received from backend : ${stringify(msg)}`)
+      // console.info(`Received from backend : ${stringify(msg)}`)
       switch (msg.type) {
         case "compile.reply":
           eventBus.emit(new EventTypeCompileReply(msg.data));
@@ -215,15 +239,21 @@ function EditorImpl(props: EditorProps) {
         case "evaluate.reply":
           eventBus.emit(new EventTypeEvaluateReply(msg.data));
           break;
+
+        case null:
+        case undefined: {
+          console.warn(`Event without type(log only) : ${stringify(msg)}`)
+          break
+        }
         default:
           throw new Error(`Event not handled : ${stringify(msg)}`)
       }
     })
 
     executor.on(id, 'compile.reply', msg => {
-      console.info(`Received compile backend ${id} : ${stringify(msg)}`)
-      const data = msg.data
+      // console.info(`Received compile backend ${id} : ${stringify(msg)}`)
 
+      const data = msg.data
       if (data.exception != undefined) {
         let exception = data.exception
         if (generatorEditor) {
@@ -246,7 +276,7 @@ function EditorImpl(props: EditorProps) {
     })
 
     // CodeMirror does not update properly so we are forcing refresh after the layout has been udpated
-    observeNodeChange(jsonContainerRef.current, mutations => astEditor.refresh() )
+    observeNodeChange(jsonContainerRef.current, mutations => astEditor.refresh())
     observeNodeChange(compiledContainerRef.current, mutations => generatorEditor.refresh())
 
   }, []);
@@ -275,7 +305,6 @@ function EditorImpl(props: EditorProps) {
 
   async function compile() {
     console.info("Compiling script")
-    console.info(ecmaEditor)
     log("success", "Compiling Script")
     if (ecmaEditor === undefined) {
       console.error("EMCA editor not available")
@@ -435,10 +464,10 @@ function EditorImpl(props: EditorProps) {
                       onClick={compile}>Compile</Button>
                   </div>
 
-                  <AstEditorContentMemo id={id} onEditorReady={onEditorReadyAst}  />
+                  <AstEditorContentMemo id={id} onEditorReady={onEditorReadyAst} />
                 </div>
 
-                <div ref={compiledContainerRef}  id={`compiled-container:${id}`} style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div ref={compiledContainerRef} id={`compiled-container:${id}`} style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   <div style={{ border: "1px solid blue", height: '32px', display: 'none' }}>
                     Navbar[Compliled] {Date.now()}
                     <Button size="small" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
@@ -546,7 +575,7 @@ function CompiledEditorContent(props: { id: string, onEditorReady?: (cme: CodeMi
   )
 }
 
-function AstEditorContent(props: { id: string,  onEditorReady?: (cme: CodeMirrorManager) => void }) {
+function AstEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorManager) => void }) {
   console.info('ASTEditorContent')
   const { id, onEditorReady } = props
   let editor: CodeMirrorManager;

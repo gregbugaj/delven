@@ -1,11 +1,28 @@
 import { IExecutor, ISetupParams, WebSocketMessage, CallbackFunction } from './executor';
 
-import { filter, map } from "rxjs/operators";
-import { Subject } from "rxjs";
+import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map, tap } from "rxjs/operators";
+import { MonoTypeOperatorFunction, Observable, pipe, Subject } from "rxjs";
 import { Subscription } from "rxjs";
+import { Stream } from 'stream';
 
 // https://gist.github.com/staltz/868e7e9bc2a7b8c1f754
 // https://medium.com/javascript-everyday/yet-another-way-to-handle-rxjs-subscriptions-1f15554ce3b5
+
+
+function tapOnce<T>(action: Function): MonoTypeOperatorFunction<T> {
+  let isFirst = true
+  return pipe(
+    tap(next => {
+      if (!isFirst) {
+        return
+      }
+
+      action(next);
+      isFirst = false
+    })
+  )
+}
+
 export class ServerExecutor implements IExecutor {
   id?: string
   ws?: WebSocket
@@ -13,54 +30,96 @@ export class ServerExecutor implements IExecutor {
 
   private eventStreamSink: Subject<MessageEvent>
   private messageMap: Map<String, String>
+  private targetStreamMap: Map<String, Subject<WebSocketMessage>>
+
+  // private subscriptions:Subscription
 
   constructor() {
     this.eventStreamSink = new Subject()
-    this.messageMap = new Map<String, String>()
+    this.messageMap = new Map()
+    this.targetStreamMap = new Map()
+    this.eventStreamSink
+      .pipe(
+        map((event: MessageEvent): WebSocketMessage => {
+          return JSON.parse(event.data);
+        }),
+      )
+      .subscribe(val => this.split(val))
+  }
+
+  split(message: WebSocketMessage): void {
+
+
+    // Messages like this will not haVe a data element but still need to be pushed
+    // {↵	"id": "0003",↵	"code": "Unhandled type : > Sand…Container: System ready\n\r",↵	"compileTime": 0↵}"
+
+    if (!message.hasOwnProperty("data")) {
+      console.warn("Unhanded messagea")
+      console.warn(message)
+      return
+    }
+
+    const data = message.data
+    const hasId = data.hasOwnProperty("id")
+
+    if (data && hasId) {
+      const replyId = data["id"]
+      const targetId = this.messageMap.get(replyId);
+      console.warn(`Event/target Id : '${replyId}  = ${targetId}' `)
+      if (targetId === undefined) {
+        throw new Error("TargerId should not be null/undefined")
+      }
+
+      const stream = this.targetStreamMap.get(targetId)
+      if (stream === undefined) {
+        throw new Error("stream should not be null/undefined")
+      }
+
+      stream.next(message)
+      this.messageMap.delete(replyId)
+    } else if (data && !hasId) {
+      throw new Error("Reply has no ID property")
+    }
   }
 
   public on(target: string, eventNameFilter: string, callback: CallbackFunction<WebSocketMessage>): Subscription {
-    let sub = this.eventStreamSink
-      .pipe(map((event: MessageEvent): WebSocketMessage => {
-        return JSON.parse(event.data);
-      }))
-      .pipe(filter((event: WebSocketMessage): boolean => {
-        return eventNameFilter === "*" || event?.type === eventNameFilter
-      }))
-      .pipe(filter((event: WebSocketMessage): boolean => {
 
-        console.info(event)
-        // check if we are the designated recipient
-        if (target && target !== "*") {
-          let data = event.data
-          if (data && data.hasOwnProperty("id")) {
-            const replyId = data["id"]
-            const targetId = this.messageMap.get(replyId);
-            console.warn(`Event Id : '${replyId}  target = ${targetId}' `)
+    let stream: Subject<WebSocketMessage> | undefined = this.targetStreamMap.get(target)
+    if (stream === undefined) {
+      stream = new Subject<WebSocketMessage>()
+      this.targetStreamMap.set(target, stream)
+    }
 
-            if (replyId && targetId !== target) {
-              return false
-            } else {
-              // this.messageMap.delete(replyId)
-            }
+    if (stream === undefined) {
+      throw new Error("Stream should not be null")
+    }
+
+    return stream
+      .pipe(
+        catchError(error => {
+          console.log('error occured:', error);
+          throw error;
+        }),
+
+        filter((event: WebSocketMessage): boolean => {
+          return eventNameFilter === "*" || event?.type === eventNameFilter
+        }),
+      )
+      .subscribe(
+        (value: WebSocketMessage) => {
+          try {
+            callback.call(null, value);
+          } catch (err) {
+            console.error('Unable to handle envent', err)
           }
-        }
-        return true
-      }))
-      .subscribe((event: WebSocketMessage): void => {
-        try {
-          callback.call(null, event);
-        } catch (error) {
-          console.error('Unable to handle envent', error)
-        }
-      })
-
-    console.info(sub)
-    return sub
+        },
+        err => {
+          console.error("Error in subscriber", err)
+        },
+      )
   }
 
   public async emit(source: string, event: string, data?: any): Promise<undefined> {
-
     if (this.ws?.readyState == WebSocket.CLOSED) {
       console.info("Connection closed")
       if (this.params != undefined) {
@@ -75,7 +134,6 @@ export class ServerExecutor implements IExecutor {
         console.warn(`Event : '${event}' does not have a unique id`)
       }
 
-      console.info(this.messageMap)
       // send CompilationUnit
       this.ws.send(JSON.stringify({ type: event, data: data }));
       return
@@ -105,7 +163,8 @@ export class ServerExecutor implements IExecutor {
         }
 
         this.ws.onerror = event => {
-          console.error("Error ", event)
+          console.error("Wesocket error ", event)
+          this.eventStreamSink.error(event)
           reject(event)
         }
 
@@ -113,6 +172,14 @@ export class ServerExecutor implements IExecutor {
           console.log('onmessage', message);
           self.eventStreamSink.next(message);
         };
+
+        this.ws.onclose = (e: CloseEvent) => {
+          if (e.wasClean) {
+            this.eventStreamSink.complete()
+          } else {
+            this.eventStreamSink.error(e)
+          }
+        }
       } catch (e) {
         console.error("Error connecting", e)
         reject(e)
