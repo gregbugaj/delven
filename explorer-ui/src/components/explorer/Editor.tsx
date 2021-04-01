@@ -129,6 +129,7 @@ function EditorImpl(props: EditorProps) {
   const classes = useStyles();
   const inputRef = useRef(null);
   const [value, setValue] = React.useState(0);
+  const [compileInProgress, setCompileInProgress] = React.useState(false);
 
   let ecmaEditor: CodeMirrorManager;
   let astEditor: CodeMirrorManager;
@@ -215,15 +216,10 @@ function EditorImpl(props: EditorProps) {
         console.info(`EventTypeSampleQuery Received **** `)
         console.info( globalServices.state)
         const activeId = globalServices.state.activeTabId
-        console.info(activeId)
-        console.info(tabId)
-        console.info(event)
-
         if(tabId !==  activeId){
           console.info(`Skipping tab : ${tabId}`)
           return
         }
-
 
         if (event.data.type !== "file") {
           return;
@@ -266,26 +262,30 @@ function EditorImpl(props: EditorProps) {
 
     executor.on(id, 'compile.reply', msg => {
       // console.info(`Received compile backend ${id} : ${stringify(msg)}`)
-
-      const data = msg.data
-      if (data.exception != undefined) {
-        let exception = data.exception
-        if (generatorEditor) {
-          generatorEditor.setValue(stringify(data))
-        }
-      } else {
-        log("success", "Compile reply")
-        if (astEditor !== undefined) {
-          astEditor.setValue(stringify(data.ast))
+      try {
+        const data = msg.data
+        if (data.exception != undefined) {
+          let exception = data.exception
+          if (generatorEditor) {
+            generatorEditor.setValue(stringify(data))
+          }
         } else {
-          console.warn("AST Editor is undefined")
-        }
+          log("success", "Compile reply")
+          if (astEditor !== undefined) {
+            astEditor.setValue(stringify(data.ast))
+          } else {
+            console.warn("AST Editor is undefined")
+          }
 
-        if (generatorEditor !== undefined) {
-          generatorEditor.setValue(data.generated)
-        } else {
-          console.warn("Generator Editor is undefined")
+          if (generatorEditor !== undefined) {
+            generatorEditor.setValue(data.generated)
+          } else {
+            console.warn("Generator Editor is undefined")
+          }
         }
+      } finally {
+        setCompileInProgress(false)
+
       }
     })
 
@@ -327,6 +327,13 @@ function EditorImpl(props: EditorProps) {
       console.error("EMCA editor not available")
       return
     }
+
+    if(compileInProgress){
+      console.warn('Compilation already in progress')
+      return
+    }
+
+    setCompileInProgress(true)
 
     const txt = ecmaEditor.getValue()
     const unit = { id: uuidv4(), code: txt }
@@ -404,9 +411,10 @@ function EditorImpl(props: EditorProps) {
           <Grid item sm={12} md={6}>
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
               <Grid item>
-                <Button size="medium" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
+
+                <Button disabled={compileInProgress} size="medium" variant="contained" color="primary" style={{ minWidth: 140, marginRight: '20px' }}
                   endIcon={< BlurLinearIcon fontSize="large" />}
-                  onClick={compile}>Compile</Button>
+                  onClick={compile}>{compileInProgress?'Executing' : 'Compile'}</Button>
 
                 <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
                   endIcon={
