@@ -4,6 +4,7 @@ import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AddIcon from '@material-ui/icons/Add';
+import CloseIcon from '@material-ui/icons/Close';
 import MenuIcon from "@material-ui/icons/Menu";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -45,7 +46,7 @@ const TabPanel = React.memo((props: TabPanelProps) => {
     >
       {
         <div style={{ padding: "0px", border: "0px solid black", height: '100%', width: '100%', flexDirection: 'column' }}>
-          <Editor id={index} onLoadComplete={onLoadCompleteHandler}/>
+          <Editor id={index} onLoadComplete={onLoadCompleteHandler} />
         </div>
       }
     </div>
@@ -179,16 +180,19 @@ export default function FullWidthTabbedEditor() {
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleMenuClick =  (event: React.MouseEvent<HTMLButtonElement>)  => {
+  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     console.info(event)
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMenuClose =  (event: React.MouseEvent<HTMLLIElement>) => {
+  const handleMenuClose = (event: React.MouseEvent<HTMLLIElement>) => {
     console.info(event)
     setAnchorEl(null);
   };
 
+  function handleCloseTab(index: string) {
+    console.info(`Closing Tab # ${index}`)
+  }
 
   return (
     <div className='Editor-Container'>
@@ -218,13 +222,31 @@ export default function FullWidthTabbedEditor() {
               {
                 tabList?.map((tab, i) => (
                   <Tab
-                    value={tab.index}
-                    label={tab.label}
-                    {...a11TabProps(tab.index)}
-                    className={classes.tab}
-                  />
+                      value={tab.index}
+                      label={tab.label}
+                      {...a11TabProps(tab.index)}
+                      className={classes.tab}
+                    />
                 ))
               }
+{/*
+
+              {
+                tabList?.map((tab, i) => (
+                  <div>
+                    <Tab
+                      value={tab.index}
+                      label={tab.label}
+                      {...a11TabProps(tab.index)}
+                      className={classes.tab}
+                    />
+                    <IconButton color="primary" aria-label="add tab" component="span" onClick={(event) => handleCloseTab(tab.index)}>
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
+                ))
+              } */}
+
 
             </Tabs>
           </Grid>
@@ -253,7 +275,7 @@ export default function FullWidthTabbedEditor() {
             >
               <MenuItem onClick={handleMenuClose}>Close Current   CTRL+K W</MenuItem>
               <MenuItem onClick={handleMenuClose}>Close Saved     CTRL+K U</MenuItem>
-              <hr/>
+              <hr />
               <MenuItem onClick={handleMenuClose}>Close All       CTRL+K X</MenuItem>
             </Menu>
 
@@ -285,3 +307,4 @@ export default function FullWidthTabbedEditor() {
     </div>
   );
 }
+

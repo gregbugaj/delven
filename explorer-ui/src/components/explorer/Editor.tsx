@@ -414,7 +414,7 @@ function EditorImpl(props: EditorProps) {
 
                 <Button disabled={compileInProgress} size="medium" variant="contained" color="primary" style={{ minWidth: 140, marginRight: '20px' }}
                   endIcon={< BlurLinearIcon fontSize="large" />}
-                  onClick={compile}>{compileInProgress?'Executing' : 'Compile'}</Button>
+                  onClick={compile}>{compileInProgress?'Compiling' : 'Compile'}</Button>
 
                 <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
                   endIcon={
