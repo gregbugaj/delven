@@ -5,6 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import MenuIcon from "@material-ui/icons/Menu";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -263,7 +264,7 @@ export default function FullWidthTabbedEditor() {
               aria-haspopup="true"
               onClick={handleMenuClick}
             >
-              <MenuIcon />
+              <MoreHorizIcon />
             </IconButton>
 
             <Menu
