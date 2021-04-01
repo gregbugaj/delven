@@ -37,6 +37,7 @@ import BreadcrumModule from '../shared/breadcrumbs';
 import FullWidthTabs from './TabbedMenu'
 import FullWidthTabbedEditor from './TabbedEditor'
 import { EventTypeCompileReply, EventTypeEditorKeyDown } from "../bus/message-bus-events";
+import ShortcutsComponent from "../settings/Shortcuts";
 
 const drawerWidth = 300;
 
@@ -101,11 +102,6 @@ const useStyles = makeStyles(theme => ({
     }
   },
 
-  appBarSpacer: {
-    minHeight: 80,
-    border: '0px solid green'
-  },
-
   content: {
     flexGrow: 1,
     overflow: "auto",
@@ -163,12 +159,14 @@ const IntegrationComponent = () => {
 };
 
 
+
 const breadcrumbNameMap: { [key: string]: string } = {
   '/explorer': 'AST Explorer',
   '/explorer/settings': 'Settings',
   '/explorer/settings/plugins': 'Plugins',
   '/explorer/settings/feature-b': 'Admin - Future B',
   '/explorer/settings/feature-c': 'Admin - Future C',
+  '/explorer/settings/shortcuts': 'Shortcuts',
 };
 
 
@@ -250,6 +248,7 @@ function AstExplorerApplication() {
               <BreadcrumModule breadcrumbs={breadcrumbNameMap} label="Explorer" />
             </Typography>
 
+            {/* <ModuleSelect /> */}
           </Toolbar>
         </AppBar>
 
@@ -280,6 +279,14 @@ function AstExplorerApplication() {
 
             <Collapse in={openAdmin} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
+
+                <ListItem button component={AdapterLink} to='/explorer/settings/renderers' className={classes.nested}>
+                  <ListItemIcon>
+                    <AssignmentIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Renderers" />
+                </ListItem>
+
                 <ListItem button component={AdapterLink} to='/explorer/settings/plugins' className={classes.nested}>
                   <ListItemIcon>
                     <AssignmentIcon />
@@ -287,11 +294,11 @@ function AstExplorerApplication() {
                   <ListItemText primary="Plugins" />
                 </ListItem>
 
-                <ListItem button component={AdapterLink} to='/explorer/settings/feature-b' className={classes.nested}>
+                <ListItem button component={AdapterLink} to='/explorer/settings/shortcuts' className={classes.nested}>
                   <ListItemIcon>
                     <AssignmentIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Feature B" />
+                  <ListItemText primary="Shortcuts" />
                 </ListItem>
 
                 <ListItem button component={AdapterLink} to='/explorer/settings/feature-c' className={classes.nested}>
@@ -318,11 +325,12 @@ function AstExplorerApplication() {
 
         <main className={classes.content}>
           <div style={{ minHeight: 64 }}></div>
-          <Container maxWidth="xl" className={classes.container} style={{ border: '2px solid green', padding: '0px', height: 'calc(100vh - 96px)' }} >
+          <Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 96px)' }} >
             <Switch>
               <Route exact path='/explorer' component={DefaultComponent} />
               <Route exact path='/explorer/settings' component={SettingsComponent} />
               <Route path='/explorer/integration' component={IntegrationComponent} />
+              <Route path='/explorer/settings/shortcuts' component={ShortcutsComponent} />
             </Switch>
           </Container>
         </main>
@@ -351,6 +359,5 @@ function AstExplorerApplication() {
     </div>
   );
 }
-
 
 export default AstExplorerApplication;

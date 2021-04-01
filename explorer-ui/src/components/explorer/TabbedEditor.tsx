@@ -4,11 +4,16 @@ import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AddIcon from '@material-ui/icons/Add';
+import MenuIcon from "@material-ui/icons/Menu";
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+
 import { EventTypeAddTab, EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import Editor from './Editor';
 import { Grid, IconButton } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
+
 /**
  * Prevent React component from re-rendering
  * https://stackoverflow.com/questions/40909902/shouldcomponentupdate-in-function-components/40910993
@@ -172,6 +177,19 @@ export default function FullWidthTabbedEditor() {
   };
 
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleMenuClick =  (event: React.MouseEvent<HTMLButtonElement>)  => {
+    console.info(event)
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose =  (event: React.MouseEvent<HTMLLIElement>) => {
+    console.info(event)
+    setAnchorEl(null);
+  };
+
+
   return (
     <div className='Editor-Container'>
       <div className='Editor-Container-Header'>
@@ -214,6 +232,31 @@ export default function FullWidthTabbedEditor() {
             <IconButton color="primary" aria-label="add tab" component="span" onClick={handleTabAdd}>
               <AddIcon />
             </IconButton>
+
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              aria-controls="editor-menu"
+              aria-haspopup="true"
+              onClick={handleMenuClick}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            <Menu
+              id="editor-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={handleMenuClose}>Close Current   CTRL+K W</MenuItem>
+              <MenuItem onClick={handleMenuClose}>Close Saved     CTRL+K U</MenuItem>
+              <hr/>
+              <MenuItem onClick={handleMenuClose}>Close All       CTRL+K X</MenuItem>
+            </Menu>
+
           </Grid>
         </Grid>
       </div>
