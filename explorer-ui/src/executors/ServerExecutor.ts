@@ -48,8 +48,6 @@ export class ServerExecutor implements IExecutor {
   }
 
   split(message: WebSocketMessage): void {
-
-
     // Messages like this will not haVe a data element but still need to be pushed
     // {↵	"id": "0003",↵	"code": "Unhandled type : > Sand…Container: System ready\n\r",↵	"compileTime": 0↵}"
 

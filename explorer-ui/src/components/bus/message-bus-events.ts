@@ -32,6 +32,16 @@ export class EventTypeSampleQuery extends EventWithPayload<EventTypeSampleQueryP
   public readonly type = EventTypeSampleQuery.type
 }
 
+/**
+ * Event to use when requesting to add new Tab
+ */
+export class EventTypeAddTab extends EventWithPayload<EventTypeSampleQueryPayload> {
+  static readonly type = "EventTypeAddTab"
+  public readonly type = EventTypeAddTab.type
+}
+
+
+
 export class EventTypeCompileReply extends EventWithPayload<any> {
   static readonly type = "compile.reply"
   public readonly type = EventTypeCompileReply.type
@@ -60,5 +70,6 @@ export type EventTypes =
   EventTypeCompileReply |
   EventTypeEvaluateReply |
   EventTypeSampleQuery  |
+  EventTypeAddTab  |
   EventTypeEditorKeyDown
   ;

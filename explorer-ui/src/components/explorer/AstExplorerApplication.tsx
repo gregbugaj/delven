@@ -38,7 +38,7 @@ import FullWidthTabs from './TabbedMenu'
 import FullWidthTabbedEditor from './TabbedEditor'
 import { EventTypeCompileReply, EventTypeEditorKeyDown } from "../bus/message-bus-events";
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -126,7 +126,7 @@ const useStyles = makeStyles(theme => ({
   },
 
   fixedHeight: {
-    height: 240
+    height: 300
   },
 
   nested: {
@@ -250,7 +250,6 @@ function AstExplorerApplication() {
               <BreadcrumModule breadcrumbs={breadcrumbNameMap} label="Explorer" />
             </Typography>
 
-            <ModuleSelect />
           </Toolbar>
         </AppBar>
 
@@ -319,7 +318,7 @@ function AstExplorerApplication() {
 
         <main className={classes.content}>
           <div style={{ minHeight: 64 }}></div>
-          <Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 96px)' }} >
+          <Container maxWidth="xl" className={classes.container} style={{ border: '2px solid green', padding: '0px', height: 'calc(100vh - 96px)' }} >
             <Switch>
               <Route exact path='/explorer' component={DefaultComponent} />
               <Route exact path='/explorer/settings' component={SettingsComponent} />

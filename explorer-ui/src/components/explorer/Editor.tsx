@@ -60,7 +60,8 @@ interface TabPanelProps {
   label: string;
 }
 interface EditorProps {
-  id: string;
+  id: string
+  onLoadComplete: () => void
 }
 
 const tabHeight = '48px' // default: '48px'
@@ -122,8 +123,7 @@ function EditorImpl(props: EditorProps) {
   const jsonContainerRef = React.createRef<HTMLDivElement>();
   const compiledContainerRef = React.createRef<HTMLDivElement>();
 
-  const { id, ...other } = props
-
+  const {id, onLoadComplete, ...other } = props
   const eventBus = globalServices.eventBus
 
   const classes = useStyles();
@@ -207,9 +207,24 @@ function EditorImpl(props: EditorProps) {
 
     // hook up events
     let editor = ecmaEditor
+    let tabId = id
     eventBus.on(
       EventTypeSampleQuery,
       (event): void => {
+
+        console.info(`EventTypeSampleQuery Received **** `)
+        console.info( globalServices.state)
+        const activeId = globalServices.state.activeTabId
+        console.info(activeId)
+        console.info(tabId)
+        console.info(event)
+
+        if(tabId !==  activeId){
+          console.info(`Skipping tab : ${tabId}`)
+          return
+        }
+
+
         if (event.data.type !== "file") {
           return;
         }
@@ -225,7 +240,6 @@ function EditorImpl(props: EditorProps) {
           )()
       }
     )
-
 
     // All the messages from executor for this ID will be pumped onto the Even Bus specific event
     // this converts from server side message event to client side EventBus message
@@ -279,7 +293,10 @@ function EditorImpl(props: EditorProps) {
     observeNodeChange(jsonContainerRef.current, mutations => astEditor.refresh())
     observeNodeChange(compiledContainerRef.current, mutations => generatorEditor.refresh())
 
+    // At this editor is ready and should be visible and ready to receive events
+    onLoadComplete()
   }, []);
+
 
   useEffect(() => {
     // const { user } = props;
@@ -370,13 +387,13 @@ function EditorImpl(props: EditorProps) {
   function handleViewChange(event: any, renderType: string) {
     if (renderType == null)
       return
-    console.info(renderType)
     setRenderType(renderType)
   }
 
   const onEditorReadyEcma = (cme: CodeMirrorManager) => setEcmaEditor(cme);
   const onEditorReadyAst = (cme: CodeMirrorManager) => setAstEditor(cme);
   const onEditorReadyCompiled = (cme: CodeMirrorManager) => setGeneratorEditor(cme);
+
 
   return (
     <div className='Editor-Container' >
@@ -446,6 +463,7 @@ function EditorImpl(props: EditorProps) {
         <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red" }} >
           <div className='Editor-Container-Header' style={{ border: "1px solid blue", display: "none" }}>
             RenderType :  {renderType}  {Date.now()}
+            id :  {id}
           </div>
 
           <div className='Editor-Content' style={{}} >
@@ -527,19 +545,19 @@ function EditorContent(props: { id: number, tickRef: any, value: number, renderT
 }
 
 function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
-  console.info('EcmaEditorContent')
+  // console.info('EcmaEditorContent')
   const { id, onEditorReady } = props
   let eventBus = globalServices.eventBus
 
   const _onEditorReady = (instance: CodeMirrorManager) => {
-    console.info('onEditorReady ECMA** ')
+    // console.info('onEditorReady ECMA** ')
     if (onEditorReady) {
       onEditorReady(instance)
     }
   };
 
   const onEditorKeyDown = (instance: CodeMirror.Editor, event: KeyboardEvent) => {
-    console.info('onEditorKeyDown')
+    // console.info('onEditorKeyDown')
     eventBus.emit(new EventTypeEditorKeyDown(instance.getCursor()));
   };
 
@@ -555,11 +573,11 @@ function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (
 }
 
 function CompiledEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorManager) => void }) {
-  console.info('CompiledEditorContent')
+  // console.info('CompiledEditorContent')
   const { id, onEditorReady } = props
 
   const _onEditorReady = (instance: CodeMirrorManager) => {
-    console.info('onEditorReady COMPILED** ')
+    // console.info('onEditorReady COMPILED** ')
     if (onEditorReady) {
       onEditorReady(instance)
     }
@@ -576,11 +594,11 @@ function CompiledEditorContent(props: { id: string, onEditorReady?: (cme: CodeMi
 }
 
 function AstEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorManager) => void }) {
-  console.info('ASTEditorContent')
+  // console.info('ASTEditorContent')
   const { id, onEditorReady } = props
   let editor: CodeMirrorManager;
   const _onEditorReady = (instance: CodeMirrorManager) => {
-    console.info('onEditorReady AST** ')
+    // console.info('onEditorReady AST** ')
     if (onEditorReady) {
       onEditorReady(instance)
     }
@@ -597,4 +615,3 @@ function AstEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorM
 }
 
 export default EditorImpl
-// export default EditorZ

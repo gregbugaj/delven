@@ -15,7 +15,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 
-import { EventTypeSampleQuery } from "../bus/message-bus-events";
+import { EventTypeAddTab, EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
 
@@ -38,7 +38,12 @@ function SideTreeView(props: {}) {
       _type = "file"
     }
 
-    eventBus.emit(new EventTypeSampleQuery({ name: node.name, id: node.id, type: _type }));
+    const payload = { name: node.name, id: node.id, type: _type }
+    if (_type === "file") {
+      console.info(`Request to add new tab : ${payload}`)
+      // Add tab
+      eventBus.emit(new EventTypeAddTab(payload));
+    }
   }
 
   const renderTree = (nodes: RenderTree) => (
