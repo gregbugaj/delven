@@ -212,12 +212,8 @@ function EditorImpl(props: EditorProps) {
     eventBus.on(
       EventTypeSampleQuery,
       (event): void => {
-
-        console.info(`EventTypeSampleQuery Received **** `)
-        console.info( globalServices.state)
         const activeId = globalServices.state.activeTabId
         if(tabId !==  activeId){
-          console.info(`Skipping tab : ${tabId}`)
           return
         }
 

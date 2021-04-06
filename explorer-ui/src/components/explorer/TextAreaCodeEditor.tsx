@@ -11,8 +11,6 @@ interface TextAreaCodeEditorProps {
   containerRef?: RefObject<HTMLDivElement>,
 }
 
-
-
 const TextAreaCodeEditor = React.memo((props: TextAreaCodeEditorProps) => {
   return TextAreaCodeEditorInner(props)
 })
