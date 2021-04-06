@@ -8,7 +8,7 @@
   "dependencies": {
     "@babel/runtime": "^7.10.2",
     "express-ws": "^4.0.0",
-    "vm2": "^3.9.2"
+    "vm2": "^3.9.3"
   },
   "scripts": {
     "start": "npm run build && node build/index.js",
@@ -34,6 +34,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "nodemon": "^2.0.7",
+    "winston": "^3.3.3",
     "ts-node": "^9.1.1",
     "tsconfig-paths": "^3.9.0",
     "typescript": "^4.2.3"
