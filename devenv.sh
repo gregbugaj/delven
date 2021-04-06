@@ -150,12 +150,16 @@ pane_cmd_6="cd ./transpiler && npx babel --watch src --out-dir dist --extensions
 # pane_cmd_5='echo 5'
 # pane_cmd_6='echo 6'
 
-session='devenv-explorer'
+session='devenv'
 window=1 # Configured to start windows at 1 not 0
 
 # start new detached tmux session
 tmux -f devenv-tmux.conf new-session -d -s "$session" # -d "/usr/bin/env bash -i"
-tmux rename-window 'Devenv'
+tmux rename-window 'devenv'
+
+# tmux set-hook before-kill-window 'run-shell "
+#    tmux list-panes -t \"#{window_id}\" -F \"##{pane_id}\" | xargs -I {} tmux send-keys -t {} C-c
+# "'
 
 # setup layout
 tmux split-pane -h
