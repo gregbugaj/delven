@@ -3,25 +3,12 @@ import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Drawer from "@material-ui/core/Drawer";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
-import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
 import Container from "@material-ui/core/Container";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import PeopleIcon from "@material-ui/icons/People";
-import LayersIcon from "@material-ui/icons/Layers";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import Collapse from '@material-ui/core/Collapse';
 import Grid from '@material-ui/core/Grid';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import Button from '@material-ui/core/Button';
@@ -33,22 +20,19 @@ import LiveHelpIcon from '@material-ui/icons/LiveHelp';
 import InfoIcon from '@material-ui/icons/Info';
 import SimCardIcon from '@material-ui/icons/SimCard';
 
-import { BrowserRouter as Router, Route, withRouter, Switch } from "react-router-dom"
+import { Route, Switch } from "react-router-dom"
 
-// Customization
-import { AdapterLink } from "../utils/NavLinkMui";
-import ModuleSelect from '../shared/select-modules';
 import BreadcrumModule from '../shared/breadcrumbs';
 
-import FullWidthTabs from './TabbedMenu'
 import FullWidthTabbedEditor from './TabbedEditor'
 import { EventTypeCompileReply, EventTypeEditorKeyDown } from "../bus/message-bus-events";
 import ShortcutsComponent from "../settings/Shortcuts";
-import { Link } from "@material-ui/core";
-import { BorderRight } from "@material-ui/icons";
 import EditorPanel from "./EditorPanel";
 import WorkspacePanel from "./WorkspacePanel";
 import SettingsPanel from "./SettingsPanel";
+
+import { ThemeProvider } from "./ReferenceDataContext"
+import { EditorProvider, EditorContext, IEditor } from "./EditorContext"
 
 const drawerWidth = 300;
 
@@ -210,7 +194,7 @@ function AstExplorerApplication() {
   const [pos, setEditorPosition] = React.useState({ ch: 0, line: 0 });
   const [open, setOpen] = React.useState(true);
 
-  function handleViewChange(event: any, renderTypeChange: string) {
+  function handleViewChange(renderTypeChange: string) {
     if (renderTypeChange != renderType) {
       setOpen(true);
       setRenderType(renderTypeChange)
@@ -219,24 +203,8 @@ function AstExplorerApplication() {
     }
   }
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-
-
-  const handleSidpanelShowHide = () => {
-    setOpen(!open);
-  };
-
   const [openAdmin, setOpenAdmin] = React.useState(true);
 
-  const handleAdminClick = () => {
-    setOpenAdmin(!openAdmin);
-  };
 
   let eventBus = globalThis.services.eventBus
 
@@ -250,7 +218,6 @@ function AstExplorerApplication() {
 
   eventBus.on(EventTypeEditorKeyDown, (event: EventTypeEditorKeyDown): void => {
     let data = event.data
-    let { ch, line } = data
     // console.info(`Data : ${ch} , ${line}`)
     setEditorPosition(data)
   }
@@ -272,7 +239,7 @@ function AstExplorerApplication() {
   }
 
   const SimpleModal = (props: ModalProps) => {
-    const { children, ...other } = props;
+    const { children } = props;
     return (
       <Modal
         open={modalopen}
@@ -293,13 +260,37 @@ function AstExplorerApplication() {
       width: 40,
       height: 60,
     },
-
   };
+  // const editors = x[0]
+  // const setEditors = x[1]
+
+  const useEditor = () => React.useContext(EditorContext);
+  let valx = useEditor()
+  console.info(valx)
+  // const [editors, setEditors] = React.useContext(EditorContext);
+
+  const toggleLocale = () => {
+    console.info('Locale change')
+
+    const val:IEditor = {
+      name: 'name D',
+      id: 3,
+    }
+
+    // console.info(setEditors)
+    // setEditors((prev)=>{
+    //   console.info("--- PREV ")
+    //   console.info(prev)
+    //   return [...prev, val]
+    // });
+  }
 
   return (
 
     <div style={{ border: '0px solid green', padding: '0px' }} >
       <CssBaseline />
+      {/* locale  = {editors} */}
+      <Button onClick={toggleLocale}>Locale Change</Button>
 
       <SimpleModal>
         <ShortcutsComponent />
@@ -316,23 +307,23 @@ function AstExplorerApplication() {
       }}  >
 
         <List>
-          <ListItem button key="editor" onClick={(e) => handleViewChange(e, 'editor')}>
+          <ListItem button key="editor" onClick={(e) => handleViewChange('editor')}>
             <ListItemIcon><DescriptionIcon style={styles.largeIcon} /></ListItemIcon>
           </ListItem>
 
-          <ListItem button key="workspace" onClick={(e) => handleViewChange(e, 'workspace')}>
+          <ListItem button key="workspace" onClick={(e) => handleViewChange('workspace')}>
             <ListItemIcon><SimCardIcon style={styles.largeIcon} /></ListItemIcon>
           </ListItem>
 
-          <ListItem button key="settings" onClick={(e) => handleViewChange(e, 'settings')}>
+          <ListItem button key="settings" onClick={(e) => handleViewChange('settings')}>
             <ListItemIcon><SettingsIcon style={styles.largeIcon} /></ListItemIcon>
           </ListItem>
 
-          <ListItem button key="runners" onClick={(e) => handleViewChange(e, 'runners')}>
+          <ListItem button key="runners" onClick={(e) => handleViewChange('runners')}>
             <ListItemIcon><InfoIcon style={styles.largeIcon} /></ListItemIcon>
           </ListItem>
 
-          <ListItem button key="help" onClick={(e) => handleViewChange(e, 'help')}>
+          <ListItem button key="help" onClick={(e) => handleViewChange('help')}>
             <ListItemIcon><LiveHelpIcon style={styles.largeIcon} /></ListItemIcon>
           </ListItem>
 
@@ -356,24 +347,29 @@ function AstExplorerApplication() {
             </div>
 
             <div className='Editor-Content' style={{ paddingLeft: '5px' }} >
-              <div id={`side-container-editor`} style={{ display: renderType == 'editor' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                <EditorPanel></EditorPanel>
+
+              <div id={`side-container-editor`} style={{ display: renderType === 'editor' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  <ThemeProvider>
+                    <EditorPanel></EditorPanel>
+                  </ThemeProvider>
               </div>
 
-              <div id={`side-container-workspace`} style={{ display: renderType == 'workspace' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                <WorkspacePanel></WorkspacePanel>
+              <div id={`side-container-workspace`} style={{ display: renderType === 'workspace' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <EditorProvider>
+                    <WorkspacePanel></WorkspacePanel>
+                </EditorProvider>
               </div>
 
-              <div id={`side-container-settings`} style={{ display: renderType == 'settings' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+              <div id={`side-container-settings`} style={{ display: renderType === 'settings' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                 <SettingsPanel></SettingsPanel>
               </div>
 
-              <div id={`side-container-runners`} style={{ display: renderType == 'runners' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+              <div id={`side-container-runners`} style={{ display: renderType === 'runners' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                 runners
                   RenderType :  {renderType}  {Date.now()}
               </div>
 
-              <div id={`side-container-help`} style={{ display: renderType == 'help' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+              <div id={`side-container-help`} style={{ display: renderType === 'help' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                 help
                   RenderType :  {renderType}  {Date.now()}
               </div>
@@ -391,12 +387,14 @@ function AstExplorerApplication() {
         <main className={classes.content}>
           {/* 32px refers to size of fixed footer */}
           <Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 32px)' }} >
-            <Switch>
-              <Route exact path='/explorer' component={DefaultComponent} />
-              <Route exact path='/explorer/settings' component={SettingsComponent} />
-              <Route path='/explorer/integration' component={IntegrationComponent} />
-              <Route path='/explorer/settings/shortcuts' component={ShortcutsComponent} />
-            </Switch>
+
+                <Switch>
+                  <Route exact path='/explorer' component={DefaultComponent} />
+                  <Route exact path='/explorer/settings' component={SettingsComponent} />
+                  <Route path='/explorer/integration' component={IntegrationComponent} />
+                  <Route path='/explorer/settings/shortcuts' component={ShortcutsComponent} />
+                </Switch>
+
           </Container>
         </main>
       </div>

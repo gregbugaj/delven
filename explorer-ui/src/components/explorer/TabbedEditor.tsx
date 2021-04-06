@@ -143,14 +143,19 @@ export default function FullWidthTabbedEditor() {
     // TODO : This should be handled better
     globalThis.services.state.activeTabId = id
 
+    const loaded = ()=> {
+      onLoadComplete()
+      console.info("load Completed ** ")
+    }
+
     const prop = {
       index: id,
       value: id,
       label: label,
-      onLoadComplete: onLoadComplete
+      onLoadComplete:loaded
     }
 
-    if (tabList == undefined) {
+    if (tabList === undefined) {
       setTabListState([prop])
     } else {
       setTabListState([...tabList, prop])

@@ -1,40 +1,21 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
-import { createStyles, makeStyles, Theme, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
+import React, { useContext } from 'react';
+import { makeStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import Divider from "@material-ui/core/Divider";
 
-// Tree view
-import TreeView from "@material-ui/lab/TreeView";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import TreeItem from "@material-ui/lab/TreeItem";
 
-import { EventTypeAddTab, EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
-import { http } from "../../http"
 
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
-import FullWidthTabs, { SideTreeView } from './TabbedMenu';
-import { AccordionActions, Button, Collapse } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
+import { SideTreeView } from './TabbedMenu';
+import { Button, Collapse } from '@material-ui/core';
 
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import PeopleIcon from "@material-ui/icons/People";
-
+import { useStylesSidePanel } from './useStylesSidePanel';
+import { EditorContext } from './EditorContext';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -47,9 +28,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 }));
 
-export default function WorkspacePanel(props: {}) {
-  const classes = useStyles();
-  const eventBus = globalThis.services.eventBus;
+export default function WorkspacePanel() {
+  const x = React.useContext(EditorContext)
+
+  const useTheme = () => React.useContext(EditorContext);
+  console.info(useTheme)
+
+  let editors = x[0]
+  console.info(x)
+  console.info(editors)
 
   return (
     <div className='Editor-Content'>
@@ -59,52 +46,33 @@ export default function WorkspacePanel(props: {}) {
         </div>
 
         <div className='Editor-Content' style={{ border: "px solid green" }} >
+          Editors:
+          <ul>
+            {
+              editors?.map((editor, i) => (
+                <li>
+                  {editor.name} <br />
+                </li>
+              ))
+            }
+          </ul>
           <ListMenu />
         </div>
 
-        <div className='Editor-Container-Footer' style={{ border: "0px solid blue", display: "", minHeight:"120px", padding:"2px",  backgroundColor: "#F5F5F5"}}>
-            <div style={{overflowWrap:"break-word"}}>
+        <div className='Editor-Container-Footer' style={{ border: "0px solid blue", display: "", minHeight: "120px", padding: "2px", backgroundColor: "#F5F5F5" }}>
+          <div style={{ overflowWrap: "break-word" }}>
             {/* <p>FT :   {Date.now()}</p> */}
             <h5>Link GitHub Account to save your work</h5>
             <Button variant="outlined" color="primary">
               Link
             </Button>
-            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-
-
-const useStylesAccord = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: '100%',
-      height: "100%",
-      // border:"1px solid red"
-      padding: "0px"
-    },
-    item: {
-      // border:"1px solid red"
-      padding: "2px",
-      backgroundColor: "#F5F5F5",
-    },
-
-    heading: {
-      fontSize: theme.typography.pxToRem(16),
-      fontWeight: theme.typography.fontWeightBold,
-
-    },
-
-    details: {
-      backgroundColor: '',
-      padding: '2px',
-    },
-
-  }),
-);
 
 function ListMenu() {
 
@@ -119,17 +87,14 @@ function ListMenu() {
     setOpenSession(!openSession);
   };
 
-  const classes = useStylesAccord();
+  const classes = useStylesSidePanel();
   return (
     <List className={classes.root}>
 
       <ListItem button onClick={handleEditorClick} className={classes.item} >
         <ListItemText
-        disableTypography
-        // primary="My Queries"
-        primary={
-            <Typography style={{ color: '#000', fontWeight: 'bold', textTransform:"uppercase" }}>My Queries</Typography>
-           }
+          disableTypography
+          primary={<Typography className={classes.heading}>My Queries</Typography>}
         />
         {openEditor ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
@@ -142,11 +107,8 @@ function ListMenu() {
 
         <ListItemText
           disableTypography
-          // primary="My Queries"
-          primary={
-              <Typography style={{ color: '#000', fontWeight: 'bold', textTransform:"uppercase" }}>Sample Queries</Typography>
-            }
-          />
+          primary={<Typography className={classes.heading}>Sample Queries</Typography>}
+        />
         {openSession ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
 
