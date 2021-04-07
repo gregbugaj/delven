@@ -1,43 +1,52 @@
 export interface CallbackFunction<T = any> {
-    (event: T): void;
+  (event: T): void;
 }
 
 export type EvaluationResult = {
-    exception?: string | Error | undefined
-    stdout?: string
-    stderr?: string
+  exception?: string | Error | undefined
+  stdout?: string
+  stderr?: string
 }
+
+
+export type NotifierEvent = {
+  id: string
+  type: string
+  payload?: any
+}
+
 // both the runner and explorer share this type
 export type CompilationUnit = {
-    id: string
-    code: string,
-    compileTime: number
-    exception?: string
-    ast?: any,
-    generated?: string
+  id: string
+  code: string,
+  compileTime: number
+  exception?: string
+  ast?: any,
+  generated?: string
 }
 
 /**
  * An executor is responsible for communication with the service that compiles/executes the code
  */
 export interface IExecutor {
-    id?: string
+  id?: string
 
-    /**
-     * Compile script
-     * @param script the script to compile
-     */
-    compile(unit: CompilationUnit): Promise<any>
+  /**
+   * Compile script
+   * @param script the script to compile
+   */
+  compile(unit: CompilationUnit): Promise<any>
 
 
-    /**
-     * Evaluate script in a sandbox environment
-     * @param script the script to evaluate
-     */
-    evaluate(unit: CompilationUnit): Promise<EvaluationResult>
+  /**
+   * Evaluate script in a sandbox environment
+   * @param script the script to evaluate
+   * @param notifier the callback to send messagteto
+   */
+  evaluate(unit: CompilationUnit, notifier: (msg: NotifierEvent) => void): Promise<EvaluationResult>
 
-    /**
-     * Perform cleanup
-     */
-    dispose()
+  /**
+   * Perform cleanup
+   */
+  dispose()
 }

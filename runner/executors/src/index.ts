@@ -2,7 +2,7 @@ import bodyParser from "body-parser"
 import express, { Request, Response } from "express"
 import expressWs from "express-ws"
 import CodeExecutor from './executors/CodeExecutor'
-import { CompilationUnit } from "./executors/executor"
+import { CompilationUnit, NotifierEvent } from "./executors/executor"
 import { Utils } from "./util"
 
 const toJson = Utils.toJson
@@ -79,7 +79,7 @@ async function main() {
 
       const type: string = msg.type
       let data: any = msg['data'] ? msg['data'] : ''
-      const reply:Reply = { status: 'ok', type: 'unhandled' };
+      const reply: Reply = { status: 'ok', type: 'unhandled' };
 
       switch (type) {
         case 'code:compile': {
@@ -88,7 +88,6 @@ async function main() {
             .then(compiled => {
               console.info('Compiled response')
               reply.data = compiled
-              console.info(reply)
               ws.send(toJson(reply));
             }).catch(e => {
               if (data === undefined) {
@@ -102,11 +101,16 @@ async function main() {
         }
         case 'code:evaluate': {
           reply.type = 'evaluate.reply'
-          executor.evaluate(data)
+
+          executor.evaluate(data, (event: NotifierEvent) => {
+            const reply: Reply = { status: 'ok', type: 'evaluate.result', data:event };
+            ws.send(toJson(reply));
+          })
             .then(compiled => {
               console.info('Evaluated response')
               console.info(toJson(compiled))
               console.info(compiled)
+
               ws.send(toJson(compiled));
             }).catch(e => {
               if (data === undefined) {
@@ -116,7 +120,7 @@ async function main() {
               ws.send(toJson(data));
             })
           break;
-        } case 'terminal:message':{
+        } case 'terminal:message': {
           console.warn(`terminal:message : ${data}`)
         }
 
@@ -161,7 +165,7 @@ async function main() {
   app.post('/runner/evaluate', async (req: Request, res: Response) => {
     let unit = JSON.parse(req.body['code'])
     const executor = new CodeExecutor()
-    executor.evaluate(unit)
+    executor.evaluate(unit, (event) => null)
       .then(compiled => {
         console.info('Evaluated response')
         console.info(toJson(compiled))

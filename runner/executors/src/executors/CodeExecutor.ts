@@ -1,4 +1,4 @@
-import { IExecutor, CallbackFunction, CompilationUnit, EvaluationResult } from './executor';
+import { IExecutor, CompilationUnit, EvaluationResult, NotifierEvent } from './executor';
 import { ASTParser, SourceGenerator } from "delven-transpiler";
 import LogStream from './LogStream';
 const stream = require('stream')
@@ -14,75 +14,37 @@ export default class CodeExecutor implements IExecutor {
     console.info(`Setting up executor`)
   }
 
-  capture(callback: CallableFunction) {
-    const _org = console;
-    const original = {
-      stdout: process.stdout,
-      stderr: process.stderr
-    }
-
-    const collection = {
-      stdout: new stream.Writable(),
-      stderr: new stream.Writable()
-    }
-
-    let buffer = ""
-
-    Object.keys(collection).forEach((name) => {
-
-      collection[name].write = function (chunk, encoding, callback) {
-        _org.log("ORIGINAL: " + chunk)
-
-        buffer += chunk;
-        original[name].write(chunk, encoding, callback)
-      }
-    })
-
-    const options = {}
-    const overwrites = Object.assign({}, {
-      stdout: collection.stdout,
-      stderr: collection.stderr
-    }, options)
-
-    let exception: string | undefined
-    try {
-
-      const Console = console.Console
-      console = new Console(overwrites)
-
-      console.log('capture #1')
-
-      callback()
-
-      console.info('capture #2')
-    } catch (ex) {
-      exception = ex
-      console.log(ex)
-    } finally {
-      console = _org
-    }
-
-    console.info('\x1B[96mCaptured stdout\x1B[00m' + new Date().getTime())
-    let fs = require('fs')
-    fs.writeFile('./buffer.txt', buffer, { encoding: 'utf8', flag: "a" },
-      (err) => {
-        if (err) {
-          return console.log(err);
-        }
-      });
-
-    return buffer
-  }
-
-  evaluate(unit: CompilationUnit): Promise<EvaluationResult> {
+  evaluate(unit: CompilationUnit, notifier: (msg: NotifierEvent) => void): Promise<EvaluationResult> {
+    // need to return a promise here as Node will complain about
+    // UnhandledPromiseRejectionWarning
     return new Promise((resolve, reject) => {
       console.info("Evaluating script")
+      const id = unit.id
       const script = unit.code
+
+      notifier({
+        id: id,
+        type: "console",
+        payload: "Code executor ready"
+      })
+
+      const evalStreamSubscriber = (event: any) => {
+        notifier({ id: id, type: "console", payload: event })
+      }
+
       // Compile script in order to find compilation errors first
       try {
-        const status = new VMScript(script, 'sandbox.js').compile();
+        const sleep = function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)) }
+        const status = new VMScript(`
+          (async () => {
+            ${script}
+          })().catch(err => {
+              console.error("error in main", err)
+          })
+        `, 'sandbox.js').compile();
+
         console.info('Compilation status', status)
-        const start = Date.now();
+
         const vm = new NodeVM({
           require: {
             external: true
@@ -91,37 +53,47 @@ export default class CodeExecutor implements IExecutor {
           compiler: 'javascript',
           fixAsync: false,
           sandbox: {
-            done: (arg) => {
+            done: (...args) => {
               console.info('Sandbox complete : ' + Date.now())
+            },
+
+            sleep: sleep,
+            generator: async function* generator(count, sleeptime) {
+              for (let i = 0; i < count; ++i) {
+                await sleep(sleeptime)
+                yield { "index": i, "time": Date.now() }
+              }
+              return
             }
           }
         });
 
-        const log = new LogStream('12123')
+        const logStream = new LogStream(id)
+        logStream.subscribe(evalStreamSubscriber)
 
-        vm.on('console.log', (data) => {
-          console.log(`VM stdout[log]: ${data}`);
+        vm.on('console.log', (...args) => {
+          console.log(`VM stdout[log]`, ...args);
+          logStream.log(...args)
         });
 
-        vm.on('console.info', (data) => {
-          // console.log(`VM stdout[info]: ${data}`);
-          log.info(data)
+        vm.on('console.info', (...args) => {
+          console.log(`VM stdout[info]`, ...args);
+          logStream.info(...args)
         });
 
-        vm.on('console.warn', (data) => {
-          console.log(`VM stdout[warn]: ${data}`);
+        vm.on('console.warn', (...args) => {
+          console.log(`VM stdout[warn]`, ...args);
+          logStream.warn(...args)
         });
 
-        vm.on('console.error', (data) => {
-          console.log(`VM stdout[error]: ${data}`);
+        vm.on('console.error', (...args) => {
+          console.log(`VM stdout[error]`, ...args);
+          logStream.error(...args)
         });
 
-        vm.on('console.dir', (data) => {
-          console.log(`VM stdout[dir]: ${data}`);
-        });
-
-        vm.on('console.trace', (data) => {
-          console.log(`VM stdout[dir]: ${data}`);
+        vm.on('console.trace', (...args) => {
+          console.log(`VM stdout[trace]`, ...args);
+          logStream.trace(...args)
         });
 
         process.on('uncaughtException', function (err) {
@@ -129,47 +101,41 @@ export default class CodeExecutor implements IExecutor {
         });
 
         try {
-          let code = `
-
-                      let z = {
-                        "a":1212,
-                        "b":0001,
-                      }
-                      console.info('Eval : Async')
-                      console.info(\`Eval : Async  \${z}\`)
-                      console.info(z)
-
+          const code = `
                       async function main() {
-                          console.info('Eval : start')
-                          ${script}
-                          console.info('Eval : complete')
-                          setTimeout(function(){ console.info("Timeout task"); }, 5000);
-                      }
+                            console.info('Eval : start')
+                            ${script}
 
-                      (async () => {
-                          await main()
-                          done()
-                      })().catch(err => {
-                          console.error("error in main", err)
-                      })
-                  `
+                            for await(let val of generator(10, 500)){
+                              console.info('generated : ' + JSON.stringify(val))
+                            }
+
+                            console.info('Eval : complete')
+                            setTimeout(function(){ console.info("Timeout task"); }, 5000);
+                        }
+
+                        (async () => {
+                            await main()
+                            done()
+                        })().catch(err => {
+                            console.error("error in main", err)
+                        })
+                    `
+
+          console.warn(code)
           vm.run(code);
-
         } catch (err) {
           console.error('Failed to execute script.', err);
         }
 
-        let buff = ' NA '
-        console.info('LOG 2')
-        console.info(buff)
-
+        let buff = 'NA'
         return resolve({ "exception": null, stdout: buff, stderr: "" })
 
       } catch (err) {
         console.error('Failed to compile script.', err);
         return resolve({ "exception": err, stdout: "", stderr: "" })
       }
-    });
+    })
   }
 
   async compile(unit: CompilationUnit): Promise<CompilationUnit> {
