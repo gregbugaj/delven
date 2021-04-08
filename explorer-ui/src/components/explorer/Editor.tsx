@@ -405,49 +405,40 @@ function EditorImpl(props: EditorProps) {
       <div className='Editor-Container-Header'>
 
         <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
-        <Grid container style={{ padding: "4px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
+        <Grid container style={{ padding: "0px", border: "0px solid purple", backgroundColor: '#f7f7f7' }}>
           <Grid item sm={12} md={6}>
             <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} >
               <Grid item>
-
+{/*
                 <Button disabled={compileInProgress} size="medium" variant="contained" color="primary" style={{ minWidth: 140, marginRight: '20px' }}
                   endIcon={< BlurLinearIcon fontSize="large" />}
-                  onClick={compile}>{compileInProgress ? 'Compiling' : 'Compile'}</Button>
+                  onClick={compile}>{compileInProgress ? '' : 'Compile'}</Button>
 
                 <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
                   endIcon={
                     <BxsRightArrowIcon />
                   }
                   onClick={evaluate}>Run</Button>
+
+                   */}
+
+                <Button disabled={compileInProgress} size="small" color="primary" style={{ minWidth: 60, marginRight: '20px' }}
+                  endIcon={< BlurLinearIcon fontSize="small" />}
+                  onClick={compile}>{compileInProgress ? '' : ''}</Button>
+
+                <Button size="small" color="secondary" style={{ minWidth: 60 }}
+                  endIcon={
+                    <BxsRightArrowIcon />
+                  }
+                  onClick={evaluate}></Button>
               </Grid>
 
-              <Grid item>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="Query optimizer"
-                />
-
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="checkedB"
-                      color="primary"
-                    />
-                  }
-                  label="Mock provider"
-                />
-              </Grid>
             </Grid>
 
           </Grid>
           <Grid item sm={12} md={6}>
 
-            <ToggleButtonGroup size="small" exclusive onChange={handleViewChange} value={renderType} aria-label="text primary button group" className='btn-group special'>
+            <ToggleButtonGroup style={{ border:'0px solid red', height:'24px'}} size="small" exclusive onChange={handleViewChange} value={renderType} aria-label="text primary button group" className='btn-group special'>
               <ToggleButton className='btn btn-default' size="small" value="json">AST</ToggleButton>
               <ToggleButton className='btn btn-default' size="small" value="compiled">Compiled</ToggleButton>
               <ToggleButton className='btn btn-default' size="small" value="console">Console</ToggleButton>
