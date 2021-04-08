@@ -119,8 +119,6 @@ const editorSets = new Map<String, EditorSet>();
 
 // props:EditorProps
 function EditorImpl(props: EditorProps) {
-  console.info("------------- EDITOR -----------------")
-  console.info(props)
 
   const jsonContainerRef = React.createRef<HTMLDivElement>();
   const compiledContainerRef = React.createRef<HTMLDivElement>();
@@ -335,8 +333,6 @@ function EditorImpl(props: EditorProps) {
 
     const txt = ecmaEditor.getValue()
     const unit = { id: uuidv4(), code: txt }
-    console.info('Compilation Unit')
-    console.info(unit)
     executor.emit(id, 'code:compile', unit)
   }
 

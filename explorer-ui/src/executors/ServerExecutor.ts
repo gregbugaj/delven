@@ -52,7 +52,7 @@ export class ServerExecutor implements IExecutor {
     // {↵	"id": "0003",↵	"code": "Unhandled type : > Sand…Container: System ready\n\r",↵	"compileTime": 0↵}"
 
     if (!message.hasOwnProperty("data")) {
-      console.warn("Unhanded messagea")
+      console.warn("Unhandled message")
       console.warn(message)
       return
     }
@@ -61,6 +61,9 @@ export class ServerExecutor implements IExecutor {
     const hasId = data.hasOwnProperty("id")
 
     if (data && hasId) {
+
+      console.info(data)
+      console.info(this.targetStreamMap)
       const replyId = data["id"]
       const targetId = this.messageMap.get(replyId);
       console.warn(`Event/target Id : '${replyId}  = ${targetId}' `)
@@ -81,6 +84,8 @@ export class ServerExecutor implements IExecutor {
   }
 
   public on(target: string, eventNameFilter: string, callback: CallbackFunction<WebSocketMessage>): Subscription {
+
+    console.trace(`target = ${target}`)
 
     let stream: Subject<WebSocketMessage> | undefined = this.targetStreamMap.get(target)
     if (stream === undefined) {
@@ -118,6 +123,11 @@ export class ServerExecutor implements IExecutor {
   }
 
   public async emit(source: string, event: string, data?: any): Promise<undefined> {
+
+    console.info(`emit.source : ${source}`)
+    console.info(`emit.event  : ${event}`)
+    console.info(data)
+
     if (this.ws?.readyState == WebSocket.CLOSED) {
       console.info("Connection closed")
       if (this.params != undefined) {
@@ -167,7 +177,6 @@ export class ServerExecutor implements IExecutor {
         }
 
         this.ws.onmessage = (message: MessageEvent) => {
-          console.log('onmessage', message);
           self.eventStreamSink.next(message);
         };
 
