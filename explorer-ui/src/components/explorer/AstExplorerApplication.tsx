@@ -290,7 +290,7 @@ function AstExplorerApplication() {
     <div style={{ border: '0px solid green', padding: '0px' }} >
       <CssBaseline />
       {/* locale  = {editors} */}
-      <Button onClick={toggleLocale}>Locale Change</Button>
+      {/* <Button onClick={toggleLocale}>Locale Change</Button> */}
 
       <SimpleModal>
         <ShortcutsComponent />

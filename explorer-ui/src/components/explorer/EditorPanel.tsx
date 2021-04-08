@@ -58,6 +58,8 @@ export default function EditorPanel() {
     </div>
   );
 }
+
+
 function ListMenu() {
   const [openEditor, setOpenEditor] = React.useState(true);
   const [openSession, setOpenSession] = React.useState(true);

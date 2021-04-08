@@ -167,7 +167,9 @@ End Scorllbars
   border: 0px solid rgb(252, 206, 0);
   height: 100%;
   width:100%;
-  flex:1;
+
+  /* flex:1; */
+
   overflow:auto;
   /* background-color: lightgreen; */
 }

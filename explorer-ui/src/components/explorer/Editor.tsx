@@ -17,13 +17,15 @@ import { useEffect, useLayoutEffect } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import globalServices from '../globalServices';
 import { useRef } from "react";
-import { Box, ButtonGroup, createStyles, Typography } from '@material-ui/core';
 import classNames from "classnames";
 import TextAreaCodeEditor from './TextAreaCodeEditor';
 
 import { v4 as uuidv4 } from 'uuid';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { http } from '../../http';
+import ResizibleDivider from './ResizibleDivider';
+import { IconButton } from '@material-ui/core';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 // https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
 
@@ -123,7 +125,7 @@ function EditorImpl(props: EditorProps) {
   const jsonContainerRef = React.createRef<HTMLDivElement>();
   const compiledContainerRef = React.createRef<HTMLDivElement>();
 
-  const {id, onLoadComplete, ...other } = props
+  const { id, onLoadComplete, ...other } = props
   const eventBus = globalServices.eventBus
 
   const classes = useStyles();
@@ -213,7 +215,7 @@ function EditorImpl(props: EditorProps) {
       EventTypeSampleQuery,
       (event): void => {
         const activeId = globalServices.state.activeTabId
-        if(tabId !==  activeId){
+        if (tabId !== activeId) {
           return
         }
 
@@ -324,7 +326,7 @@ function EditorImpl(props: EditorProps) {
       return
     }
 
-    if(compileInProgress){
+    if (compileInProgress) {
       console.warn('Compilation already in progress')
       return
     }
@@ -399,7 +401,7 @@ function EditorImpl(props: EditorProps) {
 
 
   return (
-    <div className='Editor-Container' >
+    <div className='Editor-Container'>
       <div className='Editor-Container-Header'>
 
         <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
@@ -410,7 +412,7 @@ function EditorImpl(props: EditorProps) {
 
                 <Button disabled={compileInProgress} size="medium" variant="contained" color="primary" style={{ minWidth: 140, marginRight: '20px' }}
                   endIcon={< BlurLinearIcon fontSize="large" />}
-                  onClick={compile}>{compileInProgress?'Compiling' : 'Compile'}</Button>
+                  onClick={compile}>{compileInProgress ? 'Compiling' : 'Compile'}</Button>
 
                 <Button size="medium" variant="contained" color="secondary" style={{ minWidth: 120 }}
                   endIcon={
@@ -455,25 +457,58 @@ function EditorImpl(props: EditorProps) {
 
           </Grid>
         </Grid>
-
       </div>
 
-      <div className='Editor-Content'>
+      {/* Samples  */}
+
+      {/*
+      <div style={{display: "flex", width:'800px', height:'100px', border: "2px solid blue" }}>
+        <div style={{ display:"flex", width:"50%"}}>Left</div>
+          <ResizibleDivider direction="horizontal"/>
+        <div style={{display:"flex", flex: "1 1 0%", border: "2px solid pink" }}>Right</div>
+      </div> */}
+
+      {/* <div style={{display: "flex", flexDirection:"column", width:'800px', height:'100px', border: "2px solid green" }}>
+        <div style={{ display:"flex"}}>TOP</div>
+          <ResizibleDivider direction="vertical"/>
+        <div style={{display:"flex", flex: "1 1 0%", height:'40px', border: "2px solid pink" }}>Bottom</div>
+      </div> */}
+
+      {/*
+      <div className='Editor-Container' style={{ padding: "0px", border: "2px solid red", }} >
+        <div className='Editor-Content' style={{display:'flex'}}>
+          CCC
+         </div>
+
+        <ResizibleDivider direction="vertical" />
+
+        <div className='Editor-Container-Footer' style={{ display: "flex", flex: "1 1 0%", border: "1px solid purple", height: '100px' }}>
+          Resizable Footer Inner : {renderType}  {Date.now()}
+        </div>
+      </div>
+
+      <hr />
+      */}
+
+
+      <div className='Editor-Content' style={{ display: "" }}>
         <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red" }} >
           <div className='Editor-Container-Header' style={{ border: "1px solid blue", display: "none" }}>
             RenderType :  {renderType}  {Date.now()}
             id :  {id}
           </div>
 
-          <div className='Editor-Content' style={{}} >
-            <div style={{ padding: "0px", border: "0px solid blue", display: 'flex', flex: '1 1 auto', height: '100%' }}>
+          <div className='Editor-Content' >
+            <div style={{ padding: "0px", border: "0px solid blue", display: 'flex', height: '100%' }}>
 
-              <div style={{ flex: ' 1 0 0%', border: "0px solid purple", overflowY: 'auto' }}>
+              <div style={{ display: "flex", width: "50%", border: "0px solid purple", overflowY: 'auto', minWidth: '120px' }}>
                 <EcmaEditorContentMemo id={id} onEditorReady={onEditorReadyEcma} />
               </div>
 
-              <div style={{ flex: ' 1 0 0%', border: "0px solid purple" }}>
-                <div ref={jsonContainerRef} id={`json-container:${id}`} style={{ display: renderType == 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+              <ResizibleDivider direction="horizontal" />
+
+              <div style={{ flex: ' 1 1 0%', border: "0px solid purple" }}>
+                <div ref={jsonContainerRef} id={`json-container:${id}`} style={{ display: renderType === 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   <div style={{ border: "1px solid blue", height: '32px', display: 'none' }}>
                     Navbar[JSON] {Date.now()}
                     <Button size="small" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
@@ -484,7 +519,7 @@ function EditorImpl(props: EditorProps) {
                   <AstEditorContentMemo id={id} onEditorReady={onEditorReadyAst} />
                 </div>
 
-                <div ref={compiledContainerRef} id={`compiled-container:${id}`} style={{ display: renderType == 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div ref={compiledContainerRef} id={`compiled-container:${id}`} style={{ display: renderType === 'compiled' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   <div style={{ border: "1px solid blue", height: '32px', display: 'none' }}>
                     Navbar[Compliled] {Date.now()}
                     <Button size="small" variant="contained" color="primary" style={{ minWidth: 120, marginRight: '20px' }}
@@ -495,17 +530,17 @@ function EditorImpl(props: EditorProps) {
                   <CompiledEditorContentMemo id={id} onEditorReady={onEditorReadyCompiled} />
                 </div>
 
-                <div id={`console-container:${id}`} style={{ display: renderType == 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div id={`console-container:${id}`} style={{ display: renderType === 'console' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   CONSOLE  {Date.now()}
                   {/* <EditorContentMemo id={0} tickRef={tickRef} renderType='console' /> */}
                 </div>
 
-                <div id='graph-container' style={{ display: renderType == 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div id='graph-container' style={{ display: renderType === 'graph' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   Job Graph / Query Optimizer  {Date.now()}
                   {/* <EditorContentMemo id={0} tickRef={tickRef} renderType='graph' /> */}
                 </div>
 
-                <div id='results-container' style={{ display: renderType == 'results' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                <div id='results-container' style={{ display: renderType === 'results' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   Results  {Date.now()}
                   {/* <EditorContentMemo id={0} tickRef={tickRef} renderType='results' /> */}
                 </div>
@@ -514,9 +549,10 @@ function EditorImpl(props: EditorProps) {
             </div>
           </div>
 
-          {/* No footers currently */}
-          <div className='Editor-Container-Footer' style={{ border: "1px solid purple", display: "none" }}>
-            Footer Inner : {renderType}  {Date.now()}
+          <ResizibleDivider direction="vertical" />
+
+          <div className='Editor-Container-Footer' style={{ display: "flex", flex: "1 1 0%", border: "0px solid purple", }}>
+            <BottomFooter />
           </div>
         </div>
       </div>
@@ -578,7 +614,7 @@ function CompiledEditorContent(props: { id: string, onEditorReady?: (cme: CodeMi
       name={`editor-compiled:${id}`}
       id={`editor-compiled:${id}`}
       focus={true}
-      value="// GENERATED" />
+      value="// Generated code" />
   )
 }
 
@@ -602,5 +638,58 @@ function AstEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorM
       value="AST" />
   )
 }
+
+
+
+function BottomFooter() {
+  const [openEditor, setOpenEditor] = React.useState(true);
+  const [openSession, setOpenSession] = React.useState(true);
+
+  const handleEditorClick = () => {
+    setOpenEditor(!openEditor);
+  };
+
+  const handleSessionClick = () => {
+    setOpenSession(!openSession);
+  };
+
+  return (
+      <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red", height:'200px'}} >
+        <div className='Editor-Content-Header' style={{backgroundColor:'#eaeae1'}}>
+
+        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green", }} xs={12}>
+          <Grid item xs={11} style={{ padding: "0px", border: "0px solid green" }}>
+            Console Panel : {Date.now()}
+          </Grid>
+          <Grid item xs={1} style={{ textAlign: 'right' }} >
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open "
+              aria-controls="editor-menu"
+              aria-haspopup="true"
+
+              style={{ height: "24px" }}
+            >
+              <MoreHorizIcon style={{ height: "24px" }}/>
+            </IconButton>
+
+          </Grid>
+        </Grid>
+        </div>
+        <div className='Editor-Content' >
+
+        CONTENT
+
+         </div>
+
+        <div className='Editor-Container-Footer' style={{ display: "none", flex: "1 1 0%", border: "0px solid purple", height: '20px' }}>
+          Resizable Footer Inner :   {Date.now()}
+        </div>
+      </div>
+
+  )
+}
+
 
 export default EditorImpl
