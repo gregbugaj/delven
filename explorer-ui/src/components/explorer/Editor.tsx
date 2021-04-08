@@ -534,19 +534,9 @@ function EditorImpl(props: EditorProps) {
   )
 }
 
-const EditorContentMemo = React.memo(EditorContent)
 const EcmaEditorContentMemo = React.memo(EcmaEditorContent, (prev, next) => true)
 const AstEditorContentMemo = React.memo(AstEditorContent, (prev, next) => true)
 const CompiledEditorContentMemo = React.memo(CompiledEditorContent, (prev, next) => true)
-
-function EditorContent(props: { id: number, tickRef: any, value: number, renderType: string }) {
-
-  console.info('EditorContent')
-  const { id, tickRef, renderType } = props
-
-  console.info(renderType)
-  return (<div>REF {renderType} ::   {Date.now()} </div>)
-}
 
 function EcmaEditorContent(props: { id: string, tickRef?: any, onEditorReady?: (cme: CodeMirrorManager) => void }) {
   // console.info('EcmaEditorContent')
