@@ -456,11 +456,6 @@ function EditorImpl(props: EditorProps) {
           </Grid>
         </Grid>
 
-        {/* <h2>Parent Rendered at tick {tickRef.current.ticks} with clicks {clicks}.</h2>
-        <button onClick={() => setClicks(clicks + 1)}>Add extra click</button>
-        <p>Header 1</p>
-        <p>Header 2</p>
-        <p>Header 3</p> */}
       </div>
 
       <div className='Editor-Content'>
