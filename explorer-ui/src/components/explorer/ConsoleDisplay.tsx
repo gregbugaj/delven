@@ -1,20 +1,7 @@
-import React from 'react'
-import Typography from '@material-ui/core/Typography'
+import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import { TextField } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 const colors = {
   white: "white",
@@ -94,8 +81,8 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
   }
 
   componentDidMount() {
+    console.info('MOUNTED')
     const objDiv = document.getElementById("console-out");
-    console.info(objDiv)
     if (objDiv != null) {
       objDiv.scrollIntoView(false)
       // objDiv.scrollTop = objDiv.scrollHeight;
@@ -103,6 +90,8 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
   }
 
   render() {
+    console.info('RENDER ' +Date.now())
+
     function MessageItem(props) {
       let message = props.message
       let color = colors.gray
@@ -131,7 +120,7 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
       )
     }
 
-    let renderConsoleMessages = (messages?: ConsoleMessage[]) => {
+    let RenderConsoleMessages = (messages?: ConsoleMessage[]) => {
       return (
         <div id='console-messages'>
           {messages?.map((message, index) => <MessageItem index={index} message={message} />)}
@@ -140,25 +129,22 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
     }
 
     return (
-      // <div className={classes.root}>
-      <div id='console-header' style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <div>
-          <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid purple" }} >
-            <Grid item>
-              <Typography variant="h6" >
-                Console Display
-                </Typography>
-            </Grid>
-            <Grid item>
-              <Button size="small" variant="contained" style={{ minWidth: 80 }} >Raw logs</Button>
-            </Grid>
-          </Grid>
-        </div>
+      <React.Fragment>
+        <div className='Editor-Container' style={{ backgroundColor: '#222', padding: '5px', }}>
+          <div className='Editor-Content-Header' style={{ display: 'none' }}>
+            HEADER
+         </div>
 
-        <div id='console-out' style={{ height: '100%', backgroundColor: '#222', padding: '5px', overflowY: 'auto' }}>
-          {renderConsoleMessages(this.state.messages)}
+          <div className='Editor-Content'>
+            {RenderConsoleMessages(this.state.messages)}
+          </div>
+
+          <div className='Editor-Content-Footer' style={{ margin: '.5em', fontFamily: 'Cousine,monospace', color:'#FFF' }}>
+            <hr/>
+           REPL :
         </div>
-      </div>
+        </div>
+      </React.Fragment>
     )
   }
 }

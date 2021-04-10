@@ -52,6 +52,11 @@ export class EventTypeEvaluateReply extends EventWithPayload<any> {
   public readonly type = EventTypeEvaluateReply.type
 }
 
+export class EventTypeEvaluateResult extends EventWithPayload<any> {
+  static readonly type = "evaluate.result"
+  public readonly type = EventTypeEvaluateResult.type
+}
+
 export class EventTypeEditorKeyDown extends EventWithPayload<any> {
   static readonly type = "editor.keydown"
   public readonly type = EventTypeEditorKeyDown.type
