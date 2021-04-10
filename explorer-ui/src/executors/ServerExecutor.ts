@@ -61,9 +61,6 @@ export class ServerExecutor implements IExecutor {
     const hasId = data.hasOwnProperty("id")
 
     if (data && hasId) {
-
-      console.info(data)
-      console.info(this.targetStreamMap)
       const replyId = data["id"]
       const targetId = this.messageMap.get(replyId);
       console.warn(`Event/target Id : '${replyId}  = ${targetId}' `)
@@ -77,7 +74,8 @@ export class ServerExecutor implements IExecutor {
       }
 
       stream.next(message)
-      this.messageMap.delete(replyId)
+      // TODO : This needs to be fixed
+    //  this.messageMap.delete(replyId)
     } else if (data && !hasId) {
       throw new Error("Reply has no ID property")
     }

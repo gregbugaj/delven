@@ -27,6 +27,9 @@ import ResizibleDivider from './ResizibleDivider';
 import { IconButton } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
+import ExpandLess from '@material-ui/icons/ExpandLess';
+import ExpandMore from '@material-ui/icons/ExpandMore';
+
 // https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
 
 
@@ -629,19 +632,17 @@ function AstEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorM
 
 
 function BottomFooter() {
-  const [openEditor, setOpenEditor] = React.useState(true);
-  const [openSession, setOpenSession] = React.useState(true);
+  const [openEditor, setOpenEditor] = React.useState(false);
+  const consoleRef = React.createRef<HTMLDivElement>();
 
   const handleEditorClick = () => {
     setOpenEditor(!openEditor);
-  };
-
-  const handleSessionClick = () => {
-    setOpenSession(!openSession);
+    consoleRef.current.style.display  = openEditor ? '' : 'none';
+    // consoleRef.current.style.height  = '0px'
   };
 
   return (
-      <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red", height:'200px'}} >
+      <div className='Editor-Container' style={{ padding: "0px", border: "1px solid blue", }} >
         <div className='Editor-Content-Header' style={{backgroundColor:'#eaeae1'}}>
 
         <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green", }} xs={12}>
@@ -661,12 +662,23 @@ function BottomFooter() {
               <MoreHorizIcon style={{ height: "24px" }}/>
             </IconButton>
 
+            <IconButton
+              edge="start"
+              color="inherit"
+              aria-label="open "
+              aria-controls="editor-menu"
+              aria-haspopup="true"
+              style={{ height: "24px" }}
+              onClick= {() => { handleEditorClick() }}
+            >
+              {openEditor ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
           </Grid>
         </Grid>
         </div>
-        <div className='Editor-Content' >
+        <div className='Editor-Content' ref={consoleRef} style={{border:'1px solid red'}}>
 
-        CONTENT
+          CONTENT
 
          </div>
 
