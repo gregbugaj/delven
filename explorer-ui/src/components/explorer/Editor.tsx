@@ -3,7 +3,7 @@ import Grid from '@material-ui/core/Grid';
 import { CodeMirrorManager } from './CodeMirror'
 import Button from '@material-ui/core/Button';
 import BlurLinearIcon from '@material-ui/icons/BlurLinear';
-
+import CodeIcon from '@material-ui/icons/Code';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
@@ -426,14 +426,14 @@ function EditorImpl(props: EditorProps) {
                    */}
 
                 <Button disabled={compileInProgress} size="small" color="primary" style={{ minWidth: 60, marginRight: '20px' }}
-                  endIcon={< BlurLinearIcon fontSize="small" />}
-                  onClick={compile}>{compileInProgress ? '' : ''}</Button>
+                  startIcon={< CodeIcon fontSize="small" />}
+                  onClick={compile}>{compileInProgress ? 'Compile' : 'Compile'}</Button>
 
                 <Button size="small" color="secondary" style={{ minWidth: 60 }}
-                  endIcon={
+                  startIcon={
                     <BxsRightArrowIcon />
                   }
-                  onClick={evaluate}></Button>
+                  onClick={evaluate}>Run</Button>
               </Grid>
 
             </Grid>

@@ -9,6 +9,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import MenuIcon from "@material-ui/icons/Menu";
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
 import { EventTypeAddTab, EventTypeSampleQuery } from "../bus/message-bus-events";
 import "../globalServices"
@@ -170,6 +171,11 @@ export default function FullWidthTabbedEditor() {
     })
   };
 
+
+  const handleSessionAdd = () => {
+    alert("Adding session")
+  };
+
   const getVisibilityStyle = (hiddenCondition: boolean): any => {
     if (hiddenCondition) {
       return {
@@ -204,7 +210,7 @@ export default function FullWidthTabbedEditor() {
     <div className='Editor-Container'>
       <div className='Editor-Container-Header'>
         <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} xs={12}>
-          <Grid item xs={11} style={{ padding: "0px", border: "0px solid green" }}>
+          <Grid item xs={10} style={{ padding: "0px", border: "0px solid green" }}>
 
               <Tabs
                 value={value}
@@ -255,7 +261,14 @@ export default function FullWidthTabbedEditor() {
 
               </Tabs>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={2} style={{ textAlign: 'right', }}>
+
+
+            <IconButton color="primary" aria-label="Save Session" component="span" onClick={handleSessionAdd}>
+              <CloudUploadIcon />
+            </IconButton>
+
+
             <IconButton color="primary" aria-label="add tab" component="span" onClick={handleTabAdd}>
               <AddIcon />
             </IconButton>

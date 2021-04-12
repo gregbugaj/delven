@@ -46,7 +46,7 @@ export default function WorkspacePanel() {
         </div>
 
         <div className='Editor-Content' style={{ border: "px solid green" }} >
-          Editors:
+        Editors:
           <ul>
             {
               editors?.map((editor, i) => (
@@ -101,6 +101,11 @@ function ListMenu() {
 
       <Collapse in={openEditor} timeout="auto" className={classes.details}>
         <p>No items present</p>
+
+        <hr/>
+        <Button size="small" variant="contained" color="primary">
+          Add Script
+        </Button>
       </Collapse>
 
       <ListItem button onClick={handleSessionClick} className={classes.item} >
