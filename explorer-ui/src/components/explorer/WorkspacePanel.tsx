@@ -29,14 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export default function WorkspacePanel() {
-  const x = React.useContext(EditorContext)
-
-  const useTheme = () => React.useContext(EditorContext);
-  console.info(useTheme)
-
-  let editors = x[0]
-  console.info(x)
-  console.info(editors)
+  const[session, setSession]  = React.useContext(EditorContext)
 
   return (
     <div className='Editor-Content'>
@@ -46,16 +39,16 @@ export default function WorkspacePanel() {
         </div>
 
         <div className='Editor-Content' style={{ border: "px solid green" }} >
-        Editors:
+        {/* Editors:
           <ul>
             {
-              editors?.map((editor, i) => (
+              session.editors?.map((editor, i) => (
                 <li>
                   {editor.name} <br />
                 </li>
               ))
             }
-          </ul>
+          </ul> */}
           <ListMenu />
         </div>
 

@@ -21,7 +21,6 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
   let cme: CodeMirrorManager
 
   useLayoutEffect(() => {
-    console.info(`TextAreaCodeEditor init : ${id}`)
     if (ref.current === null) {
       throw new Error('ref.current is null exptected HTMLTextArea')
     }

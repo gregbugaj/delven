@@ -209,7 +209,7 @@ export default function FullWidthTabbedEditor() {
   return (
     <div className='Editor-Container'>
       <div className='Editor-Container-Header'>
-        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }} xs={12}>
+        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }}>
           <Grid item xs={10} style={{ padding: "0px", border: "0px solid green" }}>
 
               <Tabs

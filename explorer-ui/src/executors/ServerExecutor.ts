@@ -83,7 +83,7 @@ export class ServerExecutor implements IExecutor {
 
   public on(target: string, eventNameFilter: string, callback: CallbackFunction<WebSocketMessage>): Subscription {
 
-    console.trace(`target = ${target}`)
+    // console.trace(`target = ${target}`)
 
     let stream: Subject<WebSocketMessage> | undefined = this.targetStreamMap.get(target)
     if (stream === undefined) {

@@ -666,7 +666,7 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
     <div className='Editor-Container' style={{ padding: "0px", border: "0px solid blue", flex: "1 1 0%", }} >
       <div className='Editor-Content-Header' style={{ backgroundColor: '#eaeae1' }}>
 
-        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green", }} xs={12}>
+        <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green", }} >
 
           <Grid item xs={9} style={{ padding: "0px", border: "0px solid green" }}>
             {/* Console Panel : {Date.now()} */}

@@ -14,6 +14,7 @@ import { useStylesSidePanel } from './useStylesSidePanel';
 
 import { EventTypeAddTab } from "../bus/message-bus-events";
 import { useThemeContext } from './ReferenceDataContext';
+import { EditorContext } from './EditorContext';
 
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -27,8 +28,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 export default function EditorPanel() {
-  // const useTheme = () => React.useContext(ThemeContext);
   const { theme, setTheme } = useThemeContext()!;
+  const[session, setSession]  = React.useContext(EditorContext)
 
   return (
     <div className='Editor-Content'>
@@ -61,6 +62,9 @@ export default function EditorPanel() {
 
 
 function ListMenu() {
+  const[session, setSession]  = React.useContext(EditorContext)
+
+
   const [openEditor, setOpenEditor] = React.useState(true);
   const [openSession, setOpenSession] = React.useState(true);
 
@@ -87,7 +91,18 @@ function ListMenu() {
       </ListItem>
 
       <Collapse in={openEditor} timeout="auto">
-        AAA theme = {theme} <EditorListing />
+        {/* AAA theme = {theme}  */}
+        <h3>{session.name}</h3>
+        <ul>
+            {
+              session.editors?.map((editor, i) => (
+                <li>
+                  {editor.name} <br />
+                </li>
+              ))
+            }
+          </ul>
+        {/* <EditorListing /> */}
       </Collapse>
 
       <ListItem button onClick={handleSessionClick} className={classes.item}>
@@ -106,10 +121,15 @@ function ListMenu() {
 }
 
 function EditorListing() {
+
+
   return (
     <div>
       AA
       Editors {Date.now()}
+
+      Editors:
+
     </div>
   )
 }

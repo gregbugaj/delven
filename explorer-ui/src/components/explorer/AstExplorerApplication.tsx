@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -32,7 +32,7 @@ import WorkspacePanel from "./WorkspacePanel";
 import SettingsPanel from "./SettingsPanel";
 
 import { ThemeProvider } from "./ReferenceDataContext"
-import { EditorProvider, EditorContext, IEditor } from "./EditorContext"
+import { EditorProvider, EditorContext, IEditor, ISession } from "./EditorContext"
 
 const drawerWidth = 300;
 
@@ -261,36 +261,71 @@ function AstExplorerApplication() {
       height: 60,
     },
   };
-  // const editors = x[0]
-  // const setEditors = x[1]
 
-  const useEditor = () => React.useContext(EditorContext);
-  let valx = useEditor()
-  console.info(valx)
-  // const [editors, setEditors] = React.useContext(EditorContext);
 
-  const toggleLocale = () => {
-    console.info('Locale change')
+  const initialState: ISession = {
+    name: `Session : ${Date.now()}`,
+    editors: [
+      {
+        name: "Editor 1a",
+        id: 11
+      },
+      {
+        name: "Editor 2b",
+        id: 22
+      }, {
+        name: "Editor 3c",
+        id: 22
+      }
+    ]
+  };
 
-    const val:IEditor = {
-      name: 'name D',
-      id: 3,
+
+  function ChangeButtonComponent() {
+    const[session, setSession]  = React.useContext(EditorContext)
+
+    const toggleLocale = () => {
+      console.info('Locale change ')
+
+      const val: IEditor = {
+        name: `EditorA >>  : ${Date.now()}`,
+        id: Date.now(),
+      }
+
+      const updated: ISession = {
+        name: session.name,
+        editors: [...session.editors, val]
+      }
+      setSession(updated)
     }
 
-    // console.info(setEditors)
-    // setEditors((prev)=>{
-    //   console.info("--- PREV ")
-    //   console.info(prev)
-    //   return [...prev, val]
-    // });
+    return (
+      <React.Fragment>
+        <Button onClick={toggleLocale}> Change</Button>
+        <div>session: ${session.name}</div>
+{/*
+        Session Editors:
+          <ul>
+            {
+              session.editors?.map((editor, i) => (
+                <li>
+                  {editor.name} <br />
+                </li>
+              ))
+            }
+          </ul> */}
+      </React.Fragment>
+    )
   }
+
 
   return (
 
     <div style={{ border: '0px solid green', padding: '0px' }} >
       <CssBaseline />
-      {/* locale  = {editors} */}
-      {/* <Button onClick={toggleLocale}>Locale Change</Button> */}
+
+      <EditorProvider>
+        <ChangeButtonComponent />
 
       <SimpleModal>
         <ShortcutsComponent />
@@ -349,15 +384,13 @@ function AstExplorerApplication() {
             <div className='Editor-Content' style={{ paddingLeft: '5px' }} >
 
               <div id={`side-container-editor`} style={{ display: renderType === 'editor' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                  <ThemeProvider>
-                    <EditorPanel></EditorPanel>
-                  </ThemeProvider>
+                    <ThemeProvider>
+                      <EditorPanel></EditorPanel>
+                    </ThemeProvider>
               </div>
 
               <div id={`side-container-workspace`} style={{ display: renderType === 'workspace' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                <EditorProvider>
-                    <WorkspacePanel></WorkspacePanel>
-                </EditorProvider>
+                  <WorkspacePanel></WorkspacePanel>
               </div>
 
               <div id={`side-container-settings`} style={{ display: renderType === 'settings' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
@@ -420,6 +453,7 @@ function AstExplorerApplication() {
         </Grid>
       </div>
 
+      </EditorProvider>
     </div>
   );
 }
