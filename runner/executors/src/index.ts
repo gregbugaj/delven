@@ -104,7 +104,8 @@ async function main() {
 
           executor.evaluate(data, (event: NotifierEvent) => {
             const reply: Reply = { status: 'ok', type: 'evaluate.result', data:event };
-            ws.send(toJson(reply));
+            const data = toJson(reply)
+            ws.send(data);
           })
             .then(compiled => {
               console.info('Evaluated response')

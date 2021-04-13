@@ -17,6 +17,7 @@ import Editor from './Editor';
 import { AppBar, Grid, IconButton } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import { EditorContext, IEditor, ISession } from './EditorContext';
+import { filter } from 'rxjs/operators';
 
 /**
  * Prevent React component from re-rendering
@@ -97,36 +98,87 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 }));
 
+// const TabbedEditor = React.memo((props:any) => {
+//   return TabbedEditorImp(props)
+// })
+// export default TabbedEditor
 
-export default function FullWidthTabbedEditor() {
-  console.info("**** FullWidthTabbedEditor ****")
+export default function TabbedEditor(props: any) {
+  console.info("**** TabbedEditor ****")
   const eventBus = globalThis.services.eventBus
   const [session, setSession] = React.useContext(EditorContext)
   const classes = useStyles();
+
+  const [isReady, setIsReady] = React.useState(false);
   const [value, setActiveTabValue] = React.useState("");
   const [tabList, setTabListState] = React.useState<TabPanelProps[]>();
 
+
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+    globalThis.services.state.activeTabId = newValue
     console.info(`setting active tab to  = ${newValue}`)
+    console.info(tabList)
+    console.info(session.editors)
+
     // TODO : use ReactHooks and Context to provide global state
     setActiveTabValue(newValue);
   };
 
   const closeTab = (tabId: string) => {
-    console.info(`Closing TabId # ${tabId}`)
+    console.trace(`Closing TabId # ${tabId}`)
+    console.info(tabList)
+    console.info(session.editors)
+
     if (tabList === undefined) {
       // throw Error("this is bad, tabList is null")
       console.warn("this is bad, tabList is null")
       return;
     }
 
-    const filtered = tabList.filter(tab=> tab.index === tabId)
-    console.info(filtered)
+    // const filtered = tabList.filter(tab => tab.index === tabId)
+    // const tab = filtered[0]
+    const editors: IEditor[] = []
+    console.info(session.editors)
+
+    for (let editor of session.editors) {
+      console.info("  >> " + editor.id)
+      if (tabId  !== editor.id)
+        continue;
+
+      editors.push(editor)
+    }
+
+    const updated: ISession = {
+      name: session.name,
+      editors: editors
+    }
+
+    // setSession(updated)
+
+    /*
+      if (tabList === undefined) {
+      setTabListState([prop])
+    } else {
+      setTabListState([...tabList, prop])
+    }
+    setActiveTabValue(id);
+    */
   }
 
   // need to make sure that there are no multiple subscriptions
   useEffect(() => {
-    console.info('Layout SETUP')
+    console.info('TAB EDITOR : useEffect')
+    setIsReady(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tabList])
+
+  useEffect(() => {
+    console.info('TAB EDITOR : useEffect : ' + isReady)
+    // not yet ready
+    if (isReady === false) {
+      return
+    }
+
     eventBus.on(
       EventTypeAddTab,
       (event: EventTypeAddTab): void => {
@@ -137,7 +189,6 @@ export default function FullWidthTabbedEditor() {
           if (event.data !== undefined) {
             const data = event.data
             if (data.type === 'file') {
-              //data.id
               addTab(uuidv4(), data.name, () => {
                 console.info("Tab from EventTypeAdd added")
                 // Load value to the active tab
@@ -165,7 +216,7 @@ export default function FullWidthTabbedEditor() {
       }
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isReady])
 
 
   useLayoutEffect(() => {
@@ -178,11 +229,12 @@ export default function FullWidthTabbedEditor() {
   }, []); // run only once
 
   const addTab = (id: string, label: string, onLoadComplete: () => void) => {
-
+    console.info('addTab **')
     console.info(tabList)
+    console.info(session.editors)
+
     // TODO : This should be handled better
     globalThis.services.state.activeTabId = id
-
     const loaded = () => {
       try {
         onLoadComplete()
@@ -257,7 +309,6 @@ export default function FullWidthTabbedEditor() {
   function handleCloseTab(index: string) {
     console.info(`Closing Tab # ${index}`)
   }
-
 
   return (
     <div className='Editor-Container'>

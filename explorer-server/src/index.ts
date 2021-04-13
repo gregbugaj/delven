@@ -133,5 +133,5 @@ async function main() {
 (async () => {
     await main()
 })().catch(err => {
-    console.error("error in main", err)
+    console.error("server error in main", err)
 })

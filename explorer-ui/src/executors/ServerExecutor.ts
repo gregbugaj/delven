@@ -126,14 +126,14 @@ export class ServerExecutor implements IExecutor {
     console.info(`emit.event  : ${event}`)
     console.info(data)
 
-    if (this.ws?.readyState == WebSocket.CLOSED) {
+    if (this.ws?.readyState === WebSocket.CLOSED) {
       console.info("Connection closed")
-      if (this.params != undefined) {
+      if (this.params !== undefined) {
         await this.setup(this.params)
       }
     }
 
-    if (this.ws?.readyState == WebSocket.OPEN) {
+    if (this.ws?.readyState === WebSocket.OPEN) {
       if (data && data.hasOwnProperty("id")) {
         this.messageMap.set(data["id"], source)
       } else {

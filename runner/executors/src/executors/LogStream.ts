@@ -1,6 +1,6 @@
 import LoggerFactory from './logger';
-import { Subject } from "rxjs";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
+import Utils from '../util';
 
 const util = require('util')
 
@@ -43,7 +43,7 @@ export default class LogStream {
   }
 
   private emit(event: any): void {
-    this.eventStream.next(...event);
+    this.eventStream.next(event);
   }
 
   /**
@@ -68,24 +68,40 @@ export default class LogStream {
   }
 
   info(...msg): void {
-    // as the window logger does not work same way as console.info we need to conver argumnent into a message string
-    // console.info(...msg)
     this.logger.info(this.format(msg))
-    this.emit(msg)
+    this.emit({ level: "info", message: this.format(msg) })
   }
 
   warn(...msg): void {
     this.logger.warn(this.format(msg))
-    this.emit(msg)
+    this.emit({ level: "warn", message: this.format(msg) })
   }
 
   error(...msg): void {
     this.logger.error(this.format(msg))
-    this.emit(msg)
+    this.emit({ level: "error", message: this.format(msg) })
   }
 
   trace(...msg): void {
     this.logger.trace(this.format(msg))
-    this.emit(msg)
+    this.emit({ level: "trace", message: this.format(msg) })
+  }
+
+  _sanitize(...msg): any[] {
+    // as the window logger does not work same way as console.info we need to conver argumnent into a message string
+    // console.info(...msg)
+    const converted: any[] = []
+    for (let i = 0; i < msg.length; ++i) {
+      const obj = msg[i]
+      if (obj instanceof Error) {
+        Utils.ErrorSerializer(obj)
+        converted[i] = obj.toJSON()
+      } else {
+        converted[i] = obj
+      }
+    }
+    return converted
+  } catch(err) {
+    console.error(err)
   }
 }

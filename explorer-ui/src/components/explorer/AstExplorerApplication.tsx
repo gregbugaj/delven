@@ -24,7 +24,7 @@ import { Route, Switch } from "react-router-dom"
 
 import BreadcrumModule from '../shared/breadcrumbs';
 
-import FullWidthTabbedEditor from './TabbedEditor'
+import TabbedEditor from './TabbedEditor'
 import { EventTypeCompileReply, EventTypeEditorKeyDown } from "../bus/message-bus-events";
 import ShortcutsComponent from "../settings/Shortcuts";
 import EditorPanel from "./EditorPanel";
@@ -129,7 +129,7 @@ const useStyles = makeStyles(theme => ({
 const DefaultComponent = () => {
   return (
     <div style={{ border: '0px solid red', height: '100%' }}>
-      <FullWidthTabbedEditor></FullWidthTabbedEditor>
+      <TabbedEditor></TabbedEditor>
     </div>
   );
 };
@@ -320,7 +320,6 @@ function AstExplorerApplication() {
 
 
   return (
-
     <div style={{ border: '0px solid green', padding: '0px' }} >
       <CssBaseline />
       <EditorProvider>

@@ -249,6 +249,8 @@ function EditorImpl(props: EditorProps) {
           eventBus.emit(new EventTypeEvaluateReply(msg.data));
           break;
         case "evaluate.result":
+          console.info('evalute.result')
+          console.info(msg)
           eventBus.emit(new EventTypeEvaluateResult(msg.data));
           break;
 
@@ -298,11 +300,6 @@ function EditorImpl(props: EditorProps) {
     // At this editor is ready and should be visible and ready to receive events
     onLoadComplete()
   }, []);
-
-
-  useEffect(() => {
-    console.log("useEffect newValue--->", value);
-  }, [value]); //run every time value changes
 
 
   function log(level: ConsoleMessageLevel, message: string | string[]) {
@@ -627,6 +624,9 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
   const [openEditor, setOpenEditor] = React.useState(false);
   const consoleRef = React.createRef<HTMLDivElement>();
 
+  const consoleDisplayRef = React.useRef<ConsoleDisplay>()
+  const messages: ConsoleMessage[] = []
+
   const handleEditorClick = () => {
     if (openEditor) {
       consoleRef.current.style.display = 'flex'
@@ -639,27 +639,32 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
     setOpenEditor(!openEditor);
   };
 
-  let messages: ConsoleMessage[] = []
-  const consoleDisplayRef = React.createRef<ConsoleDisplay>()
-  // hook up events
-  const eventBus = globalServices.eventBus
-  eventBus.on(
-    EventTypeEvaluateResult,
-    (event): void => {
-      const activeId = globalServices.state.activeTabId
-      if (tabId !== activeId) {
-        return
-      }
-      const data = event.data;
-      if (data.type === 'console') {
-        const payload = data.payload
-        // messages.push({ time: new Date().toISOString(), level: "info", message: payload })
 
-        const consoleDisplay = consoleDisplayRef.current as ConsoleDisplay
-        consoleDisplay.append({ time: new Date().toISOString(), level: "info", message: payload })
+  useLayoutEffect(() => {
+    // hook up events
+    const eventBus = globalServices.eventBus
+    eventBus.on(
+      EventTypeEvaluateResult,
+      (event): void => {
+        const activeId = globalServices.state.activeTabId
+
+        console.info(`tabId / activeId : ${tabId} / ${activeId}`)
+        if (tabId !== activeId) {
+          return
+        }
+
+        const data = event.data;
+        if (data.type === 'console') {
+          const payload = data.payload
+          const consoleDisplay = consoleDisplayRef.current as ConsoleDisplay
+          const line: ConsoleMessage = { time: new Date().toISOString(), level: payload.level, message: payload.message }
+
+          consoleDisplay.append(line)
+        }
       }
-    }
-  )
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className='Editor-Container' style={{ padding: "0px", border: "0px solid blue", flex: "1 1 0%", }} >

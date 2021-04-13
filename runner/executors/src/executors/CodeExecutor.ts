@@ -39,7 +39,8 @@ export default class CodeExecutor implements IExecutor {
           (async () => {
             ${script}
           })().catch(err => {
-              console.error("error in main", err)
+              console.error("compile:error in main", err)
+              console.error(\`compile: error in mainYYY : \${JSON.stringify(err)}\`, err)
           })
         `, 'sandbox.js').compile();
 
@@ -111,18 +112,18 @@ export default class CodeExecutor implements IExecutor {
                             }
 
                             console.info('Eval : complete')
-                            setTimeout(function(){ console.info("Timeout task"); }, 5000);
+                            // setTimeout(function(){ console.info("Timeout task"); }, 5000);
                         }
 
                         (async () => {
                             await main()
                             done()
                         })().catch(err => {
-                            console.error("error in main", err)
+                          console.error(err)
+                          // console.error("compile:error in main", err)
+                          // console.error('compile: error in mainXXX :' + JSON.stringify(err), err)
                         })
                     `
-
-          console.warn(code)
           vm.run(code);
         } catch (err) {
           console.error('Failed to execute script.', err);

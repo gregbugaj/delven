@@ -90,7 +90,7 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
   }
 
   render() {
-    console.info('RENDER ' +Date.now())
+    // console.info('RENDER ' +Date.now())
 
     function MessageItem(props) {
       let message = props.message
@@ -108,7 +108,7 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
         <div style={{ margin: '0em', display: 'flex', minHeight: '18px', fontFamily: 'Cousine,monospace' }}>
           <span style={{ display: 'flex', marginRight: '.2em', width: '1em' }}>  </span>
           <span style={{ display: 'flex', marginRight: '.5em', color: '#666', minWidth: '1.5em', textAlign: 'right' }}> {props.index + 1} </span>
-          <span style={{ display: message.time == null ? 'none' : 'block', marginRight: '.5em' }}>
+          <span style={{ display: message.time == null ? 'none' : 'block', marginRight: '.5em', minWidth:'180px' }}>
 
             <span style={{ color: colors.gray }}>[</span>
             <span style={{ color: '#666' }}>{message.time}</span>
@@ -122,7 +122,7 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
 
     let RenderConsoleMessages = (messages?: ConsoleMessage[]) => {
       return (
-        <div id='console-messages'>
+        <div className='console-messages'>
           {messages?.map((message, index) => <MessageItem index={index} message={message} />)}
         </div>
       );
@@ -130,7 +130,7 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
 
     return (
       <React.Fragment>
-        <div className='Editor-Container' style={{ backgroundColor: '#222', padding: '5px', }}>
+        <div className='Editor-Container console-view' style={{ backgroundColor: '#222', padding: '5px', }}>
           <div className='Editor-Content-Header' style={{ display: 'none' }}>
             HEADER
          </div>
