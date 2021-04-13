@@ -282,7 +282,7 @@ function AstExplorerApplication() {
 
 
   function ChangeButtonComponent() {
-    const[session, setSession]  = React.useContext(EditorContext)
+    const [session, setSession] = React.useContext(EditorContext)
 
     const toggleLocale = () => {
       console.info('Locale change ')
@@ -303,7 +303,7 @@ function AstExplorerApplication() {
       <React.Fragment>
         <Button onClick={toggleLocale}> Change</Button>
         <div>session: ${session.name}</div>
-{/*
+        {/*
         Session Editors:
           <ul>
             {
@@ -323,135 +323,133 @@ function AstExplorerApplication() {
 
     <div style={{ border: '0px solid green', padding: '0px' }} >
       <CssBaseline />
-
       <EditorProvider>
-        <ChangeButtonComponent />
 
-      <SimpleModal>
-        <ShortcutsComponent />
-        {/* <h2 id="modal-title">Text in a modal</h2>
+        <SimpleModal>
+          <ShortcutsComponent />
+          {/* <h2 id="modal-title">Text in a modal</h2>
           <p id="modal-description">
             Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
         </p> */}
-      </SimpleModal>
+        </SimpleModal>
 
 
-      <div className={classes.root} style={{
-        border: '0px solid green', padding: '0px', width: '60px', float: 'left',
-        backgroundColor: "#eaeae1"
-      }}  >
+        <div className={classes.root} style={{
+          border: '0px solid green', padding: '0px', width: '60px', float: 'left',
+          backgroundColor: "#eaeae1"
+        }}  >
 
-        <List>
-          <ListItem button key="editor" onClick={(e) => handleViewChange('editor')}>
-            <ListItemIcon><DescriptionIcon style={styles.largeIcon} /></ListItemIcon>
-          </ListItem>
+          <List>
+            <ListItem button key="editor" onClick={(e) => handleViewChange('editor')}>
+              <ListItemIcon><DescriptionIcon style={styles.largeIcon} /></ListItemIcon>
+            </ListItem>
 
-          <ListItem button key="workspace" onClick={(e) => handleViewChange('workspace')}>
-            <ListItemIcon><SimCardIcon style={styles.largeIcon} /></ListItemIcon>
-          </ListItem>
+            <ListItem button key="workspace" onClick={(e) => handleViewChange('workspace')}>
+              <ListItemIcon><SimCardIcon style={styles.largeIcon} /></ListItemIcon>
+            </ListItem>
 
-          <ListItem button key="settings" onClick={(e) => handleViewChange('settings')}>
-            <ListItemIcon><SettingsIcon style={styles.largeIcon} /></ListItemIcon>
-          </ListItem>
+            <ListItem button key="settings" onClick={(e) => handleViewChange('settings')}>
+              <ListItemIcon><SettingsIcon style={styles.largeIcon} /></ListItemIcon>
+            </ListItem>
 
-          <ListItem button key="runners" onClick={(e) => handleViewChange('runners')}>
-            <ListItemIcon><InfoIcon style={styles.largeIcon} /></ListItemIcon>
-          </ListItem>
+            <ListItem button key="runners" onClick={(e) => handleViewChange('runners')}>
+              <ListItemIcon><InfoIcon style={styles.largeIcon} /></ListItemIcon>
+            </ListItem>
 
-          <ListItem button key="help" onClick={(e) => handleViewChange('help')}>
-            <ListItemIcon><LiveHelpIcon style={styles.largeIcon} /></ListItemIcon>
-          </ListItem>
+            <ListItem button key="help" onClick={(e) => handleViewChange('help')}>
+              <ListItemIcon><LiveHelpIcon style={styles.largeIcon} /></ListItemIcon>
+            </ListItem>
 
-        </List>
-      </div>
+          </List>
+        </div>
 
-      <div className={classes.root} style={{ border: '0px solid green', padding: '0px' }} >
+        <div className={classes.root} style={{ border: '0px solid green', padding: '0px' }} >
 
-        <Drawer
-          transitionDuration={0}
-          variant="persistent"
-          classes={{
-            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
-          }}
-          open={open}
-        >
+          <Drawer
+            transitionDuration={0}
+            variant="persistent"
+            classes={{
+              paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
+            }}
+            open={open}
+          >
 
-          <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red", overflowX: 'hidden', height: 'calc(100vh - 32px)' }} >
-            <div className='Editor-Container-Header' style={{ border: "0px solid blue", display: "none" }}>
-              <h5>RenderType :  {renderType} {Date.now()}</h5>
-            </div>
-
-            <div className='Editor-Content' style={{ paddingLeft: '5px' }} >
-
-              <div id={`side-container-editor`} style={{ display: renderType === 'editor' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                    <ThemeProvider>
-                      <EditorPanel></EditorPanel>
-                    </ThemeProvider>
+            <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red", overflowX: 'hidden', height: 'calc(100vh - 32px)' }} >
+              <div className='Editor-Container-Header' style={{ border: "0px solid blue", display: "none" }}>
+                <h5>RenderType :  {renderType} {Date.now()}</h5>
               </div>
 
-              <div id={`side-container-workspace`} style={{ display: renderType === 'workspace' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+              <div className='Editor-Content' style={{ paddingLeft: '5px' }} >
+
+                <div id={`side-container-editor`} style={{ display: renderType === 'editor' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  <ThemeProvider>
+                    <EditorPanel></EditorPanel>
+                  </ThemeProvider>
+                </div>
+
+                <div id={`side-container-workspace`} style={{ display: renderType === 'workspace' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
                   <WorkspacePanel></WorkspacePanel>
-              </div>
+                </div>
 
-              <div id={`side-container-settings`} style={{ display: renderType === 'settings' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                <SettingsPanel></SettingsPanel>
-              </div>
+                <div id={`side-container-settings`} style={{ display: renderType === 'settings' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  <SettingsPanel></SettingsPanel>
+                </div>
 
-              <div id={`side-container-runners`} style={{ display: renderType === 'runners' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                runners
+                <div id={`side-container-runners`} style={{ display: renderType === 'runners' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  runners
                   RenderType :  {renderType}  {Date.now()}
-              </div>
+                </div>
 
-              <div id={`side-container-help`} style={{ display: renderType === 'help' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                help
+                <div id={`side-container-help`} style={{ display: renderType === 'help' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
+                  help
                   RenderType :  {renderType}  {Date.now()}
+                </div>
+
               </div>
 
-            </div>
-
-            <div className='Editor-Container-Footer' style={{ border: "1px solid blue", display: "None" }}>
-              Footer
+              <div className='Editor-Container-Footer' style={{ border: "1px solid blue", display: "None" }}>
+                Footer
               RenderType :  {renderType}  {Date.now()}
+              </div>
             </div>
-          </div>
 
-        </Drawer>
+          </Drawer>
 
-        <main className={classes.content}>
-          {/* 32px refers to size of fixed footer */}
-          <Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 32px)' }} >
+          <main className={classes.content}>
+            {/* 32px refers to size of fixed footer */}
+            <Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 32px)' }} >
 
-                <Switch>
-                  <Route exact path='/explorer' component={DefaultComponent} />
-                  <Route exact path='/explorer/settings' component={SettingsComponent} />
-                  <Route path='/explorer/integration' component={IntegrationComponent} />
-                  <Route path='/explorer/settings/shortcuts' component={ShortcutsComponent} />
-                </Switch>
+              <Switch>
+                <Route exact path='/explorer' component={DefaultComponent} />
+                <Route exact path='/explorer/settings' component={SettingsComponent} />
+                <Route path='/explorer/integration' component={IntegrationComponent} />
+                <Route path='/explorer/settings/shortcuts' component={ShortcutsComponent} />
+              </Switch>
 
-          </Container>
-        </main>
-      </div>
+            </Container>
+          </main>
+        </div>
 
-      <div className="footer">
-        <Grid container direction="row" justify="space-between">
-          <Grid item>
-            <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
-              <Button>Execution time : {compileTime}ms</Button>
-              <Button>Line  {pos.line}, Column {pos.ch}</Button>
-              <Button> <BreadcrumModule breadcrumbs={breadcrumbNameMap} label="Explorer" /></Button>
-            </ButtonGroup>
+        <div className="footer">
+          <Grid container direction="row" justify="space-between">
+            <Grid item>
+              <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
+                <Button>Execution time : {compileTime}ms</Button>
+                <Button>Line  {pos.line}, Column {pos.ch}</Button>
+                <Button> <BreadcrumModule breadcrumbs={breadcrumbNameMap} label="Explorer" /></Button>
+              </ButtonGroup>
 
+            </Grid>
+            <Grid item>
+              <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
+                <Button onClick={handleShortcutsOpen}>Shortcuts</Button>
+                <Button>Fork</Button>
+                <Button>Share</Button>
+                <Button>Build : ####</Button>
+              </ButtonGroup>
+            </Grid>
           </Grid>
-          <Grid item>
-            <ButtonGroup size="small" variant="text" color="primary" aria-label="text primary button group">
-              <Button onClick={handleShortcutsOpen}>Shortcuts</Button>
-              <Button>Fork</Button>
-              <Button>Share</Button>
-              <Button>Build : ####</Button>
-            </ButtonGroup>
-          </Grid>
-        </Grid>
-      </div>
+        </div>
 
       </EditorProvider>
     </div>

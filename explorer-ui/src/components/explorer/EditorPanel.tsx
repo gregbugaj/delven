@@ -1,18 +1,21 @@
 import React from 'react';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, withStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
 import "../globalServices"
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import MuiListItem from "@material-ui/core/ListItem";
+
 import ListItemText from "@material-ui/core/ListItemText";
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import { Collapse } from '@material-ui/core';
+import { Collapse, ListItemSecondaryAction, IconButton, createStyles } from '@material-ui/core';
 import { useStylesSidePanel } from './useStylesSidePanel';
 
-import { EventTypeAddTab } from "../bus/message-bus-events";
+import CloseIcon from '@material-ui/icons/Close';
+import { EventTypeAddTab, EventTypeCloseTab } from "../bus/message-bus-events";
 import { useThemeContext } from './ReferenceDataContext';
 import { EditorContext } from './EditorContext';
 
@@ -29,8 +32,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function EditorPanel() {
   const { theme, setTheme } = useThemeContext()!;
-  const[session, setSession]  = React.useContext(EditorContext)
-
   return (
     <div className='Editor-Content'>
       <div className='Editor-Container' style={{ padding: "0px", border: "0px solid red" }} >
@@ -39,15 +40,14 @@ export default function EditorPanel() {
         </div>
 
         <div className='Editor-Content' style={{ border: "0px solid green" }} >
-
-          <div style={{ backgroundColor: theme }}>
+          {/* <div style={{ backgroundColor: theme }}>
             <select value={theme} onChange={e => setTheme(e.currentTarget.value)}>
               <option value="white">White</option>
               <option value="lightblue">Blue</option>
               <option value="lightgreen">Green</option>
             </select>
             <span>Hello!</span>
-          </div>
+          </div> */}
 
           <ListMenu />
         </div>
@@ -62,8 +62,7 @@ export default function EditorPanel() {
 
 
 function ListMenu() {
-  const[session, setSession]  = React.useContext(EditorContext)
-
+  const [session, setSession] = React.useContext(EditorContext)
 
   const [openEditor, setOpenEditor] = React.useState(true);
   const [openSession, setOpenSession] = React.useState(true);
@@ -77,7 +76,55 @@ function ListMenu() {
   };
 
   const classes = useStylesSidePanel();
-  const { theme } = useThemeContext()!;
+
+  const useStylesEditorListing = makeStyles((theme: Theme) => createStyles({
+    root: {
+      width: '100%',
+      height: "100%",
+      border: "1px solid red",
+      padding: "0px",
+      margin: "0px"
+    },
+
+    parent: {
+      backgroundColor: 'yellow',
+      '&:hover $child': {
+        color: 'red'
+      }
+
+    },
+    child: {
+      fontSize: '2em',
+      padding: 10
+    }
+  }));
+
+  const editorClasses = useStylesEditorListing()
+
+  // const ListItem = withStyles({
+  //   root: {
+  //     "&$selected": {
+  //       backgroundColor: "red",
+  //       color: "white"
+  //     },
+  //     "&$selected:hover": {
+  //       backgroundColor: "purple",
+  //       color: "white"
+  //     },
+  //     "&:hover": {
+  //       backgroundColor: "blue",
+  //       color: "white"
+  //     }
+  //   },
+  //   selected: {}
+  // })(MuiListItem);
+
+  const eventBus = globalThis.services.eventBus;
+
+  const handleEditorClose = (id) => {
+    console.info('Closing editor : ' + id)
+    eventBus.emit(new EventTypeCloseTab(id));
+  }
 
   return (
     <List className={classes.root}>
@@ -91,18 +138,20 @@ function ListMenu() {
       </ListItem>
 
       <Collapse in={openEditor} timeout="auto">
-        {/* AAA theme = {theme}  */}
-        <h3>{session.name}</h3>
-        <ul>
-            {
-              session.editors?.map((editor, i) => (
-                <li>
-                  {editor.name} <br />
-                </li>
-              ))
-            }
-          </ul>
-        {/* <EditorListing /> */}
+        <List dense={true} >
+          {
+            session.editors?.map((editor, i) => (
+              <ListItem >
+                <ListItemText primary={`${editor.name}`} />
+                <ListItemSecondaryAction>
+                  <IconButton edge="end" aria-label="close" onClick={() => handleEditorClose(editor.id)}>
+                    <CloseIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))
+          }
+        </List>
       </Collapse>
 
       <ListItem button onClick={handleSessionClick} className={classes.item}>
@@ -117,19 +166,5 @@ function ListMenu() {
         Sessions {Date.now()}
       </Collapse>
     </List>
-  )
-}
-
-function EditorListing() {
-
-
-  return (
-    <div>
-      AA
-      Editors {Date.now()}
-
-      Editors:
-
-    </div>
   )
 }

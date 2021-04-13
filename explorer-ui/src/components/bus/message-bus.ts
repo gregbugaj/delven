@@ -1,6 +1,5 @@
 import { filter } from "rxjs/operators";
-import { Subject } from "rxjs";
-import { Subscription } from "rxjs";
+import { Subject, Subscription } from "rxjs";
 
 interface CallbackFunction<T = any> {
     (event: T): void;
@@ -34,6 +33,7 @@ export class MessageBusService {
      * @param event
      */
     public emit(event: any): void {
+        console.warn(`MB.emit : ${JSON.stringify(event)}`)
         this.eventStream.next(event);
     }
 
@@ -68,8 +68,11 @@ export class MessageBusService {
      * NOTE: The NewableType<T> will allow for Type inference.
     */
     public on<T>(typeFilter: NewableType<T>, callback: CallbackFunction<T>, callbackContext: any = null): Subscription {
+        console.warn(`MB.on : ${JSON.stringify(typeFilter)}`)
         const subscription = this.eventStream
-            .pipe(filter((event: any): boolean => event instanceof typeFilter))
+            .pipe(filter((event: any): boolean => {
+              return event instanceof typeFilter
+            }))
             .subscribe(
                 (event: T): void => {
                     try {

@@ -7,7 +7,7 @@ type Props = {
 
 export interface IEditor {
   name: string;
-  id: number;
+  id: string;
 };
 
 export type ISession = {

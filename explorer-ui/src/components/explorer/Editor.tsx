@@ -301,9 +301,8 @@ function EditorImpl(props: EditorProps) {
 
 
   useEffect(() => {
-    // const { user } = props;
     console.log("useEffect newValue--->", value);
-  }, [value]);//run every time value changes
+  }, [value]); //run every time value changes
 
 
   function log(level: ConsoleMessageLevel, message: string | string[]) {

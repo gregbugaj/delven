@@ -11,11 +11,12 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-import { EventTypeAddTab, EventTypeSampleQuery } from "../bus/message-bus-events";
+import { EventTypeAddTab, EventTypeSampleQuery, EventTypeCloseTab } from "../bus/message-bus-events";
 import "../globalServices"
 import Editor from './Editor';
 import { AppBar, Grid, IconButton } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
+import { EditorContext, IEditor, ISession } from './EditorContext';
 
 /**
  * Prevent React component from re-rendering
@@ -30,9 +31,6 @@ interface TabPanelProps {
 
 const TabPanel = React.memo((props: TabPanelProps) => {
   const { children, index, onLoadComplete, ...other } = props;
-  console.info(`index = ${index}`)
-  // console.info(`activeId = ${activeId}`)
-  console.info(props)
   const onLoadCompleteHandler = onLoadComplete || (() => { console.info(`TabPanel onLoadComplete ${index}`) })
 
   return (
@@ -101,8 +99,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 export default function FullWidthTabbedEditor() {
-
+  console.info("**** FullWidthTabbedEditor ****")
   const eventBus = globalThis.services.eventBus
+  const [session, setSession] = React.useContext(EditorContext)
   const classes = useStyles();
   const [value, setActiveTabValue] = React.useState("");
   const [tabList, setTabListState] = React.useState<TabPanelProps[]>();
@@ -113,47 +112,90 @@ export default function FullWidthTabbedEditor() {
     setActiveTabValue(newValue);
   };
 
-  eventBus.on(
-    EventTypeAddTab,
-    (event: EventTypeAddTab): void => {
-      (async () => {
-        if (event.data !== undefined) {
-          let data = event.data
-          if (data.type === 'file') {
-            //data.id
-            addTab(uuidv4(), data.name, () => {
-              console.info("Tab from EventTypeAdd added")
-              // Load value to the active tab
-              eventBus.emit(new EventTypeSampleQuery(data));
-            })
+  const closeTab = (tabId: string) => {
+    console.info(`Closing TabId # ${tabId}`)
+    if (tabList === undefined) {
+      // throw Error("this is bad, tabList is null")
+      console.warn("this is bad, tabList is null")
+      return;
+    }
+
+    const filtered = tabList.filter(tab=> tab.index === tabId)
+    console.info(filtered)
+  }
+
+  // need to make sure that there are no multiple subscriptions
+  useEffect(() => {
+    console.info('Layout SETUP')
+    eventBus.on(
+      EventTypeAddTab,
+      (event: EventTypeAddTab): void => {
+        // IMPORTANT: DO NOT REMOVE THE ASYNC CALL OR THIS WILL BREAK REACT LIFECYCLE
+        // AND STATE VARIABLE WILL NOT BE AVAILABLE
+        (async () => {
+          console.info(tabList)
+          if (event.data !== undefined) {
+            const data = event.data
+            if (data.type === 'file') {
+              //data.id
+              addTab(uuidv4(), data.name, () => {
+                console.info("Tab from EventTypeAdd added")
+                // Load value to the active tab
+                eventBus.emit(new EventTypeSampleQuery(data));
+              })
+            }
           }
         }
+        )()
       }
-      )()
-    }
-  )
+    )
+
+    // FIXME : Not sure why this is not working, tabList state is always null
+    eventBus.on(
+      EventTypeCloseTab,
+      (event: EventTypeCloseTab): void => {
+        // IMPORTANT: DO NOT REMOVE THE ASYNC / TIMEOUT CALL OR THIS WILL BREAK REACT LIFECYCLE
+        // AND STATE VARIABLE WILL NOT BE AVAILABLE
+        (async () => {
+          if (event.data !== undefined) {
+            const tabId = event.data
+            closeTab(tabId)
+          }
+        })()
+      }
+    )
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
 
   useLayoutEffect(() => {
     // setup main tab
     const id = uuidv4()
-    addTab(id, `Script`, () => console.info('Root TAB added'))
-  }, []);
-
+    addTab(id, `Script`, () => {
+      console.info('Root TAB added')
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // run only once
 
   const addTab = (id: string, label: string, onLoadComplete: () => void) => {
+
+    console.info(tabList)
     // TODO : This should be handled better
     globalThis.services.state.activeTabId = id
 
-    const loaded = ()=> {
-      onLoadComplete()
-      console.info("load Completed ** ")
+    const loaded = () => {
+      try {
+        onLoadComplete()
+      } finally {
+        console.info("load Completed ** ")
+      }
     }
 
     const prop = {
       index: id,
       value: id,
       label: label,
-      onLoadComplete:loaded
+      onLoadComplete: loaded
     }
 
     if (tabList === undefined) {
@@ -161,16 +203,26 @@ export default function FullWidthTabbedEditor() {
     } else {
       setTabListState([...tabList, prop])
     }
-
     setActiveTabValue(id);
+
+    const val: IEditor = {
+      name: label,
+      id: id
+    }
+
+    const updated: ISession = {
+      name: session.name,
+      editors: [...session.editors, val]
+    }
+
+    setSession(updated)
   }
 
   const handleTabAdd = () => {
     addTab(uuidv4(), 'New script', () => {
-      console.info("Tab from ADD loaded")
+      console.debug("Tab from ADD loaded")
     })
   };
-
 
   const handleSessionAdd = () => {
     alert("Adding session")
@@ -206,43 +258,43 @@ export default function FullWidthTabbedEditor() {
     console.info(`Closing Tab # ${index}`)
   }
 
+
   return (
     <div className='Editor-Container'>
       <div className='Editor-Container-Header'>
         <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green" }}>
           <Grid item xs={10} style={{ padding: "0px", border: "0px solid green" }}>
 
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor="primary"
-                textColor="primary"
-                variant="scrollable"
-                scrollButtons="auto"
-                aria-label="Query samples"
-                // style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
-                TabIndicatorProps={{
-                  style: {
-                    height: "4px",
-                  }
-                }}
-              >
-
-                {/* <Tab label="Script #1" {...a11TabProps(0)} className={classes.tab} ></Tab> */}
-                {/* <Tab label="Script #2" {...a11TabProps(1)} className={classes.tab} ></Tab> */}
-
-                {
-                  tabList?.map((tab, i) => (
-                    <Tab
-                      value={tab.index}
-                      label={tab.label}
-                      {...a11TabProps(tab.index)}
-                      className={classes.tab}
-                    />
-                  ))
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="primary"
+              textColor="primary"
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="Query samples"
+              // style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
+              TabIndicatorProps={{
+                style: {
+                  height: "4px",
                 }
-                {/*
+              }}
+            >
 
+              {/* <Tab label="Script #1" {...a11TabProps(0)} className={classes.tab} ></Tab> */}
+              {/* <Tab label="Script #2" {...a11TabProps(1)} className={classes.tab} ></Tab> */}
+
+              {
+                tabList?.map((tab, i) => (
+                  <Tab
+                    value={tab.index}
+                    label={tab.label}
+                    {...a11TabProps(tab.index)}
+                    className={classes.tab}
+                  />
+                ))
+              }
+              {/*
               {
                 tabList?.map((tab, i) => (
                   <div>
@@ -259,7 +311,7 @@ export default function FullWidthTabbedEditor() {
                 ))
               } */}
 
-              </Tabs>
+            </Tabs>
           </Grid>
           <Grid item xs={2} style={{ textAlign: 'right', }}>
 
@@ -302,25 +354,13 @@ export default function FullWidthTabbedEditor() {
       </div>
 
       <div className='Editor-Content'>
-        {/* Initial panel */}
-
-        {/* <div style={getVisibilityStyle(value != 0)}>
-          <TabPanel index={0} label={'Script 0'} />
-        </div> */}
-
-        {/*
-        <div style={getVisibilityStyle(value != 1)}>
-          <TabPanel index={1} label={'Script 1'} />
-        </div> */}
-
         {
           tabList?.map((tab, i) => (
-            <div style={getVisibilityStyle(value != tab.index)}>
-              <TabPanel index={tab.index} label={`Script # ${i}`} onLoadComplete={tab.onLoadComplete} />
+            <div style={getVisibilityStyle(value !== tab.index)}>
+              <TabPanel index={tab.index} label={`Query # ${i}`} onLoadComplete={tab.onLoadComplete} />
             </div>
           ))
         }
-
       </div>
     </div>
   );

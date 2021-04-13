@@ -40,7 +40,10 @@ export class EventTypeAddTab extends EventWithPayload<EventTypeSampleQueryPayloa
   public readonly type = EventTypeAddTab.type
 }
 
-
+export class EventTypeCloseTab extends EventWithPayload<string> {
+  static readonly type = "EventTypeCloseTab"
+  public readonly type = EventTypeCloseTab.type
+}
 
 export class EventTypeCompileReply extends EventWithPayload<any> {
   static readonly type = "compile.reply"
@@ -73,7 +76,8 @@ export class EventTypeEditorKeyDown extends EventWithPayload<any> {
 export type EventTypes =
   EventTypeCompileReply |
   EventTypeEvaluateReply |
-  EventTypeSampleQuery  |
-  EventTypeAddTab  |
+  EventTypeSampleQuery |
+  EventTypeAddTab |
+  EventTypeCloseTab |
   EventTypeEditorKeyDown
   ;
