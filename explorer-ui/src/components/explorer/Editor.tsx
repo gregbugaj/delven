@@ -23,6 +23,7 @@ import { http } from '../../http';
 import ResizibleDivider from './ResizibleDivider';
 import { IconButton, Link } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import StopOutlinedIcon from '@material-ui/icons/StopOutlined';
 
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
@@ -438,10 +439,14 @@ function EditorImpl(props: EditorProps) {
                     <BxsRightArrowIcon />
                   }
                   onClick={evaluate}>Run</Button>
+
+                <Button size="small" disabled color="secondary" style={{ minWidth: 60 }}
+                  startIcon={
+                    <StopOutlinedIcon />
+                  }
+                  onClick={evaluate}>Stop</Button>
               </Grid>
-
             </Grid>
-
           </Grid>
           <Grid item sm={12} md={6}>
 
