@@ -68,7 +68,7 @@ export class MessageBusService {
      * NOTE: The NewableType<T> will allow for Type inference.
     */
     public on<T>(typeFilter: NewableType<T>, callback: CallbackFunction<T>, callbackContext: any = null): Subscription {
-        console.warn(`MB.on : ${JSON.stringify(typeFilter)}`)
+        // console.warn(`MB.on : ${JSON.stringify(typeFilter)}`)
         const subscription = this.eventStream
             .pipe(filter((event: any): boolean => {
               return event instanceof typeFilter
@@ -76,7 +76,8 @@ export class MessageBusService {
             .subscribe(
                 (event: T): void => {
                     try {
-                        callback.call(callbackContext, event);
+                        // callback.call(callbackContext, event);
+                        callback.apply(callbackContext, [event])
                     } catch (error) {
                         this.errorHandler.handleError(error);
                     }

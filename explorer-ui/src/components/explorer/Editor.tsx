@@ -1,11 +1,9 @@
-import React, { useMemo, RefObject } from 'react'
+import React, { RefObject, useEffect } from 'react'
 import Grid from '@material-ui/core/Grid';
 import { CodeMirrorManager } from './CodeMirror'
 import Button from '@material-ui/core/Button';
 import BlurLinearIcon from '@material-ui/icons/BlurLinear';
 import CodeIcon from '@material-ui/icons/Code';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
 import { EventTypeEditorKeyDown, EventTypeCompileReply, EventTypeEvaluateReply, EventTypeSampleQuery, EventTypeEvaluateResult } from "../bus/message-bus-events";
 import { ServerExecutor } from "../../executors";
@@ -13,11 +11,10 @@ import { ServerExecutor } from "../../executors";
 import { GlobalHotKeys } from 'react-hotkeys';
 import { configure } from 'react-hotkeys';
 
-import { useEffect, useLayoutEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import globalServices from '../globalServices';
 import { useRef } from "react";
-import classNames from "classnames";
 import TextAreaCodeEditor from './TextAreaCodeEditor';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -29,6 +26,7 @@ import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
+import { MessageBusService } from '../bus/message-bus';
 
 // https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
 
@@ -119,6 +117,16 @@ interface EditorSet {
 
 const executor = new ServerExecutor();
 const editorSets = new Map<String, EditorSet>();
+const eventBusMap = new Map<String, MessageBusService>();
+
+const getEventBus = (channelId: string): MessageBusService => {
+  if (!eventBusMap.has(channelId)) {
+    const bus = new MessageBusService();
+    eventBusMap.set(channelId, bus)
+  }
+
+  return eventBusMap.get(channelId)
+}
 
 // props:EditorProps
 function EditorImpl(props: EditorProps) {
@@ -127,7 +135,7 @@ function EditorImpl(props: EditorProps) {
   const compiledContainerRef = React.createRef<HTMLDivElement>();
 
   const { id, onLoadComplete, ...other } = props
-  const eventBus = globalServices.eventBus
+  const globalEventBus = globalServices.eventBus
 
   const classes = useStyles();
   const inputRef = useRef(null);
@@ -212,7 +220,7 @@ function EditorImpl(props: EditorProps) {
     // hook up events
     let editor = ecmaEditor
     let tabId = id
-    eventBus.on(
+    globalEventBus.on(
       EventTypeSampleQuery,
       (event): void => {
         const activeId = globalServices.state.activeTabId
@@ -236,6 +244,7 @@ function EditorImpl(props: EditorProps) {
       }
     )
 
+    let eventBus = getEventBus(tabId)
     // All the messages from executor for this ID will be pumped onto the Even Bus specific event
     // this converts from server side message event to client side EventBus message
     // compile.reply  evaluate.reply
@@ -250,7 +259,6 @@ function EditorImpl(props: EditorProps) {
           break;
         case "evaluate.result":
           console.info('evalute.result')
-          console.info(msg)
           eventBus.emit(new EventTypeEvaluateResult(msg.data));
           break;
 
@@ -620,12 +628,14 @@ function AstEditorContent(props: { id: string, onEditorReady?: (cme: CodeMirrorM
 }
 
 function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivElement> }) {
+
+  console.info('BottomConsolePanel : ' + Date.now())
   const { tabId, stageRef } = props
   const [openEditor, setOpenEditor] = React.useState(false);
-  const consoleRef = React.createRef<HTMLDivElement>();
+  const [messages, setMessages] = React.useState<ConsoleMessage[]>([]);
+  const [consoleKey, setConsoleKey] = React.useState<number>(Date.now());
 
-  const consoleDisplayRef = React.useRef<ConsoleDisplay>()
-  const messages: ConsoleMessage[] = []
+  const consoleRef = React.createRef<HTMLDivElement>();
 
   const handleEditorClick = () => {
     if (openEditor) {
@@ -639,27 +649,21 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
     setOpenEditor(!openEditor);
   };
 
+  const eventBus = getEventBus(tabId)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     // hook up events
-    const eventBus = globalServices.eventBus
     eventBus.on(
       EventTypeEvaluateResult,
       (event): void => {
         const activeId = globalServices.state.activeTabId
-
-        console.info(`tabId / activeId : ${tabId} / ${activeId}`)
-        if (tabId !== activeId) {
-          return
-        }
-
         const data = event.data;
         if (data.type === 'console') {
           const payload = data.payload
-          const consoleDisplay = consoleDisplayRef.current as ConsoleDisplay
-          const line: ConsoleMessage = { time: new Date().toISOString(), level: payload.level, message: payload.message }
+          messages.push({ time: new Date().toISOString(), level: payload.level, message: payload.message })
 
-          consoleDisplay.append(line)
+          setMessages(messages)
+          setConsoleKey(Date.now())
         }
       }
     )
@@ -711,7 +715,8 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
 
       {/* height is required  here so the console can become scrollable */}
       <div className='Editor-Content' ref={consoleRef} style={{ border: '0px solid red', flex: '1 1 0%', height: '25vh' }}>
-        <ConsoleDisplay ref={consoleDisplayRef} messages={messages} />
+         consoleKey  {consoleKey} <br/>
+        <ConsoleDisplay key={consoleKey} messages={messages} />
       </div>
 
       <div className='Editor-Container-Footer' style={{ display: "none", border: "0px solid purple", height: '20px' }}>

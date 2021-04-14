@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles, withStyles, Theme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 
@@ -77,6 +77,14 @@ function ListMenu() {
 
   const classes = useStylesSidePanel();
 
+
+  useEffect(()=>{
+    console.info("Session effect")
+    console.info(session)
+
+  }, [session])
+
+
   const useStylesEditorListing = makeStyles((theme: Theme) => createStyles({
     root: {
       width: '100%',
@@ -99,7 +107,7 @@ function ListMenu() {
     }
   }));
 
-  const editorClasses = useStylesEditorListing()
+  // const editorClasses = useStylesEditorListing()
 
   // const ListItem = withStyles({
   //   root: {
@@ -129,7 +137,7 @@ function ListMenu() {
   return (
     <List className={classes.root}>
 
-      <ListItem button onClick={handleEditorClick} className={classes.item}>
+      <ListItem button onClick={handleEditorClick} className={classes.item} key="editors">
         <ListItemText
           disableTypography
           primary={<Typography className={classes.heading}>Editors</Typography>}
@@ -141,7 +149,7 @@ function ListMenu() {
         <List dense={true} >
           {
             session.editors?.map((editor, i) => (
-              <ListItem >
+              <ListItem key={editor.id}>
                 <ListItemText primary={`${editor.name}`} />
                 <ListItemSecondaryAction>
                   <IconButton edge="end" aria-label="close" onClick={() => handleEditorClose(editor.id)}>
@@ -154,7 +162,7 @@ function ListMenu() {
         </List>
       </Collapse>
 
-      <ListItem button onClick={handleSessionClick} className={classes.item}>
+      <ListItem button onClick={handleSessionClick} className={classes.item} key="session">
         <ListItemText
           disableTypography
           primary={<Typography className={classes.heading}>Sessions</Typography>}

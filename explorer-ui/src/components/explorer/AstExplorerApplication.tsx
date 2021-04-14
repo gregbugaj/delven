@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -126,6 +126,7 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
+
 const DefaultComponent = () => {
   return (
     <div style={{ border: '0px solid red', height: '100%' }}>
@@ -202,9 +203,6 @@ function AstExplorerApplication() {
       setOpen(!open);
     }
   }
-
-  const [openAdmin, setOpenAdmin] = React.useState(true);
-
 
   let eventBus = globalThis.services.eventBus
 

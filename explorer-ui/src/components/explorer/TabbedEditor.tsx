@@ -1,5 +1,5 @@
 
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useReducer, useState } from 'react';
 import { makeStyles, Theme, useTheme } from '@material-ui/core/styles';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -18,6 +18,7 @@ import { AppBar, Grid, IconButton } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import { EditorContext, IEditor, ISession } from './EditorContext';
 import { filter } from 'rxjs/operators';
+import { MessageBusService } from '../bus/message-bus';
 
 /**
  * Prevent React component from re-rendering
@@ -103,92 +104,71 @@ const useStyles = makeStyles((theme: Theme) => ({
 // })
 // export default TabbedEditor
 
+const eventBusMap = new Map<String, MessageBusService>();
+
+const getEventBus = (channelId: string): MessageBusService => {
+  if (!eventBusMap.has(channelId)) {
+    const bus = new MessageBusService();
+    eventBusMap.set(channelId, bus)
+  }
+
+  return eventBusMap.get(channelId)
+}
+
 export default function TabbedEditor(props: any) {
   console.info("**** TabbedEditor ****")
-  const eventBus = globalThis.services.eventBus
+  // const eventBus =  globalThis.services.eventBus
   const [session, setSession] = React.useContext(EditorContext)
+
   const classes = useStyles();
 
   const [isReady, setIsReady] = React.useState(false);
-  const [value, setActiveTabValue] = React.useState("");
+  const [activeTabId, setActiveTabId] = React.useState("0000-0000-0000-0000");
   const [tabList, setTabListState] = React.useState<TabPanelProps[]>();
-
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
     globalThis.services.state.activeTabId = newValue
     console.info(`setting active tab to  = ${newValue}`)
     console.info(tabList)
     console.info(session.editors)
-
     // TODO : use ReactHooks and Context to provide global state
-    setActiveTabValue(newValue);
+    setActiveTabId(newValue);
   };
-
-  const closeTab = (tabId: string) => {
-    console.trace(`Closing TabId # ${tabId}`)
-    console.info(tabList)
-    console.info(session.editors)
-
-    if (tabList === undefined) {
-      // throw Error("this is bad, tabList is null")
-      console.warn("this is bad, tabList is null")
-      return;
-    }
-
-    // const filtered = tabList.filter(tab => tab.index === tabId)
-    // const tab = filtered[0]
-    const editors: IEditor[] = []
-    console.info(session.editors)
-
-    for (let editor of session.editors) {
-      console.info("  >> " + editor.id)
-      if (tabId  !== editor.id)
-        continue;
-
-      editors.push(editor)
-    }
-
-    const updated: ISession = {
-      name: session.name,
-      editors: editors
-    }
-
-    // setSession(updated)
-
-    /*
-      if (tabList === undefined) {
-      setTabListState([prop])
-    } else {
-      setTabListState([...tabList, prop])
-    }
-    setActiveTabValue(id);
-    */
-  }
 
   // need to make sure that there are no multiple subscriptions
   useEffect(() => {
     console.info('TAB EDITOR : useEffect')
-    setIsReady(true)
+
+    if (!isReady){
+      setIsReady(true);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabList])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     console.info('TAB EDITOR : useEffect : ' + isReady)
     // not yet ready
     if (isReady === false) {
       return
     }
 
-    eventBus.on(
+    const eventBus =  getEventBus('Main')
+    const eventBusGlobal = globalThis.services.eventBus;
+
+    eventBusGlobal.on(
       EventTypeAddTab,
       (event: EventTypeAddTab): void => {
         // IMPORTANT: DO NOT REMOVE THE ASYNC CALL OR THIS WILL BREAK REACT LIFECYCLE
         // AND STATE VARIABLE WILL NOT BE AVAILABLE
         (async () => {
-          console.info(tabList)
-          if (event.data !== undefined) {
+           if (event.data !== undefined) {
             const data = event.data
             if (data.type === 'file') {
+
+              console.info('Event received')
+              console.info(tabList)
+              console.info(session.editors)
+
               addTab(uuidv4(), data.name, () => {
                 console.info("Tab from EventTypeAdd added")
                 // Load value to the active tab
@@ -205,14 +185,14 @@ export default function TabbedEditor(props: any) {
     eventBus.on(
       EventTypeCloseTab,
       (event: EventTypeCloseTab): void => {
+
         // IMPORTANT: DO NOT REMOVE THE ASYNC / TIMEOUT CALL OR THIS WILL BREAK REACT LIFECYCLE
         // AND STATE VARIABLE WILL NOT BE AVAILABLE
-        (async () => {
-          if (event.data !== undefined) {
-            const tabId = event.data
-            closeTab(tabId)
-          }
-        })()
+        if (event.data !== undefined) {
+          const tabId = event.data
+          console.info('Event received')
+          closeTab(tabId)
+        }
       }
     )
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -228,7 +208,52 @@ export default function TabbedEditor(props: any) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // run only once
 
-  const addTab = (id: string, label: string, onLoadComplete: () => void) => {
+  // const closeTab = (tabId: string) =>{
+  const closeTab = useCallback((tabId: string)=>{
+      console.info(`useCallback Closing TabId # ${tabId}`)
+
+      console.info(isReady)
+      console.info(tabList)
+      console.info(session.editors)
+
+      if (tabList === undefined) {
+        // throw Error("this is bad, tabList is null")
+        console.warn("this is bad, tabList is null")
+        return;
+      }
+
+      // const filtered = tabList.filter(tab => tab.index === tabId)
+      // const tab = filtered[0]
+      const editors: IEditor[] = []
+      console.info(session.editors)
+
+      for (let editor of session.editors) {
+        console.info("  >> " + editor.id)
+        if (tabId !== editor.id)
+          continue;
+
+        editors.push(editor)
+      }
+
+      const updated: ISession = {
+        name: session.name,
+        editors: editors
+      }
+
+      // setSession(updated)
+      /*
+        if (tabList === undefined) {
+        setTabListState([prop])
+      } else {
+        setTabListState([...tabList, prop])
+      }
+      setActiveTabValue(id);
+      */
+    }
+  , [tabList, session]);
+
+
+  function addTab(id: string, label: string, onLoadComplete: () => void) {
     console.info('addTab **')
     console.info(tabList)
     console.info(session.editors)
@@ -255,7 +280,7 @@ export default function TabbedEditor(props: any) {
     } else {
       setTabListState([...tabList, prop])
     }
-    setActiveTabValue(id);
+    setActiveTabId(id);
 
     const val: IEditor = {
       name: label,
@@ -277,7 +302,16 @@ export default function TabbedEditor(props: any) {
   };
 
   const handleSessionAdd = () => {
-    alert("Adding session")
+    console.info("Adding session")
+    console.info(tabList)
+    console.info(session.editors)
+
+    const id = "000"
+    // const eventBus = globalThis.services.eventBus;
+    const eventBus =  getEventBus('Main')
+    console.info('Closing editor : ' + id)
+    eventBus.emit(new EventTypeCloseTab(id));
+    // closeTab(id)
   };
 
   const getVisibilityStyle = (hiddenCondition: boolean): any => {
@@ -317,7 +351,7 @@ export default function TabbedEditor(props: any) {
           <Grid item xs={10} style={{ padding: "0px", border: "0px solid green" }}>
 
             <Tabs
-              value={value}
+              value={activeTabId}
               onChange={handleChange}
               indicatorColor="primary"
               textColor="primary"
@@ -407,8 +441,8 @@ export default function TabbedEditor(props: any) {
       <div className='Editor-Content'>
         {
           tabList?.map((tab, i) => (
-            <div style={getVisibilityStyle(value !== tab.index)}>
-              <TabPanel index={tab.index} label={`Query # ${i}`} onLoadComplete={tab.onLoadComplete} />
+            <div style={getVisibilityStyle(activeTabId !== tab.index)}>
+              <TabPanel index={tab.index} label={`Query # ${i}`} onLoadComplete={tab.onLoadComplete} key={i} />
             </div>
           ))
         }
