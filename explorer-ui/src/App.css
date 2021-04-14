@@ -162,23 +162,23 @@ End Scorllbars
   border: 0px solid purple;
 }
 
-.Editor-Content{
+.Editor-Content {
   padding: 0px;
   border: 0px solid rgb(252, 206, 0);
   height: 100%;
-  width:100%;
+  width: 100%;
 
   /* flex:1; */
 
-  overflow:auto;
+  overflow: auto;
   /* background-color: lightgreen; */
 }
 
-.Editor-Container-Header{
+.Editor-Container-Header {
   border: 0px solid purple;
 }
 
-.Editor-Container-Footer{
+.Editor-Container-Footer {
   border: 0px solid purple;
 }
 
@@ -192,5 +192,17 @@ End Scorllbars
 }
 
 
-/*# sourceMappingURL=index.css.map*/
+/*
+Disable Ripple effect for our tabs
+*/
+.MuiTabs-root .MuiTouchRipple-root {
+  display: none;
+}
 
+.MuiTabs-root .MuiCardActionArea-focusHighlight {
+  display: none;
+}
+
+
+
+/*# sourceMappingURL=index.css.map*/

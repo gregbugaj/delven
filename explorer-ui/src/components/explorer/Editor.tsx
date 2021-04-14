@@ -715,7 +715,6 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
 
       {/* height is required  here so the console can become scrollable */}
       <div className='Editor-Content' ref={consoleRef} style={{ border: '0px solid red', flex: '1 1 0%', height: '25vh' }}>
-         consoleKey  {consoleKey} <br/>
         <ConsoleDisplay key={consoleKey} messages={messages} />
       </div>
 

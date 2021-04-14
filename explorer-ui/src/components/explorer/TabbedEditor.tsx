@@ -7,6 +7,7 @@ import AddIcon from '@material-ui/icons/Add';
 import CloseIcon from '@material-ui/icons/Close';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import MenuIcon from "@material-ui/icons/Menu";
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
@@ -14,7 +15,7 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { EventTypeAddTab, EventTypeSampleQuery, EventTypeCloseTab } from "../bus/message-bus-events";
 import "../globalServices"
 import Editor from './Editor';
-import { AppBar, Grid, IconButton } from '@material-ui/core';
+import { AppBar, Grid, IconButton, withStyles } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import { EditorContext, IEditor, ISession } from './EditorContext';
 import { filter } from 'rxjs/operators';
@@ -115,6 +116,46 @@ const getEventBus = (channelId: string): MessageBusService => {
   return eventBusMap.get(channelId)
 }
 
+interface CustomEditorTabProps {
+  value: any;
+  label?: string;
+}
+
+// https://material-ui.com/api/tab/#css
+function CustomEditorTab(props: CustomEditorTabProps) {
+  return (
+    <Tab
+    wrapped ={false}
+      component="div"
+      //   onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      //     event.preventDefault();
+      //  }}
+      {...props}
+
+      label={
+        <React.Fragment>
+          <div style={{ width: '160px', maxWidth:'160px', border: '0px solid red', padding: '0px', margin: '0px', cursor: 'pointer'}}>
+            <div style={{ float: 'left' }}>
+              <div style={{float:'left', width : '12px', textAlign:'left', border:'0px solid red'}}>
+                <FiberManualRecordIcon style={{height: '10px', width:'10px', color:'green', padding:'0px', margin:'0px'}}/>
+              </div>
+              <span>{props.label}</span>
+            </div>
+            <div style={{ float: 'right' }} >
+              <IconButton size='small' color="primary" aria-label="close tab" onClick={(event) => {
+                event.preventDefault();
+                console.info('Close tab requested')
+              }}>
+                <CloseIcon style={{ height: '14px' }} />
+              </IconButton>
+            </div>
+          </div>
+        </React.Fragment>
+      }
+    />
+  );
+}
+
 export default function TabbedEditor(props: any) {
   console.info("**** TabbedEditor ****")
   // const eventBus =  globalThis.services.eventBus
@@ -140,6 +181,8 @@ export default function TabbedEditor(props: any) {
     console.info('TAB EDITOR : useEffect')
 
     if (!isReady){
+
+
       setIsReady(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -359,6 +402,7 @@ export default function TabbedEditor(props: any) {
               scrollButtons="auto"
               aria-label="Query samples"
               // style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
+
               TabIndicatorProps={{
                 style: {
                   height: "4px",
@@ -371,11 +415,18 @@ export default function TabbedEditor(props: any) {
 
               {
                 tabList?.map((tab, i) => (
-                  <Tab
+                  // <Tab
+                  //   icon={<CloseIcon />}
+                  //   value={tab.index}
+                  //   label={tab.label}
+                  //   {...a11TabProps(tab.index)}
+                  //   className={classes.tab}
+                  // />
+
+                  <CustomEditorTab
                     value={tab.index}
                     label={tab.label}
                     {...a11TabProps(tab.index)}
-                    className={classes.tab}
                   />
                 ))
               }
