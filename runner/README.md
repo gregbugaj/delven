@@ -1,6 +1,6 @@
 # Delven Runner
 
-Runner is the component of Delven that will run a job on some form of compute instance. 
+Runner is the component of Delven that will run a job on some form of compute instance.
 Primary job is scheduling instances to be ready to execute jobs on, this could be a (VM, Docker, Local instance, etc)
 
 
@@ -16,7 +16,7 @@ npm install @types/express --save-dev
 npm install @types/node--save-dev
 ```
 
-Start both the TS watcher and `nodemon` to monitor for changes 
+Start both the TS watcher and `nodemon` to monitor for changes
 
 ```bash
 npm run watch-ts
@@ -27,12 +27,14 @@ npm run dev
 ### Linking to local delven-transpiler
 
 ```sh
-cd ./delven-transpiler 
-npm link 
+cd ./delven-transpiler
+npm link
 
 cd ./delven-runner/executor
 npm link ../../delven-transpiler/lib/
 ```
 
 
-## References  
+## References
+
+https://microsoft.github.io/language-server-protocol/specification
