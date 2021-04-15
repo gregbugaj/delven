@@ -123,9 +123,15 @@ interface CustomEditorTabProps {
 
 // https://material-ui.com/api/tab/#css
 function CustomEditorTab(props: CustomEditorTabProps) {
+
+  const handleCloseClick = (event:any, value:string) => {
+    event.preventDefault();
+    console.info('Close tab requested : ' + value)
+  }
+
   return (
     <Tab
-    wrapped ={false}
+    wrapped ={true}
       component="div"
       //   onClick={(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
       //     event.preventDefault();
@@ -142,10 +148,7 @@ function CustomEditorTab(props: CustomEditorTabProps) {
               <span>{props.label}</span>
             </div>
             <div style={{ float: 'right' }} >
-              <IconButton size='small' color="primary" aria-label="close tab" onClick={(event) => {
-                event.preventDefault();
-                console.info('Close tab requested')
-              }}>
+              <IconButton size='small' color="primary" aria-label="close tab" onClick={(event) => { handleCloseClick(event, props.value)}}>
                 <CloseIcon style={{ height: '14px' }} />
               </IconButton>
             </div>
@@ -402,10 +405,9 @@ export default function TabbedEditor(props: any) {
               scrollButtons="auto"
               aria-label="Query samples"
               // style={{ padding: "0px", border: "0px solid green", display: 'flex', width: '100%', flexDirection: 'column' }}
-
               TabIndicatorProps={{
                 style: {
-                  height: "4px",
+                  height: "2px",
                 }
               }}
             >
@@ -451,11 +453,9 @@ export default function TabbedEditor(props: any) {
           </Grid>
           <Grid item xs={2} style={{ textAlign: 'right', }}>
 
-
             <IconButton color="primary" aria-label="Save Session" component="span" onClick={handleSessionAdd}>
               <CloudUploadIcon />
             </IconButton>
-
 
             <IconButton color="primary" aria-label="add tab" component="span" onClick={handleTabAdd}>
               <AddIcon />

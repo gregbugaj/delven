@@ -27,7 +27,7 @@ const EditorProvider = ({ children }: Props) => {
   const [session, setSession] = useState<ISession>(initialState)
 
   console.info('EditorProvider')
-  console.info(session)
+
   return (
     <EditorContext.Provider value={[session, setSession]} >
       {children}
