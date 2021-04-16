@@ -1,29 +1,4 @@
-export interface CallbackFunction<T = any> {
-  (event: T): void;
-}
-
-export type EvaluationResult = {
-  exception?: string | Error | undefined
-  stdout?: string
-  stderr?: string
-}
-
-
-export type NotifierEvent = {
-  id: string
-  type: string
-  payload?: any
-}
-
-// both the runner and explorer share this type
-export type CompilationUnit = {
-  id: string
-  code: string,
-  compileTime: number
-  exception?: string
-  ast?: any,
-  generated?: string
-}
+import { CompilationUnit, EvaluationResult, NotifierEvent } from "../jsonrpc/protocol";
 
 /**
  * An executor is responsible for communication with the service that compiles/executes the code
@@ -36,7 +11,6 @@ export interface IExecutor {
    * @param script the script to compile
    */
   compile(unit: CompilationUnit): Promise<any>
-
 
   /**
    * Evaluate script in a sandbox environment
