@@ -104,6 +104,4 @@ export type CompilationUnit = {
   generated?: string
 }
 
-export { }
-
 
