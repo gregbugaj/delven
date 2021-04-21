@@ -1,14 +1,14 @@
 import { Message, RequestMessage } from 'src/jsonrpc/common/protocol';
 import { Writable, Readable } from 'stream';
 import { inherits } from 'util';
-import { StreamMessageReader, StreamMessageWriter } from '../main';
 import { TextDecoder } from 'util';
+
+import { StreamMessageReader, StreamMessageWriter } from '../main';
 
 interface TestWritable extends Writable {
 	constructor: Function;
 	readonly data: Buffer | undefined;
 }
-
 interface TestWritableConstructor {
 	new(): TestWritable;
 }

@@ -1,7 +1,7 @@
 import { ContentEncoder, ContentTypeEncoder } from "./encoding";
 import { Event } from "./events";
 import { Emitter } from "./message-bus";
-import { Message } from "./protocol";
+import { Message } from "./messages";
 import RAL from "./ral";
 import { Semaphore } from "./semaphore";
 

@@ -11,7 +11,8 @@
 			"program": "./node_modules/jest/bin/jest",
 			"stopOnEntry": false,
 			"args": [
-				"./src/jsonrpc/node/__tests__/messages.test.ts",
+				// "./src/jsonrpc/node/__tests__/messages.test.ts",
+				"./src/jsonrpc/node/__tests__/connection.test.ts",
 			],
 			"cwd": "${workspaceFolder}/runner/executors",
 			"console": "integratedTerminal",

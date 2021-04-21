@@ -1,7 +1,7 @@
 import RAL from "../common/ral";
 import { TextDecoder } from 'util';
 import { Disposable } from "../common/disposable";
-import { Message } from "../common/protocol";
+import { Message } from "../common/messages";
 import { ContentTypeDecoderOptions, ContentTypeEncoderOptions } from "../common/encoding";
 import { AbstractMessageBuffer } from "../common/messageBuffer";
 

@@ -2,7 +2,7 @@ import { Disposable } from "./disposable";
 import * as Is from './is';
 import { ContentDecoder, ContentTypeDecoder } from './encoding';
 import { Event } from "./events";
-import { Message } from "./protocol";
+import { Message } from "./messages";
 import { Emitter } from "./message-bus";
 import RAL from "./ral";
 

@@ -1,8 +1,14 @@
-import {RAL, AbstractMessageReader, DataCallback, Disposable, ReadableStreamMessageReader, WriteableStreamMessageWriter, AbstractMessageWriter, MessageWriter } from '../common/api';
-import RIL from './ril';
 
+/* --------------------------------------------------------------------------------------------
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License. See License.txt in the project root for license information.
+ * ----------------------------------------------------------------------------------------- */
+
+import {RAL, AbstractMessageReader, DataCallback, Disposable, ReadableStreamMessageReader, WriteableStreamMessageWriter, AbstractMessageWriter, MessageWriter, MessageReader, MessageConnection } from '../common/api';
+import RIL from './ril';
+import { Message } from '../common/messages';
 import { ChildProcess } from 'child_process';
-import { Message } from '../common/protocol';
+import { createMessageConnection as _createMessageConnection } from '../common/connection';
 
 // Install the node runtime abstract.
 RIL.install();
@@ -79,4 +85,23 @@ export class StreamMessageWriter extends WriteableStreamMessageWriter {
 	public constructor(writable: NodeJS.WritableStream, options?: RAL.MessageBufferEncoding) {
 		super(RIL().stream.asWritableStream(writable), options);
 	}
+}
+
+
+function isReadableStream(value: any): value is NodeJS.ReadableStream {
+	const candidate: NodeJS.ReadableStream = value;
+	return candidate.read !== undefined && candidate.addListener !== undefined;
+}
+
+function isWritableStream(value: any): value is NodeJS.WritableStream {
+	const candidate: NodeJS.WritableStream = value;
+	return candidate.write !== undefined && candidate.addListener !== undefined;
+}
+
+export function createMessageConnection(input: MessageReader | NodeJS.ReadableStream, output: MessageWriter | NodeJS.WritableStream): MessageConnection {
+
+	const reader = isReadableStream(input) ? new StreamMessageReader(input) : input;
+	const writer = isWritableStream(output) ? new StreamMessageWriter(output) : output;
+
+	return _createMessageConnection(reader, writer);
 }
