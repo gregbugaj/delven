@@ -9,5 +9,9 @@
   "editor.wordWrapColumn": 120,
   "files.trimTrailingWhitespace": true,
   "files.insertFinalNewline": true,
-  "typescript.tsdk": "./node_modules/typescript/lib"
+  "files.eol": "\n",
+	"editor.insertSpaces": false,
+
+  "typescript.tsdk": "./node_modules/typescript/lib",
+
 }

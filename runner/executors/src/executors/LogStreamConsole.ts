@@ -26,13 +26,14 @@ export default class LogStream {
       stderr: collection.stderr
     }, options)
 
+    // Create new console
     const Console = console.Console
     this._console = new Console(overwrites)
 
     Object.keys(collection).forEach((name) => {
       collection[name].write = function (chunk, encoding, callback) {
         console.warn(`Service : ${chunk}`)
-        writeFile(`./${id}-${name}.log`, JSON.stringify({ 'ts': Date.now(), chunk }) + "\n", { encoding: "utf-8", flag: "a" })
+        writeFile(`./${id}-${name}.log`, JSON.stringify({ 'ts': Date.now(), chunk }) + "\n", { encoding: encoding, flag: "a" })
           .catch((err) => {
             console.error(err);
           });

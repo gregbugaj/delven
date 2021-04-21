@@ -1,13 +1,15 @@
 import { Disposable } from "./disposable";
 import { Event } from "./events";
 import RAL from "./ral";
+import * as Is from './is';
+import { Emitter } from "./message-bus";
 
 /**
  * Defines a CancellationToken. This interface is not
  * intended to be implemented. A CancellationToken must
  * be created via a CancellationTokenSource.
  */
- export interface CancellationToken {
+export interface CancellationToken {
 	/**
 	 * Is `true` when the token has been cancelled, `false` otherwise.
 	 */
@@ -87,4 +89,43 @@ export class CancellationTokenSource implements AbstractCancellationTokenSource 
 		}
 	}
 }
-© 2021 GitHub, Inc.
+
+
+class MutableToken implements CancellationToken {
+
+	private _isCancelled: boolean = false;
+	private _emitter: Emitter<any> | undefined;
+
+	public cancel() {
+		if (!this._isCancelled) {
+			this._isCancelled = true;
+			if (this._emitter) {
+				this._emitter.fire(undefined);
+				this.dispose();
+			}
+		}
+	}
+
+	get isCancellationRequested(): boolean {
+		return this._isCancelled;
+	}
+
+	get onCancellationRequested(): Event<any> {
+		if (this._isCancelled) {
+			return shortcutEvent;
+		}
+		if (!this._emitter) {
+			this._emitter = new Emitter<any>();
+		}
+
+		throw new Error("Not Implemented")
+		//return this._emitter.event;
+	}
+
+	public dispose(): void {
+		if (this._emitter) {
+			this._emitter.dispose();
+			this._emitter = undefined;
+		}
+	}
+}

@@ -1,18 +1,35 @@
 import type { Disposable } from './disposable';
+import { ContentTypeDecoder, ContentTypeEncoder } from './encoding';
 
 type _MessageBufferEncoding = 'ascii' | 'utf-8';
 
 interface _MessageBuffer {
 
-  readonly encoding: RAL.MessageBufferEncoding;
+	readonly encoding: RAL.MessageBufferEncoding;
 
-  /**
-   * Append data to the message buffer.
-   *
-   * @param chunk the data to append.
-   */
-  append(chunk: Uint8Array | string): void;
+	/**
+	 * Append data to the message buffer.
+	 *
+	 * @param chunk the data to append.
+	 */
+	append(chunk: Uint8Array | string): void;
+
+	/**
+	 * Tries to read the headers from the buffer
+	 *
+	 * @returns the header properties or undefined in not enough data can be read.
+	 */
+	tryReadHeaders(): Map<string, string> | undefined;
+
+	/**
+	 * Tries to read the body of the given length.
+	 *
+	 * @param length the amount of bytes to read.
+	 * @returns the data or undefined int less data is available.
+	 */
+	tryReadBody(length: number): Uint8Array | undefined;
 }
+
 
 interface _ReadableStream {
   onData(listener: (data: Uint8Array) => void): Disposable;
@@ -33,17 +50,24 @@ interface _WritableStream {
 interface _DuplexStream extends _ReadableStream, _WritableStream {
 }
 
+interface _TimeoutHandle {
+  _timerBrand: undefined;
+}
+
+interface _ImmediateHandle {
+  _immediateBrand: undefined;
+}
+
 interface RAL {
 
-  // readonly applicationJson: {
-  //   // readonly encoder: ContentTypeEncoder;
-  //   // readonly decoder: ContentTypeDecoder;
-  // };
+  readonly applicationJson: {
+    readonly encoder: ContentTypeEncoder;
+    readonly decoder: ContentTypeDecoder;
+  }
 
-  // readonly messageBuffer: {
-  //   create(encoding: RAL.MessageBufferEncoding): RAL.MessageBuffer;
-  // }
-
+  readonly messageBuffer: {
+    create(encoding: RAL.MessageBufferEncoding): RAL.MessageBuffer;
+  }
 
   // readonly console: {
   //   info(message?: any, ...optionalParams: any[]): void;
@@ -53,11 +77,13 @@ interface RAL {
   // }
 
   readonly timer: {
-    setTimeout(callback: (...args: any[]) => void, ms?: number, ...args: any[]): NodeJS.Timeout
+    setTimeout(callback: (...args: any[]) => void, ms: number, ...args: any[]): RAL.TimeoutHandle;
+    clearTimeout(handle: RAL.TimeoutHandle): void;
+    setImmediate(callback: (...args: any[]) => void, ...args: any[]): RAL.ImmediateHandle;
+    clearImmediate(handle: RAL.ImmediateHandle): void;
   }
 }
 
-setTimeout
 let _ral: RAL | undefined;
 
 function RAL(): RAL {
@@ -73,6 +99,8 @@ namespace RAL {
   export type ReadableStream = _ReadableStream;
   export type WritableStream = _WritableStream;
   export type DuplexStream = _DuplexStream;
+  export type TimeoutHandle = _TimeoutHandle;
+  export type ImmediateHandle = _ImmediateHandle;
   export function install(ral: RAL): void {
     if (ral === undefined) {
       throw new Error(`No runtime abstraction layer provided`);
