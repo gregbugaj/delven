@@ -138,7 +138,22 @@ export interface ResponseMessage extends Message {
 	error?: ResponseErrorLiteral<any>;
 }
 
+/**
+ * A LSP Log Entry.
+ */
+ export type LSPMessageType =
+ | 'send-request'
+ | 'receive-request'
+ | 'send-response'
+ | 'receive-response'
+ | 'send-notification'
+ | 'receive-notification';
 
+export interface LSPLogMessage {
+ type: LSPMessageType;
+ message: RequestMessage | ResponseMessage | NotificationMessage;
+ timestamp: number;
+}
 
 export class ParameterStructures {
 	/**
@@ -272,7 +287,17 @@ export class NotificationType3<P1, P2, P3> extends AbstractMessageSignature {
 		super(method, 3);
 	}
 }
+export class ProgressType<PR> {
+	/**
+	 * Clients must not use these properties. They are here to ensure correct typing.
+	 * in TypeScript
+	 */
+	public readonly __?: [PR, _EM];
+	public readonly _pr?: PR;
 
+	constructor() {
+	}
+}
 
 
 /**
