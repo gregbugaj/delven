@@ -1,6 +1,5 @@
 import { ContentEncoder, ContentTypeEncoder } from "./encoding";
-import { Event } from "./events";
-import { Emitter } from "./message-bus";
+import { Emitter, Event } from "./events";
 import { Message } from "./messages";
 import RAL from "./ral";
 import { Semaphore } from "./semaphore";
@@ -45,8 +44,7 @@ export abstract class AbstractMessageWriter {
 	}
 
 	public get onError(): Event<[Error, Message | undefined, number | undefined]> {
-		throw new Error("Not yet implemented")
-		// return this.errorEmitter.event;
+		return this.errorEmitter.event;
 	}
 
 	protected fireError(error: any, message?: Message, count?: number): void {
@@ -54,8 +52,7 @@ export abstract class AbstractMessageWriter {
 	}
 
 	public get onClose(): Event<void> {
-		throw new Error("Not yet implemented")
-		// return this.closeEmitter.event;
+		return this.closeEmitter.event;
 	}
 
 	protected fireClose(): void {

@@ -7,9 +7,9 @@ import { MessageWriter } from "./messageWriter";
 import { InitializeResult, MessageSignature, RequestMessage, ParameterStructures, NotificationMessage, RequestType, RequestType0, RequestType1, RequestType2, RequestType3, ResponseError, NotificationType0, NotificationType, NotificationType1, NotificationType2, NotificationType3, Message, ResponseMessage, isRequestMessage, isResponseMessage, ProgressType, CancelParams, isNotificationMessage, ErrorCodes, LSPMessageType } from "./messages";
 import * as Is from './is'
 import { Disposable, RAL } from "./api";
-import { Emitter } from "./message-bus";
 import { LinkedMap } from "./linkedMap";
 import { Console } from "node:console";
+import { Emitter, Event } from "./events";
 
 
 export enum ConnectionErrors {
@@ -344,8 +344,13 @@ export interface MessageConnection {
 	onNotification<P1, P2>(type: NotificationType2<P1, P2>, handler: NotificationHandler2<P1, P2>): Disposable;
 	onNotification<P1, P2, P3>(type: NotificationType3<P1, P2, P3>, handler: NotificationHandler3<P1, P2, P3>): Disposable;
 
+	onUnhandledNotification: Event<NotificationMessage>;
+
 	onProgress<P>(type: ProgressType<P>, token: string | number, handler: NotificationHandler<P>): Disposable;
 	sendProgress<P>(type: ProgressType<P>, token: string | number, value: P): void;
+
+	onError: Event<[Error, Message | undefined, number | undefined]>;
+	onClose: Event<void>;
 
 	listen(): void;
 	end(): void;
@@ -387,7 +392,7 @@ export function createMessageConnection(messageReader: MessageReader, messageWri
 	let tracer: Tracer | undefined;
 
 	let state: ConnectionState = ConnectionState.New;
-	const errorEmitter: Emitter<[Error, Message | undefined, number | undefined]> = new Emitter<[Error, Message | undefined, number | undefined]>();
+	const errorEmitter: Emitter<[Error, Message | undefined, number | undefined]> = new Emitter<[Error, Message | undefined, number]>();
 	const closeEmitter: Emitter<void> = new Emitter<void>();
 	const unhandledNotificationEmitter: Emitter<NotificationMessage> = new Emitter<NotificationMessage>();
 	const unhandledProgressEmitter: Emitter<ProgressParams<any>> = new Emitter<ProgressParams<any>>();
@@ -1222,6 +1227,11 @@ export function createMessageConnection(messageReader: MessageReader, messageWri
 			state = ConnectionState.Listening;
 			messageReader.listen(callback);
 		},
+
+		onError: errorEmitter.event,
+		onClose: closeEmitter.event,
+		onUnhandledNotification: unhandledNotificationEmitter.event,
+		onDispose: disposeEmitter.event,
 		end: () => {
 			messageWriter.end();
 		},

@@ -1,9 +1,8 @@
 import { Disposable } from "./disposable";
 import * as Is from './is';
 import { ContentDecoder, ContentTypeDecoder } from './encoding';
-import { Event } from "./events";
+import { Emitter, Event } from "./events";
 import { Message } from "./messages";
-import { Emitter } from "./message-bus";
 import RAL from "./ral";
 
 /**
@@ -58,8 +57,7 @@ export abstract class AbstractMessageReader implements MessageReader {
 	}
 
 	public get onError(): Event<Error> {
-		// return this.errorEmitter.event;
-		throw new Error("Not Implemented")
+		return this.errorEmitter.event;
 	}
 
 	protected fireError(error: any): void {
@@ -68,8 +66,7 @@ export abstract class AbstractMessageReader implements MessageReader {
 	}
 
 	public get onClose(): Event<void> {
-		// return this.closeEmitter.event;
-		throw new Error("Not Implemented")
+		return this.closeEmitter.event;
 	}
 
 	protected fireClose(): void {

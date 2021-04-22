@@ -1,8 +1,7 @@
 import { Disposable } from "./disposable";
-import { Event } from "./events";
+import { Emitter, Event } from "./events";
 import RAL from "./ral";
 import * as Is from './is';
-import { Emitter } from "./message-bus";
 
 /**
  * Defines a CancellationToken. This interface is not
@@ -118,8 +117,7 @@ class MutableToken implements CancellationToken {
 			this._emitter = new Emitter<any>();
 		}
 
-		throw new Error("Not Implemented")
-		//return this._emitter.event;
+		return this._emitter.event;
 	}
 
 	public dispose(): void {
