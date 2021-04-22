@@ -3,7 +3,6 @@
  * https://microsoft.github.io/language-server-protocol/specification
  * https://github.com/microsoft/vscode-languageserver-node
  */
-
 import * as is from './is';
 
 type integer = number

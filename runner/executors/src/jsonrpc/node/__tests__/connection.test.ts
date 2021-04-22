@@ -2,10 +2,8 @@ import * as cp from 'child_process';
 import { inherits } from 'util';
 import * as process from 'process';
 import { Duplex } from 'stream';
-import { _createMessageConnection } from '../../common/api';
-// import { createMessageConnection, StreamMessageReader, StreamMessageWriter } from '../main';
 import * as hostConnection from '../main';
-import { RequestType } from 'src/jsonrpc/common/protocol';
+import { RequestType } from '../../common/messages';
 
 
 // let childProcess = cp.spawn('sh');
