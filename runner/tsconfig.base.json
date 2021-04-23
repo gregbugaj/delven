@@ -22,16 +22,16 @@
         // "noEmit": true, -- GOOD FOR types.d.ts generation
         "sourceMap": true,
         "pretty": true,
-        "outDir": "./build",
-        "rootDir": "./src",
-        "baseUrl": "./",
+        // "outDir": "./build",
+        // "rootDir": "./src",
+        // "baseUrl": "./",
     },
-    "include": [
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts",
-        "**/*.test.ts",
-    ]
+    // "include": [
+    //     "src/**/*.ts"
+    // ],
+    // "exclude": [
+    //     "node_modules",
+    //     "**/*.spec.ts",
+    //     "**/*.test.ts",
+    // ]
 }
