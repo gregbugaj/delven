@@ -3,7 +3,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
-/// <reference path="../../../typings/thenable.d.ts" />
+/// <reference path="../../typings/thenable.d.ts" />
 
 import {
 	Message, RequestMessage, NotificationMessage
@@ -15,7 +15,7 @@ import { MessageReader, AbstractMessageReader, ReadableStreamMessageReader, Data
 import { MessageWriter, AbstractMessageWriter, WriteableStreamMessageWriter, MessageWriterOptions } from '../common/messageWriter';
 
 import {
-	MessageConnection, createMessageConnection,
+	MessageConnection, createMessageConnection,Logger, ConnectionStrategy, ConnectionOptions, NullLogger,
 } from '../common/connection';
 
 import RAL from './ral';
@@ -42,5 +42,8 @@ export {
 	Message, RequestMessage, NotificationMessage,
 
 	// Emitter
-	Emitter
+	Emitter,
+
+	// Export from connection
+	Logger, NullLogger, ConnectionStrategy, ConnectionOptions,
 }

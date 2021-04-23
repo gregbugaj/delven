@@ -9,6 +9,10 @@
     "@babel/runtime": "^7.13.9"
   },
   "scripts": {
+    "compile:jsonrpc": "tsc -b ./jsonrpc/tsconfig.json",
+    "test": "jest"
+  },
+  "scriptsXX": {
     "start": "npm run build && node build/index.js",
     "check-types": "tsc",
     "watch-ts--old": "tsc -w --outDir ./build",
@@ -18,19 +22,9 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@babel/cli": "^7.13.0",
-    "@babel/core": "^7.13.8",
-    "@babel/node": "^7.13.0",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
-    "@babel/plugin-proposal-optional-chaining": "^7.13.8",
-    "@babel/plugin-transform-runtime": "^7.13.9",
-    "@babel/preset-env": "^7.13.9",
-    "@babel/preset-typescript": "^7.13.0",
     "@types/express": "^4.17.11",
     "@types/jest": "^25.2.3",
     "@types/node": "^14.14.41",
-    "babel-loader": "^8.2.2",
     "jest": "^26.1.0",
     "nodemon": "^2.0.7",
     "ts-jest": "^26.1.1",

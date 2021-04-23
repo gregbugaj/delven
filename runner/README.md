@@ -34,7 +34,13 @@ cd ./delven-runner/executor
 npm link ../../delven-transpiler/lib/
 ```
 
-
 ## References
 
 https://microsoft.github.io/language-server-protocol/specification
+
+
+## Notes
+
+```
+npx babel --config-file ./jsonrpc/babel.config.js ./jsonrpc/src --out-dir ./build-dyn --extensions '.ts' --watch
+```

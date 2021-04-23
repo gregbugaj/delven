@@ -1,36 +1,51 @@
 {
-    "compilerOptions": {
-        "module": "ESNext",
-        "target": "ES2020",
-        "lib": [
-            "es2017",
-            "esnext",
-            "esnext.asynciterable"
-        ],
-        "noImplicitAny": false,
-        "noImplicitThis": true,
-        "strictNullChecks": true,
-        "allowJs": true,
-        "skipLibCheck": true,
-        "esModuleInterop": true,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "moduleResolution": "node",
-        "resolveJsonModule": true,
-        // "isolatedModules": true,
-        // "noEmit": true, -- GOOD FOR types.d.ts generation
-        "sourceMap": true,
-        "pretty": true,
-        "outDir": "./build",
-        "rootDir": "./src",
-        "baseUrl": "./",
-    },
-    "include": [
-        "src/**/*.ts"
-    ],
-    "exclude": [
-        "node_modules",
-        "**/*.spec.ts"
-    ]
+	"extends": "../tsconfig.base.json",
+	"compilerOptions": {
+		"incremental": true,
+		"composite": true,
+		"sourceMap": true,
+		"declaration": true,
+		"stripInternal": true,
+		"target": "es2017",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"lib": [ "es2017" ],
+	}
 }
+
+// {
+//     "compilerOptions": {
+//         "module": "ESNext",
+//         "target": "ES2020",
+//         "lib": [
+//             "es2017",
+//             "esnext",
+//             "esnext.asynciterable"
+//         ],
+//         "noImplicitAny": false,
+//         "noImplicitThis": true,
+//         "strictNullChecks": true,
+//         "allowJs": true,
+//         "skipLibCheck": true,
+//         "esModuleInterop": true,
+//         "allowSyntheticDefaultImports": true,
+//         "strict": true,
+//         "forceConsistentCasingInFileNames": true,
+//         "moduleResolution": "node",
+//         "resolveJsonModule": true,
+//         // "isolatedModules": true,
+//         // "noEmit": true, -- GOOD FOR types.d.ts generation
+//         "sourceMap": true,
+//         "pretty": true,
+//         "outDir": "./build",
+//         "rootDir": "./src",
+//         "baseUrl": "./",
+//     },
+//     "include": [
+//         "src/**/*.ts"
+//     ],
+//     "exclude": [
+//         "node_modules",
+//         "**/*.spec.ts"
+//     ]
+// }

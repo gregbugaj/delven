@@ -1,26 +1,40 @@
 {
-	"extends": "../tsconfig.base.json",
-	"compilerOptions": {
-		"incremental": true,
-		"composite": true,
-		"sourceMap": true,
-		"declaration": true,
-		"stripInternal": true,
-		"moduleResolution": "node",
-		"module": "ESNext",
-		"target": "ES2020",
-		"lib": [
-			"es2017",
-			"esnext",
-			"esnext.asynciterable"
-		],
-	},
-	"include": [
-		"src/**/*.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"**/*.spec.ts",
-		"**/*.test.ts",
+	"extends": "./tsconfig.base.json",
+	"files": [],
+	"references": [
+		{ "path": "./src/common/tsconfig.json" },
+		// { "path": "./src/common/test/tsconfig.json" },
+		{ "path": "./src/node/tsconfig.json" },
+		// { "path": "./src/node/test/tsconfig.json" },
+		{ "path": "./src/browser/tsconfig.json" },
+		// { "path": "./src/browser/test/tsconfig.json" },
 	]
 }
+
+
+// {
+// 	"extends": "../tsconfig.base.json",
+// 	"compilerOptions": {
+// 		"incremental": true,
+// 		"composite": true,
+// 		"sourceMap": true,
+// 		"declaration": true,
+// 		"stripInternal": true,
+// 		"moduleResolution": "node",
+// 		"module": "ESNext",
+// 		"target": "ES2020",
+// 		"lib": [
+// 			"es2017",
+// 			"esnext",
+// 			"esnext.asynciterable"
+// 		],
+// 	},
+// 	"include": [
+// 		"src/**/*.ts"
+// 	],
+// 	"exclude": [
+// 		"node_modules",
+// 		"**/*.spec.ts",
+// 		"**/*.test.ts",
+// 	]
+// }
