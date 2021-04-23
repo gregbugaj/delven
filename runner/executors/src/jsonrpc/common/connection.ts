@@ -351,6 +351,7 @@ export interface MessageConnection {
 
 	onError: Event<[Error, Message | undefined, number | undefined]>;
 	onClose: Event<void>;
+	onDispose: Event<void>;
 
 	listen(): void;
 	end(): void;
@@ -1232,6 +1233,7 @@ export function createMessageConnection(messageReader: MessageReader, messageWri
 		onClose: closeEmitter.event,
 		onUnhandledNotification: unhandledNotificationEmitter.event,
 		onDispose: disposeEmitter.event,
+
 		end: () => {
 			messageWriter.end();
 		},

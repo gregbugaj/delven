@@ -19,6 +19,7 @@ import {
 } from '../common/connection';
 
 import RAL from './ral';
+import { Emitter } from './events';
 
 
 export {
@@ -38,5 +39,8 @@ export {
 	MessageConnection, createMessageConnection,
 
 	// Message Protocol
-	Message, RequestMessage, NotificationMessage
+	Message, RequestMessage, NotificationMessage,
+
+	// Emitter
+	Emitter
 }
