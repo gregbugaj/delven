@@ -1,0 +1,15 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"tsBuildInfoFile":"../../lib/common/compile.tsbuildInfo",
+		"rootDir": ".",
+		"outDir": "../../lib/common"
+	},
+	"include": [
+		"."
+	],
+	"exclude": [
+		"test",
+		"__test__",
+	]
+}
