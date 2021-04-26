@@ -10,15 +10,15 @@ module.exports = {
     ],
     // USING babel-jest fixes issue with 'para?.val' not being able to be parsed in tests
     "transform": {
-        //   "^.+\\.(ts|tsx)$": "ts-jest"
-        "^.+\\.(ts|tsx)$": "babel-jest"
+          "^.+\\.(ts|tsx)$": "ts-jest"
+        // "^.+\\.(ts|tsx)$": "babel-jest"
     },
 
     globals: {
         'ts-jest': {
             diagnostics: {
                 ignoreCodes: [2571, 6031, 18003, 2339, 2345, 2366, 7005, 2322, 2454, 7053, 7034, 2741, 7006, 7016],
-                pathRegex: /\.(spec|test)\.ts$/
+                exclude: /\.(spec|test)\.ts$/
             }
         }
     },

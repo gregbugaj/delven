@@ -1,7 +1,7 @@
-import { Message, RequestMessage } from 'src/jsonrpc/common/protocol';
 import { Writable, Readable } from 'stream';
 import { inherits } from 'util';
 import { TextDecoder } from 'util';
+import { Message, RequestMessage } from '../../common/api';
 
 import { StreamMessageReader, StreamMessageWriter } from '../main';
 
@@ -64,7 +64,6 @@ describe('Messages', () => {
 
 			new StreamMessageReader(readable).listen((msg: Message) => {
 				const message: RequestMessage = msg as RequestMessage;
-				console.info(message)
 				expect(message.id).toEqual(1);
 				expect(message.method).toEqual('example');
 

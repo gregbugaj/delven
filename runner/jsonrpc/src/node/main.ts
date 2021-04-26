@@ -8,7 +8,8 @@ import {RAL, AbstractMessageReader, DataCallback, Disposable, ReadableStreamMess
 import RIL from './ril';
 import { Message } from '../common/messages';
 import { ChildProcess } from 'child_process';
-import { createMessageConnection as _createMessageConnection } from '../common/connection';
+import { ConnectionOptions, createMessageConnection as _createMessageConnection, Logger } from '../common/connection';
+export { NullLogger } from '../common/connection';
 
 // Install the node runtime abstract.
 RIL.install();
@@ -98,10 +99,10 @@ function isWritableStream(value: any): value is NodeJS.WritableStream {
 	return candidate.write !== undefined && candidate.addListener !== undefined;
 }
 
-export function createMessageConnection(input: MessageReader | NodeJS.ReadableStream, output: MessageWriter | NodeJS.WritableStream): MessageConnection {
+export function createMessageConnection(input: MessageReader | NodeJS.ReadableStream, output: MessageWriter | NodeJS.WritableStream, _logger?: Logger, options?: ConnectionOptions): MessageConnection {
 
 	const reader = isReadableStream(input) ? new StreamMessageReader(input) : input;
 	const writer = isWritableStream(output) ? new StreamMessageWriter(output) : output;
 
-	return _createMessageConnection(reader, writer);
+	return _createMessageConnection(reader, writer, _logger, options);
 }

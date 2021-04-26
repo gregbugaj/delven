@@ -10,6 +10,7 @@
   },
   "scripts": {
     "compile:jsonrpc": "tsc -b ./jsonrpc/tsconfig.json",
+		"watch:jsonrpc": "tsc -b ./jsonrpc/tsconfig.json -w",
     "test": "jest"
   },
   "scriptsXX": {

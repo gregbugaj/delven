@@ -1,40 +1,37 @@
 {
-  "name": "delven-jsonrpc",
-  "version": "1.0.0",
-  "___type": "module   :: Uncommenting this will break Babel/NodeJs with : Error while loading config - module is not defined",
-  "main": "index.js",
-  "private": true,
-  "author": "Greg",
-  "dependencies": {
-    "@babel/runtime": "^7.13.9"
-  },
-  "scripts": {
-    "start": "npm run build && node build/index.js",
-    "check-types": "tsc",
-    "watch-ts--old": "tsc -w --outDir ./build",
-    "watch-ts": "npx babel src --out-dir ./build --extensions '.ts' --watch ",
-    "dev": "nodemon ./build",
-    "build": "rm -rf ./build && mkdir ./build && npx babel src --out-dir ./build --extensions '.ts'",
-    "test": "jest"
-  },
-  "devDependencies": {
-    "@babel/cli": "^7.13.0",
-    "@babel/core": "^7.13.8",
-    "@babel/node": "^7.13.0",
-    "@babel/plugin-proposal-class-properties": "^7.13.0",
-    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
-    "@babel/plugin-proposal-optional-chaining": "^7.13.8",
-    "@babel/plugin-transform-runtime": "^7.13.9",
-    "@babel/preset-env": "^7.13.9",
-    "@babel/preset-typescript": "^7.13.0",
-    "@types/express": "^4.17.11",
-    "@types/node": "^14.14.41",
-    "babel-loader": "^8.2.2",
-    "nodemon": "^2.0.7",
-    "ts-jest": "^26.1.1",
-    "ts-node": "^9.1.1",
-    "tsconfig-paths": "^3.9.0",
-    "typescript": "^4.2.3",
-    "winston": "^3.3.3"
-  }
+		"name": "delven-jsonrpc",
+		"version": "1.0.0",
+		"___type": "module   :: Uncommenting this will break Babel/NodeJs with : Error while loading config - module is not defined",
+		"private": true,
+		"author": "Greg",
+		"main": "./lib/node/main.js",
+		"browser": {
+				"./lib/node/main.js": "./lib/browser/main.js"
+		},
+		"typings": "./lib/common/api.d.ts",
+		"scripts": {
+				"prepublishOnlyXXX": "git clean -xfd . && npm install && npm run clean && npm run compile && npm test",
+				"postpublishXXX": "node ../build/npm/post-publish.js",
+				"preversion": "npm test",
+				"compile": "node ../build/bin/tsc -b ./tsconfig.json",
+				"watch": "node ../build/bin/tsc -b ./tsconfig-watch.json -w",
+				"clean": "node ../node_modules/rimraf/bin.js lib && node ../node_modules/rimraf/bin.js dist",
+				"lint": "node ../node_modules/eslint/bin/eslint.js ./src/**/*.ts",
+				"test": "node ../node_modules/jest/bin/jest.js",
+				"testXXX": "npm run test:node && npm run test:browser",
+				"test:node": "node ../node_modules/mocha/bin/_mocha",
+				"test:browser": "npm run webpack:test:silent && node ../build/bin/runBrowserTests.js  http://127.0.0.1:8080/jsonrpc/src/browser/test/",
+				"webpack": "node ../build/bin/webpack  --mode none --config ./webpack.config.js",
+				"webpack:test": "node ../build/bin/webpack --mode none --config ./src/browser/test/webpack.config.js",
+				"webpack:test:silent": "node ../build/bin/webpack --no-stats --mode none --config ./src/browser/test/webpack.config.js"
+		},
+		"scriptsXXX": {
+				"start": "npm run build && node build/index.js",
+				"check-types": "tsc",
+				"watch-ts--old": "tsc -w --outDir ./build",
+				"watch-ts": "npx babel src --out-dir ./build --extensions '.ts' --watch ",
+				"dev": "nodemon ./build",
+				"build": "rm -rf ./build && mkdir ./build && npx babel src --out-dir ./build --extensions '.ts'",
+				"test": "jest"
+		}
 }

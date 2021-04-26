@@ -10,31 +10,3 @@
 		// { "path": "./src/browser/test/tsconfig.json" },
 	]
 }
-
-
-// {
-// 	"extends": "../tsconfig.base.json",
-// 	"compilerOptions": {
-// 		"incremental": true,
-// 		"composite": true,
-// 		"sourceMap": true,
-// 		"declaration": true,
-// 		"stripInternal": true,
-// 		"moduleResolution": "node",
-// 		"module": "ESNext",
-// 		"target": "ES2020",
-// 		"lib": [
-// 			"es2017",
-// 			"esnext",
-// 			"esnext.asynciterable"
-// 		],
-// 	},
-// 	"include": [
-// 		"src/**/*.ts"
-// 	],
-// 	"exclude": [
-// 		"node_modules",
-// 		"**/*.spec.ts",
-// 		"**/*.test.ts",
-// 	]
-// }

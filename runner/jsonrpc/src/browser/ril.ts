@@ -159,7 +159,7 @@ const _ril: RIL = Object.freeze<RIL>({
 		asReadableStream: (socket: WebSocket) => new ReadableStreamWrapper(socket),
 		asWritableStream: (socket: WebSocket) => new WritableStreamWrapper(socket)
 	}),
-	console: console,
+	// console: console,
 	timer: Object.freeze({
 		setTimeout(callback: (...args: any[]) => void, ms: number, ...args: any[]): RAL.TimeoutHandle {
 			return setTimeout(callback, ms, ...args) as unknown as RAL.TimeoutHandle;
