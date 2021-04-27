@@ -15,23 +15,9 @@
 				"preversion": "npm test",
 				"compile": "node ../build/bin/tsc -b ./tsconfig.json",
 				"watch": "node ../build/bin/tsc -b ./tsconfig-watch.json -w",
-				"clean": "node ../node_modules/rimraf/bin.js lib && node ../node_modules/rimraf/bin.js dist",
+				"cleanXX": "node ../node_modules/rimraf/bin.js lib && node ../node_modules/rimraf/bin.js dist",
 				"lint": "node ../node_modules/eslint/bin/eslint.js ./src/**/*.ts",
 				"test": "node ../node_modules/jest/bin/jest.js",
-				"testXXX": "npm run test:node && npm run test:browser",
-				"test:node": "node ../node_modules/mocha/bin/_mocha",
-				"test:browser": "npm run webpack:test:silent && node ../build/bin/runBrowserTests.js  http://127.0.0.1:8080/jsonrpc/src/browser/test/",
-				"webpack": "node ../build/bin/webpack  --mode none --config ./webpack.config.js",
-				"webpack:test": "node ../build/bin/webpack --mode none --config ./src/browser/test/webpack.config.js",
-				"webpack:test:silent": "node ../build/bin/webpack --no-stats --mode none --config ./src/browser/test/webpack.config.js"
-		},
-		"scriptsXXX": {
-				"start": "npm run build && node build/index.js",
-				"check-types": "tsc",
-				"watch-ts--old": "tsc -w --outDir ./build",
-				"watch-ts": "npx babel src --out-dir ./build --extensions '.ts' --watch ",
-				"dev": "nodemon ./build",
-				"build": "rm -rf ./build && mkdir ./build && npx babel src --out-dir ./build --extensions '.ts'",
-				"test": "jest"
+				"webpack": "node ../build/bin/webpack  --mode none --config ./webpack.config.js"
 		}
 }

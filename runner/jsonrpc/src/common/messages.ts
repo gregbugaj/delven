@@ -390,7 +390,6 @@ export interface ServerCapabilities {
   canExecuteNative: boolean
 }
 
-
 export interface InitializeResult {
   /**
    * The capabilities the language server provides.

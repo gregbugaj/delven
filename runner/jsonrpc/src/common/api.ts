@@ -6,7 +6,8 @@
 /// <reference path="../../typings/thenable.d.ts" />
 
 import {
-	Message, RequestMessage, NotificationMessage
+	Message, RequestMessage, NotificationMessage,RequestType, RequestType0, RequestType1, ProgressType,
+	NotificationType, NotificationType0, NotificationType1,ResponseMessage, ParameterStructures, _EM
 } from './messages';
 import { Disposable } from '../common/disposable';
 
@@ -19,7 +20,7 @@ import {
 } from '../common/connection';
 
 import RAL from './ral';
-import { Emitter } from './events';
+import { Emitter, Event } from './events';
 
 
 export {
@@ -39,11 +40,11 @@ export {
 	MessageConnection, createMessageConnection,
 
 	// Message Protocol
-	Message, RequestMessage, NotificationMessage,
+	Message, RequestMessage, NotificationMessage,RequestType, RequestType0, RequestType1,ProgressType,
+	NotificationType, NotificationType0, NotificationType1,ResponseMessage, ParameterStructures, _EM,
 
 	// Emitter
-	Emitter,
-
+	Emitter, Event,
 	// Export from connection
 	Logger, NullLogger, ConnectionStrategy, ConnectionOptions,
 }
