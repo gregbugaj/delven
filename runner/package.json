@@ -14,7 +14,7 @@
     "watch:jsonrpc": "tsc -b ./jsonrpc/tsconfig.json -w",
     "compile:protocol": "tsc -b ./protocol/tsconfig.json",
     "watch:protocol": "tsc -b ./protocol/tsconfig.json -w",
-    "test": "node ./build/bin/all.js run test"    
+    "test": "node ./build/bin/all.js run test"
   },
   "scriptsXX": {
     "start": "npm run build && node build/index.js",
