@@ -30,7 +30,7 @@ Setup Issues
 https://stackoverflow.com/questions/58462570/how-to-use-npm-link-with-a-module-writte$ cd ./package-dirn-using-typescript-for-development
 
 
-Error during `npm link` 
+Error during `npm link`
 Error: EACCES: permission denied, symlink
 
 ```
@@ -59,11 +59,26 @@ npm install -g typescript
 
 
 
+## LXC / LXD
+
+```bash
+sudo apt-get install  lxd
+```
+
+Setup new instance and login into the container
+
+```bash
+lxd init
+lxc launch ubuntu:18.04 delven-invoker
+
+lxc exec  delven-invoker -- sudo --login --user ubuntu
+```
 
 Source:
 https://docs.npmjs.com/getting-started/fixing-npm-permissions
 https://stackoverflow.com/questions/46058546/error-eacces-permission-denied-access-usr-lib-node-modules
-
+https://ubuntu.com/tutorials/create-custom-lxd-images#1-overview
+https://gist.github.com/reqshark/90bed1c082a4a5eb0a5f
 
 
 [1]: https://docs.delven.io
