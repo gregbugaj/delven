@@ -56,7 +56,7 @@ function install_transpiller(){
 function install_runner(){
     printf '\e[1;32m%-6s\e[m\n' "Installing : Runner-Executor"
     (
-        cd "./runner/executors"
+        cd "./runner/executor"
         npm install
     )
 }
