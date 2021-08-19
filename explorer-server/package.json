@@ -6,7 +6,7 @@
   "private": true,
   "author": "Greg",
   "dependencies": {
-    "@babel/runtime": "^7.10.2",
+    "@babel/runtime": "^7.13.9",
     "@octokit/rest": "^18.3.5",
     "express-ws": "^4.0.0",
     "request": "^2.88.2"
