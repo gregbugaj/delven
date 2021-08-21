@@ -553,7 +553,7 @@ function EditorImpl(props: EditorProps) {
 
           <ResizibleDivider direction="vertical" />
 
-          <div className='Editor-Container-Footer' style={{ display: "flex", flex: "1 1 0%", border: "0px solid purple", }}>
+          <div className='Editor-Container-Footer' style={{ display: "flex", flex: "1 1 0%", height:'25vh', border: "0px solid purple", }}>
             <BottomConsolePanel tabId={id} stageRef={editorMainStageRef} />
           </div>
         </div>
@@ -645,7 +645,7 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
   const handleEditorClick = () => {
     if (openEditor) {
       consoleRef.current.style.display = 'flex'
-      stageRef.current.style.height = '50%'
+      stageRef.current.style.height = '75%'
     } else {
       consoleRef.current.style.display = 'none'
       stageRef.current.style.height = '100%'
@@ -676,13 +676,13 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
   }, [])
 
   return (
-    <div className='Editor-Container' style={{ padding: "0px", border: "0px solid blue", flex: "1 1 0%", }} >
+    <div className='Editor-Container' style={{ padding: "0px", border: "0px solid blue", flex: "1 1 0%" }} >
       <div className='Editor-Content-Header' style={{ backgroundColor: '#eaeae1' }}>
 
         <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid green", }} >
 
           <Grid item xs={9} style={{ padding: "0px", border: "0px solid green" }}>
-            {/* Console Panel : {Date.now()} */}
+            Console : {Date.now()}
           </Grid>
 
           <Grid item xs={3} style={{ textAlign: 'right', }} >
@@ -719,15 +719,43 @@ function BottomConsolePanel(props: { tabId: string, stageRef: RefObject<HTMLDivE
       </div>
 
       {/* height is required  here so the console can become scrollable */}
-      <div className='Editor-Content' ref={consoleRef} style={{ border: '0px solid red', flex: '1 1 0%', height: '25vh' }}>
-        <ConsoleDisplay key={consoleKey} messages={messages} />
+			<div className='Editor-Content' ref={consoleRef}
+				style={{ border: '0px solid red', flex: '1 1 0%', height:'25%', backgroundColor: '#303030', padding: '0px',
+			}}>
+
+				<ConsoleDisplay key={consoleKey} messages={messages} />
+
+	{/*
+				<div className='console-view' style={{ padding: "0px", border: "0px solid blue", }}>
+					<div style={{ display: "flex", width: "100%", }}>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+						A <br/>
+					</div>
+				</div> */}
+
       </div>
 
       <div className='Editor-Container-Footer' style={{ display: "none", border: "0px solid purple", height: '20px' }}>
         Resizable Footer Inner :   {Date.now()}
       </div>
     </div>
-
   )
 }
 

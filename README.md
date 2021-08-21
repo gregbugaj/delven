@@ -60,22 +60,39 @@ Test: Download a package globally without using sudo.
 npm install -g typescript
 ```
 
-
-
 ## LXC / LXD
 
 ```bash
 sudo apt-get install  lxd
 ```
 
+Give access to current non-root user
+
+```bash
+newgrp lxd
+sudo usermod -a -G lxd $(whoami)
+```
+
+Confirm it by executing
+
+```bash
+/snap/bin/lxc query --wait -X GET /1.0
+```
+You should get a JSON response.
+
+
 Setup new instance and login into the container
 
 ```bash
 lxd init
-lxc launch ubuntu:18.04 delven-invoker
+lxc launch ubuntu:20.04 delven-invoker
 
 lxc exec  delven-invoker -- sudo --login --user ubuntu
 ```
+
+
+ sudo adduser greg lxd
+
 
 Source:
 https://docs.npmjs.com/getting-started/fixing-npm-permissions

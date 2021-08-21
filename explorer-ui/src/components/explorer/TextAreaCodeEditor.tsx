@@ -25,6 +25,7 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
       throw new Error('ref.current is null exptected HTMLTextArea')
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     cme = new CodeMirrorManager(ref.current)
     if (onKeyDown) {
       cme.editor.on("keydown", (cm, change) => {

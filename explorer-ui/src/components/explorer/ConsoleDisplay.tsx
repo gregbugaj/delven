@@ -45,11 +45,14 @@ interface IState {
  * </pre>
  */
 export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState> {
+
+	messagesEndRef = React.createRef<HTMLDivElement>()
+
   constructor(props: ConsoleMessageProps) {
     super(props)
     this.state = {
       messages: props.messages || []
-    }
+		}
   }
 
   public append(messages: ConsoleMessage | ConsoleMessage[]) {
@@ -80,14 +83,22 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
     this._append("raw", message)
   }
 
-  componentDidMount() {
-    console.info('MOUNTED')
-    const objDiv = document.getElementById("console-out");
-    if (objDiv != null) {
-      objDiv.scrollIntoView(false)
-      // objDiv.scrollTop = objDiv.scrollHeight;
-    }
-  }
+	scrollToBottom = () => {
+		// this.messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+		//  this will get the 'console-view' element and scroll into view
+		const target = this.messagesEndRef.current
+		const parent = target.parentElement.parentElement
+		// parent.scrollIntoView({ behavior: 'smooth' })
+		parent.scrollTop = target.scrollHeight;
+	}
+
+	componentDidMount () {
+		this.scrollToBottom()
+	}
+
+	componentDidUpdate () {
+		this.scrollToBottom()
+	}
 
   render() {
     // console.info('RENDER ' +Date.now())
@@ -105,9 +116,9 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
       }
 
       return (
-        <div style={{ margin: '0em', display: 'flex', minHeight: '18px', fontFamily: 'Cousine,monospace' }}>
+        <span style={{ margin: '0em', display: 'flex', minHeight: '18px', fontFamily: 'Cousine,monospace' }}>
           <span style={{ display: 'flex', marginRight: '.2em', width: '1em' }}>  </span>
-          <span style={{ display: 'flex', marginRight: '.5em', color: '#666', minWidth: '1.5em', textAlign: 'right' }}> {props.index + 1} </span>
+          <span style={{ display: 'flex', marginRight: '.5em', color: '#666', minWidth: '2.5em', textAlign: 'right' }}> {props.index + 1} </span>
           <span style={{ display: message.time == null ? 'none' : 'block', marginRight: '.5em', minWidth:'180px' }}>
 
             <span style={{ color: colors.gray }}>[</span>
@@ -116,11 +127,11 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
 
           </span>
           <span style={{ display: 'flex', color: color }}>{message.message}</span>
-        </div>
+        </span>
       )
     }
 
-    let RenderConsoleMessages = (messages?: ConsoleMessage[]) => {
+    const RenderConsoleMessages = (messages?: ConsoleMessage[]) => {
       return (
         <div className='console-messages'>
           {messages?.map((message, index) => <MessageItem index={index} message={message} />)}
@@ -128,25 +139,36 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
       );
     }
 
-    return (
-      <React.Fragment>
-        <div className='Editor-Container console-view' style={{ backgroundColor: '#222', padding: '5px', }}>
-          <div className='Editor-Content-Header' style={{ display: 'none' }}>
-            HEADER
-         </div>
-
-          <div className='Editor-Content'>
-            {RenderConsoleMessages(this.state.messages)}
-          </div>
-
-          <div className='Editor-Content-Footer' style={{ margin: '.5em', fontFamily: 'Cousine,monospace', color:'#FFF' }}>
-            <hr/>
-           REPL :
-        </div>
-        </div>
-      </React.Fragment>
-    )
+		return (
+			<React.Fragment>
+				<div className='console-view' style={{ border: "0px solid blue", display: 'flex',}}>
+					<div style={{ display: 'flex', width: "100%", }}>
+						{RenderConsoleMessages(this.state.messages)}
+					</div>
+					<div style={{ float:"left", clear: "both" }} ref={this.messagesEndRef}></div>
+				</div>
+			</React.Fragment>
+		)
   }
 }
 
 export default ConsoleDisplay;
+
+// {/*
+//         <div className='Editor-Container console-view' style={{ backgroundColor: '#222', padding: '5px', }}>
+//           <div className='Editor-Content-Header' style={{ display: 'noneXX' }}>
+//             HEADER
+//          </div>
+
+// 				 <div className='Editor-Content' style={{ height: '100%' }}>
+//             <div style={{ padding: "0px", border: "2px solid blue", display: 'flex', height: '100%' }}>
+// 	            {RenderConsoleMessages(this.state.messages)}
+//           	</div>
+//           </div> */}
+
+//           {/* <div className='Editor-Content-Footer' style={{ margin: '.5em', fontFamily: 'Cousine,monospace', color:'#FFF' }}>
+//             <hr/>
+//            REPL :
+//         </div> */}
+
+// 				{/* </div> */}

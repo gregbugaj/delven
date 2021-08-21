@@ -2,9 +2,10 @@
 
 # Failfast on any errors
 # set -eu -o pipefail
+MIN_VERSION='v14.5.0'
+RUN_AUDIT_FIX=$1
 
 function dependency_check(){
-    MIN_VERSION='v14.5.0'
     printf "Target NodeJS version : %s\n" $MIN_VERSION
 
     # source the NVM to make it available to our shell
@@ -93,7 +94,6 @@ function install_explorer_ui(){
 }
 
 printf '\e[1;32m%-6s\e[m\n' "Starting setup"
-RUN_AUDIT_FIX=$1
 
 dependency_check
 install_transpiller
