@@ -90,8 +90,13 @@ lxc launch ubuntu:20.04 delven-invoker
 lxc exec  delven-invoker -- sudo --login --user ubuntu
 ```
 
-
+```
  sudo adduser greg lxd
+```
+
+https://github.com/tpokorra/lxd-scripts
+https://www.cyberciti.biz/faq/how-to-create-lxd-vm-when-the-cloud-instance-launches/
+https://discuss.linuxcontainers.org/t/script-run-in-lxd/3999
 
 
 Source:
