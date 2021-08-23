@@ -8,7 +8,6 @@
   "dependencies": {
     "@babel/runtime": "^7.13.9",
     "@octokit/rest": "^18.3.5",
-    "git d-ws": "^4.0.0",
     "request": "^2.88.2"
   },
   "scripts": {

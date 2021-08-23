@@ -75,7 +75,6 @@ mkdir -p src/components && mkdir -p src/views/ && touch src/components/menu.js
 ```
 
 
-
 ## Available Scripts
 
 ### `npm start`
@@ -90,6 +89,15 @@ You will also see any lint errors in the console.
 
 ### `npm run build`
 
+
+
+The build folder is ready to be deployed.
+You may serve it with a static server:
+
+```
+npm install -g serve
+serve -s build
+```
 
 
 Update package.json
