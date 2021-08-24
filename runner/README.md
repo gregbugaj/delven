@@ -34,6 +34,18 @@ cd ./runner/executor
 npm link ../../transpiler/lib/
 ```
 
+
+## Build / Packaging
+
+```bash
+DOCKER_BUILDKIT=1 docker build -t delven/runner:1.0 .
+```
+
+```bash
+docker run -p 5000:5000 delven/runner:1.0
+```
+
+
 ## References
 
 https://microsoft.github.io/language-server-protocol/specification
