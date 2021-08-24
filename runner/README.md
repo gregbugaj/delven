@@ -1,7 +1,7 @@
 # Delven Runner
 
 Runner is the component of Delven that will run a job on some form of compute instance.
-Primary job is scheduling instances to be ready to execute jobs on, this could be a (VM, Docker, Local instance, etc)
+Primary job is scheduling instances to be ready to execute jobs on, this could be a (VM, Docker, Local instance, LXD/LXC, etc)
 
 
 ## Development : install dependencies

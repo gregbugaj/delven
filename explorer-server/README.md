@@ -15,17 +15,18 @@ npm install @types/node--save-dev
 ```
 
 
-## Development 
+## Development
 
-Start both the TS watcher and `nodemon` to monitor for changes 
+Start both the TS watcher and `nodemon` to monitor for changes
 
 ```bash
 npm run watch-ts
 npm run dev
 ```
- 
+
 
 ## References
+
 [https://medium.com/@phtnhphan/how-to-setup-typescript-for-nodejs-project-45d42057f7a3]
 https://zaiste.net/posts/nodejs-child-process-spawn-exec-fork-async-await/
 https://stackoverflow.com/questions/7446729/how-to-run-user-submitted-scripts-securely-in-a-node-js-sandbox#11796148

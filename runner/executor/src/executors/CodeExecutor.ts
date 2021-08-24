@@ -107,7 +107,7 @@ export default class CodeExecutor implements IExecutor {
                             console.info('Eval : start')
                             ${script}
 
-                            for await(let val of generator(10, 500)){
+                            for await(let val of generator(15, 500)){
                               console.info('generated : ' + JSON.stringify(val))
                             }
 
