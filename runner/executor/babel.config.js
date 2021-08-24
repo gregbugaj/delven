@@ -13,6 +13,7 @@ module.exports = {
         "@babel/plugin-proposal-optional-chaining",
         ["@babel/plugin-proposal-class-properties",
             { "loose": true }],
-        ["@babel/transform-runtime"]
+        ["@babel/transform-runtime"],
+        ["@babel/plugin-proposal-private-methods", { "loose": true }]
     ],
 };
