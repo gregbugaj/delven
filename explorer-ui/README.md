@@ -95,7 +95,7 @@ npm install -g serve
 serve -s build
 ```
 
-## Build / Pacakge
+## Build / Packaging
 
 ```bash
 DOCKER_BUILDKIT=1 docker build -t delven/explorer-ui:1.0 .

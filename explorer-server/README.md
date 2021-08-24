@@ -24,6 +24,16 @@ npm run watch-ts
 npm run dev
 ```
 
+## Build / Packaging
+
+```bash
+DOCKER_BUILDKIT=1 docker build -t delven/explorer-server:1.0 .
+```
+
+```bash
+docker run -p 8080:8080 delven/explorer-server:1.0
+```
+
 
 ## References
 

@@ -178,11 +178,16 @@ async function main() {
       })
   });
 
+
+	app.get('/', async (req: Request, res: Response) => {
+		res.send(toJson({'status':'OK', 'payload':'runner'}));
+  });
+
   const port = process.env.PORT || 5000;
   let srv = app.listen(port as number, '0.0.0.0', (err) => {
     if (err)
       throw err;
-    console.log(`Server listening on port ${port}!`);
+    console.log(`Server listening(HTTP/WS) on port ${port}!`);
   });
 }
 

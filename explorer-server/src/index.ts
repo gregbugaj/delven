@@ -93,6 +93,10 @@ async function main() {
         next();
     });
 
+    app.get('/', async (req: Request, res: Response) => {
+        setJsonHeaders(res);
+        res.send(JSON.stringify({ 'status':'OK', 'payload':'explorer-server'}));
+    });
 
     app.get('/api/v1/samples', async (req: Request, res: Response) => {
         setJsonHeaders(res);

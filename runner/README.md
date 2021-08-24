@@ -27,11 +27,11 @@ npm run dev
 ### Linking to local delven-transpiler
 
 ```sh
-cd ./delven-transpiler
+cd ./transpiler
 npm link
 
-cd ./delven-runner/executor
-npm link ../../delven-transpiler/lib/
+cd ./runner/executor
+npm link ../../transpiler/lib/
 ```
 
 ## References

@@ -47,22 +47,21 @@ RUN apt-get -y update
 RUN apt-get install python3 -y
 
 # set working directory
-WORKDIR /usr/src/delven-ui
+WORKDIR /usr/src/delven-server
 
 # add app
-COPY package.json /usr/src/delven-ui
-COPY package-lock.json /usr/src/delven-ui
-COPY tsconfig.json /usr/src/delven-ui
-COPY webpack.config.js /usr/src/delven-ui
-COPY public /usr/src/delven-ui/public
-COPY src /usr/src/delven-ui/src
-COPY entry.sh /usr/src/delven-ui
+COPY package.json /usr/src/delven-server
+COPY package-lock.json /usr/src/delven-server
+COPY tsconfig.json /usr/src/delven-server
+COPY babel.config.js /usr/src/delven-server
+COPY src /usr/src/delven-server/src
+COPY entry.sh /usr/src/delven-server
 
-RUN npm install
+RUN npm ci
 RUN npm run build
 
 # start app
-ENTRYPOINT /usr/src/delven-ui/entry.sh
+ENTRYPOINT /usr/src/delven-server/entry.sh
 
 
 
