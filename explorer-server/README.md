@@ -37,6 +37,6 @@ Websocket setup
 
 Debug using source-maps
 
-```
+```bash
 node --inspect build/
 ```
