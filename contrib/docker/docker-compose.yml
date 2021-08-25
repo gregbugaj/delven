@@ -2,30 +2,30 @@ version: '3.3'
 
 services:
 
-  delven_runner:
+  delven_executor:
     container_name: runner-executor
     build:  ../../runner/executor
     restart: always
     ports:
-      - 5000:5000
+      - "5000:5000"
     networks:
       - delvnet
 
-   delven_ui:
+  delven_ui:
     container_name: explorer-ui
     build:  ../../explorer-ui
     restart: always
     ports:
-      - 8088:8088
+      - "8088:8088"
     networks:
       - delvnet
 
-   delven_server:
+  delven_server:
     container_name: explorer-server
     build:  ../../explorer-server
     restart: always
     ports:
-      - 8080:8080
+      - "8080:8080"
     networks:
       - delvnet
 

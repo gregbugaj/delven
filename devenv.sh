@@ -101,15 +101,6 @@ fi
 
 log "Preflight check complete"
 
-# setup shared development using `npm link`
-## This is somewhat hacky but because we are using TypeScript it is necessary
-## 1) Precompile
-## 2) Copy package.json : This has to happen as there is an issue with
-##    'npm link' backtracking a directory down and using that as the node_module package
-##    and not the 'dist' folder
-## 3) link dist directory
-## 3) link destination directory via 'npm link'
-
 # setup NVM to use correct node version
 # We should not depend on NVM being present
 NVM_MIN_VERSION='v14.5.0'
@@ -118,6 +109,15 @@ NVM_MIN_VERSION='v14.5.0'
 nvm use $NVM_MIN_VERSION
 VERSION=$(node --version)
 printf "Using node version : %s\n" $VERSION
+
+# setup shared development using `npm link`
+## This is somewhat hacky but because we are using TypeScript it is necessary
+## 1) Precompile
+## 2) Copy package.json : This has to happen as there is an issue with
+##    'npm link' backtracking a directory down and using that as the node_module package
+##    and not the 'dist' folder
+## 3) link dist directory
+## 3) link destination directory via 'npm link'
 
 log "Compiling / Linking shared libs"
 

@@ -40,28 +40,50 @@ RUN echo  '*** Node/NPM version check ***' \
 		&& node --version \
 		&& npm --version
 
-
 ## Application specific setup
 
 RUN apt-get -y update
 RUN apt-get install python3 -y
 
 # set working directory
-WORKDIR /usr/src/delven-server
+WORKDIR /usr/src/delven-executor
 
-# add app
-COPY package.json /usr/src/delven-server
-COPY package-lock.json /usr/src/delven-server
-COPY tsconfig.json /usr/src/delven-server
-COPY babel.config.js /usr/src/delven-server
-COPY src /usr/src/delven-server/src
-COPY entry.sh /usr/src/delven-server
+# add app depnencies
+COPY package.json /usr/src/delven-executor
+COPY package-lock.json /usr/src/delven-executor
+COPY tsconfig.json /usr/src/delven-executor
+COPY babel.config.js /usr/src/delven-executor
+COPY src /usr/src/delven-executor/src
+COPY entry.sh /usr/src/delven-executor
+
+# setup shared development using `npm link`
+## This is somewhat hacky but because we are using TypeScript it is necessary
+## 1) Precompile
+## 2) Copy package.json : This has to happen as there is an issue with
+##    'npm link' backtracking a directory down and using that as the node_module package
+##    and not the 'dist' folder
+## 3) link dist directory
+## 3) link destination directory via 'npm link'
+
+COPY ./assets/transpiler /tmp/transpiler
+
+RUN echo  '*** Compiling / Linking shared libs ***' \
+    && cd /tmp/transpiler \
+    #npx babel src --out-dir dist --extensions '.ts,.js' --source-maps inline \
+    && npm ci \
+    && npm run build \
+    && cd ./dist \
+    && cp ../package.json . \
+    && npm link     \
+    && cd /usr/src/delven-executor \
+    && npm link delven-transpiler \
+    && echo "Transpiler linked"
 
 RUN npm ci
 RUN npm run build
 
 # start app
-ENTRYPOINT /usr/src/delven-server/entry.sh
+ENTRYPOINT /usr/src/delven-executor/entry.sh
 
 
 
