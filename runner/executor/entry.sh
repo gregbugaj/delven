@@ -1,4 +1,4 @@
 #!/bin/bash
 
-echo "########## Delven Runners server started ##########"
+echo "########## Runners server started ##########"
 node build/

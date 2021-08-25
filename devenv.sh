@@ -34,7 +34,7 @@ function cleanup()
 trap cleanup EXIT
 
 log "Starting Explorer Environment"
-# Verfiy that the node is present
+# Verify that the node is present
 if ! command -v tmux &> /dev/null
 then
     log "ERROR" "Service Tag" "Message"
@@ -111,7 +111,7 @@ log "Preflight check complete"
 ##    'npm link' backtracking a directory down and using that as the node_module package
 ##    and not the 'dist' folder
 ## 3) link dist directory
-## 3) link destincation directory via 'npm link'
+## 3) link destination directory via 'npm link'
 
 # setup NVM to use correct node version
 # We should not depend on NVM being present

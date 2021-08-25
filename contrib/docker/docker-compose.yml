@@ -2,6 +2,15 @@ version: '3.3'
 
 services:
 
+  delven_runner:
+    container_name: runner-executor
+    build:  ../../runner/executor
+    restart: always
+    ports:
+      - 5000:5000
+    networks:
+      - delvnet
+
    delven_ui:
     container_name: explorer-ui
     build:  ../../explorer-ui
