@@ -7,7 +7,8 @@
     "scripts": {
         "g4": "java -Xmx500M -cp \"/usr/local/lib/antlr/antlr-4.8-complete.jar:$CLASSPATH\" org.antlr.v4.Tool -Dlanguage=JavaScript ./src/grammar/*.g4 -visitor -o ./src/parser",
         "test": "jest",
-        "build": "./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts,.js'",
+        "build": "./node_modules/.bin/babel src --out-dir dist --extensions '.ts,.js' --source-maps inline",
+        "watch": "./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts,.js'",
         "check-types": "tsc",
         "watch-ts": "tsc -w",
         "build-ts": "./node_modules/.bin/babel src --out-dir dist --extensions '.ts,.js'",
