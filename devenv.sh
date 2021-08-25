@@ -125,7 +125,8 @@ printf "Using node version : %s\n" $VERSION
 log "Compiling / Linking shared libs"
 
 cd ./transpiler
-npx babel src --out-dir dist --extensions '.ts,.js' --source-maps inline
+#npx babel src --out-dir dist --extensions '.ts,.js' --source-maps inline
+npm run build
 cd ./dist
 cp ../package.json .
 npm link
