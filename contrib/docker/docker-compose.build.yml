@@ -3,8 +3,11 @@ version: '3.3'
 services:
 
   delven_executor:
-    container_name: runner-executor
-    build:  ../../runner/executor
+    container_name: executor
+    build:
+      context: ../../runner/executor
+      dockerfile: Dockerfile
+    image:  delven/executor:latest
     restart: always
     ports:
       - "5000:5000"
@@ -13,30 +16,29 @@ services:
 
   delven_ui:
     container_name: explorer-ui
-    build:  ../../explorer-ui
+    build:
+      context: ../../explorer-ui
+      dockerfile: Dockerfile
+    image:  delven/explorer-ui:latest
     restart: always
     ports:
       - "8088:8088"
+    depends_on:
+      - "delven_server"
     networks:
       - delvnet
 
   delven_server:
     container_name: explorer-server
-    build:  ../../explorer-server
+    build:
+      context: ../../explorer-server
+      dockerfile: Dockerfile
+    image:  delven/explorer-server:latest
     restart: always
     ports:
       - "8080:8080"
     networks:
       - delvnet
-
-  # delven_ui:
-  #   container_name: explorer-ui
-  #   image:  delven/explorer-ui:1.0
-  #   restart: always
-  #   ports:
-  #     - 8088:8088
-  #   networks:
-  #     - delvnet
 
 networks:
   delvnet:
