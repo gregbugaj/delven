@@ -1,5 +1,5 @@
 /**
- * Internal import module to avoid circular dependcy issues for the query module
+ * Internal import module to avoid circular dependency issues for the query module
  * <pre>
  * madge --circular --image graph.svg --extensions js,ts  ./src/
  * </pre>

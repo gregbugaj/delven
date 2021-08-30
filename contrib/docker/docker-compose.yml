@@ -1,0 +1,90 @@
+version: '3.3'
+
+services:
+  delven_executor:
+    container_name: executor
+    image:  delven/executor:latest
+    restart: always
+    labels:
+      - traefik.enable=true
+      # Runner HTTP  - http://localhost:5000/
+      - traefik.http.services.executor.loadbalancer.server.port=5000
+      - traefik.http.routers.executor.rule=Host(`${DELVEN_HOST}`) &&
+        PathPrefix(`/runner/`)
+      - traefik.http.routers.executor.entrypoints=web
+        # Runner Websocket  - ws://localhost:5000/ws  >>  Layer 4 routing
+      - traefik.tcp.routers.runner_websockets.entrypoints=websocket
+      - traefik.tcp.routers.runner_websockets.rule=HostSNI(`*`)
+      - traefik.tcp.routers.runner_websockets.tls=false
+      - traefik.tcp.routers.runner_websockets.service=websocket_executor
+      - traefik.tcp.services.websocket_executor.loadbalancer.server.port=5000
+
+    # ports:
+    #   - "5000:5000"
+    networks:
+      - delvnet
+
+  delven_ui:
+    container_name: explorer-ui
+    image:  delven/explorer-ui:latest
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.explorer-ui.loadbalancer.server.port=3000
+      - traefik.http.routers.explorer-ui.rule=Host(`${DELVEN_HOST}`)
+      - traefik.http.routers.explorer-ui.entrypoints=web
+#    ports:
+#      - "3000:3000"
+    depends_on:
+      - "delven_server"
+    networks:
+      - delvnet
+
+  delven_server:
+    container_name: explorer-server
+    image:  delven/explorer-server:latest
+    restart: always
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.delven.loadbalancer.server.port=8080
+      - traefik.http.routers.delven.rule=Host(`${DELVEN_HOST}`) &&
+        PathPrefix(`/api/`)
+      - traefik.http.routers.delven.entrypoints=web
+    ports:
+      - "8080:8080"
+    networks:
+      - delvnet
+
+  traefik:
+    image: traefik:v2.5.1
+    container_name: traefik
+    command:
+      - "--log.level=DEBUG"
+      - "--api=true"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=delvnet"
+      # Entrypoints
+      - "--entryPoints.websocket.address=:5000"
+      - "--entryPoints.web.address=:80"
+    # Uncomment to get Traefik dashboard
+      - "--entryPoints.dashboard.address=:8090"
+      - "--api.dashboard=true"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dashboard.entrypoints=dashboard
+      - traefik.http.routers.dashboard.service=api@internal
+      - traefik.http.routers.dashboard.rule=Host(`${DELVEN_HOST}`)
+    ports:
+      - "5000:5000" # WS
+      - "80:80"     # HTTP
+      - "8090:8090"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - delvnet
+
+############### Networks ###############
+networks:
+  delvnet:
+  host-network: # Used by Traefik to get the client REAL IP
+    driver: bridge

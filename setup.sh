@@ -24,7 +24,7 @@ function dependency_check() {
     nvm use v14.5.0
   fi
 
-  # Verfiy that the node is present
+  # Verify that the node is present
   if ! command -v node &>/dev/null; then
     printf "Node is not present"
     exit 1
@@ -50,12 +50,12 @@ function _audit() {
   fi
 }
 
-function install_transpiller() {
+function install_transpiler() {
   printf '\e[1;32m%-6s\e[m\n' "Installing : Transpiler"
   (
     cd "./transpiler"
     rm package-lock.json
-    npm install
+    npm ci
     _audit
   )
 }
@@ -65,7 +65,7 @@ function install_runner() {
   (
     cd "./runner/executor"
     rm package-lock.json
-    npm install
+    npm ci
     _audit
   )
 }
@@ -75,7 +75,7 @@ function install_explorer_server() {
   (
     cd "./explorer-server"
     rm package-lock.json
-    npm install
+    npm ci
     _audit
   )
 }
@@ -85,7 +85,7 @@ function install_explorer_ui() {
   (
     cd "./explorer-ui"
     rm package-lock.json
-    npm install
+    npm ci
     _audit
   )
 }
@@ -93,7 +93,7 @@ function install_explorer_ui() {
 printf '\e[1;32m%-6s\e[m\n' "Starting setup"
 
 dependency_check
-install_transpiller
+install_transpiler
 install_runner
 install_explorer_server
 install_explorer_ui

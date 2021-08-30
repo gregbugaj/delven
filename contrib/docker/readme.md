@@ -1,10 +1,11 @@
 # How to change default hostname or port
 
-To change the hostname, simply set the DELVEN_HOST environment variable
+To change the hostname, simply set the `DELVEN_HOST` environment variable
 
 ```sh
 export DELVEN_HOST=<YOUR_HOSTNAME>
 ```
+
 If you want to change the port, change the entryPoints.web.address part of traefik image command in `docker-compose.yml`
 
 ```sh
@@ -14,4 +15,16 @@ services:
       - "--providers.docker.exposedByDefault=false"
       - "--providers.docker.network=delvnet"
       - "--entryPoints.web.address=:<YOUR_PORT>"
+```
+
+Build images 
+
+```sh
+ docker-compose -f docker-compose.build.yml -f docker-compose.yml build
+```
+
+Run  
+
+```sh
+ docker-compose -f docker-compose.yml up
 ```

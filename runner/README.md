@@ -1,7 +1,7 @@
 # Delven Runner
 
-Runner is the component of Delven that will run a job on some form of compute instance.
-Primary job is scheduling instances to be ready to execute jobs on, this could be a (VM, Docker, Local instance, LXD/LXC, etc)
+Runner is the component of Delven that will run a job on some form of compute instance. Primary job is scheduling
+instances to be ready to execute jobs on, this could be a (VM, Docker, Local instance, LXD/LXC, etc)
 
 ## Development : install dependencies
 
@@ -16,7 +16,6 @@ npm run watch-ts
 npm run dev
 ```
 
-
 ### Linking to local delven-transpiler
 
 ```sh
@@ -26,7 +25,6 @@ npm link
 cd ./runner/executor
 npm link ../../transpiler/lib/
 ```
-
 
 ## Build / Packaging
 
@@ -38,11 +36,20 @@ DOCKER_BUILDKIT=1 docker build -t delven/runner:1.0 .
 docker run -p 5000:5000 delven/runner:1.0
 ```
 
+## Runner test
 
+Use `wscat` to connect to a WebSocket API and send messages to it
+
+```sh
+npm install -g wscat
+```
+
+```sh
+wscat -n -c ws://localhost:5000/ws
+```
 ## References
 
 https://microsoft.github.io/language-server-protocol/specification
-
 
 ## Notes
 

@@ -1,7 +1,9 @@
 import {Enumerable} from "../query/internal"
 
 describe("Enumerable FirstOrDefault", () => {
-    beforeAll(() => {})
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    beforeAll(() => {
+    })
 
     test("FirstOrDefault-001", async () => {
         const numbers = Enumerable.of([2, 6, 4, 8])
@@ -16,7 +18,7 @@ describe("Enumerable FirstOrDefault", () => {
     })
 
     test("FirstOrDefault-003", async () => {
-        const numbers = Enumerable.of(["apple", "bannana", "tommato"])
+        const numbers = Enumerable.of(["apple", "banana", "tomato"])
         const results = await numbers.FirstOrDefault(val => val.length > 20)
         expect(results).toEqual("")
     })

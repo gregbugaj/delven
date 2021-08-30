@@ -59,7 +59,7 @@ export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
 }
 export abstract class IEnumerable<T> {
   /**
-   * Return async iterator for current datasouce
+   * Return async iterator for current datasource
    */
   // abstract asyncIterator(): AsyncGenerator<T, unknown, unknown>
 
@@ -85,7 +85,7 @@ export abstract class IEnumerable<T> {
   abstract toArray(): Promise<ArrayLike<any>>
 
   /**
-   * Determines wheter a sequence contains any elements
+   * Determines whether a sequence contains any elements
    * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
    */
   abstract Any(): Promise<boolean>
@@ -118,7 +118,7 @@ export abstract class IEnumerable<T> {
 
   /**
    * Projects each element of a sequence into a new form.
-   * If no `selector` has been provided an idenity function will be used to return a value
+   * If no `selector` has been provided an identity function will be used to return a value
    * @param selector
    */
   abstract Select<R>(selector?: Action<T, R>): IEnumerable<R>

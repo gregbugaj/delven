@@ -30,7 +30,7 @@
 			"program": "./node_modules/jest/bin/jest",
 			"stopOnEntry": false,
 			"args": [
-				// "./src/__tests__/enumerable.firstordefault.spec.ts",
+				"./src/__tests__/enumerable.firstordefault.spec.ts",
 				// "./src/__tests__/enumerable.concat.spec.ts",
 				// "./src/__tests__/enumerable.first.spec.ts",
 				// "./src/__tests__/enumerable.firstordefault.spec.ts",

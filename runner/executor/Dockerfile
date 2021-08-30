@@ -65,6 +65,7 @@ COPY entry.sh /usr/src/delven-executor
 ## 3) link dist directory
 ## 3) link destination directory via 'npm link'
 
+## './assets/transpiler' should have been mounted via 'build_setup.sh' before building the container
 COPY ./assets/transpiler /tmp/transpiler
 
 RUN echo  '*** Compiling / Linking shared libs ***' \

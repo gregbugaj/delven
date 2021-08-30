@@ -1,6 +1,7 @@
 import { Enumerable } from "../query/internal"
 
 describe("Enumerable SelectMany", () => {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   beforeAll(() => { })
 
     test("SelectMany-Flatten", async () => {
