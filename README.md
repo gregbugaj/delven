@@ -104,7 +104,11 @@ https://docs.npmjs.com/getting-started/fixing-npm-permissions
 https://stackoverflow.com/questions/46058546/error-eacces-permission-denied-access-usr-lib-node-modules
 https://ubuntu.com/tutorials/create-custom-lxd-images#1-overview
 https://gist.github.com/reqshark/90bed1c082a4a5eb0a5f
+https://github.com/jina-ai/jina
 
 
 [1]: https://docs.delven.io
 [2]: https://delven.io
+
+
+
