@@ -179,7 +179,7 @@ async function main() {
   });
 
 
-	app.get('/', async (req: Request, res: Response) => {
+	app.get('/runner/status', async (req: Request, res: Response) => {
 		res.send(toJson({'status':'OK', 'payload':'runner'}));
   });
 

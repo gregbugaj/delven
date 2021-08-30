@@ -211,7 +211,8 @@ function EditorImpl(props: EditorProps) {
   useLayoutEffect(() => {
     // host responsible for executing scripts
     const hostname = window.location.hostname
-    const host = `ws://${hostname}:5000/ws` as string
+    const host = `ws://${hostname}/ws` as string
+    // const host = `ws://${hostname}:5000/ws` as string
 
     (async () => {
       let status = await executor.setup({ "uri": host })

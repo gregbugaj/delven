@@ -169,7 +169,7 @@ export class ServerExecutor implements IExecutor {
         }
 
         this.ws.onerror = event => {
-          console.error("Wesocket error ", event)
+          console.error("Websocket error ", event)
           this.eventStreamSink.error(event)
           reject(event)
         }
