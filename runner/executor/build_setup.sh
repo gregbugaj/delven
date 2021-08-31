@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo 'Setting up build prouct'
+echo 'Setting up build process'
 # This is to prevent following error
 # COPY failed: forbidden path outside the build context: ../../transpiler/ ()
 
@@ -13,6 +13,3 @@ dst_dir=./assets/transpiler
 
 mkdir -p $dst_dir
 sudo mount --bind $src_dir $dst_dir
-
-# docker build -t delven/runner:1.0 .
-

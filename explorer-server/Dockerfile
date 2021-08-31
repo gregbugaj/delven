@@ -40,7 +40,6 @@ RUN echo  '*** Node/NPM version check ***' \
 		&& node --version \
 		&& npm --version
 
-
 ## Application specific setup
 
 RUN apt-get -y update

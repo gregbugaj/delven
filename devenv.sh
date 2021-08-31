@@ -110,7 +110,7 @@ nvm use $NVM_MIN_VERSION
 VERSION=$(node --version)
 printf "Using node version : %s\n" $VERSION
 
-# setup shared development using `npm link`
+# setup shared development using `k`
 ## This is somewhat hacky but because we are using TypeScript it is necessary
 ## 1) Precompile
 ## 2) Copy package.json : This has to happen as there is an issue with

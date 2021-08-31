@@ -55,7 +55,7 @@ function install_transpiler() {
   (
     cd "./transpiler"
     rm package-lock.json
-    npm ci
+    npm install
     _audit
   )
 }
@@ -65,7 +65,7 @@ function install_runner() {
   (
     cd "./runner/executor"
     rm package-lock.json
-    npm ci
+    npm install
     _audit
   )
 }
@@ -75,7 +75,7 @@ function install_explorer_server() {
   (
     cd "./explorer-server"
     rm package-lock.json
-    npm ci
+    npm install
     _audit
   )
 }
@@ -85,7 +85,7 @@ function install_explorer_ui() {
   (
     cd "./explorer-ui"
     rm package-lock.json
-    npm ci
+    npm install
     _audit
   )
 }

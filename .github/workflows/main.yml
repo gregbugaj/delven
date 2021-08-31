@@ -1,67 +1,59 @@
-name: CI
+name: CI-CD
 on:
   push:
     branches: [ develop ]
   pull_request:
     branches: [ develop ]
 
-defaults:
-  run:
-    working-directory: .
+#defaults:
+#  run:
+#    working-directory: .
+
+#  Setting `CI=` to prevent following error during build
+#  Treating warnings as errors because process.env.CI = true.
+#  Most CI servers set it automatically.
+
+env:
+  DELVEN_HOST: delven.io
+  DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+  DOCKER_HUB_PAC: ${{ secrets.DOCKER_HUB_PAC }}
 
 jobs:
-#  test_transpiler:
-#    runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        working-directory: ./transpiler
-#    steps:
-#    - uses: actions/checkout@v2
-#    - uses: actions/setup-node@v2
-#    - run: npm ci
-#    - run: npm run build --if-present
-#    - run: npm test
 
-  build_transpiler:
+  # Builds a Docker Image and pushes it to Docker Container Registry
+  build-containers:
+    name: Push to Docker Hub
     runs-on: ubuntu-latest
+
+    # use the backend folder as the default working directory for the job
     defaults:
       run:
-        working-directory: ./transpiler
+        working-directory: ./
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - run: npm ci
-      - run: npm run build --if-present
+      # Checkout the Repository
+      - name: Checking out the repository
+        uses: actions/checkout@v2
 
-  build_explorer_server:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./explorer_server
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - run: npm ci
-      - run: npm run build --if-present
+      - name: Mount links(Privilaged)
+        run: |
+          echo 'Linking...'
+          cd ./runner/executor/
+          src_dir=../../transpiler/
+          dst_dir=./assets/transpiler
+          mkdir -p $dst_dir
+          sudo mount --bind $src_dir $dst_dir
 
-  build_explorer_ui:
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: ./explorer-ui
-      steps:
-        - uses: actions/checkout@v2
-        - uses: actions/setup-node@v2
-        - run: npm ci
-        - run: npm run build --if-present
+      - name: Set up docker-compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+          docker-compose --version
 
-  build_runner_executor:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./runner/executor
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-      - run: npm ci
-      - run: npm run build --if-present
+      - name: Build/Publish containers
+        run: |
+            cd ./contrib/docker
+            docker-compose -f docker-compose.build.yml -f docker-compose.yml build
+            echo $DOCKER_HUB_PAC | docker login -u $DOCKER_HUB_USER --password-stdin
+            docker-compose images
+            docker-compose -f docker-compose.build.yml -f docker-compose.yml push

@@ -85,6 +85,5 @@ services:
 
 ############### Networks ###############
 networks:
-  delvnet:
-  host-network: # Used by Traefik to get the client REAL IP
+  delvnet:  # Used by Traefik to get the client REAL IP
     driver: bridge
