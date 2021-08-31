@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  delven_executor:
+    build:
+      context: ../../runner/executor
+      dockerfile: Dockerfile
+
+  delven_ui:
+    build:
+      context: ../../explorer-ui
+      dockerfile: Dockerfile
+
+  delven_server:
+    build:
+      context: ../../explorer-server
+      dockerfile: Dockerfile

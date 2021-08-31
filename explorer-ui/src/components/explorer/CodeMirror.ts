@@ -7,47 +7,60 @@ import 'codemirror/theme/monokai.css';
 import 'codemirror/mode/javascript/javascript';
 import '../../styles/_codemirror.css';
 
+
 // https://stackoverflow.com/questions/29291024/codemirror-onkeyevent-not-firing
 export class CodeMirrorManager {
 
-    public editor: CodeMirror.Editor;
+  editor: CodeMirror.Editor;
 
-    config: CodeMirror.EditorConfiguration = {
-        tabSize: 4,
-        // gutters: ["note-gutter", "CodeMirror-linenumbers"],
-        lineNumbers: true,
-        fixedGutter: true,
-        mode: { name: "javascript", json: true },
-        // scrollbarStyle:'native',
-        // theme:'darcula',
-        onKeyEvent: function(editor, event){
-            console.info(`key ` + event)
-            return true
-        }
-    };
+  config: CodeMirror.EditorConfiguration = {
+    tabSize: 4,
+    // gutters: ["note-gutter", "CodeMirror-linenumbers"],
+    lineNumbers: true,
+    // fixedGutter: true,
+    mode: { name: "javascript", json: true },
+    scrollbarStyle:'native',
+    readOnly:false,
+    smartIndent: true
 
-    // CTOR
-    constructor(private readonly tagElement: HTMLTextAreaElement) {
-        this.editor = CodeMirror.fromTextArea(this.tagElement, this.config);
-        // keypress  mousedown
-        this.editor.on("keydown" , (cm, change)=> {
-          console.log("something changed!");
-          console.log(change)
-          let cursor  = cm.getCursor()
-          console.log(cursor)
-        });
-    }
+    // extraKeys: {
+    //   'Shift-Enter': (cm) => {
+    //     console.log('This works normally')
+    //   },
+    //   'Ctrl-Enter Cmd-Enter': (cm) => {
+    //     console.log('This is called... sometimes')
+    //   },
+    // },
+  };
 
-    setValue(text: string) {
-        this.editor.setValue(text)
-        this.editor.refresh()
-    }
+  // CTOR
+  constructor(tagElement: HTMLTextAreaElement) {
 
-    refresh() {
-        this.editor.refresh()
-    }
+    // if (tagElement == null) {
+    //   console.warn('Ref element is null')
+    //   return
+    // }
 
-    getValue() {
-        return this.editor.getValue()
-    }
+    this.editor = CodeMirror.fromTextArea(tagElement, this.config);
+    // keypress  mousedown
+    // this.editor.on("keydown", (cm, change) => {
+    //   console.log("something changed!");
+    //   console.log(change)
+    //   let cursor = cm.getCursor()
+    //   console.log(cursor)
+    // });
+  }
+
+  setValue(text: string) {
+    this.editor.setValue(text)
+    setTimeout(() => { this.editor.refresh() }, 100)
+  }
+
+  refresh() {
+    this.editor.refresh()
+  }
+
+  getValue() {
+    return this.editor.getValue()
+  }
 }

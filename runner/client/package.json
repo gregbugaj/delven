@@ -1,0 +1,18 @@
+{
+  "name": "delven-executor-client",
+  "version": "1.0.0",
+	"description": "Delven runner client",
+  "___type": "module   :: Uncommenting this will break Babel/NodeJs with : Error while loading config - module is not defined",
+  "private": true,
+  "author": "Greg",
+
+  "scripts": {
+    "start": "npm run build && node build/index.js",
+    "check-types": "tsc",
+    "watch-ts--old": "tsc -w --outDir ./build",
+    "watch-ts": "npx babel src --out-dir ./build --extensions '.ts' --watch ",
+    "dev": "nodemon ./build",
+    "build": "rm -rf ./build && mkdir ./build && npx babel src --out-dir ./build --extensions '.ts'",
+    "test": "jest"
+  }
+}

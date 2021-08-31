@@ -32,6 +32,19 @@ export class EventTypeSampleQuery extends EventWithPayload<EventTypeSampleQueryP
   public readonly type = EventTypeSampleQuery.type
 }
 
+/**
+ * Event to use when requesting to add new Tab
+ */
+export class EventTypeAddTab extends EventWithPayload<EventTypeSampleQueryPayload> {
+  static readonly type = "EventTypeAddTab"
+  public readonly type = EventTypeAddTab.type
+}
+
+export class EventTypeCloseTab extends EventWithPayload<string> {
+  static readonly type = "EventTypeCloseTab"
+  public readonly type = EventTypeCloseTab.type
+}
+
 export class EventTypeCompileReply extends EventWithPayload<any> {
   static readonly type = "compile.reply"
   public readonly type = EventTypeCompileReply.type
@@ -41,6 +54,17 @@ export class EventTypeEvaluateReply extends EventWithPayload<any> {
   static readonly type = "evaluate.reply"
   public readonly type = EventTypeEvaluateReply.type
 }
+
+export class EventTypeEvaluateResult extends EventWithPayload<any> {
+  static readonly type = "evaluate.result"
+  public readonly type = EventTypeEvaluateResult.type
+}
+
+export class EventTypeEditorKeyDown extends EventWithPayload<any> {
+  static readonly type = "editor.keydown"
+  public readonly type = EventTypeEditorKeyDown.type
+}
+
 // ----------------------------------------------------------------------------------- //
 // ----------------------------------------------------------------------------------- //
 
@@ -52,5 +76,8 @@ export class EventTypeEvaluateReply extends EventWithPayload<any> {
 export type EventTypes =
   EventTypeCompileReply |
   EventTypeEvaluateReply |
-  EventTypeSampleQuery
+  EventTypeSampleQuery |
+  EventTypeAddTab |
+  EventTypeCloseTab |
+  EventTypeEditorKeyDown
   ;

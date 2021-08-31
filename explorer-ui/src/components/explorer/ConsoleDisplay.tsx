@@ -1,20 +1,7 @@
-import React from 'react'
-import Typography from '@material-ui/core/Typography'
+import React, { useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
+import { TextField } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
 
 const colors = {
   white: "white",
@@ -58,11 +45,14 @@ interface IState {
  * </pre>
  */
 export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState> {
+
+	messagesEndRef = React.createRef<HTMLDivElement>()
+
   constructor(props: ConsoleMessageProps) {
     super(props)
     this.state = {
       messages: props.messages || []
-    }
+		}
   }
 
   public append(messages: ConsoleMessage | ConsoleMessage[]) {
@@ -93,16 +83,26 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
     this._append("raw", message)
   }
 
-  componentDidMount() {
-    const objDiv = document.getElementById("console-out");
-    console.info(objDiv)
-    if (objDiv != null) {
-      objDiv.scrollIntoView(false)
-      // objDiv.scrollTop = objDiv.scrollHeight;
-    }
-  }
+	scrollToBottom = () => {
+		// this.messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+		//  this will get the 'console-view' element and scroll into view
+		const target = this.messagesEndRef.current
+		const parent = target.parentElement.parentElement
+		// parent.scrollIntoView({ behavior: 'smooth' })
+		parent.scrollTop = target.scrollHeight;
+	}
+
+	componentDidMount () {
+		this.scrollToBottom()
+	}
+
+	componentDidUpdate () {
+		this.scrollToBottom()
+	}
 
   render() {
+    // console.info('RENDER ' +Date.now())
+
     function MessageItem(props) {
       let message = props.message
       let color = colors.gray
@@ -116,10 +116,10 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
       }
 
       return (
-        <div style={{ margin: '0em', display: 'flex', minHeight: '18px', fontFamily: 'Cousine,monospace' }}>
+        <span style={{ margin: '0em', display: 'flex', minHeight: '18px', fontFamily: 'Cousine,monospace' }}>
           <span style={{ display: 'flex', marginRight: '.2em', width: '1em' }}>  </span>
-          <span style={{ display: 'flex', marginRight: '.5em', color: '#666', minWidth: '1.5em', textAlign: 'right' }}> {props.index + 1} </span>
-          <span style={{ display: message.time == null ? 'none' : 'block', marginRight: '.5em' }}>
+          <span style={{ display: 'flex', marginRight: '.5em', color: '#666', minWidth: '2.5em', textAlign: 'right' }}> {props.index + 1} </span>
+          <span style={{ display: message.time == null ? 'none' : 'block', marginRight: '.5em', minWidth:'180px' }}>
 
             <span style={{ color: colors.gray }}>[</span>
             <span style={{ color: '#666' }}>{message.time}</span>
@@ -127,40 +127,48 @@ export class ConsoleDisplay extends React.Component<ConsoleMessageProps, IState>
 
           </span>
           <span style={{ display: 'flex', color: color }}>{message.message}</span>
-        </div>
+        </span>
       )
     }
 
-    let renderConsoleMessages = (messages?: ConsoleMessage[]) => {
+    const RenderConsoleMessages = (messages?: ConsoleMessage[]) => {
       return (
-        <div id='console-messages'>
+        <div className='console-messages'>
           {messages?.map((message, index) => <MessageItem index={index} message={message} />)}
         </div>
       );
     }
 
-    return (
-      // <div className={classes.root}>
-      <div id='console-header' style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        <div>
-          <Grid container justify="space-between" style={{ padding: "0px", border: "0px solid purple" }} >
-            <Grid item>
-              <Typography variant="h6" >
-                Console Display
-                </Typography>
-            </Grid>
-            <Grid item>
-              <Button size="small" variant="contained" style={{ minWidth: 80 }} >Raw logs</Button>
-            </Grid>
-          </Grid>
-        </div>
-
-        <div id='console-out' style={{ height: '100%', backgroundColor: '#222', padding: '5px', overflowY: 'auto' }}>
-          {renderConsoleMessages(this.state.messages)}
-        </div>
-      </div>
-    )
+		return (
+			<React.Fragment>
+				<div className='console-view' style={{ border: "0px solid blue", display: 'flex',}}>
+					<div style={{ display: 'flex', width: "100%", }}>
+						{RenderConsoleMessages(this.state.messages)}
+					</div>
+					<div style={{ float:"left", clear: "both" }} ref={this.messagesEndRef}></div>
+				</div>
+			</React.Fragment>
+		)
   }
 }
 
 export default ConsoleDisplay;
+
+// {/*
+//         <div className='Editor-Container console-view' style={{ backgroundColor: '#222', padding: '5px', }}>
+//           <div className='Editor-Content-Header' style={{ display: 'noneXX' }}>
+//             HEADER
+//          </div>
+
+// 				 <div className='Editor-Content' style={{ height: '100%' }}>
+//             <div style={{ padding: "0px", border: "2px solid blue", display: 'flex', height: '100%' }}>
+// 	            {RenderConsoleMessages(this.state.messages)}
+//           	</div>
+//           </div> */}
+
+//           {/* <div className='Editor-Content-Footer' style={{ margin: '.5em', fontFamily: 'Cousine,monospace', color:'#FFF' }}>
+//             <hr/>
+//            REPL :
+//         </div> */}
+
+// 				{/* </div> */}

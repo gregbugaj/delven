@@ -43,12 +43,10 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
     if (this.state === "COMPLETED") {
       return this.results
     }
-
     for await (const item of this) {
       // this.results.push(item)
       // noop to force eval
     }
-
     return this.results
   }
 }

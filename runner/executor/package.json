@@ -1,0 +1,47 @@
+{
+  "name": "delven-runner",
+  "version": "1.0.0",
+  "___type": "module   :: Uncommenting this will break Bable/NodeJs with : Error while loading config - module is not defined",
+  "main": "index.js",
+  "private": true,
+  "author": "Greg",
+  "dependencies": {
+    "@babel/runtime": "^7.13.9",
+    "express-ws": "^4.0.0",
+    "vm2": "^3.9.3"
+  },
+  "scripts": {
+    "start": "npm run build && node build/index.js",
+    "check-types": "tsc",
+    "watch-ts--old": "tsc -w --outDir ./build",
+    "watch-ts": "npx babel src --out-dir ./build --extensions '.ts' --watch ",
+    "dev": "nodemon ./build",
+    "build": "rm -rf ./build && mkdir ./build && npx babel src --out-dir ./build --extensions '.ts'",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.13.0",
+    "@babel/core": "^7.13.8",
+    "@babel/node": "^7.13.0",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-proposal-nullish-coalescing-operator": "^7.13.8",
+    "@babel/plugin-proposal-optional-chaining": "^7.13.8",
+    "@babel/plugin-transform-runtime": "^7.13.9",
+    "@babel/preset-env": "^7.13.9",
+    "@babel/preset-typescript": "^7.13.0",
+    "@types/express": "^4.17.11",
+    "@types/jest": "^25.2.3",
+    "@types/node": "^14.14.41",
+    "babel-loader": "^8.2.2",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "jest": "^26.1.0",
+    "nodemon": "^2.0.7",
+    "rxjs": "^6.6.6",
+    "ts-jest": "^26.1.1",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^4.2.3",
+    "winston": "^3.3.3"
+  }
+}

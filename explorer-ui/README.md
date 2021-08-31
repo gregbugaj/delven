@@ -1,12 +1,11 @@
 # delven-explorer
 Compiler / AST Explorer
 
-
 ## Linking to local delven-transpiler
 
 ```sh
-cd ./delven-transpiler 
-npm link 
+cd ./delven-transpiler
+npm link
 
 cd ./delven-explorer
 npm link ../delven-transpiler/lib
@@ -38,7 +37,7 @@ npm install @types/codemirror
 
 ## Router
 
-```sh    
+```sh
     npm install react-router-dom
     npm install @types/react-router-dom
 ```
@@ -70,11 +69,9 @@ npm i webpack webpack-cli webpack-dev-server html-webpack-plugin --save-dev
 ```
 
 ```sh
-touch webpack.config.js 
+touch webpack.config.js
 mkdir -p src/components && mkdir -p src/views/ && touch src/components/menu.js
 ```
-
-
 
 ## Available Scripts
 
@@ -90,7 +87,19 @@ You will also see any lint errors in the console.
 
 ### `npm run build`
 
+The build folder is ready to be deployed.
+You may serve it with a static server:
 
+```bash
+npm install -g serve
+serve -s build
+```
+
+## Build / Packaging
+
+```bash
+DOCKER_BUILDKIT=1 docker build -t delven/explorer-ui:1.0 .
+```
 
 Update package.json
 https://nodejs.dev/learn/update-all-the-nodejs-dependencies-to-their-latest-version
@@ -100,6 +109,9 @@ https://nodejs.dev/learn/update-all-the-nodejs-dependencies-to-their-latest-vers
 
 
 ## References
+
 [https://create-react-app.dev/docs/adding-typescript/]
 [https://gist.github.com/bennadel/e40ddc3b7b72f07c992c7b59de7c04b0#file-message-bus-events-ts]
+
+https://tatiyants.com/pev/#/plans/plan_1617915061062
 

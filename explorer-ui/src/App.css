@@ -122,6 +122,87 @@ code {
   font-family: Consolas, monospace
 }
 
+/*
+Scrollbars
+*/
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/*
+End Scorllbars
+*/
+
+/*
+ Editor container
+*/
+
+.Editor-Container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  border: 0px solid purple;
+}
+
+.Editor-Content {
+  padding: 0px;
+  border: 0px solid rgb(252, 206, 0);
+  height: 100%;
+  width: 100%;
+
+  /* flex:1; */
+
+  overflow: auto;
+  /* background-color: lightgreen; */
+}
+
+.Editor-Container-Header {
+  border: 0px solid purple;
+}
+
+.Editor-Container-Footer {
+  border: 0px solid purple;
+}
+
+
+.btn-group.special {
+  display: flex;
+}
+
+.special .btn {
+  flex: 1
+}
+
+
+/*
+Disable Ripple effect for our tabs
+*/
+.MuiTabs-root .MuiTouchRipple-root {
+  display: none;
+}
+
+.MuiTabs-root .MuiCardActionArea-focusHighlight {
+  display: none;
+}
+
 
 
 /*# sourceMappingURL=index.css.map*/

@@ -1,48 +1,71 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-
-        {
-            "type": "node",
-            "name": "Transpiler Jest Tests",
-            "request": "launch",
-            "program": "${workspaceFolder}/transpiler/node_modules/jest/bin/jest",
-            "args": [
-                // "./src/__tests__/enumerable.firstordefault.spec.ts",
-                // "./src/__tests__/enumerable.concat.spec.ts",
-                // "./src/__tests__/enumerable.first.spec.ts",
-                // "./src/__tests__/enumerable.firstordefault.spec.ts",
-                // "./src/__tests__/enumerable.select.spec.ts",
-                // "./src/__tests__/enumerable.selectmany.spec.ts",
-                // "./src/__tests__/enumerable.sum.spec.ts",
-                // "./src/__tests__/enumerable.take.spec.ts",
-                "./src/__tests__/enumerable.where.spec.ts",
-                // "./src/__tests__/enumerable.zip.spec.ts",
-                // // "./src/__tests__/enumerable.iterator.spec.ts",
-                // "./src/__tests__/enumerable.extension.spec.ts",
-            ],
-            "cwd": "${workspaceFolder}/transpiler",
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen",
-            "disableOptimisticBPs": true
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Launch Transpiler",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "program": "${workspaceFolder}/transpiler/src/index.ts",
-            "outFiles": [
-                "${workspaceFolder}/**/*.js"
-            ],
-            "runtimeArgs": [
-                "--preserve-symlinks"
-            ]
-        }
-    ]
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"request": "launch",
+			"type": "node",
+			"name": "test:executor",
+			"program": "./node_modules/jest/bin/jest",
+			"stopOnEntry": false,
+			"args": [
+				// "./src/jsonrpc/node/__tests__/messages.test.ts",
+				"./src/jsonrpc/node/__tests__/connection.test.ts",
+			],
+			"cwd": "${workspaceFolder}/runner/executors",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"disableOptimisticBPs": true,
+			"sourceMaps": true,
+			"runtimeExecutable": null,
+			"runtimeArgs": [],
+			"env": {},
+		},
+		{
+			"request": "launch",
+			"type": "node",
+			"name": "test:transpiler",
+			"program": "./node_modules/jest/bin/jest",
+			"stopOnEntry": false,
+			"args": [
+				"./src/__tests__/enumerable.firstordefault.spec.ts",
+				// "./src/__tests__/enumerable.concat.spec.ts",
+				// "./src/__tests__/enumerable.first.spec.ts",
+				// "./src/__tests__/enumerable.firstordefault.spec.ts",
+				// "./src/__tests__/enumerable.select.spec.ts",
+				// "./src/__tests__/enumerable.selectmany.spec.ts",
+				// "./src/__tests__/enumerable.sum.spec.ts",
+				// "./src/__tests__/enumerable.take.spec.ts",
+				// "./src/__tests__/enumerable.where.spec.ts",
+				// "./src/__tests__/enumerable.zip.spec.ts",
+				// // "./src/__tests__/enumerable.iterator.spec.ts",
+				// "./src/__tests__/enumerable.extension.spec.ts",
+			],
+			"cwd": "${workspaceFolder}/transpiler",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"disableOptimisticBPs": true,
+			"sourceMaps": true,
+			"runtimeExecutable": null,
+			"runtimeArgs": [],
+			"env": {},
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch Transpiler",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"program": "${workspaceFolder}/transpiler/src/index.ts",
+			"outFiles": [
+				"${workspaceFolder}/**/*.js"
+			],
+			"runtimeArgs": [
+				"--preserve-symlinks"
+			]
+		}
+	]
 }

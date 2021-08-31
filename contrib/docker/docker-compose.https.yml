@@ -1,0 +1,41 @@
+
+version: '3.3'
+
+services:
+  delven_server:
+    labels:
+      - traefik.http.routers.delven.entrypoints=websecure
+      - traefik.http.routers.delven.tls.certresolver=lets-encrypt
+
+  delven_ui:
+    labels:
+      - traefik.http.routers.explorer-ui.entrypoints=websecure
+      - traefik.http.routers.explorer-ui.tls.certresolver=lets-encrypt
+
+  traefik:
+    image: traefik:v2.5.1
+    container_name: traefik
+    command:
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=delvnet"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entryPoints.websecure.address=:443"
+#      - "--certificatesResolvers.lets-encrypt.acme.email=${ACME_EMAIL:?Please set the ACME_EMAIL env variable}"
+      - "--certificatesResolvers.lets-encrypt.acme.email=gregbugaj@yahoo.com"
+      - "--certificatesResolvers.lets-encrypt.acme.tlsChallenge=true"
+      - "--certificatesResolvers.lets-encrypt.acme.storage=/letsencrypt/acme.json"
+      # Uncomment to get Traefik dashboard
+      - "--entryPoints.dashboard.address=:8090"
+      - "--api.dashboard=true"
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - delven_letsencrypt:/letsencrypt
+
+volumes:
+  delven_letsencrypt:
+
+#ACME_EMAIL=gregbugaj@yahoo.com DELVEN_HOST=delven.io docker-compose -f docker-compose.build.yml  -f docker-compose.yml -f docker-compose.https.yml up

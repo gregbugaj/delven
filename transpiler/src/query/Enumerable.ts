@@ -1,214 +1,233 @@
 import ArgumentNullException from "./ArgumentNullException"
 import InvalidOperationException from "./InvalidOperationException"
-import { Tuple, IterableDataSource, TakeWhileEnumerable, SkipEnumerable, SkipWhileEnumerable, SelectManyEnumerable } from "./internal"
-import { Action } from "./internal"
-import { BiAction } from "./internal"
-import { IEnumerable } from "./internal"
-import { SelectEnumerable } from "./internal"
-import { TakeEnumerable } from "./internal"
-import { WhereEnumerable } from "./internal"
-import { ZipEnumerable } from "./internal"
-import { ConcatEnumerable } from "./internal"
+import {
+    Action,
+    BiAction,
+    ConcatEnumerable,
+    IEnumerable,
+    IterableDataSource,
+    SelectEnumerable,
+    SelectManyEnumerable,
+    SkipEnumerable,
+    SkipWhileEnumerable,
+    TakeEnumerable,
+    TakeWhileEnumerable,
+    Tuple,
+    WhereEnumerable,
+    ZipEnumerable
+} from "./internal"
 
 /**
  * Default implementaion of IQueryable
  */
 
 export function sleep(ms: number): Promise<number> {
-  return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 // https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
 // https://www.typescriptlang.org/docs/handbook/interfaces.html
 export class Enumerable<T> extends IEnumerable<T> {
-  // source can be of any type and it should not be bount to type T
-  readonly source: IterableDataSource<any>
-  state: "NEW" | "STARTED" | "COMPLETED"
+    // source can be of any type and it should not be bount to type T
+    readonly source: IterableDataSource<any>
+    state: "NEW" | "STARTED" | "COMPLETED"
 
-  constructor(source: IterableDataSource<any>) {
-    super()
-    this.source = source
-    this.state = "NEW"
-  }
-
-  /**
-   * Unwrap and evalute item
-   * @param val the value to unwrap
-   * @returns val or evaluated function value
-   */
-  protected unwrap(val: any): any {
-    if (typeof val === 'function') {
-      return val()
+    constructor(source: IterableDataSource<any>) {
+        super()
+        this.source = source
+        this.state = "NEW"
     }
-    return val
-  }
 
-  /**
-   * Crate enumerable
-   * @param source
-   */
-  static of<T>(source: IterableDataSource<T>): IEnumerable<T> {
-    return new Enumerable(source)
-  }
-
-  Select<R>(selector: Action<T, R>): IEnumerable<R> {
-    return new SelectEnumerable<T, R>(this, selector)
-  }
-
-  // SelectMany<R, K=any>(selector: Action<T, R>, transform?: Action<R, K>): IEnumerable<R>
-  SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IEnumerable<K> {
-    return new SelectManyEnumerable<T, R, K>(this, selector, transform)
-  }
-
-  async Any(): Promise<boolean> {
-    throw new Error("Method not implemented.")
-  }
-
-  async Count(): Promise<number> {
-    // return this.source?.length
-    throw new Error("Method not implemented.")
-  }
-
-  Where(predicate: Action<T, boolean>): IEnumerable<T> {
-    return new WhereEnumerable(this, predicate)
-  }
-
-  TakeWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
-    return new TakeWhileEnumerable(this, predicate)
-  }
-
-  async All(predicate: Action<T, boolean>): Promise<boolean> {
-    for await (const item of this) {
-      const val = this.unwrap(item)
-      if (!predicate(val)) {
-        return false
-      }
-    }
-    return true
-  }
-
-  Take(count: number): IEnumerable<T> {
-    return new TakeEnumerable(this, count)
-  }
-
-  Skip(count: number): IEnumerable<T> {
-    return new SkipEnumerable(this, count)
-  }
-
-  SkipWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
-    return new SkipWhileEnumerable(this, predicate)
-  }
-
-  async First(predicate?: Action<T, boolean>): Promise<T> {
-    if (this.source == undefined) {
-      throw new ArgumentNullException("source should not be null")
-    }
-    if (typeof predicate === "undefined") {
-      return this[0]
-    } else {
-      for await (const item of this) {
-        const val = this.unwrap(item)
-        if (predicate(val)) {
-          return val
+    /**
+     * Unwrap and evalute item
+     * @param val the value to unwrap
+     * @returns val or evaluated function value
+     */
+    protected unwrap(val: any): any {
+        if (typeof val === 'function') {
+            return val()
         }
-      }
+        return val
     }
-    throw new InvalidOperationException("No element satisfies the condition in predicate.")
-  }
 
-  async FirstOrDefault(predicate?: Action<T, boolean>): Promise<T> {
-    const _defaults = (obj: any | null): void => {
-      if (obj == null || obj == undefined) {
-        return
-      }
-      const keys = Object.getOwnPropertyNames(obj)
-      for (const key in keys) {
-        const name = keys[key]
-        if (obj[name] && typeof obj[name] === "object") {
-          _defaults(obj[name])
-        } else if (typeof obj[name] === "string") {
-          obj[name] = ""
-        } else if (typeof obj[name] === "number") {
-          obj[name] = 0
-        } else {
-          throw new Error(`Unhandled type : ${typeof obj[name]}`)
+    /**
+     * Crate enumerable
+     * @param source
+     */
+    static of<T>(source: IterableDataSource<T>): IEnumerable<T> {
+        return new Enumerable(source)
+    }
+
+    Select<R>(selector: Action<T, R>): IEnumerable<R> {
+        return new SelectEnumerable<T, R>(this, selector)
+    }
+
+    // SelectMany<R, K=any>(selector: Action<T, R>, transform?: Action<R, K>): IEnumerable<R>
+    SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IEnumerable<K> {
+        return new SelectManyEnumerable<T, R, K>(this, selector, transform)
+    }
+
+    async Any(): Promise<boolean> {
+        throw new Error("Method not implemented.")
+    }
+
+    async Count(): Promise<number> {
+        // return this.source?.length
+        throw new Error("Method not implemented.")
+    }
+
+    Where(predicate: Action<T, boolean>): IEnumerable<T> {
+        return new WhereEnumerable(this, predicate)
+    }
+
+    TakeWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
+        return new TakeWhileEnumerable(this, predicate)
+    }
+
+    async All(predicate: Action<T, boolean>): Promise<boolean> {
+        for await (const item of this) {
+            const val = this.unwrap(item)
+            if (!predicate(val)) {
+                return false
+            }
         }
-      }
+        return true
     }
 
-    const createDefaultFromObject = (src): T => {
-      if (typeof src === "string") {
-        return ("" as unknown) as T
-      } else if (typeof src === "number") {
-        return (0 as unknown) as T
-      } else if (typeof src === "object") {
-        const copy: T = Object.assign({}, src)
-        _defaults(copy)
-        return copy
-      }
-      throw new Error(`Unhandled conversion from object : ${typeof src}`)
+    Take(count: number): IEnumerable<T> {
+        return new TakeEnumerable(this, count)
     }
 
-    try {
-      return await this.First(predicate)
-    } catch (e) {
-      if (e instanceof InvalidOperationException) {
-        return createDefaultFromObject(this[0])
-      }
+    Skip(count: number): IEnumerable<T> {
+        return new SkipEnumerable(this, count)
     }
-    return (null as unknown) as T
-  }
 
-  async Sum(action?: Action<T, number>): Promise<number> {
-    if (typeof action === "undefined") {
-      // identitity action
-      const ident = (arg: T): number => {
-        if (typeof arg === "number") {
-          return arg
-        } else if (typeof arg === "string") {
-          return parseInt(arg)
+    SkipWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
+        return new SkipWhileEnumerable(this, predicate)
+    }
+
+    async First(predicate?: Action<T, boolean>): Promise<T> {
+        if (this.source == undefined) {
+            throw new ArgumentNullException("source should not be null")
         }
-        throw new Error(`Unknow type for : ${typeof action}`)
-      }
-      action = ident
+
+        for await (const item of this) {
+            const val = this.unwrap(item)
+            if (typeof predicate === "undefined") {
+                return val
+            } else {
+                if (predicate(val)) {
+                    return val
+                }
+            }
+        }
+        throw new InvalidOperationException("No element satisfies the condition in predicate.")
     }
 
-    let sum = 0
-    for await (let item of this) {
-      const val = action(item)
-      if (val == undefined) {
-        continue
-      }
-      sum += val
+    async FirstOrDefault(action?: Action<T, boolean>): Promise<T> {
+        const _defaults = (obj: any | null): void => {
+            if (obj == null) {
+                return
+            }
+            const keys = Object.getOwnPropertyNames(obj)
+            for (const key in keys) {
+                const name = keys[key]
+                if (obj[name] && typeof obj[name] === "object") {
+                    _defaults(obj[name])
+                } else if (typeof obj[name] === "string") {
+                    obj[name] = ""
+                } else if (typeof obj[name] === "number") {
+                    obj[name] = 0
+                } else {
+                    throw new Error(`Unhandled type : ${typeof obj[name]}`)
+                }
+            }
+        }
+
+        const createDefaultFromObject = (src): T => {
+            if (typeof src === "string") {
+                return ("" as unknown) as T
+            } else if (typeof src === "number") {
+                return (0 as unknown) as T
+            } else if (typeof src === "object") {
+                const copy: T = Object.assign({}, src)
+                _defaults(copy)
+                return copy
+            }
+            throw new Error(`Unhandled conversion from object : ${typeof src}`)
+        }
+
+        // identity action
+        if (typeof action === "undefined") {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            action = (arg: T): boolean => true
+        }
+        // TODO : The semantics here don't make sense, we need to make this one pass operation.
+        try {
+            return await this.First(action)
+        } catch (e) {
+            if (e instanceof InvalidOperationException) {
+                for await (const item of this) {
+                    if (item == undefined) {
+                        continue
+                    }
+                    // Handle InvalidOperationException: No element satisfies the condition in predicate.
+                    return createDefaultFromObject(item)
+                }
+            }
+        }
+        return (null as unknown) as T
     }
-    return sum
-  }
 
-  Concat(secondSource: IterableDataSource<T>): IEnumerable<T> {
-    return new ConcatEnumerable<T>(this, secondSource)
-  }
+    async Sum(action?: Action<T, number>): Promise<number> {
+        if (typeof action === "undefined") {
+            // identity action
+            action = (arg: T): number => {
+                if (typeof arg === "number") {
+                    return arg
+                } else if (typeof arg === "string") {
+                    return parseInt(arg)
+                }
+                throw new Error(`Unknown type for : ${typeof action}`)
+            }
+        }
 
-  async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
-    for await (let val of this.source) {
-      yield val
+        let sum = 0
+        for await (const item of this) {
+            const val = action(item)
+            if (val == undefined) {
+                continue
+            }
+            sum += val
+        }
+        return sum
     }
-    return undefined
-  }
 
-  async toArray(): Promise<ArrayLike<T>> {
-    let results: T[] = []
-    for await (const item of this) {
-      results.push(item)
+    Concat(secondSource: IterableDataSource<T>): IEnumerable<T> {
+        return new ConcatEnumerable<T>(this, secondSource)
     }
-    return results
-  }
 
-  Zip<TSecond, TResult>(
-    other: IEnumerable<TSecond>,
-    transformer?: BiAction<T, TSecond, TResult>
-  ): IEnumerable<TResult | Tuple<T, TSecond>> {
-    return new ZipEnumerable<T, TSecond, TResult>(this, other, transformer)
-  }
+    async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
+        for await (const val of this.source) {
+            yield val
+        }
+        return undefined
+    }
+
+    async toArray(): Promise<ArrayLike<T>> {
+        const results: T[] = []
+        for await (const item of this) {
+            results.push(item)
+        }
+        return results
+    }
+
+    Zip<TSecond, TResult>(
+        other: IEnumerable<TSecond>,
+        transformer?: BiAction<T, TSecond, TResult>
+    ): IEnumerable<TResult | Tuple<T, TSecond>> {
+        return new ZipEnumerable<T, TSecond, TResult>(this, other, transformer)
+    }
 }
 
 /**
@@ -223,32 +242,33 @@ export class Enumerable<T> extends IEnumerable<T> {
  */
 
 
-export { }
+export {}
 declare global {
-  interface Array<T> {
-    count(): number;
-    asEnumerable(): IEnumerable<T>;
-  }
+    interface Array<T> {
+        count(): number;
+
+        asEnumerable(): IEnumerable<T>;
+    }
 }
 
 if (!Array.prototype.asEnumerable) {
-  Object.defineProperty(Array.prototype, 'asEnumerable', {
-    enumerable: false,
-    writable: false,
-    configurable: false,
-    value: function asEnumerable() {
-      return new Enumerable(this);
-    }
-  })
+    Object.defineProperty(Array.prototype, 'asEnumerable', {
+        enumerable: false,
+        writable: false,
+        configurable: false,
+        value: function asEnumerable() {
+            return new Enumerable(this);
+        }
+    })
 }
 // Testing only
 if (!Array.prototype.count) {
-  Object.defineProperty(Array.prototype, 'count', {
-    enumerable: false,
-    writable: false,
-    configurable: false,
-    value: function count() {
-      return this.length
-    }
-  })
+    Object.defineProperty(Array.prototype, 'count', {
+        enumerable: false,
+        writable: false,
+        configurable: false,
+        value: function count() {
+            return this.length
+        }
+    })
 }

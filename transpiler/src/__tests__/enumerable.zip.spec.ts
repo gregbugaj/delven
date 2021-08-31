@@ -1,5 +1,6 @@
 import {Enumerable, Tuple} from "../query/internal"
 import {IEnumerable} from "../query/internal"
+/*
 
 describe("Enumerable Zip", () => {
     beforeAll(() => {})
@@ -39,3 +40,4 @@ describe("Enumerable Zip", () => {
         expect(rs).toEqual(expectedResult)
     })
 })
+*/
