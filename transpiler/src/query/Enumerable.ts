@@ -18,7 +18,7 @@ import {
 } from "./internal"
 
 /**
- * Default implementaion of IQueryable
+ * Default implementation of IQueryable
  */
 
 export function sleep(ms: number): Promise<number> {
@@ -39,7 +39,7 @@ export class Enumerable<T> extends IEnumerable<T> {
     }
 
     /**
-     * Unwrap and evalute item
+     * Unwrap and evaluate item
      * @param val the value to unwrap
      * @returns val or evaluated function value
      */
@@ -51,11 +51,20 @@ export class Enumerable<T> extends IEnumerable<T> {
     }
 
     /**
-     * Crate enumerable
+     * Crate enumerable from a IterableDataSource or non ArrayLike value
      * @param source
      */
-    static of<T>(source: IterableDataSource<T>): IEnumerable<T> {
-        return new Enumerable(source)
+    static of<T>(source: IterableDataSource<T> | T): IEnumerable<T> {
+        const isIterable = (obj) => {
+            if (obj == null)
+                return false;
+            return typeof obj[Symbol.iterator] === 'function' || typeof obj[Symbol.asyncIterator] === 'function'
+        }
+        if (isIterable(source)) {
+            return new Enumerable(<IterableDataSource<T>>source)
+        } else {
+            return new Enumerable([source])
+        }
     }
 
     Select<R>(selector: Action<T, R>): IEnumerable<R> {

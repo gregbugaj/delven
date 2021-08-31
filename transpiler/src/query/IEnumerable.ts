@@ -26,7 +26,7 @@
 /**
  * Tuple can contain two values of different data types.
  */
-export type Tuple<TFirts, TSecond> = [TFirts, TSecond]
+export type Tuple<TFirst, TSecond> = [TFirst, TSecond]
 
 /**
  * Datasource that should be used with the IEnumerable

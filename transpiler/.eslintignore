@@ -2,3 +2,6 @@ webpack.config.js
 package.json
 dist/
 src/parser
+types/
+test/
+__tests__/

@@ -2,7 +2,7 @@
  * Options to use for the select query
  */
 interface SelectQueryOptions {
-    expressions: {expr: string}[]
+    expressions: { expr: string }[]
 }
 
 /**
