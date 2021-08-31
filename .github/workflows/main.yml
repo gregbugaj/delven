@@ -20,6 +20,19 @@ env:
 
 jobs:
 
+# FIXME : Test are failing
+#  test_transpiler:
+#    runs-on: ubuntu-latest
+#    defaults:
+#      run:
+#        working-directory: ./transpiler
+#    steps:
+#    - uses: actions/checkout@v2
+#    - uses: actions/setup-node@v2
+#    - run: npm ci
+#    - run: npm run build --if-present
+#    - run: npm test
+
   # Builds a Docker Image and pushes it to Docker Container Registry
   build-containers:
     name: Push to Docker Hub
