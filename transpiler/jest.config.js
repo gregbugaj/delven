@@ -11,7 +11,8 @@ module.exports = {
     // USING babel-jest fixes issue with 'para?.val' not being able to be parsed in tests
     "transform": {
         //   "^.+\\.(ts|tsx)$": "ts-jest"
-        "^.+\\.(ts|tsx)$": "babel-jest"
+        // transforming JS files as they are using ES6 module system
+        "^.+\\.(ts|tsx|js)$": "babel-jest"
     },
 
     globals: {
