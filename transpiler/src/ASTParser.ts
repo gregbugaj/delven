@@ -1,16 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as antlr4 from "antlr4"
-// import {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
-// import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
-// import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
-// import {RuleContext} from "antlr4/RuleContext"
-
-import ECMAScriptParserVisitor from "./parser/ECMAScriptParserVisitor"
-console.info(ECMAScriptParserVisitor)
+import {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
 import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
 import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
 import {RuleContext} from "antlr4/RuleContext"
+
+console.trace(DelvenVisitor)
 
 import {
     ExpressionStatement,

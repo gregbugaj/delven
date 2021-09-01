@@ -143,3 +143,8 @@ Graph dependencies
 ```
 madge --circular --image graph.svg --extensions js,ts  ./src/__tests__/enumerable.*
 ```
+
+```sh
+  madge --circular --image graph.svg  --warning --circular  --extensions js,ts  ./src/__tests__/select.spec.ts
+```
+
