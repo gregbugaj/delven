@@ -6,7 +6,7 @@ module.exports = {
     ],
     "testMatch": [
         "**/__tests__/**/*.+(spec|test).+(ts|tsx|js)",
-        "**/?(*.)\.+(spec|test).+(ts|tsx|js)"
+        "**/?(*.)\\.+(spec|test).+(ts|tsx|js)"
     ],
     // USING babel-jest fixes issue with 'para?.val' not being able to be parsed in tests
     "transform": {

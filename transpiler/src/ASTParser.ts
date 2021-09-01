@@ -1,10 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as antlr4 from "antlr4"
-import {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
+// import {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
+// import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
+// import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
+// import {RuleContext} from "antlr4/RuleContext"
+
+import ECMAScriptParserVisitor from "./parser/ECMAScriptParserVisitor"
+console.info(ECMAScriptParserVisitor)
 import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
 import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
 import {RuleContext} from "antlr4/RuleContext"
+
 import {
     ExpressionStatement,
     Literal,
@@ -63,7 +70,10 @@ import {Interval, Recognizer, Token} from "antlr4"
 import Trace, {CallSite} from "./trace"
 import * as fs from "fs"
 import ASTNode from "./ASTNode"
-import {ErrorListener, ConsoleErrorListener} from "antlr4/error/ErrorListener"
+
+// import {ErrorListener, ConsoleErrorListener} from "antlr4/error/ErrorListener"
+// import {PredictionMode} from 'antlr4/atn/PredictionMode';
+// import {ConsoleErrorListener} from 'antlr4/error/ErrorListener'
 
 /**
  * Version that we generate the AST for.
@@ -126,12 +136,12 @@ export type ErrorInfo = {
     msg: string
 }
 
-class DelvenErrorListener extends ErrorListener {
+// class DelvenErrorListener extends ErrorListener {
+class DelvenErrorListener  {
     errors: ErrorInfo[] = []
     code: string
 
     constructor(code: string) {
-        super()
         this.code = code
     }
 

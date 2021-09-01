@@ -1,15 +1,15 @@
-// Generated from ECMAScriptLexer.g4 by ANTLR 4.9.2
+// Generated from ECMAScriptLexer.g4 by ANTLR 4.8
 // jshint ignore: start
-import antlr4 from 'antlr4';
+var antlr4 = require('antlr4');
 
 
-import ECMAScriptLexerBase from './ECMAScriptLexerBase.js';
+var ECMAScriptLexerBase = require('./ECMAScriptLexerBase').ECMAScriptLexerBase;
 
 
-const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
-    "\u5964\u0002\u008a\u04ec\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003",
-    "\u0004\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007",
-    "\t\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
+var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
+    "\u0002\u008a\u04ec\b\u0001\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004",
+    "\u0004\t\u0004\u0004\u0005\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t",
+    "\u0007\u0004\b\t\b\u0004\t\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004",
     "\f\t\f\u0004\r\t\r\u0004\u000e\t\u000e\u0004\u000f\t\u000f\u0004\u0010",
     "\t\u0010\u0004\u0011\t\u0011\u0004\u0012\t\u0012\u0004\u0013\t\u0013",
     "\u0004\u0014\t\u0014\u0004\u0015\t\u0015\u0004\u0016\t\u0016\u0004\u0017",
@@ -882,123 +882,24 @@ const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
     "\n\u0002\u0003\u000b\u0003\u0003\u0082\u0004\u0002\u0004\u0002"].join("");
 
 
-const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
+var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
-const decisionsToDFA = atn.decisionToState.map( (ds, index) => new antlr4.dfa.DFA(ds, index) );
+var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
 
-export default class ECMAScriptLexer extends ECMAScriptLexerBase {
-
-    static grammarFileName = "ECMAScriptLexer.g4";
-    static channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN", "ERROR" ];
-	static modeNames = [ "DEFAULT_MODE" ];
-	static literalNames = [ null, null, null, null, null, "'['", "']'", "'('", 
-                         "')'", "'{'", "'}'", "';'", "','", "'='", "'?'", 
-                         "':'", "'...'", "'.'", "'++'", "'--'", "'+'", "'-'", 
-                         "'~'", "'!'", "'*'", "'/'", "'%'", "'**'", "'??'", 
-                         "'#'", "'>>'", "'<<'", "'>>>'", "'<'", "'>'", "'<='", 
-                         "'>='", "'=='", "'!='", "'==='", "'!=='", "'&'", 
-                         "'^'", "'|'", "'&&'", "'||'", "'*='", "'/='", "'%='", 
-                         "'+='", "'-='", "'<<='", "'>>='", "'>>>='", "'&='", 
-                         "'^='", "'|='", "'**='", "'=>'", "'null'", null, 
-                         null, null, null, null, null, null, null, null, 
-                         null, "'break'", "'do'", "'instanceof'", "'typeof'", 
-                         "'case'", "'else'", "'new'", "'var'", "'catch'", 
-                         "'finally'", "'return'", "'void'", "'continue'", 
-                         "'for'", "'switch'", "'while'", "'debugger'", "'function'", 
-                         "'this'", "'with'", "'default'", "'if'", "'throw'", 
-                         "'delete'", "'in'", "'try'", "'as'", "'from'", 
-                         null, "'class'", "'enum'", "'extends'", "'super'", 
-                         "'const'", "'export'", "'import'", "'async'", "'await'", 
-                         null, "'select'", "'union'", "'where'", "'join'", 
-                         "'on'", "'produce'", "'using'", "'all'", "'within'", 
-                         "'implements'", null, null, "'private'", "'public'", 
-                         "'interface'", "'package'", "'protected'", "'static'", 
-                         "'yield'", null, null, null, null, null, "'\n'" ];
-	static symbolicNames = [ null, "HashBangLine", "MultiLineComment", "SingleLineComment", 
-                          "RegularExpressionLiteral", "OpenBracket", "CloseBracket", 
-                          "OpenParen", "CloseParen", "OpenBrace", "CloseBrace", 
-                          "SemiColon", "Comma", "Assign", "QuestionMark", 
-                          "Colon", "Ellipsis", "Dot", "PlusPlus", "MinusMinus", 
-                          "Plus", "Minus", "BitNot", "Not", "Multiply", 
-                          "Divide", "Modulus", "Power", "NullCoalesce", 
-                          "Hashtag", "RightShiftArithmetic", "LeftShiftArithmetic", 
-                          "RightShiftLogical", "LessThan", "MoreThan", "LessThanEquals", 
-                          "GreaterThanEquals", "Equals_", "NotEquals", "IdentityEquals", 
-                          "IdentityNotEquals", "BitAnd", "BitXOr", "BitOr", 
-                          "And", "Or", "MultiplyAssign", "DivideAssign", 
-                          "ModulusAssign", "PlusAssign", "MinusAssign", 
-                          "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
-                          "RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", 
-                          "BitOrAssign", "PowerAssign", "ARROW", "NullLiteral", 
-                          "BooleanLiteral", "DecimalLiteral", "HexIntegerLiteral", 
-                          "OctalIntegerLiteral", "OctalIntegerLiteral2", 
-                          "BinaryIntegerLiteral", "BigHexIntegerLiteral", 
-                          "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
-                          "BigDecimalIntegerLiteral", "Break", "Do", "Instanceof", 
-                          "Typeof", "Case", "Else", "New", "Var", "Catch", 
-                          "Finally", "Return", "Void", "Continue", "For", 
-                          "Switch", "While", "Debugger", "Function", "This", 
-                          "With", "Default", "If", "Throw", "Delete", "In", 
-                          "Try", "As", "From", "Let", "Class", "Enum", "Extends", 
-                          "Super", "Const", "Export", "Import", "Async", 
-                          "Await", "Url", "Select", "Union", "Where", "Join", 
-                          "On", "Produce", "Using", "All", "Within", "Implements", 
-                          "StrictLet", "NonStrictLet", "Private", "Public", 
-                          "Interface", "Package", "Protected", "Static", 
-                          "Yield", "Identifier", "StringLiteral", "TemplateStringLiteral", 
-                          "WhiteSpaces", "LineTerminator", "NEWLINE", "HtmlComment", 
-                          "CDataComment", "UnexpectedCharacter" ];
-	static ruleNames = [ "HashBangLine", "MultiLineComment", "SingleLineComment", 
-                      "RegularExpressionLiteral", "OpenBracket", "CloseBracket", 
-                      "OpenParen", "CloseParen", "OpenBrace", "CloseBrace", 
-                      "SemiColon", "Comma", "Assign", "QuestionMark", "Colon", 
-                      "Ellipsis", "Dot", "PlusPlus", "MinusMinus", "Plus", 
-                      "Minus", "BitNot", "Not", "Multiply", "Divide", "Modulus", 
-                      "Power", "NullCoalesce", "Hashtag", "RightShiftArithmetic", 
-                      "LeftShiftArithmetic", "RightShiftLogical", "LessThan", 
-                      "MoreThan", "LessThanEquals", "GreaterThanEquals", 
-                      "Equals_", "NotEquals", "IdentityEquals", "IdentityNotEquals", 
-                      "BitAnd", "BitXOr", "BitOr", "And", "Or", "MultiplyAssign", 
-                      "DivideAssign", "ModulusAssign", "PlusAssign", "MinusAssign", 
-                      "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
-                      "RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", 
-                      "BitOrAssign", "PowerAssign", "ARROW", "NullLiteral", 
-                      "BooleanLiteral", "DecimalLiteral", "HexIntegerLiteral", 
-                      "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
-                      "BigHexIntegerLiteral", "BigOctalIntegerLiteral", 
-                      "BigBinaryIntegerLiteral", "BigDecimalIntegerLiteral", 
-                      "Break", "Do", "Instanceof", "Typeof", "Case", "Else", 
-                      "New", "Var", "Catch", "Finally", "Return", "Void", 
-                      "Continue", "For", "Switch", "While", "Debugger", 
-                      "Function", "This", "With", "Default", "If", "Throw", 
-                      "Delete", "In", "Try", "As", "From", "Let", "Class", 
-                      "Enum", "Extends", "Super", "Const", "Export", "Import", 
-                      "Async", "Await", "Url", "Select", "Union", "Where", 
-                      "Join", "On", "Produce", "Using", "All", "Within", 
-                      "Implements", "StrictLet", "NonStrictLet", "Private", 
-                      "Public", "Interface", "Package", "Protected", "Static", 
-                      "Yield", "Identifier", "StringLiteral", "TemplateStringLiteral", 
-                      "WhiteSpaces", "LineTerminator", "NEWLINE", "HtmlComment", 
-                      "CDataComment", "UnexpectedCharacter", "DoubleStringCharacter", 
-                      "SingleStringCharacter", "EscapeSequence", "CharacterEscapeSequence", 
-                      "HexEscapeSequence", "UnicodeEscapeSequence", "ExtendedUnicodeEscapeSequence", 
-                      "SingleEscapeCharacter", "NonEscapeCharacter", "EscapeCharacter", 
-                      "LineContinuation", "HexDigit", "DecimalIntegerLiteral", 
-                      "ExponentPart", "IdentifierPart", "IdentifierStart", 
-                      "UnicodeLetter", "UnicodeCombiningMark", "UnicodeDigit", 
-                      "UnicodeConnectorPunctuation", "RegularExpressionFirstChar", 
-                      "RegularExpressionChar", "RegularExpressionClassChar", 
-                      "RegularExpressionBackslashSequence" ];
-
-    constructor(input) {
-        super(input)
-        this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
-    }
-
-    get atn() {
-        return atn;
-    }
+function ECMAScriptLexer(input) {
+	ECMAScriptLexerBase.call(this, input);
+    this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
+    return this;
 }
+
+ECMAScriptLexer.prototype = Object.create(ECMAScriptLexerBase.prototype);
+ECMAScriptLexer.prototype.constructor = ECMAScriptLexer;
+
+Object.defineProperty(ECMAScriptLexer.prototype, "atn", {
+        get : function() {
+                return atn;
+        }
+});
 
 ECMAScriptLexer.EOF = antlr4.Token.EOF;
 ECMAScriptLexer.HashBangLine = 1;
@@ -1139,6 +1040,160 @@ ECMAScriptLexer.CDataComment = 135;
 ECMAScriptLexer.UnexpectedCharacter = 136;
 
 ECMAScriptLexer.ERROR = 2;
+
+ECMAScriptLexer.prototype.channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN", 
+                                                                              "ERROR" ];
+
+ECMAScriptLexer.prototype.modeNames = [ "DEFAULT_MODE" ];
+
+ECMAScriptLexer.prototype.literalNames = [ null, null, null, null, null, 
+                                           "'['", "']'", "'('", "')'", "'{'", 
+                                           "'}'", "';'", "','", "'='", "'?'", 
+                                           "':'", "'...'", "'.'", "'++'", 
+                                           "'--'", "'+'", "'-'", "'~'", 
+                                           "'!'", "'*'", "'/'", "'%'", "'**'", 
+                                           "'??'", "'#'", "'>>'", "'<<'", 
+                                           "'>>>'", "'<'", "'>'", "'<='", 
+                                           "'>='", "'=='", "'!='", "'==='", 
+                                           "'!=='", "'&'", "'^'", "'|'", 
+                                           "'&&'", "'||'", "'*='", "'/='", 
+                                           "'%='", "'+='", "'-='", "'<<='", 
+                                           "'>>='", "'>>>='", "'&='", "'^='", 
+                                           "'|='", "'**='", "'=>'", "'null'", 
+                                           null, null, null, null, null, 
+                                           null, null, null, null, null, 
+                                           "'break'", "'do'", "'instanceof'", 
+                                           "'typeof'", "'case'", "'else'", 
+                                           "'new'", "'var'", "'catch'", 
+                                           "'finally'", "'return'", "'void'", 
+                                           "'continue'", "'for'", "'switch'", 
+                                           "'while'", "'debugger'", "'function'", 
+                                           "'this'", "'with'", "'default'", 
+                                           "'if'", "'throw'", "'delete'", 
+                                           "'in'", "'try'", "'as'", "'from'", 
+                                           null, "'class'", "'enum'", "'extends'", 
+                                           "'super'", "'const'", "'export'", 
+                                           "'import'", "'async'", "'await'", 
+                                           null, "'select'", "'union'", 
+                                           "'where'", "'join'", "'on'", 
+                                           "'produce'", "'using'", "'all'", 
+                                           "'within'", "'implements'", null, 
+                                           null, "'private'", "'public'", 
+                                           "'interface'", "'package'", "'protected'", 
+                                           "'static'", "'yield'", null, 
+                                           null, null, null, null, "'\n'" ];
+
+ECMAScriptLexer.prototype.symbolicNames = [ null, "HashBangLine", "MultiLineComment", 
+                                            "SingleLineComment", "RegularExpressionLiteral", 
+                                            "OpenBracket", "CloseBracket", 
+                                            "OpenParen", "CloseParen", "OpenBrace", 
+                                            "CloseBrace", "SemiColon", "Comma", 
+                                            "Assign", "QuestionMark", "Colon", 
+                                            "Ellipsis", "Dot", "PlusPlus", 
+                                            "MinusMinus", "Plus", "Minus", 
+                                            "BitNot", "Not", "Multiply", 
+                                            "Divide", "Modulus", "Power", 
+                                            "NullCoalesce", "Hashtag", "RightShiftArithmetic", 
+                                            "LeftShiftArithmetic", "RightShiftLogical", 
+                                            "LessThan", "MoreThan", "LessThanEquals", 
+                                            "GreaterThanEquals", "Equals_", 
+                                            "NotEquals", "IdentityEquals", 
+                                            "IdentityNotEquals", "BitAnd", 
+                                            "BitXOr", "BitOr", "And", "Or", 
+                                            "MultiplyAssign", "DivideAssign", 
+                                            "ModulusAssign", "PlusAssign", 
+                                            "MinusAssign", "LeftShiftArithmeticAssign", 
+                                            "RightShiftArithmeticAssign", 
+                                            "RightShiftLogicalAssign", "BitAndAssign", 
+                                            "BitXorAssign", "BitOrAssign", 
+                                            "PowerAssign", "ARROW", "NullLiteral", 
+                                            "BooleanLiteral", "DecimalLiteral", 
+                                            "HexIntegerLiteral", "OctalIntegerLiteral", 
+                                            "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
+                                            "BigHexIntegerLiteral", "BigOctalIntegerLiteral", 
+                                            "BigBinaryIntegerLiteral", "BigDecimalIntegerLiteral", 
+                                            "Break", "Do", "Instanceof", 
+                                            "Typeof", "Case", "Else", "New", 
+                                            "Var", "Catch", "Finally", "Return", 
+                                            "Void", "Continue", "For", "Switch", 
+                                            "While", "Debugger", "Function", 
+                                            "This", "With", "Default", "If", 
+                                            "Throw", "Delete", "In", "Try", 
+                                            "As", "From", "Let", "Class", 
+                                            "Enum", "Extends", "Super", 
+                                            "Const", "Export", "Import", 
+                                            "Async", "Await", "Url", "Select", 
+                                            "Union", "Where", "Join", "On", 
+                                            "Produce", "Using", "All", "Within", 
+                                            "Implements", "StrictLet", "NonStrictLet", 
+                                            "Private", "Public", "Interface", 
+                                            "Package", "Protected", "Static", 
+                                            "Yield", "Identifier", "StringLiteral", 
+                                            "TemplateStringLiteral", "WhiteSpaces", 
+                                            "LineTerminator", "NEWLINE", 
+                                            "HtmlComment", "CDataComment", 
+                                            "UnexpectedCharacter" ];
+
+ECMAScriptLexer.prototype.ruleNames = [ "HashBangLine", "MultiLineComment", 
+                                        "SingleLineComment", "RegularExpressionLiteral", 
+                                        "OpenBracket", "CloseBracket", "OpenParen", 
+                                        "CloseParen", "OpenBrace", "CloseBrace", 
+                                        "SemiColon", "Comma", "Assign", 
+                                        "QuestionMark", "Colon", "Ellipsis", 
+                                        "Dot", "PlusPlus", "MinusMinus", 
+                                        "Plus", "Minus", "BitNot", "Not", 
+                                        "Multiply", "Divide", "Modulus", 
+                                        "Power", "NullCoalesce", "Hashtag", 
+                                        "RightShiftArithmetic", "LeftShiftArithmetic", 
+                                        "RightShiftLogical", "LessThan", 
+                                        "MoreThan", "LessThanEquals", "GreaterThanEquals", 
+                                        "Equals_", "NotEquals", "IdentityEquals", 
+                                        "IdentityNotEquals", "BitAnd", "BitXOr", 
+                                        "BitOr", "And", "Or", "MultiplyAssign", 
+                                        "DivideAssign", "ModulusAssign", 
+                                        "PlusAssign", "MinusAssign", "LeftShiftArithmeticAssign", 
+                                        "RightShiftArithmeticAssign", "RightShiftLogicalAssign", 
+                                        "BitAndAssign", "BitXorAssign", 
+                                        "BitOrAssign", "PowerAssign", "ARROW", 
+                                        "NullLiteral", "BooleanLiteral", 
+                                        "DecimalLiteral", "HexIntegerLiteral", 
+                                        "OctalIntegerLiteral", "OctalIntegerLiteral2", 
+                                        "BinaryIntegerLiteral", "BigHexIntegerLiteral", 
+                                        "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
+                                        "BigDecimalIntegerLiteral", "Break", 
+                                        "Do", "Instanceof", "Typeof", "Case", 
+                                        "Else", "New", "Var", "Catch", "Finally", 
+                                        "Return", "Void", "Continue", "For", 
+                                        "Switch", "While", "Debugger", "Function", 
+                                        "This", "With", "Default", "If", 
+                                        "Throw", "Delete", "In", "Try", 
+                                        "As", "From", "Let", "Class", "Enum", 
+                                        "Extends", "Super", "Const", "Export", 
+                                        "Import", "Async", "Await", "Url", 
+                                        "Select", "Union", "Where", "Join", 
+                                        "On", "Produce", "Using", "All", 
+                                        "Within", "Implements", "StrictLet", 
+                                        "NonStrictLet", "Private", "Public", 
+                                        "Interface", "Package", "Protected", 
+                                        "Static", "Yield", "Identifier", 
+                                        "StringLiteral", "TemplateStringLiteral", 
+                                        "WhiteSpaces", "LineTerminator", 
+                                        "NEWLINE", "HtmlComment", "CDataComment", 
+                                        "UnexpectedCharacter", "DoubleStringCharacter", 
+                                        "SingleStringCharacter", "EscapeSequence", 
+                                        "CharacterEscapeSequence", "HexEscapeSequence", 
+                                        "UnicodeEscapeSequence", "ExtendedUnicodeEscapeSequence", 
+                                        "SingleEscapeCharacter", "NonEscapeCharacter", 
+                                        "EscapeCharacter", "LineContinuation", 
+                                        "HexDigit", "DecimalIntegerLiteral", 
+                                        "ExponentPart", "IdentifierPart", 
+                                        "IdentifierStart", "UnicodeLetter", 
+                                        "UnicodeCombiningMark", "UnicodeDigit", 
+                                        "UnicodeConnectorPunctuation", "RegularExpressionFirstChar", 
+                                        "RegularExpressionChar", "RegularExpressionClassChar", 
+                                        "RegularExpressionBackslashSequence" ];
+
+ECMAScriptLexer.prototype.grammarFileName = "ECMAScriptLexer.g4";
 
 ECMAScriptLexer.prototype.action = function(localctx, ruleIndex, actionIndex) {
 	switch (ruleIndex) {
@@ -1316,4 +1371,5 @@ ECMAScriptLexer.prototype.Protected_sempred = function(localctx, predIndex) {
 
 
 
+exports.ECMAScriptLexer = ECMAScriptLexer;
 

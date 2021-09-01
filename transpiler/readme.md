@@ -44,6 +44,22 @@ node --no-warnings  ./dist/index
 ```
 
 
+## Setup bash
+
+```sh
+# JAVA_HOME
+
+export JAVA_HOME=/opt/java/jdk-11
+export PATH=$PATH:$JAVA_HOME
+
+# ANTLR 4
+export ANTLR_HOME="$HOME/tools/antlr"
+export ANTLR_JAR="$ANTLR_HOME/antlr-4.9.2-complete.jar"
+export CLASSPATH=".:$ANTLR_JAR:$CLASSPATH"
+
+alias antlr4="java -jar $ANTLR_JAR"
+alias grun="java org.antlr.v4.gui.TestRig"
+```
 ## Reference
 
 ANTLR linux setup
