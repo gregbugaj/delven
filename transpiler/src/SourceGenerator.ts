@@ -949,6 +949,10 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
             this.write(";", false)
         }
 
+        if(sequence.expressions.length > 1){
+            this.write("(", false)
+        }
+
         for (let i = 0; i < sequence.expressions.length; ++i) {
             const parens = hasParenthesis(sequence.expressions[i])
 
@@ -960,6 +964,11 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                 this.write(", ", false)
             }
         }
+
+        if(sequence.expressions.length > 1){
+            this.write(")", false)
+        }
+
     }
 
     visitTemplateLiteral(template: Node.TemplateLiteral): void {

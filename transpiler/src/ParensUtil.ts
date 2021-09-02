@@ -1,7 +1,7 @@
 import {Syntax} from "./syntax"
 
 // Parenthesis logic based on 'prettier' project
-const debug = false
+const debug = true
 
 function isStatementOrDeclaration(node: any): boolean {
     if (node === null || node.type === null) return false
@@ -43,6 +43,7 @@ function isStatementOrDeclaration(node: any): boolean {
  * Check if the node needs wrapping parenthesis
  *
  * @param node the node the check
+ * @param name
  */
 function hasParenthesis(node: any, name?: string | null): boolean {
     const type = node.type

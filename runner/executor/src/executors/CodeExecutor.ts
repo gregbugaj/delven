@@ -1,5 +1,5 @@
 import { IExecutor, CompilationUnit, EvaluationResult, NotifierEvent } from './executor';
-import { ASTParser, SourceGenerator } from "delven-transpiler";
+import { ASTParser, transpilertor } from "delven-transpiler";
 import LogStream from './LogStream';
 const stream = require('stream')
 const { VM, NodeVM, VMScript } = require('vm2');
@@ -144,7 +144,7 @@ export default class CodeExecutor implements IExecutor {
       console.info(unit)
       const code = unit.code
       const start = Date.now()
-      const generator = new SourceGenerator();
+      const generator = new transpilertor();
       console.info('Compiling script')
       console.info('---------------')
       console.log(code);

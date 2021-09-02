@@ -184,7 +184,12 @@ async function main() {
     // if(x==y) return 3
     // }
     `
-  code = `new f(x);`
+  code = `
+    new f(x);
+  `
+   code = `
+    new foo[bar]
+  `
     // code = `
     //  this.nums.forEach((v) => {
     //     if (v % 5 === 0)
@@ -194,7 +199,7 @@ async function main() {
 
   const parser_label = chalk.green("parser")
   console.time(parser_label)
-  const ast = ASTParser.parse({ type: "code", value: code })
+  let ast = ASTParser.parse({ type: "code", value: code })
   console.info("Serialized")
   console.info(Utils.toJson(ast))
   console.timeEnd(parser_label)
@@ -203,7 +208,10 @@ async function main() {
   console.time(generator_label)
   const generator = new SourceGeneratorWithBuilder()
   const script = generator.toSource(ast)
-  console.info("-------")
+
+    ast = ASTParser.parse({ type: "code", value: script })
+
+    console.info("-------")
   console.info(script)
 
   console.info("----SOURCE----")
