@@ -1,5 +1,6 @@
 build
 dist
+gen
 runner/executor/assets/
 # Logs
 logs

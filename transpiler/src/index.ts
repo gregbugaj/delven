@@ -184,10 +184,17 @@ async function main() {
     // if(x==y) return 3
     // }
     `
-
   code = `
-       let x = select x from source()
+    {  x
+       --y 
+    }
     `
+    // code = `
+    //  this.nums.forEach((v) => {
+    //     if (v % 5 === 0)
+    //         this.fives.push(v)
+    //  })
+    // `
 
   const parser_label = chalk.green("parser")
   console.time(parser_label)

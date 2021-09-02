@@ -228,7 +228,7 @@ debuggerStatement
 
 functionDeclaration
     : Async? Function '*'? identifier '(' formalParameterList? ')' '{' functionBody '}'
-    ;   
+    ;
 
 classDeclaration
     : Class identifier classTail
@@ -271,7 +271,7 @@ lastFormalParameterArg                        // ECMAScript 6: Rest Parameter
 functionBody
  : sourceElements?
  ;
-    
+
 sourceElements
     : sourceElement+
     ;
@@ -308,11 +308,10 @@ arguments
     : '('(argument (',' argument)* ','?)?')'
     ;
 
-
 argument
     : Ellipsis? (singleExpression | identifier)
     ;
-    
+
 expressionSequence
  : singleExpression ( ',' singleExpression )*
  ;
@@ -391,7 +390,7 @@ arrowFunctionParameters
     ;
 
 arrowFunctionBody
-    : '{' functionBody '}' 
+    : '{' functionBody '}'
     | singleExpression
     ;
 
@@ -402,16 +401,16 @@ arrowFunctionBody
 ;*/
 
 assignmentOperator
- : '*=' 
- | '/=' 
- | '%=' 
- | '+=' 
- | '-=' 
- | '<<=' 
- | '>>=' 
- | '>>>=' 
- | '&=' 
- | '^=' 
+ : '*='
+ | '/='
+ | '%='
+ | '+='
+ | '-='
+ | '<<='
+ | '>>='
+ | '>>>='
+ | '&='
+ | '^='
  | '|='
  | '**='
  ;

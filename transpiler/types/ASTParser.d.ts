@@ -106,10 +106,10 @@ declare class DelvenASTVisitor extends DelvenVisitor {
     private throwTypeError;
     /**
      * Throw TypeError only when there is a type provided.
-     * This is usefull when there node ita TerminalNode
+     * This is useful when the node is a TerminalNode
      * @param type
      */
-    private throwInsanceError;
+    private throwInstanceError;
     private assertType;
     /**
      * Visit a parse tree produced by ECMAScriptParser#program.

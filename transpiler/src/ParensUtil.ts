@@ -1,7 +1,7 @@
 import {Syntax} from "./syntax"
 
-// Parentisis logic based on 'prettier' project
-const debug = true
+// Parenthesis logic based on 'prettier' project
+const debug = false
 
 function isStatementOrDeclaration(node: any): boolean {
     if (node === null || node.type === null) return false

@@ -13,6 +13,7 @@ import ECMAScriptLexer from "./parser/ECMAScriptLexer"
 
 const DelvenParser = ECMAScriptParser
 const DelvenLexer = ECMAScriptLexer
+const RuleContext = antlr4.RuleContext
 
 // RuleContext >>  antlr4.RuleContext
 
