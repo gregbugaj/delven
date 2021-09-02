@@ -184,11 +184,7 @@ async function main() {
     // if(x==y) return 3
     // }
     `
-  code = `
-    {  x
-       --y 
-    }
-    `
+  code = `new f(x);`
     // code = `
     //  this.nums.forEach((v) => {
     //     if (v % 5 === 0)

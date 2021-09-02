@@ -7,6 +7,7 @@ import * as path from "path"
 import Utils from "../util"
 // import { diffString, diff } from 'json-diff'
 import * as jsondiffpatch from "jsondiffpatch"
+import SourceGeneratorWithBuilder from "../SourceGenerator";
 
 export type TestType = "tree" | "tokens" | "path" | "failure" | "raw"
 export type TestCase = {
@@ -67,6 +68,7 @@ function discover(expectType: TestType): TestCase[] {
     }
 
     // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
+    return cases.filter(c => c.name === 'es2017.trailing-commas[trailing-comma-new]')
     // return cases.filter(c => c.name.indexOf('class-001') > -1)
     // return [cases[0]]
     return cases
@@ -167,7 +169,7 @@ if (false)
 
 describe("Source-to-Source Test", () => {
     beforeAll(() => {
-        ASTParser.trace(false)
+        ASTParser.trace(true)
     })
 
     const cases: TestCase[] = discover("raw")
@@ -175,6 +177,8 @@ describe("Source-to-Source Test", () => {
 
     it.each(mapped)(`%# Source : %s`, (label, _case) => {
         const deck = _case as TestCase
+        deck.code = `new f(x);`
+        console.info(deck.code)
         const ast = ASTParser.parse({type: "code", value: deck.code})
 
         if (hasError(ast)) {
@@ -187,14 +191,17 @@ describe("Source-to-Source Test", () => {
             throw new Error(emsg)
         }
 
-        const generator = new SourceGenerator()
-        const script = generator.toSource(ast)
+        fs.writeFile('./snippet-a.txt', deck.code, { flag: 'a+' }, err => {})
+
+        const generator = new SourceGeneratorWithBuilder()
+        let script = generator.toSource(ast)
 
         console.info("script")
         console.info(deck.code)
         console.info(script)
 
-        const ast2 = ASTParser.parse({type: "code", value: script})
+        fs.writeFile('./snippet-b.txt', script, { flag: 'a+' }, err => {})
+        const ast2 = ASTParser.parse({type: "code", value:  script})
 
         if (hasError(ast2)) {
             const detail = ast2.toString()

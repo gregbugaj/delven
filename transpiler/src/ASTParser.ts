@@ -265,7 +265,7 @@ export default abstract class ASTParser {
                 parser = new ASTParserDefault()
                 break
             default:
-                throw new Error("Unkown parser type")
+                throw new Error("Unknown parser type")
         }
         return parser.generate(source)
     }
