@@ -2,7 +2,6 @@
 // jshint ignore: start
 import antlr4 from 'antlr4';
 
-
 import ECMAScriptLexerBase from './ECMAScriptLexerBase.js';
 
 

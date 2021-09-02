@@ -2,7 +2,6 @@
 // jshint ignore: start
 import antlr4 from 'antlr4';
 import ECMAScriptParserVisitor from './ECMAScriptParserVisitor.js';
-
 import ECMAScriptParserBase from './ECMAScriptParserBase.js';
 
 

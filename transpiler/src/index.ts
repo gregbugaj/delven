@@ -245,9 +245,9 @@ async function enumerable() {
 
 ; (async () => {
   // await query()
-  // await main()
+  await main()
 
-  await enumerable()
+  // await enumerable()
   console.info("Transpiler")
 })().catch(err => {
   console.error("error in main", err)

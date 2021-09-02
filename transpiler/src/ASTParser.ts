@@ -1,12 +1,20 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as antlr4 from "antlr4"
-import {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
-import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
-import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
-import {RuleContext} from "antlr4/RuleContext"
 
-console.trace(DelvenVisitor)
+// import ECMAScriptParserVisitor, {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
+// import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
+// import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
+// import {RuleContext} from "antlr4/RuleContext"
+
+import ECMAScriptParserVisitor from "./parser/ECMAScriptParserVisitor"
+import ECMAScriptParser from "./parser/ECMAScriptParser"
+import ECMAScriptLexer from "./parser/ECMAScriptLexer"
+
+const DelvenParser = ECMAScriptParser
+const DelvenLexer = ECMAScriptLexer
+
+// RuleContext >>  antlr4.RuleContext
 
 import {
     ExpressionStatement,
@@ -66,10 +74,6 @@ import {Interval, Recognizer, Token} from "antlr4"
 import Trace, {CallSite} from "./trace"
 import * as fs from "fs"
 import ASTNode from "./ASTNode"
-
-// import {ErrorListener, ConsoleErrorListener} from "antlr4/error/ErrorListener"
-// import {PredictionMode} from 'antlr4/atn/PredictionMode';
-// import {ConsoleErrorListener} from 'antlr4/error/ErrorListener'
 
 /**
  * Version that we generate the AST for.
@@ -132,12 +136,12 @@ export type ErrorInfo = {
     msg: string
 }
 
-// class DelvenErrorListener extends ErrorListener {
-class DelvenErrorListener  {
+class DelvenErrorListener extends antlr4.error.ErrorListener {
     errors: ErrorInfo[] = []
     code: string
 
     constructor(code: string) {
+        super()
         this.code = code
     }
 
@@ -278,7 +282,7 @@ class ASTParserDefault extends ASTParser {
 /**
  * Default AST visitor implementation
  */
-class DelvenASTVisitor extends DelvenVisitor {
+class DelvenASTVisitor extends ECMAScriptParserVisitor {
     private ruleTypeMap: Map<number, string> = new Map()
 
     constructor() {
@@ -315,9 +319,9 @@ class DelvenASTVisitor extends DelvenVisitor {
             }
         }
 
-        // diry hack for walking antler depency chain
-        // find longest dependency chaing;
-        // this traversal is specific to ANTL parser
+        // dirty hack for walking antler dependency chain
+        // find longest dependency chaining;
+        // this traversal is specific to ANTLR parser
         // We want to be able to find dependencies such as;
         /*
             -------- ------------

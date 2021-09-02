@@ -160,7 +160,7 @@ function hasParenthesis(node: any, name?: string | null): boolean {
             }
         }
 
-        // This is never hit as the code renders parens directry
+        // This is never hit as the code renders parens directly
         case Syntax.FunctionExpression: {
             return true
         }
