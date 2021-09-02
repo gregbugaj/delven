@@ -1,6 +1,5 @@
 import ASTParser, {ErrorNode} from "../ASTParser"
 import ASTNode from "../ASTNode"
-import SourceGenerator from "../SourceGenerator"
 import glob from "glob"
 import * as fs from "fs"
 import * as path from "path"
