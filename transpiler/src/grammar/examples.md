@@ -1,6 +1,7 @@
 # Source examples
 
 ## Basic syntax
+
 ```sql
 
 select x, z from provider.data()
@@ -16,96 +17,102 @@ select x, z from ['http://googl.com', 'http://www.src2.com']
 ```
 
 ## Variable access
+
 Unnamed selectors are assigned an 'pseudocolumn' in the format of `@@column[INDEX]`
 
 ## Multiple-row query
 
-```sql
+```javascript
 let iterator = select css('#test'), css('#test') from sourceA()
 for(x of iterator){
     console.info(x)
 }
 ```
 
-```sql
+```javascript
 for(x of select css('#test'), css('#test') from sourceA()){
     console.info(x)
 }
 ```
 
 ## Destructuring assignment
+
 Single-row query
-```sql
+
+```javascript
 let [x, y] = select css('#test'), css('#test') from sourceA()
 ```
 
 ## Object literal assigement
+
 ```javascript
-let x = { 
+let x = {
     dataA: select css('#sel1') from Source(),
-    dataB: using context() select css('#sel1') from Source() 
+    dataB: using context() select css('#sel1') from Source()
   }
 
 ```
 
 ## Produce Example
 
-```sql
-select css('#sel1'), css('#sel2') 
+```javascript
+select css('#sel1'), css('#sel2')
 from SourceA
 produce {x , z}
 ```
 
 ## Using keyword : Reducers
+
 https://docs.microsoft.com/en-us/u-sql/statements-and-expressions/process-expression
 https://docs.microsoft.com/en-us/u-sql/statements-and-expressions/reduce-expression
 
-```sql
-select css('#sel1'), css('#sel2') 
+```javascript
+select css('#sel1'), css('#sel2')
 from SourceA using {'reducer': reducerFunction}
 ```
 
-```sql
-select css('#sel1'), css('#sel2') 
+```javascript
+select css('#sel1'), css('#sel2')
 from SourceA using {'reducer': (row)=>{}}
 ```
 
-```sql
-select css('#sel1'), css('#sel2') 
+```javascript
+select css('#sel1'), css('#sel2')
 from SourceA using {'reducer': function(row){}}
 ```
 
-```sql
-select css('#sel1'), css('#sel2') 
+```javascript
+select css('#sel1'), css('#sel2')
 from SourceA using new Reducer()
 ```
 
-```sql
-````select css('#sel1'), css('#sel2') 
-from SourceA using (new Reducer({arg1:"A"}, {arg2:"B"}), new Processor())````
+```javascript
+select css('#sel1'), css('#sel2')
+from SourceA using (new Reducer({arg1:"A"}, {arg2:"B"}), new Processor())
 ```
 
-## 
+## Join
 
-```sql
-select css('#sel1'), css('#sel2') 
-from SourceA join SourceB 
+```javascript
+select css('#sel1'), css('#sel2')
+from SourceA join SourceB
 ```
 
 ## Context
 
 Statement scoped context
-```sql
+
+```javascript
 using new MockContext()
 select css('#test'), css('#test') from source() where (x == 1 || true)
 ```
 
 Block scoped context
 
-```sql
+```javascript
 using context() {
     select css('#test'), css('#test') from sourceA()
-    union 
+    union
     select css('#test'), css('#test') from sourceB()
 }
 ```
@@ -114,21 +121,21 @@ using context() {
 
 WITHIN clause is used to narrow results down
 
-```sql
-select css('#sel1'), css('#sel2') 
-within css('#container-a'), nativeContainer()  
+```javascript
+select css('#sel1'), css('#sel2')
+within css('#container-a'), nativeContainer()
 from SourceA
 ```
 
 ## Datasources
 
-```js
- select me from  source() 
- 
- //([{"smith", 10, "2025-01-01"}, {"smith", 10, "2025-01-01"}]) 
+```javascript
+ select me from  source()
+
+ //([{"smith", 10, "2025-01-01"}, {"smith", 10, "2025-01-01"}])
 ```
 
-## Returning from a function 
+## Returning from a function
 
 ```javascript
 function xy() {
@@ -150,16 +157,17 @@ function xy() {
 
 ```javascript
 function xy() {
-  return 
+  return
   (
      select css('#sel1') from Source()
      union
-     select css('#sel1') from Source()      
+     select css('#sel1') from Source()
   )
 }
 ```
 
 ### Arrow Function
+
 ```javascript
 let y = ()=>select css('#sel1') from Source()
 ```
@@ -167,11 +175,12 @@ let y = ()=>select css('#sel1') from Source()
 
 ## Subquery
 
-```sql
+```javascript
 select css('#a') , z from (select css('#a') from zz) where (x==1)
 ```
 
 ## Composite
-```sql
+
+```javascript
 select css('#s', '#m') as s, css('#z') as z from http://google.com where 1==1 || 2==2 && css('#s') == true
 ```

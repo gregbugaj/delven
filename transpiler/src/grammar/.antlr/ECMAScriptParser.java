@@ -1,4 +1,4 @@
-// Generated from /home/greg/dev/delven.io/delven-transpiler/src/grammar/ECMAScriptParser.g4 by ANTLR 4.7.1
+// Generated from /home/gbugaj/devio/delv/delven/transpiler/src/grammar/ECMAScriptParser.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class ECMAScriptParser extends ECMAScriptParserBase {
-	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -72,74 +72,85 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		RULE_data_source_item_joined = 84, RULE_data_source_item = 85, RULE_join_clause = 86, 
 		RULE_using_source_clause = 87, RULE_produce_clause = 88, RULE_bind_clause = 89, 
 		RULE_withinClause = 90, RULE_queryObjectLiteral = 91, RULE_queryPropertyAssignment = 92;
-	public static final String[] ruleNames = {
-		"program", "sourceElement", "statement", "block", "statementList", "importStatement", 
-		"importFromBlock", "moduleItems", "importDefault", "importNamespace", 
-		"importFrom", "aliasName", "exportStatement", "exportFromBlock", "declaration", 
-		"variableStatement", "variableDeclarationList", "variableDeclaration", 
-		"emptyStatement", "expressionStatement", "ifStatement", "iterationStatement", 
-		"varModifier", "continueStatement", "breakStatement", "returnStatement", 
-		"withStatement", "switchStatement", "caseBlock", "caseClauses", "caseClause", 
-		"defaultClause", "labelledStatement", "throwStatement", "tryStatement", 
-		"catchProduction", "finallyProduction", "debuggerStatement", "functionDeclaration", 
-		"classDeclaration", "classTail", "classHeritage", "classElement", "methodDefinition", 
-		"formalParameterList", "formalParameterArg", "lastFormalParameterArg", 
-		"functionBody", "sourceElements", "arrayLiteral", "elementList", "arrayElement", 
-		"propertyAssignment", "propertyName", "arguments", "argument", "expressionSequence", 
-		"singleExpression", "assignable", "objectLiteral", "anoymousFunction", 
-		"arrowFunctionParameters", "arrowFunctionBody", "assignmentOperator", 
-		"literal", "numericLiteral", "bigintLiteral", "getter", "setter", "identifierName", 
-		"identifier", "reservedWord", "keyword", "eos", "querySelectStatement", 
-		"queryExpression", "sql_union", "querySpecification", "select_list", "select_list_elem", 
-		"fromClause", "whereClause", "dataSources", "dataSource", "data_source_item_joined", 
-		"data_source_item", "join_clause", "using_source_clause", "produce_clause", 
-		"bind_clause", "withinClause", "queryObjectLiteral", "queryPropertyAssignment"
-	};
+	private static String[] makeRuleNames() {
+		return new String[] {
+			"program", "sourceElement", "statement", "block", "statementList", "importStatement", 
+			"importFromBlock", "moduleItems", "importDefault", "importNamespace", 
+			"importFrom", "aliasName", "exportStatement", "exportFromBlock", "declaration", 
+			"variableStatement", "variableDeclarationList", "variableDeclaration", 
+			"emptyStatement", "expressionStatement", "ifStatement", "iterationStatement", 
+			"varModifier", "continueStatement", "breakStatement", "returnStatement", 
+			"withStatement", "switchStatement", "caseBlock", "caseClauses", "caseClause", 
+			"defaultClause", "labelledStatement", "throwStatement", "tryStatement", 
+			"catchProduction", "finallyProduction", "debuggerStatement", "functionDeclaration", 
+			"classDeclaration", "classTail", "classHeritage", "classElement", "methodDefinition", 
+			"formalParameterList", "formalParameterArg", "lastFormalParameterArg", 
+			"functionBody", "sourceElements", "arrayLiteral", "elementList", "arrayElement", 
+			"propertyAssignment", "propertyName", "arguments", "argument", "expressionSequence", 
+			"singleExpression", "assignable", "objectLiteral", "anoymousFunction", 
+			"arrowFunctionParameters", "arrowFunctionBody", "assignmentOperator", 
+			"literal", "numericLiteral", "bigintLiteral", "getter", "setter", "identifierName", 
+			"identifier", "reservedWord", "keyword", "eos", "querySelectStatement", 
+			"queryExpression", "sql_union", "querySpecification", "select_list", 
+			"select_list_elem", "fromClause", "whereClause", "dataSources", "dataSource", 
+			"data_source_item_joined", "data_source_item", "join_clause", "using_source_clause", 
+			"produce_clause", "bind_clause", "withinClause", "queryObjectLiteral", 
+			"queryPropertyAssignment"
+		};
+	}
+	public static final String[] ruleNames = makeRuleNames();
 
-	private static final String[] _LITERAL_NAMES = {
-		null, null, null, null, null, "'['", "']'", "'('", "')'", "'{'", "'}'", 
-		"';'", "','", "'='", "'?'", "':'", "'...'", "'.'", "'++'", "'--'", "'+'", 
-		"'-'", "'~'", "'!'", "'*'", "'/'", "'%'", "'**'", "'??'", "'#'", "'>>'", 
-		"'<<'", "'>>>'", "'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'==='", 
-		"'!=='", "'&'", "'^'", "'|'", "'&&'", "'||'", "'*='", "'/='", "'%='", 
-		"'+='", "'-='", "'<<='", "'>>='", "'>>>='", "'&='", "'^='", "'|='", "'**='", 
-		"'=>'", "'null'", null, null, null, null, null, null, null, null, null, 
-		null, "'break'", "'do'", "'instanceof'", "'typeof'", "'case'", "'else'", 
-		"'new'", "'var'", "'catch'", "'finally'", "'return'", "'void'", "'continue'", 
-		"'for'", "'switch'", "'while'", "'debugger'", "'function'", "'this'", 
-		"'with'", "'default'", "'if'", "'throw'", "'delete'", "'in'", "'try'", 
-		"'as'", "'from'", null, "'class'", "'enum'", "'extends'", "'super'", "'const'", 
-		"'export'", "'import'", "'async'", "'await'", null, "'select'", "'union'", 
-		"'where'", "'join'", "'on'", "'produce'", "'using'", "'all'", "'within'", 
-		"'implements'", null, null, "'private'", "'public'", "'interface'", "'package'", 
-		"'protected'", "'static'", "'yield'", null, null, null, null, null, "'\n'"
-	};
-	private static final String[] _SYMBOLIC_NAMES = {
-		null, "HashBangLine", "MultiLineComment", "SingleLineComment", "RegularExpressionLiteral", 
-		"OpenBracket", "CloseBracket", "OpenParen", "CloseParen", "OpenBrace", 
-		"CloseBrace", "SemiColon", "Comma", "Assign", "QuestionMark", "Colon", 
-		"Ellipsis", "Dot", "PlusPlus", "MinusMinus", "Plus", "Minus", "BitNot", 
-		"Not", "Multiply", "Divide", "Modulus", "Power", "NullCoalesce", "Hashtag", 
-		"RightShiftArithmetic", "LeftShiftArithmetic", "RightShiftLogical", "LessThan", 
-		"MoreThan", "LessThanEquals", "GreaterThanEquals", "Equals_", "NotEquals", 
-		"IdentityEquals", "IdentityNotEquals", "BitAnd", "BitXOr", "BitOr", "And", 
-		"Or", "MultiplyAssign", "DivideAssign", "ModulusAssign", "PlusAssign", 
-		"MinusAssign", "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
-		"RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", "BitOrAssign", 
-		"PowerAssign", "ARROW", "NullLiteral", "BooleanLiteral", "DecimalLiteral", 
-		"HexIntegerLiteral", "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
-		"BigHexIntegerLiteral", "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
-		"BigDecimalIntegerLiteral", "Break", "Do", "Instanceof", "Typeof", "Case", 
-		"Else", "New", "Var", "Catch", "Finally", "Return", "Void", "Continue", 
-		"For", "Switch", "While", "Debugger", "Function", "This", "With", "Default", 
-		"If", "Throw", "Delete", "In", "Try", "As", "From", "Let", "Class", "Enum", 
-		"Extends", "Super", "Const", "Export", "Import", "Async", "Await", "Url", 
-		"Select", "Union", "Where", "Join", "On", "Produce", "Using", "All", "Within", 
-		"Implements", "StrictLet", "NonStrictLet", "Private", "Public", "Interface", 
-		"Package", "Protected", "Static", "Yield", "Identifier", "StringLiteral", 
-		"TemplateStringLiteral", "WhiteSpaces", "LineTerminator", "NEWLINE", "HtmlComment", 
-		"CDataComment", "UnexpectedCharacter"
-	};
+	private static String[] makeLiteralNames() {
+		return new String[] {
+			null, null, null, null, null, "'['", "']'", "'('", "')'", "'{'", "'}'", 
+			"';'", "','", "'='", "'?'", "':'", "'...'", "'.'", "'++'", "'--'", "'+'", 
+			"'-'", "'~'", "'!'", "'*'", "'/'", "'%'", "'**'", "'??'", "'#'", "'>>'", 
+			"'<<'", "'>>>'", "'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'==='", 
+			"'!=='", "'&'", "'^'", "'|'", "'&&'", "'||'", "'*='", "'/='", "'%='", 
+			"'+='", "'-='", "'<<='", "'>>='", "'>>>='", "'&='", "'^='", "'|='", "'**='", 
+			"'=>'", "'null'", null, null, null, null, null, null, null, null, null, 
+			null, "'break'", "'do'", "'instanceof'", "'typeof'", "'case'", "'else'", 
+			"'new'", "'var'", "'catch'", "'finally'", "'return'", "'void'", "'continue'", 
+			"'for'", "'switch'", "'while'", "'debugger'", "'function'", "'this'", 
+			"'with'", "'default'", "'if'", "'throw'", "'delete'", "'in'", "'try'", 
+			"'as'", "'from'", null, "'class'", "'enum'", "'extends'", "'super'", 
+			"'const'", "'export'", "'import'", "'async'", "'await'", null, "'select'", 
+			"'union'", "'where'", "'join'", "'on'", "'produce'", "'using'", "'all'", 
+			"'within'", "'implements'", null, null, "'private'", "'public'", "'interface'", 
+			"'package'", "'protected'", "'static'", "'yield'", null, null, null, 
+			null, null, "'\n'"
+		};
+	}
+	private static final String[] _LITERAL_NAMES = makeLiteralNames();
+	private static String[] makeSymbolicNames() {
+		return new String[] {
+			null, "HashBangLine", "MultiLineComment", "SingleLineComment", "RegularExpressionLiteral", 
+			"OpenBracket", "CloseBracket", "OpenParen", "CloseParen", "OpenBrace", 
+			"CloseBrace", "SemiColon", "Comma", "Assign", "QuestionMark", "Colon", 
+			"Ellipsis", "Dot", "PlusPlus", "MinusMinus", "Plus", "Minus", "BitNot", 
+			"Not", "Multiply", "Divide", "Modulus", "Power", "NullCoalesce", "Hashtag", 
+			"RightShiftArithmetic", "LeftShiftArithmetic", "RightShiftLogical", "LessThan", 
+			"MoreThan", "LessThanEquals", "GreaterThanEquals", "Equals_", "NotEquals", 
+			"IdentityEquals", "IdentityNotEquals", "BitAnd", "BitXOr", "BitOr", "And", 
+			"Or", "MultiplyAssign", "DivideAssign", "ModulusAssign", "PlusAssign", 
+			"MinusAssign", "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
+			"RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", "BitOrAssign", 
+			"PowerAssign", "ARROW", "NullLiteral", "BooleanLiteral", "DecimalLiteral", 
+			"HexIntegerLiteral", "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
+			"BigHexIntegerLiteral", "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
+			"BigDecimalIntegerLiteral", "Break", "Do", "Instanceof", "Typeof", "Case", 
+			"Else", "New", "Var", "Catch", "Finally", "Return", "Void", "Continue", 
+			"For", "Switch", "While", "Debugger", "Function", "This", "With", "Default", 
+			"If", "Throw", "Delete", "In", "Try", "As", "From", "Let", "Class", "Enum", 
+			"Extends", "Super", "Const", "Export", "Import", "Async", "Await", "Url", 
+			"Select", "Union", "Where", "Join", "On", "Produce", "Using", "All", 
+			"Within", "Implements", "StrictLet", "NonStrictLet", "Private", "Public", 
+			"Interface", "Package", "Protected", "Static", "Yield", "Identifier", 
+			"StringLiteral", "TemplateStringLiteral", "WhiteSpaces", "LineTerminator", 
+			"NEWLINE", "HtmlComment", "CDataComment", "UnexpectedCharacter"
+		};
+	}
+	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
 	/**
@@ -189,6 +200,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		super(input);
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
+
 	public static class ProgramContext extends ParserRuleContext {
 		public TerminalNode EOF() { return getToken(ECMAScriptParser.EOF, 0); }
 		public TerminalNode HashBangLine() { return getToken(ECMAScriptParser.HashBangLine, 0); }
@@ -501,6 +513,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class BlockContext extends ParserRuleContext {
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public StatementListContext statementList() {
 			return getRuleContext(StatementListContext.class,0);
 		}
@@ -638,6 +652,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public ImportDefaultContext importDefault() {
 			return getRuleContext(ImportDefaultContext.class,0);
 		}
+		public TerminalNode Comma() { return getToken(ECMAScriptParser.Comma, 0); }
 		public ImportFromContext importFrom() {
 			return getRuleContext(ImportFromContext.class,0);
 		}
@@ -851,11 +866,17 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ModuleItemsContext extends ParserRuleContext {
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public List<AliasNameContext> aliasName() {
 			return getRuleContexts(AliasNameContext.class);
 		}
 		public AliasNameContext aliasName(int i) {
 			return getRuleContext(AliasNameContext.class,i);
+		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
 		}
 		public ModuleItemsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -958,6 +979,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ImportNamespaceContext extends ParserRuleContext {
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
 		public List<IdentifierNameContext> identifierName() {
 			return getRuleContexts(IdentifierNameContext.class);
 		}
@@ -1499,6 +1521,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public VariableDeclarationContext variableDeclaration(int i) {
 			return getRuleContext(VariableDeclarationContext.class,i);
 		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
+		}
 		public VariableDeclarationListContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -1551,6 +1577,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public AssignableContext assignable() {
 			return getRuleContext(AssignableContext.class,0);
 		}
+		public TerminalNode Assign() { return getToken(ECMAScriptParser.Assign, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -1662,9 +1689,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 
 	public static class IfStatementContext extends ParserRuleContext {
 		public TerminalNode If() { return getToken(ECMAScriptParser.If, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public List<StatementContext> statement() {
 			return getRuleContexts(StatementContext.class);
 		}
@@ -1736,9 +1765,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 			return getRuleContext(StatementContext.class,0);
 		}
 		public TerminalNode While() { return getToken(ECMAScriptParser.While, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public EosContext eos() {
 			return getRuleContext(EosContext.class,0);
 		}
@@ -1746,9 +1777,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 	public static class WhileStatementContext extends IterationStatementContext {
 		public TerminalNode While() { return getToken(ECMAScriptParser.While, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
@@ -1756,6 +1789,12 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 	public static class ForStatementContext extends IterationStatementContext {
 		public TerminalNode For() { return getToken(ECMAScriptParser.For, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public List<TerminalNode> SemiColon() { return getTokens(ECMAScriptParser.SemiColon); }
+		public TerminalNode SemiColon(int i) {
+			return getToken(ECMAScriptParser.SemiColon, i);
+		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
@@ -1772,10 +1811,12 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 	public static class ForInStatementContext extends IterationStatementContext {
 		public TerminalNode For() { return getToken(ECMAScriptParser.For, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public TerminalNode In() { return getToken(ECMAScriptParser.In, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
@@ -1789,12 +1830,14 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 	public static class ForOfStatementContext extends IterationStatementContext {
 		public TerminalNode For() { return getToken(ECMAScriptParser.For, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public IdentifierContext identifier() {
 			return getRuleContext(IdentifierContext.class,0);
 		}
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
@@ -2316,9 +2359,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 
 	public static class WithStatementContext extends ParserRuleContext {
 		public TerminalNode With() { return getToken(ECMAScriptParser.With, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
@@ -2359,9 +2404,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 
 	public static class SwitchStatementContext extends ParserRuleContext {
 		public TerminalNode Switch() { return getToken(ECMAScriptParser.Switch, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public CaseBlockContext caseBlock() {
 			return getRuleContext(CaseBlockContext.class,0);
 		}
@@ -2401,6 +2448,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class CaseBlockContext extends ParserRuleContext {
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public List<CaseClausesContext> caseClauses() {
 			return getRuleContexts(CaseClausesContext.class);
 		}
@@ -2522,6 +2571,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode Colon() { return getToken(ECMAScriptParser.Colon, 0); }
 		public StatementListContext statementList() {
 			return getRuleContext(StatementListContext.class,0);
 		}
@@ -2568,6 +2618,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 
 	public static class DefaultClauseContext extends ParserRuleContext {
 		public TerminalNode Default() { return getToken(ECMAScriptParser.Default, 0); }
+		public TerminalNode Colon() { return getToken(ECMAScriptParser.Colon, 0); }
 		public StatementListContext statementList() {
 			return getRuleContext(StatementListContext.class,0);
 		}
@@ -2614,6 +2665,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public IdentifierContext identifier() {
 			return getRuleContext(IdentifierContext.class,0);
 		}
+		public TerminalNode Colon() { return getToken(ECMAScriptParser.Colon, 0); }
 		public StatementContext statement() {
 			return getRuleContext(StatementContext.class,0);
 		}
@@ -2762,6 +2814,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public BlockContext block() {
 			return getRuleContext(BlockContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public AssignableContext assignable() {
 			return getRuleContext(AssignableContext.class,0);
 		}
@@ -2890,10 +2944,15 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public IdentifierContext identifier() {
 			return getRuleContext(IdentifierContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
 		}
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public TerminalNode Async() { return getToken(ECMAScriptParser.Async, 0); }
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
 		public FormalParameterListContext formalParameterList() {
 			return getRuleContext(FormalParameterListContext.class,0);
 		}
@@ -3007,6 +3066,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ClassTailContext extends ParserRuleContext {
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public ClassHeritageContext classHeritage() {
 			return getRuleContext(ClassHeritageContext.class,0);
 		}
@@ -3131,9 +3192,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public PropertyNameContext propertyName() {
 			return getRuleContext(PropertyNameContext.class,0);
 		}
+		public TerminalNode Assign() { return getToken(ECMAScriptParser.Assign, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode Hashtag() { return getToken(ECMAScriptParser.Hashtag, 0); }
 		public ClassElementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3237,9 +3300,15 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public PropertyNameContext propertyName() {
 			return getRuleContext(PropertyNameContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
 		}
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
+		public TerminalNode Hashtag() { return getToken(ECMAScriptParser.Hashtag, 0); }
 		public FormalParameterListContext formalParameterList() {
 			return getRuleContext(FormalParameterListContext.class,0);
 		}
@@ -3414,6 +3483,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public FormalParameterArgContext formalParameterArg(int i) {
 			return getRuleContext(FormalParameterArgContext.class,i);
 		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
+		}
 		public LastFormalParameterArgContext lastFormalParameterArg() {
 			return getRuleContext(LastFormalParameterArgContext.class,0);
 		}
@@ -3507,6 +3580,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public AssignableContext assignable() {
 			return getRuleContext(AssignableContext.class,0);
 		}
+		public TerminalNode Assign() { return getToken(ECMAScriptParser.Assign, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -3677,9 +3751,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ArrayLiteralContext extends ParserRuleContext {
+		public TerminalNode OpenBracket() { return getToken(ECMAScriptParser.OpenBracket, 0); }
 		public ElementListContext elementList() {
 			return getRuleContext(ElementListContext.class,0);
 		}
+		public TerminalNode CloseBracket() { return getToken(ECMAScriptParser.CloseBracket, 0); }
 		public ArrayLiteralContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -3714,6 +3790,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ElementListContext extends ParserRuleContext {
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
+		}
 		public List<ArrayElementContext> arrayElement() {
 			return getRuleContexts(ArrayElementContext.class);
 		}
@@ -3875,18 +3955,22 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public PropertyNameContext propertyName() {
 			return getRuleContext(PropertyNameContext.class,0);
 		}
+		public TerminalNode Colon() { return getToken(ECMAScriptParser.Colon, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
 		public PropertyExpressionAssignmentContext(PropertyAssignmentContext ctx) { copyFrom(ctx); }
 	}
 	public static class ComputedPropertyExpressionAssignmentContext extends PropertyAssignmentContext {
+		public TerminalNode OpenBracket() { return getToken(ECMAScriptParser.OpenBracket, 0); }
 		public List<SingleExpressionContext> singleExpression() {
 			return getRuleContexts(SingleExpressionContext.class);
 		}
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode CloseBracket() { return getToken(ECMAScriptParser.CloseBracket, 0); }
+		public TerminalNode Colon() { return getToken(ECMAScriptParser.Colon, 0); }
 		public ComputedPropertyExpressionAssignmentContext(PropertyAssignmentContext ctx) { copyFrom(ctx); }
 	}
 	public static class PropertyShorthandContext extends PropertyAssignmentContext {
@@ -3900,31 +3984,44 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SetterContext setter() {
 			return getRuleContext(SetterContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public FormalParameterArgContext formalParameterArg() {
 			return getRuleContext(FormalParameterArgContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
 		}
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public PropertySetterContext(PropertyAssignmentContext ctx) { copyFrom(ctx); }
 	}
 	public static class PropertyGetterContext extends PropertyAssignmentContext {
 		public GetterContext getter() {
 			return getRuleContext(GetterContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
 		}
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public PropertyGetterContext(PropertyAssignmentContext ctx) { copyFrom(ctx); }
 	}
 	public static class FunctionPropertyContext extends PropertyAssignmentContext {
 		public PropertyNameContext propertyName() {
 			return getRuleContext(PropertyNameContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
 		}
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public TerminalNode Async() { return getToken(ECMAScriptParser.Async, 0); }
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
 		public FormalParameterListContext formalParameterList() {
 			return getRuleContext(FormalParameterListContext.class,0);
 		}
@@ -4092,9 +4189,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public NumericLiteralContext numericLiteral() {
 			return getRuleContext(NumericLiteralContext.class,0);
 		}
+		public TerminalNode OpenBracket() { return getToken(ECMAScriptParser.OpenBracket, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode CloseBracket() { return getToken(ECMAScriptParser.CloseBracket, 0); }
 		public PropertyNameContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -4208,11 +4307,17 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ArgumentsContext extends ParserRuleContext {
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public List<ArgumentContext> argument() {
 			return getRuleContexts(ArgumentContext.class);
 		}
 		public ArgumentContext argument(int i) {
 			return getRuleContext(ArgumentContext.class,i);
+		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
 		}
 		public ArgumentsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -4350,6 +4455,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
+		}
 		public ExpressionSequenceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -4421,6 +4530,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode QuestionMark() { return getToken(ECMAScriptParser.QuestionMark, 0); }
+		public TerminalNode Colon() { return getToken(ECMAScriptParser.Colon, 0); }
 		public TernaryExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class LogicalAndExpressionContext extends SingleExpressionContext {
@@ -4430,6 +4541,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode And() { return getToken(ECMAScriptParser.And, 0); }
 		public LogicalAndExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class PowerExpressionContext extends SingleExpressionContext {
@@ -4439,9 +4551,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode Power() { return getToken(ECMAScriptParser.Power, 0); }
 		public PowerExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class PreIncrementExpressionContext extends SingleExpressionContext {
+		public TerminalNode PlusPlus() { return getToken(ECMAScriptParser.PlusPlus, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -4455,6 +4569,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 	public static class MetaExpressionContext extends SingleExpressionContext {
 		public TerminalNode New() { return getToken(ECMAScriptParser.New, 0); }
+		public TerminalNode Dot() { return getToken(ECMAScriptParser.Dot, 0); }
 		public IdentifierContext identifier() {
 			return getRuleContext(IdentifierContext.class,0);
 		}
@@ -4477,15 +4592,18 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode Or() { return getToken(ECMAScriptParser.Or, 0); }
 		public LogicalOrExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class NotExpressionContext extends SingleExpressionContext {
+		public TerminalNode Not() { return getToken(ECMAScriptParser.Not, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
 		public NotExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class PreDecreaseExpressionContext extends SingleExpressionContext {
+		public TerminalNode MinusMinus() { return getToken(ECMAScriptParser.MinusMinus, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -4518,6 +4636,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public FunctionExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class UnaryMinusExpressionContext extends SingleExpressionContext {
+		public TerminalNode Minus() { return getToken(ECMAScriptParser.Minus, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -4530,12 +4649,14 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode Assign() { return getToken(ECMAScriptParser.Assign, 0); }
 		public AssignmentExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class PostDecreaseExpressionContext extends SingleExpressionContext {
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode MinusMinus() { return getToken(ECMAScriptParser.MinusMinus, 0); }
 		public PostDecreaseExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class MemberNewExpressionContext extends SingleExpressionContext {
@@ -4543,6 +4664,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode Dot() { return getToken(ECMAScriptParser.Dot, 0); }
 		public IdentifierNameContext identifierName() {
 			return getRuleContext(IdentifierNameContext.class,0);
 		}
@@ -4569,6 +4691,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public InstanceofExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class UnaryPlusExpressionContext extends SingleExpressionContext {
+		public TerminalNode Plus() { return getToken(ECMAScriptParser.Plus, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -4589,9 +4712,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 	public static class ImportExpressionContext extends SingleExpressionContext {
 		public TerminalNode Import() { return getToken(ECMAScriptParser.Import, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public ImportExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class EqualityExpressionContext extends SingleExpressionContext {
@@ -4601,6 +4726,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode Equals_() { return getToken(ECMAScriptParser.Equals_, 0); }
+		public TerminalNode NotEquals() { return getToken(ECMAScriptParser.NotEquals, 0); }
+		public TerminalNode IdentityEquals() { return getToken(ECMAScriptParser.IdentityEquals, 0); }
+		public TerminalNode IdentityNotEquals() { return getToken(ECMAScriptParser.IdentityNotEquals, 0); }
 		public EqualityExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class BitXOrExpressionContext extends SingleExpressionContext {
@@ -4610,6 +4739,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode BitXOr() { return getToken(ECMAScriptParser.BitXOr, 0); }
 		public BitXOrExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class SuperExpressionContext extends SingleExpressionContext {
@@ -4623,6 +4753,9 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
+		public TerminalNode Divide() { return getToken(ECMAScriptParser.Divide, 0); }
+		public TerminalNode Modulus() { return getToken(ECMAScriptParser.Modulus, 0); }
 		public MultiplicativeExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class BitShiftExpressionContext extends SingleExpressionContext {
@@ -4632,12 +4765,17 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode LeftShiftArithmetic() { return getToken(ECMAScriptParser.LeftShiftArithmetic, 0); }
+		public TerminalNode RightShiftArithmetic() { return getToken(ECMAScriptParser.RightShiftArithmetic, 0); }
+		public TerminalNode RightShiftLogical() { return getToken(ECMAScriptParser.RightShiftLogical, 0); }
 		public BitShiftExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class ParenthesizedExpressionContext extends SingleExpressionContext {
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public ParenthesizedExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class AdditiveExpressionContext extends SingleExpressionContext {
@@ -4647,6 +4785,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode Plus() { return getToken(ECMAScriptParser.Plus, 0); }
+		public TerminalNode Minus() { return getToken(ECMAScriptParser.Minus, 0); }
 		public AdditiveExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class RelationalExpressionContext extends SingleExpressionContext {
@@ -4656,12 +4796,17 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode LessThan() { return getToken(ECMAScriptParser.LessThan, 0); }
+		public TerminalNode MoreThan() { return getToken(ECMAScriptParser.MoreThan, 0); }
+		public TerminalNode LessThanEquals() { return getToken(ECMAScriptParser.LessThanEquals, 0); }
+		public TerminalNode GreaterThanEquals() { return getToken(ECMAScriptParser.GreaterThanEquals, 0); }
 		public RelationalExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class PostIncrementExpressionContext extends SingleExpressionContext {
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode PlusPlus() { return getToken(ECMAScriptParser.PlusPlus, 0); }
 		public PostIncrementExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class YieldExpressionContext extends SingleExpressionContext {
@@ -4669,9 +4814,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
 		public YieldExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class BitNotExpressionContext extends SingleExpressionContext {
+		public TerminalNode BitNot() { return getToken(ECMAScriptParser.BitNot, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -4703,9 +4850,12 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode Dot() { return getToken(ECMAScriptParser.Dot, 0); }
 		public IdentifierNameContext identifierName() {
 			return getRuleContext(IdentifierNameContext.class,0);
 		}
+		public TerminalNode QuestionMark() { return getToken(ECMAScriptParser.QuestionMark, 0); }
+		public TerminalNode Hashtag() { return getToken(ECMAScriptParser.Hashtag, 0); }
 		public MemberDotExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class ClassExpressionContext extends SingleExpressionContext {
@@ -4722,9 +4872,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
+		public TerminalNode OpenBracket() { return getToken(ECMAScriptParser.OpenBracket, 0); }
 		public ExpressionSequenceContext expressionSequence() {
 			return getRuleContext(ExpressionSequenceContext.class,0);
 		}
+		public TerminalNode CloseBracket() { return getToken(ECMAScriptParser.CloseBracket, 0); }
 		public MemberIndexExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class IdentifierExpressionContext extends SingleExpressionContext {
@@ -4740,6 +4892,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode BitAnd() { return getToken(ECMAScriptParser.BitAnd, 0); }
 		public BitAndExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class BitOrExpressionContext extends SingleExpressionContext {
@@ -4749,6 +4902,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode BitOr() { return getToken(ECMAScriptParser.BitOr, 0); }
 		public BitOrExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 	public static class AssignmentOperatorExpressionContext extends SingleExpressionContext {
@@ -4777,6 +4931,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode NullCoalesce() { return getToken(ECMAScriptParser.NullCoalesce, 0); }
 		public CoalesceExpressionContext(SingleExpressionContext ctx) { copyFrom(ctx); }
 	}
 
@@ -5559,11 +5714,17 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ObjectLiteralContext extends ParserRuleContext {
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public List<PropertyAssignmentContext> propertyAssignment() {
 			return getRuleContexts(PropertyAssignmentContext.class);
 		}
 		public PropertyAssignmentContext propertyAssignment(int i) {
 			return getRuleContext(PropertyAssignmentContext.class,i);
+		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
 		}
 		public ObjectLiteralContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -5647,10 +5808,15 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 	public static class AnoymousFunctionDeclContext extends AnoymousFunctionContext {
 		public TerminalNode Function() { return getToken(ECMAScriptParser.Function, 0); }
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
 		}
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public TerminalNode Async() { return getToken(ECMAScriptParser.Async, 0); }
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
 		public FormalParameterListContext formalParameterList() {
 			return getRuleContext(FormalParameterListContext.class,0);
 		}
@@ -5660,6 +5826,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public ArrowFunctionParametersContext arrowFunctionParameters() {
 			return getRuleContext(ArrowFunctionParametersContext.class,0);
 		}
+		public TerminalNode ARROW() { return getToken(ECMAScriptParser.ARROW, 0); }
 		public ArrowFunctionBodyContext arrowFunctionBody() {
 			return getRuleContext(ArrowFunctionBodyContext.class,0);
 		}
@@ -5776,6 +5943,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public IdentifierContext identifier() {
 			return getRuleContext(IdentifierContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public FormalParameterListContext formalParameterList() {
 			return getRuleContext(FormalParameterListContext.class,0);
 		}
@@ -5837,9 +6006,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class ArrowFunctionBodyContext extends ParserRuleContext {
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
 		public FunctionBodyContext functionBody() {
 			return getRuleContext(FunctionBodyContext.class,0);
 		}
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -5888,6 +6059,18 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class AssignmentOperatorContext extends ParserRuleContext {
+		public TerminalNode MultiplyAssign() { return getToken(ECMAScriptParser.MultiplyAssign, 0); }
+		public TerminalNode DivideAssign() { return getToken(ECMAScriptParser.DivideAssign, 0); }
+		public TerminalNode ModulusAssign() { return getToken(ECMAScriptParser.ModulusAssign, 0); }
+		public TerminalNode PlusAssign() { return getToken(ECMAScriptParser.PlusAssign, 0); }
+		public TerminalNode MinusAssign() { return getToken(ECMAScriptParser.MinusAssign, 0); }
+		public TerminalNode LeftShiftArithmeticAssign() { return getToken(ECMAScriptParser.LeftShiftArithmeticAssign, 0); }
+		public TerminalNode RightShiftArithmeticAssign() { return getToken(ECMAScriptParser.RightShiftArithmeticAssign, 0); }
+		public TerminalNode RightShiftLogicalAssign() { return getToken(ECMAScriptParser.RightShiftLogicalAssign, 0); }
+		public TerminalNode BitAndAssign() { return getToken(ECMAScriptParser.BitAndAssign, 0); }
+		public TerminalNode BitXorAssign() { return getToken(ECMAScriptParser.BitXorAssign, 0); }
+		public TerminalNode BitOrAssign() { return getToken(ECMAScriptParser.BitOrAssign, 0); }
+		public TerminalNode PowerAssign() { return getToken(ECMAScriptParser.PowerAssign, 0); }
 		public AssignmentOperatorContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -6588,9 +6771,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public QuerySpecificationContext querySpecification() {
 			return getRuleContext(QuerySpecificationContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public QueryExpressionContext queryExpression() {
 			return getRuleContext(QueryExpressionContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public List<Sql_unionContext> sql_union() {
 			return getRuleContexts(Sql_unionContext.class);
 		}
@@ -6678,9 +6863,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public QuerySpecificationContext querySpecification() {
 			return getRuleContext(QuerySpecificationContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public QueryExpressionContext queryExpression() {
 			return getRuleContext(QueryExpressionContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public TerminalNode All() { return getToken(ECMAScriptParser.All, 0); }
 		public QueryUnionExpressionContext(Sql_unionContext ctx) { copyFrom(ctx); }
 	}
@@ -6872,6 +7059,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public Select_list_elemContext select_list_elem(int i) {
 			return getRuleContext(Select_list_elemContext.class,i);
 		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
+		}
 		public QuerySelectListExpressionContext(Select_listContext ctx) { copyFrom(ctx); }
 	}
 
@@ -6917,6 +7108,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class Select_list_elemContext extends ParserRuleContext {
+		public TerminalNode Multiply() { return getToken(ECMAScriptParser.Multiply, 0); }
 		public IdentifierContext identifier() {
 			return getRuleContext(IdentifierContext.class,0);
 		}
@@ -6927,8 +7119,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
-		public ArgumentContext argument() {
-			return getRuleContext(ArgumentContext.class,0);
+		public ArgumentsContext arguments() {
+			return getRuleContext(ArgumentsContext.class,0);
 		}
 		public Select_list_elemContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -6975,7 +7167,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 				setState(1088);
 				singleExpression(0);
 				setState(1089);
-				argument();
+				arguments();
 				setState(1092);
 				_errHandler.sync(this);
 				switch ( getInterpreter().adaptivePredict(_input,123,_ctx) ) {
@@ -7107,6 +7299,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public DataSourceContext dataSource(int i) {
 			return getRuleContext(DataSourceContext.class,i);
 		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
+		}
 		public QueryDataSourcesExpressionContext(DataSourcesContext ctx) { copyFrom(ctx); }
 	}
 
@@ -7155,6 +7351,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public Data_source_item_joinedContext data_source_item_joined() {
 			return getRuleContext(Data_source_item_joinedContext.class,0);
 		}
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public DataSourceContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -7306,9 +7504,11 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public QueryDataSourceItemArgumentsExpressionContext(Data_source_itemContext ctx) { copyFrom(ctx); }
 	}
 	public static class QueryDataSourceItemSubqueryExpressionContext extends Data_source_itemContext {
+		public TerminalNode OpenParen() { return getToken(ECMAScriptParser.OpenParen, 0); }
 		public QueryExpressionContext queryExpression() {
 			return getRuleContext(QueryExpressionContext.class,0);
 		}
+		public TerminalNode CloseParen() { return getToken(ECMAScriptParser.CloseParen, 0); }
 		public QueryDataSourceItemSubqueryExpressionContext(Data_source_itemContext ctx) { copyFrom(ctx); }
 	}
 
@@ -7400,6 +7600,8 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public TerminalNode Equals_() { return getToken(ECMAScriptParser.Equals_, 0); }
+		public TerminalNode IdentityEquals() { return getToken(ECMAScriptParser.IdentityEquals, 0); }
 		public QueryJoinOnExpressionContext(Join_clauseContext ctx) { copyFrom(ctx); }
 	}
 
@@ -7631,6 +7833,10 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public SingleExpressionContext singleExpression(int i) {
 			return getRuleContext(SingleExpressionContext.class,i);
 		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
+		}
 		public QueryWithinExpressionContext(WithinClauseContext ctx) { copyFrom(ctx); }
 	}
 
@@ -7678,11 +7884,17 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 	}
 
 	public static class QueryObjectLiteralContext extends ParserRuleContext {
+		public TerminalNode OpenBrace() { return getToken(ECMAScriptParser.OpenBrace, 0); }
+		public TerminalNode CloseBrace() { return getToken(ECMAScriptParser.CloseBrace, 0); }
 		public List<QueryPropertyAssignmentContext> queryPropertyAssignment() {
 			return getRuleContexts(QueryPropertyAssignmentContext.class);
 		}
 		public QueryPropertyAssignmentContext queryPropertyAssignment(int i) {
 			return getRuleContext(QueryPropertyAssignmentContext.class,i);
+		}
+		public List<TerminalNode> Comma() { return getTokens(ECMAScriptParser.Comma); }
+		public TerminalNode Comma(int i) {
+			return getToken(ECMAScriptParser.Comma, i);
 		}
 		public QueryObjectLiteralContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -7757,6 +7969,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		public PropertyNameContext propertyName() {
 			return getRuleContext(PropertyNameContext.class,0);
 		}
+		public TerminalNode Colon() { return getToken(ECMAScriptParser.Colon, 0); }
 		public SingleExpressionContext singleExpression() {
 			return getRuleContext(SingleExpressionContext.class,0);
 		}
@@ -8367,7 +8580,7 @@ public class ECMAScriptParser extends ECMAScriptParserBase {
 		"\2\u0439\u0437\3\2\2\2\u0439\u043a\3\2\2\2\u043a\u009f\3\2\2\2\u043b\u0439"+
 		"\3\2\2\2\u043c\u0449\7\32\2\2\u043d\u0440\5\u008eH\2\u043e\u043f\7b\2"+
 		"\2\u043f\u0441\5\u008cG\2\u0440\u043e\3\2\2\2\u0440\u0441\3\2\2\2\u0441"+
-		"\u0449\3\2\2\2\u0442\u0443\5t;\2\u0443\u0446\5p9\2\u0444\u0445\7b\2\2"+
+		"\u0449\3\2\2\2\u0442\u0443\5t;\2\u0443\u0446\5n8\2\u0444\u0445\7b\2\2"+
 		"\u0445\u0447\5\u008cG\2\u0446\u0444\3\2\2\2\u0446\u0447\3\2\2\2\u0447"+
 		"\u0449\3\2\2\2\u0448\u043c\3\2\2\2\u0448\u043d\3\2\2\2\u0448\u0442\3\2"+
 		"\2\2\u0449\u00a1\3\2\2\2\u044a\u044b\7c\2\2\u044b\u044c\5\u00a6T\2\u044c"+

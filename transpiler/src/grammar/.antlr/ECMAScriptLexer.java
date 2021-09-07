@@ -1,4 +1,4 @@
-// Generated from /home/greg/dev/delven.io/delven-transpiler/src/grammar/ECMAScriptLexer.g4 by ANTLR 4.7.1
+// Generated from /home/gbugaj/devio/delv/delven/transpiler/src/grammar/ECMAScriptLexer.g4 by ANTLR 4.8
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class ECMAScriptLexer extends ECMAScriptLexerBase {
-	static { RuntimeMetaData.checkVersion("4.7.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.8", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -52,84 +52,94 @@ public class ECMAScriptLexer extends ECMAScriptLexerBase {
 		"DEFAULT_MODE"
 	};
 
-	public static final String[] ruleNames = {
-		"HashBangLine", "MultiLineComment", "SingleLineComment", "RegularExpressionLiteral", 
-		"OpenBracket", "CloseBracket", "OpenParen", "CloseParen", "OpenBrace", 
-		"CloseBrace", "SemiColon", "Comma", "Assign", "QuestionMark", "Colon", 
-		"Ellipsis", "Dot", "PlusPlus", "MinusMinus", "Plus", "Minus", "BitNot", 
-		"Not", "Multiply", "Divide", "Modulus", "Power", "NullCoalesce", "Hashtag", 
-		"RightShiftArithmetic", "LeftShiftArithmetic", "RightShiftLogical", "LessThan", 
-		"MoreThan", "LessThanEquals", "GreaterThanEquals", "Equals_", "NotEquals", 
-		"IdentityEquals", "IdentityNotEquals", "BitAnd", "BitXOr", "BitOr", "And", 
-		"Or", "MultiplyAssign", "DivideAssign", "ModulusAssign", "PlusAssign", 
-		"MinusAssign", "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
-		"RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", "BitOrAssign", 
-		"PowerAssign", "ARROW", "NullLiteral", "BooleanLiteral", "DecimalLiteral", 
-		"HexIntegerLiteral", "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
-		"BigHexIntegerLiteral", "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
-		"BigDecimalIntegerLiteral", "Break", "Do", "Instanceof", "Typeof", "Case", 
-		"Else", "New", "Var", "Catch", "Finally", "Return", "Void", "Continue", 
-		"For", "Switch", "While", "Debugger", "Function", "This", "With", "Default", 
-		"If", "Throw", "Delete", "In", "Try", "As", "From", "Let", "Class", "Enum", 
-		"Extends", "Super", "Const", "Export", "Import", "Async", "Await", "Url", 
-		"Select", "Union", "Where", "Join", "On", "Produce", "Using", "All", "Within", 
-		"Implements", "StrictLet", "NonStrictLet", "Private", "Public", "Interface", 
-		"Package", "Protected", "Static", "Yield", "Identifier", "StringLiteral", 
-		"TemplateStringLiteral", "WhiteSpaces", "LineTerminator", "NEWLINE", "HtmlComment", 
-		"CDataComment", "UnexpectedCharacter", "DoubleStringCharacter", "SingleStringCharacter", 
-		"EscapeSequence", "CharacterEscapeSequence", "HexEscapeSequence", "UnicodeEscapeSequence", 
-		"ExtendedUnicodeEscapeSequence", "SingleEscapeCharacter", "NonEscapeCharacter", 
-		"EscapeCharacter", "LineContinuation", "HexDigit", "DecimalIntegerLiteral", 
-		"ExponentPart", "IdentifierPart", "IdentifierStart", "UnicodeLetter", 
-		"UnicodeCombiningMark", "UnicodeDigit", "UnicodeConnectorPunctuation", 
-		"RegularExpressionFirstChar", "RegularExpressionChar", "RegularExpressionClassChar", 
-		"RegularExpressionBackslashSequence"
-	};
+	private static String[] makeRuleNames() {
+		return new String[] {
+			"HashBangLine", "MultiLineComment", "SingleLineComment", "RegularExpressionLiteral", 
+			"OpenBracket", "CloseBracket", "OpenParen", "CloseParen", "OpenBrace", 
+			"CloseBrace", "SemiColon", "Comma", "Assign", "QuestionMark", "Colon", 
+			"Ellipsis", "Dot", "PlusPlus", "MinusMinus", "Plus", "Minus", "BitNot", 
+			"Not", "Multiply", "Divide", "Modulus", "Power", "NullCoalesce", "Hashtag", 
+			"RightShiftArithmetic", "LeftShiftArithmetic", "RightShiftLogical", "LessThan", 
+			"MoreThan", "LessThanEquals", "GreaterThanEquals", "Equals_", "NotEquals", 
+			"IdentityEquals", "IdentityNotEquals", "BitAnd", "BitXOr", "BitOr", "And", 
+			"Or", "MultiplyAssign", "DivideAssign", "ModulusAssign", "PlusAssign", 
+			"MinusAssign", "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
+			"RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", "BitOrAssign", 
+			"PowerAssign", "ARROW", "NullLiteral", "BooleanLiteral", "DecimalLiteral", 
+			"HexIntegerLiteral", "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
+			"BigHexIntegerLiteral", "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
+			"BigDecimalIntegerLiteral", "Break", "Do", "Instanceof", "Typeof", "Case", 
+			"Else", "New", "Var", "Catch", "Finally", "Return", "Void", "Continue", 
+			"For", "Switch", "While", "Debugger", "Function", "This", "With", "Default", 
+			"If", "Throw", "Delete", "In", "Try", "As", "From", "Let", "Class", "Enum", 
+			"Extends", "Super", "Const", "Export", "Import", "Async", "Await", "Url", 
+			"Select", "Union", "Where", "Join", "On", "Produce", "Using", "All", 
+			"Within", "Implements", "StrictLet", "NonStrictLet", "Private", "Public", 
+			"Interface", "Package", "Protected", "Static", "Yield", "Identifier", 
+			"StringLiteral", "TemplateStringLiteral", "WhiteSpaces", "LineTerminator", 
+			"NEWLINE", "HtmlComment", "CDataComment", "UnexpectedCharacter", "DoubleStringCharacter", 
+			"SingleStringCharacter", "EscapeSequence", "CharacterEscapeSequence", 
+			"HexEscapeSequence", "UnicodeEscapeSequence", "ExtendedUnicodeEscapeSequence", 
+			"SingleEscapeCharacter", "NonEscapeCharacter", "EscapeCharacter", "LineContinuation", 
+			"HexDigit", "DecimalIntegerLiteral", "ExponentPart", "IdentifierPart", 
+			"IdentifierStart", "UnicodeLetter", "UnicodeCombiningMark", "UnicodeDigit", 
+			"UnicodeConnectorPunctuation", "RegularExpressionFirstChar", "RegularExpressionChar", 
+			"RegularExpressionClassChar", "RegularExpressionBackslashSequence"
+		};
+	}
+	public static final String[] ruleNames = makeRuleNames();
 
-	private static final String[] _LITERAL_NAMES = {
-		null, null, null, null, null, "'['", "']'", "'('", "')'", "'{'", "'}'", 
-		"';'", "','", "'='", "'?'", "':'", "'...'", "'.'", "'++'", "'--'", "'+'", 
-		"'-'", "'~'", "'!'", "'*'", "'/'", "'%'", "'**'", "'??'", "'#'", "'>>'", 
-		"'<<'", "'>>>'", "'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'==='", 
-		"'!=='", "'&'", "'^'", "'|'", "'&&'", "'||'", "'*='", "'/='", "'%='", 
-		"'+='", "'-='", "'<<='", "'>>='", "'>>>='", "'&='", "'^='", "'|='", "'**='", 
-		"'=>'", "'null'", null, null, null, null, null, null, null, null, null, 
-		null, "'break'", "'do'", "'instanceof'", "'typeof'", "'case'", "'else'", 
-		"'new'", "'var'", "'catch'", "'finally'", "'return'", "'void'", "'continue'", 
-		"'for'", "'switch'", "'while'", "'debugger'", "'function'", "'this'", 
-		"'with'", "'default'", "'if'", "'throw'", "'delete'", "'in'", "'try'", 
-		"'as'", "'from'", null, "'class'", "'enum'", "'extends'", "'super'", "'const'", 
-		"'export'", "'import'", "'async'", "'await'", null, "'select'", "'union'", 
-		"'where'", "'join'", "'on'", "'produce'", "'using'", "'all'", "'within'", 
-		"'implements'", null, null, "'private'", "'public'", "'interface'", "'package'", 
-		"'protected'", "'static'", "'yield'", null, null, null, null, null, "'\n'"
-	};
-	private static final String[] _SYMBOLIC_NAMES = {
-		null, "HashBangLine", "MultiLineComment", "SingleLineComment", "RegularExpressionLiteral", 
-		"OpenBracket", "CloseBracket", "OpenParen", "CloseParen", "OpenBrace", 
-		"CloseBrace", "SemiColon", "Comma", "Assign", "QuestionMark", "Colon", 
-		"Ellipsis", "Dot", "PlusPlus", "MinusMinus", "Plus", "Minus", "BitNot", 
-		"Not", "Multiply", "Divide", "Modulus", "Power", "NullCoalesce", "Hashtag", 
-		"RightShiftArithmetic", "LeftShiftArithmetic", "RightShiftLogical", "LessThan", 
-		"MoreThan", "LessThanEquals", "GreaterThanEquals", "Equals_", "NotEquals", 
-		"IdentityEquals", "IdentityNotEquals", "BitAnd", "BitXOr", "BitOr", "And", 
-		"Or", "MultiplyAssign", "DivideAssign", "ModulusAssign", "PlusAssign", 
-		"MinusAssign", "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
-		"RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", "BitOrAssign", 
-		"PowerAssign", "ARROW", "NullLiteral", "BooleanLiteral", "DecimalLiteral", 
-		"HexIntegerLiteral", "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
-		"BigHexIntegerLiteral", "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
-		"BigDecimalIntegerLiteral", "Break", "Do", "Instanceof", "Typeof", "Case", 
-		"Else", "New", "Var", "Catch", "Finally", "Return", "Void", "Continue", 
-		"For", "Switch", "While", "Debugger", "Function", "This", "With", "Default", 
-		"If", "Throw", "Delete", "In", "Try", "As", "From", "Let", "Class", "Enum", 
-		"Extends", "Super", "Const", "Export", "Import", "Async", "Await", "Url", 
-		"Select", "Union", "Where", "Join", "On", "Produce", "Using", "All", "Within", 
-		"Implements", "StrictLet", "NonStrictLet", "Private", "Public", "Interface", 
-		"Package", "Protected", "Static", "Yield", "Identifier", "StringLiteral", 
-		"TemplateStringLiteral", "WhiteSpaces", "LineTerminator", "NEWLINE", "HtmlComment", 
-		"CDataComment", "UnexpectedCharacter"
-	};
+	private static String[] makeLiteralNames() {
+		return new String[] {
+			null, null, null, null, null, "'['", "']'", "'('", "')'", "'{'", "'}'", 
+			"';'", "','", "'='", "'?'", "':'", "'...'", "'.'", "'++'", "'--'", "'+'", 
+			"'-'", "'~'", "'!'", "'*'", "'/'", "'%'", "'**'", "'??'", "'#'", "'>>'", 
+			"'<<'", "'>>>'", "'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'==='", 
+			"'!=='", "'&'", "'^'", "'|'", "'&&'", "'||'", "'*='", "'/='", "'%='", 
+			"'+='", "'-='", "'<<='", "'>>='", "'>>>='", "'&='", "'^='", "'|='", "'**='", 
+			"'=>'", "'null'", null, null, null, null, null, null, null, null, null, 
+			null, "'break'", "'do'", "'instanceof'", "'typeof'", "'case'", "'else'", 
+			"'new'", "'var'", "'catch'", "'finally'", "'return'", "'void'", "'continue'", 
+			"'for'", "'switch'", "'while'", "'debugger'", "'function'", "'this'", 
+			"'with'", "'default'", "'if'", "'throw'", "'delete'", "'in'", "'try'", 
+			"'as'", "'from'", null, "'class'", "'enum'", "'extends'", "'super'", 
+			"'const'", "'export'", "'import'", "'async'", "'await'", null, "'select'", 
+			"'union'", "'where'", "'join'", "'on'", "'produce'", "'using'", "'all'", 
+			"'within'", "'implements'", null, null, "'private'", "'public'", "'interface'", 
+			"'package'", "'protected'", "'static'", "'yield'", null, null, null, 
+			null, null, "'\n'"
+		};
+	}
+	private static final String[] _LITERAL_NAMES = makeLiteralNames();
+	private static String[] makeSymbolicNames() {
+		return new String[] {
+			null, "HashBangLine", "MultiLineComment", "SingleLineComment", "RegularExpressionLiteral", 
+			"OpenBracket", "CloseBracket", "OpenParen", "CloseParen", "OpenBrace", 
+			"CloseBrace", "SemiColon", "Comma", "Assign", "QuestionMark", "Colon", 
+			"Ellipsis", "Dot", "PlusPlus", "MinusMinus", "Plus", "Minus", "BitNot", 
+			"Not", "Multiply", "Divide", "Modulus", "Power", "NullCoalesce", "Hashtag", 
+			"RightShiftArithmetic", "LeftShiftArithmetic", "RightShiftLogical", "LessThan", 
+			"MoreThan", "LessThanEquals", "GreaterThanEquals", "Equals_", "NotEquals", 
+			"IdentityEquals", "IdentityNotEquals", "BitAnd", "BitXOr", "BitOr", "And", 
+			"Or", "MultiplyAssign", "DivideAssign", "ModulusAssign", "PlusAssign", 
+			"MinusAssign", "LeftShiftArithmeticAssign", "RightShiftArithmeticAssign", 
+			"RightShiftLogicalAssign", "BitAndAssign", "BitXorAssign", "BitOrAssign", 
+			"PowerAssign", "ARROW", "NullLiteral", "BooleanLiteral", "DecimalLiteral", 
+			"HexIntegerLiteral", "OctalIntegerLiteral", "OctalIntegerLiteral2", "BinaryIntegerLiteral", 
+			"BigHexIntegerLiteral", "BigOctalIntegerLiteral", "BigBinaryIntegerLiteral", 
+			"BigDecimalIntegerLiteral", "Break", "Do", "Instanceof", "Typeof", "Case", 
+			"Else", "New", "Var", "Catch", "Finally", "Return", "Void", "Continue", 
+			"For", "Switch", "While", "Debugger", "Function", "This", "With", "Default", 
+			"If", "Throw", "Delete", "In", "Try", "As", "From", "Let", "Class", "Enum", 
+			"Extends", "Super", "Const", "Export", "Import", "Async", "Await", "Url", 
+			"Select", "Union", "Where", "Join", "On", "Produce", "Using", "All", 
+			"Within", "Implements", "StrictLet", "NonStrictLet", "Private", "Public", 
+			"Interface", "Package", "Protected", "Static", "Yield", "Identifier", 
+			"StringLiteral", "TemplateStringLiteral", "WhiteSpaces", "LineTerminator", 
+			"NEWLINE", "HtmlComment", "CDataComment", "UnexpectedCharacter"
+		};
+	}
+	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
 	/**
