@@ -4,7 +4,7 @@
     "description": "delven transpiler",
     "main-ts": "src/index.ts",
     "main": "dist/index.js",
-		"type":"module",
+    "___type": "module",
     "scripts": {
         "g4": "java -Xmx500M -cp \"/usr/local/lib/antlr/antlr-4.8-complete.jar:$CLASSPATH\" org.antlr.v4.Tool -Dlanguage=JavaScript ./src/grammar/*.g4 -visitor -o ./src/parser",
         "test": "jest",
@@ -27,7 +27,6 @@
         "@babel/core": "^7.15.0",
         "@babel/preset-env": "^7.15.0",
         "@babel/preset-typescript": "^7.15.0",
-        "@babel/node": "^7.10.1",
         "@babel/plugin-proposal-class-properties": "^7.10.1",
         "@babel/plugin-proposal-nullish-coalescing-operator": "^7.10.4",
         "@babel/plugin-proposal-optional-chaining": "^7.10.1",

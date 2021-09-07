@@ -69,6 +69,7 @@ function discover(expectType: TestType): TestCase[] {
     // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
     // return cases.filter(c => c.name === 'es2017.trailing-commas[trailing-comma-new]')
     // return cases.filter(c => c.name === 'prettier.sequence[sequence-001]')
+    // return cases.filter(c => c.name === 'antlr.ArrowFunctions[StatementBodies]')
     // return cases.filter(c => c.name.indexOf('class-001') > -1)
     // return [cases[0]]
     return cases
@@ -218,8 +219,12 @@ describe("Source-to-Source Test", () => {
         console.info(`same == ${same}`)
         if (delta) {
             console.info("AST Trees")
-            console.info(Utils.toJson(ast))
-            console.info(Utils.toJson(ast2))
+            const a = Utils.toJson(ast)
+            const b = Utils.toJson(ast2)
+            console.info(a)
+            console.info(b)
+            // Utils._write('/tmp/delta-a.json', a)
+            // Utils._write('/tmp/delta-b.json', b)
         }
 
         expect(delta).toBeUndefined()

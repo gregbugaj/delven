@@ -37,7 +37,7 @@ export default class ECMAScriptParserBase extends antlr4.Parser {
         const nextTokenType = this._input.LT(1).type;
         return (
             nextTokenType !== ECMAScriptParser.OpenBrace &&
-            nextTokenType !== ECMAScriptParser.Function
+            nextTokenType !== ECMAScriptParser.Function_
         );
     }
 

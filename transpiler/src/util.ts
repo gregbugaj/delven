@@ -49,13 +49,14 @@ JSON.stringifyOnce = function(obj, replacer, indent) {
  * @param obj the object to sanitize
  */
 function sanitize(obj: any | null): void {
-    if (obj == null || obj == undefined) {
+    if (obj == null) {
         return
     }
 
-    // prevent circular dependenices
+    // prevent circular dependencies
     delete obj["__parent__"]
     delete obj["__path__"]
+    delete obj["__name__"]
 
     const keys = Object.getOwnPropertyNames(obj)
 
@@ -66,7 +67,8 @@ function sanitize(obj: any | null): void {
         }
     }
 }
-export default class Utils {
+
+export default class transpilers {
     static toJson = (obj: unknown): string => {
         const clone = Object.assign({}, obj) // same as clone = {...obj};
         sanitize(clone)

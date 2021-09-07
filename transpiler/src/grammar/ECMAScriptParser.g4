@@ -162,7 +162,7 @@ iterationStatement
 
 varModifier  // let, const - ECMAScript 6
     : Var
-    | Let
+    | let_
     | Const
     ;
 
@@ -227,7 +227,7 @@ debuggerStatement
  ;
 
 functionDeclaration
-    : Async? Function '*'? identifier '(' formalParameterList? ')' '{' functionBody '}'
+    : Async? Function_ '*'? identifier '(' formalParameterList? ')' '{' functionBody '}'
     ;
 
 classDeclaration
@@ -380,7 +380,7 @@ objectLiteral
 
 anoymousFunction
     : functionDeclaration                                                       # FunctionDecl
-    | Async? Function '*'? '(' formalParameterList? ')' '{' functionBody '}'    # AnoymousFunctionDecl
+    | Async? Function_ '*'? '(' formalParameterList? ')' '{' functionBody '}'    # AnoymousFunctionDecl
     | Async? arrowFunctionParameters '=>' arrowFunctionBody                     # ArrowFunction
     ;
 
@@ -483,7 +483,7 @@ keyword
  | Switch
  | While
  | Debugger
- | Function
+ | Function_
  | This
  | With
  | Default
@@ -500,7 +500,7 @@ keyword
  | Export
  | Import
  | Implements
- | Let
+ | let_
  | Private
  | Public
  | Interface
@@ -514,6 +514,10 @@ keyword
  | As
  ;
 
+let_
+    : NonStrictLet
+    | StrictLet
+    ;
 eos
     : SemiColon
     | EOF

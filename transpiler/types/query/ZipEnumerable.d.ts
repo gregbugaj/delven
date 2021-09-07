@@ -1,5 +1,5 @@
 import { Tuple, IEnumerable, Enumerable, BiAction } from "./internal";
-export declare class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult | Tuple<TFirst, TSecond>> {
+export declare class transpilerEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult | Tuple<TFirst, TSecond>> {
     results: TResult[];
     executed: boolean;
     first: IEnumerable<TFirst>;

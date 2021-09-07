@@ -185,15 +185,18 @@ async function main() {
     // }
     `
   code = `
-    new f(x);
+    nums.forEach(v => {
+       if (v % 5 === 0)
+           fives.push(v)
+    })
   `
-   code = `
-    new foo[bar]
-  `
-
-	code = `
-		new Button
-  `
+  //  code = `
+  //   new foo[bar]
+  // `
+  //
+	// code = `
+	// 	new Button
+  // `
     // code = `
     //  this.nums.forEach((v) => {
     //     if (v % 5 === 0)
