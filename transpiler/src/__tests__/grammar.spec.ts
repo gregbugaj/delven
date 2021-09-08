@@ -19,6 +19,7 @@ export type TestCase = {
 
 function discover(expectType: TestType): TestCase[] {
     const results = glob("./test/fixtures/**/*.js", {sync: true})
+
     function getType(name: string): TestType {
         return ["tree", "tokens", "path", "failure"].find(type => type === name.split(".")[1]) as TestType
     }
@@ -70,16 +71,18 @@ function discover(expectType: TestType): TestCase[] {
     // return cases.filter(c => c.name === 'es2017.trailing-commas[trailing-comma-new]')
     // return cases.filter(c => c.name === 'prettier.sequence[sequence-001]')
     // return cases.filter(c => c.name === 'antlr.ArrowFunctions[StatementBodies]')
+    // return cases.filter(c => c.name === 'statement.labelled[migrated_0001]')
+    return cases.filter(c => c.name === 'ES6.identifier[escaped_math_alef]')
     // return cases.filter(c => c.name.indexOf('class-001') > -1)
     // return [cases[0]]
     return cases
     // return []
 }
 
-const createOptions = function() {
+const createOptions = function () {
     return {
         // used to match objects when diffing arrays, by default only === operator is used
-        objectHash: function(obj) {
+        objectHash: function (obj) {
             // this function is used only to when objects are not equal by ref
             return obj._id || obj.id
         },
@@ -92,9 +95,22 @@ const createOptions = function() {
         textDiff: {
             // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
             minLength: 60
-        }
+        },
+
+        /*  propertyFilter: function (name, context) {
+              console.info(`:::: ${name}`)
+              if (name == 'start' || name== 'end'){
+                  let left = context.left[name], right = context.right[name];
+                  context.left[name] = 0
+                  context.right[name] = 0
+                  return false
+              }
+
+              return true
+          },*/
+
         /*propertyFilter: function (name, context) {
-            
+
              this optional function can be specified to ignore object properties (eg. volatile data)
               name: property name, present in either context.left or context.right objects
               context: the diff context (has context.left and context.right objects)
@@ -110,7 +126,7 @@ const createOptions = function() {
 
 const hasError = (ast: any): boolean => ast instanceof ErrorNode
 
-const assertSame = function(expected, ast): {same: boolean; delta: any} {
+const assertSame = function (expected, ast): { same: boolean; delta: any } {
     const a = Utils.toJson(ast)
     const b = Utils.toJson(expected)
 
@@ -168,9 +184,34 @@ if (false)
         })
     })
 
+
+/**
+ *
+ * @param obj the object to sanitize
+ */
+function sanitize(obj: any | null): void {
+    if (obj == null) {
+        return
+    }
+
+    // delete start/end location nodes so we can perform JSON diff
+    delete obj["start"]
+    delete obj["end"]
+
+    const keys = Object.getOwnPropertyNames(obj)
+
+    for (const key in keys) {
+        const name = keys[key]
+        // make sure that we are not following
+        if (obj[name] && typeof obj[name] === "object" && name !== '__parent__') {
+            sanitize(obj[name])
+        }
+    }
+}
+
 describe("Source-to-Source Test", () => {
     beforeAll(() => {
-        ASTParser.trace(true)
+        ASTParser.trace(false)
     })
 
     const cases: TestCase[] = discover("raw")
@@ -178,7 +219,7 @@ describe("Source-to-Source Test", () => {
 
     it.each(mapped)(`%# Source : %s`, (label, _case) => {
         const deck = _case as TestCase
-        // deck.code = `new f(x);`
+         deck.code = ` var 𞸀`
         // console.info(deck.code)
         const ast = ASTParser.parse({type: "code", value: deck.code})
 
@@ -199,7 +240,7 @@ describe("Source-to-Source Test", () => {
         console.info(deck.code)
         console.info(script)
 
-        const ast2 = ASTParser.parse({type: "code", value:  script})
+        const ast2 = ASTParser.parse({type: "code", value: script})
 
         if (hasError(ast2)) {
             const detail = ast2.toString()
@@ -214,9 +255,13 @@ describe("Source-to-Source Test", () => {
             throw new Error(emsg)
         }
 
-        const {same, delta} = assertSame(ast, ast2)
+        // both source and target AST should be this same
+        sanitize(ast)
+        sanitize(ast2)
 
-        console.info(`same == ${same}`)
+        const {same, delta} = assertSame(ast, ast2)
+        // console.info(`same == ${same}`)
+
         if (delta) {
             console.info("AST Trees")
             const a = Utils.toJson(ast)

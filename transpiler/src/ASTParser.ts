@@ -163,7 +163,6 @@ class DelvenErrorListener extends antlr4.error.ErrorListener {
         e: any
     ): void {
         console.error(`Error at ${line}, ${column}  : ${msg}  ${offendingSymbol}`)
-        console.error(this.code)
 
         const error: ErrorInfo = {
             line: line,
@@ -202,7 +201,7 @@ export class ErrorNode extends ASTNode {
 export default abstract class ASTParser {
     private readonly visitor: DelvenASTVisitor
 
-    static _trace = true
+    static _trace = false
 
     /**
      * Enable trace messages
@@ -231,6 +230,8 @@ export default abstract class ASTParser {
                 code = fs.readFileSync(source.value, "utf8")
         }
 
+        // https://github.com/antlr/antlr4/blob/master/doc/unicode.md
+        
         const errorHandler = new DelvenErrorListener(code)
         const chars = new antlr4.InputStream(code)
         const lexer = new DelvenLexer(chars)
@@ -387,6 +388,9 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     }
 
     private asMarker(ctx: RuleContext): Marker {
+        if(ctx.start == null){
+            ctx = ctx.parentCtx
+        }
         return {
             start: ctx.start.start,
             end: ctx.stop.stop,
@@ -443,7 +447,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitProgram(ctx: RuleContext): Node.Module {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ProgramContext)
-        const statements = []
+        const statements:Node.Statement[] = []
         const node = ctx.getChild(0)
         for (let i = 0; i < node.getChildCount(); ++i) {
             const stm = node.getChild(i).getChild(0)
@@ -827,7 +831,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * ```
      * @param ctx
      */
-    visitExportStatement(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportDefaultDeclaration {
+    visitExportStatement(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportDefaultDeclaration | Node.ExportAllDeclaration {
         this.log(ctx, Trace.frame())
         if (ctx instanceof ECMAScriptParser.ExportDeclarationContext) {
             return this.visitExportDeclaration(ctx)
@@ -1145,7 +1149,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.assertType(ctx, ECMAScriptParser.VariableDeclarationContext)
         const assignableContext = this.getTypedRuleContext(ctx, ECMAScriptParser.AssignableContext, 0)
         const assignable = this.visitAssignable(assignableContext)
-        let init = null
+        let init
         if (ctx.getChildCount() == 3) {
             init = this.singleExpression(ctx.getChild(2))
         }
@@ -2176,7 +2180,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         const method = false
         const shorthand = false
 
-        // should check for actuall `[expression]`
+        // should check for actual `[expression]`
         if (propNode.getChildCount() == 3) {
             computed = true
         }
@@ -3080,7 +3084,8 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             return this.visitFunctionBody(bodyContext)
         } else {
             if (node instanceof ECMAScriptParser.ParenthesizedExpressionContext) {
-                return this.coerceToExpressionOrSequence(this.visitParenthesizedExpression(node))
+                // return this.coerceToExpressionOrSequence(this.visitParenthesizedExpression(node))
+                return this.visitParenthesizedExpression(node)
             }
             return this.singleExpression(node)
         }
@@ -3891,7 +3896,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     }
 
     /**
-     * This is quikc and dirty implemenation of TemplateLiteral string iterpolation
+     * This is quick and dirty implementation of TemplateLiteral string interpolation
      * TODO : Update grammar to use ANTLR lexer modes to properly parse the expressions tree rather than reinterpeting expression here
      *
      * Example
