@@ -219,7 +219,7 @@ describe("Source-to-Source Test", () => {
 
     it.each(mapped)(`%# Source : %s`, (label, _case) => {
         const deck = _case as TestCase
-         deck.code = ` var 𞸀`
+         deck.code = `   var 𞸀`
         // console.info(deck.code)
         const ast = ASTParser.parse({type: "code", value: deck.code})
 

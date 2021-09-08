@@ -231,7 +231,7 @@ export default abstract class ASTParser {
         }
 
         // https://github.com/antlr/antlr4/blob/master/doc/unicode.md
-        
+
         const errorHandler = new DelvenErrorListener(code)
         const chars = new antlr4.InputStream(code)
         const lexer = new DelvenLexer(chars)
