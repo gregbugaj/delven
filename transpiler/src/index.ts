@@ -171,7 +171,7 @@ async function main() {
 
     `
 
-  code = `
+    code = `
     if (1 == x) return 1+1
     if (1 == x) {
         return 1+1
@@ -184,25 +184,9 @@ async function main() {
     // if(x==y) return 3
     // }
     `
-  code = `
-    nums.forEach(v => {
-       if (v % 5 === 0)
-           fives.push(v)
-    })
-  `
-  //  code = `
-  //   new foo[bar]
-  // `
-  //
-	// code = `
-	// 	new Button
-  // `
-    // code = `
-    //  this.nums.forEach((v) => {
-    //     if (v % 5 === 0)
-    //         this.fives.push(v)
-    //  })
-    // `
+    code = `let x = 11
+            let z = 12
+    `
 
   const parser_label = chalk.green("parser")
   console.time(parser_label)
@@ -216,9 +200,8 @@ async function main() {
   const generator = new SourceGeneratorWithBuilder()
   const script = generator.toSource(ast)
 
-    ast = ASTParser.parse({ type: "code", value: script })
-
-    console.info("-------")
+  ast = ASTParser.parse({ type: "code", value: script })
+  console.info("-------")
   console.info(script)
 
   console.info("----SOURCE----")

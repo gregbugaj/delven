@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as antlr4 from "antlr4"
+import {RuleContext} from "antlr4"
 
 // import ECMAScriptParserVisitor, {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
 // import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
@@ -13,9 +14,6 @@ import ECMAScriptLexer from "./parser/ECMAScriptLexer"
 
 const DelvenParser = ECMAScriptParser
 const DelvenLexer = ECMAScriptLexer
-const RuleContext = antlr4.RuleContext
-
-// RuleContext >>  antlr4.RuleContext
 
 import {
     ExpressionStatement,
@@ -92,10 +90,20 @@ export type SourceCode = {
     type: SourceType
     value: string
 }
+
 export interface Marker {
-    index: number
-    line: number
-    column: number
+    start: number,
+    end: number,
+    loc: {
+        start: {
+            line: number,
+            column: number,
+        },
+        end: {
+            line: number,
+            column: number,
+        }
+    }
 }
 
 class ModuleSpecifier {
@@ -192,7 +200,7 @@ export class ErrorNode extends ASTNode {
  * ```
  */
 export default abstract class ASTParser {
-    private visitor: DelvenASTVisitor
+    private readonly visitor: DelvenASTVisitor
 
     static _trace = true
 
@@ -205,7 +213,7 @@ export default abstract class ASTParser {
         ASTParser._trace = trace
     }
 
-    constructor(visitor: DelvenASTVisitor) {
+    protected constructor(visitor: DelvenASTVisitor) {
         this.visitor = visitor || new DelvenASTVisitor()
     }
 
@@ -252,7 +260,7 @@ export default abstract class ASTParser {
     }
 
     /**
-     * Parse source and genereate AST tree, ParsetType will be used to make determination of what interla parser to use
+     * Parse source and generate AST tree, ParserType will be used to make determination of what implementation of parser to use
      *
      * @param source
      * @param type
@@ -378,29 +386,29 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         return this.ruleTypeMap.get(id)
     }
 
-    private asMarker(metadata: any) {
-        return {index: 1, line: 1, column: 1}
+    private asMarker(ctx: RuleContext): Marker {
+        return {
+            start: ctx.start.start,
+            end: ctx.stop.stop,
+            loc: {
+                start: {
+                    line: ctx.start.line,
+                    column: ctx.start.column,
+                },
+                end: {
+                    line: ctx.stop.line,
+                    column: ctx.stop.column,
+                }
+            }
+        }
     }
 
     private decorate(node: any, marker: Marker): any {
-        node.start = 0
-        node.end = 0
+        node.start = marker.start
+        node.end = marker.end
+        // TODO : add location parameter
+        // node.loc = marker.loc
         return node
-    }
-
-    private asMetadata(interval: Interval): any {
-        return {
-            start: {
-                line: 1,
-                column: interval.start,
-                offset: 0
-            },
-            end: {
-                line: 1,
-                column: interval.stop,
-                offset: 3
-            }
-        }
     }
 
     private throwTypeError(typeId: any): never {
@@ -409,7 +417,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     /**
      * Throw TypeError only when there is a type provided.
-     * This is usefull when there node ita TerminalNode
+     * This is useful when there node ita TerminalNode
      * @param type
      */
     private throwInsanceError(type: any): never {
@@ -419,7 +427,6 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     private assertType(ctx: RuleContext, type: any): void | never {
         if (!(ctx instanceof type)) {
             throw new TypeError("Invalid type expected : '" + type.name + "' received '" + this.dumpContext(ctx))
-            ;+"'"
         }
     }
 
@@ -446,9 +453,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
                 this.throwInsanceError(this.dumpContext(stm))
             }
         }
-        const interval = ctx.getSourceInterval()
-        const script = new Node.Module(statements)
-        return this.decorate(script, this.asMarker(this.asMetadata(interval)))
+        return this.decorate(new Node.Module(statements), this.asMarker(ctx))
     }
 
     /**
@@ -1030,7 +1035,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitBlock(ctx: RuleContext): Node.BlockStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BlockContext)
-        const body = []
+        const body:any[] = []
         for (let i = 1; i < ctx.getChildCount() - 1; ++i) {
             const node: RuleContext = ctx.getChild(i)
             if (node instanceof ECMAScriptParser.StatementListContext) {
@@ -1042,7 +1047,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
                 this.throwInsanceError(this.dumpContext(node))
             }
         }
-        return this.decorate(new Node.BlockStatement(body), this.asMarker(this.asMetadata(ctx.getSourceInterval())))
+        return this.decorate(new Node.BlockStatement(body), this.asMarker(ctx))
     }
 
     /**
@@ -1384,18 +1389,21 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitContinueStatement(ctx: RuleContext): Node.ContinueStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ContinueStatementContext)
-        let identifier = null
+        let identifier
         if (ctx.identifier()) {
             identifier = this.visitIdentifier(ctx.identifier())
         }
         return new Node.ContinueStatement(identifier)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#breakStatement.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#breakStatement.
+     * @param ctx
+     */
     visitBreakStatement(ctx: RuleContext): Node.BreakStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BreakStatementContext)
-        let identifier = null
+        let identifier
         if (ctx.identifier()) {
             identifier = this.visitIdentifier(ctx.identifier())
         }
@@ -1406,7 +1414,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitReturnStatement(ctx: RuleContext): Node.ReturnStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ReturnStatementContext)
-        let expression = null
+        let expression
         if (ctx.expressionSequence()) {
             expression = this.coerceToExpressionOrSequence(this.visitExpressionSequence(ctx.expressionSequence()))
         }
@@ -1689,7 +1697,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     }
 
     /**
-     * Following fragment breaks 'esprima' compliance but is a perfecly valid.
+     * Following fragment breaks 'esprima' compliance but is a perfectly valid.
      * Validated via 'espree'
      * ```
      * async function* gen(){}
@@ -1792,7 +1800,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#elementList.
-     * compliance: esprima compliane of returning `null`
+     * compliance: esprima compliance of returning `null`
      * `[,,]` should have 2 null values
      *
      * ```
@@ -2360,7 +2368,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         }
         return this.decorate(
             new Node.SequenceExpression(expressions),
-            this.asMarker(this.asMetadata(ctx.getSourceInterval()))
+            this.asMarker(ctx)
         )
     }
 
@@ -3373,7 +3381,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     /**
      * Coerce SequenceExpression that have only one node will be pulled up to `Node.Expression`
-     * complaince(esprima)
+     * compliance(esprima)
      *
      * @param sequence
      */
@@ -3864,12 +3872,12 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.assertNodeCount(ctx, 1)
         const value = ctx.getText()
         const literal = new Node.Literal(Number(value), value)
-        return this.decorate(literal, this.asMarker(this.asMetadata(ctx.getSourceInterval())))
+        return this.decorate(literal, this.asMarker(ctx))
     }
 
     private createLiteralValue(ctx: RuleContext, value: boolean | number | string | null, raw: string): Node.Literal {
         const literal = new Node.Literal(value, raw)
-        return this.decorate(literal, this.asMarker(this.asMetadata(ctx.getSourceInterval())))
+        return this.decorate(literal, this.asMarker(ctx))
     }
 
     private createRegularExpressionLiteral(ctx: RuleContext): Node.RegexLiteral {
@@ -3965,7 +3973,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.assertNodeCount(ctx, 1)
         const value = ctx.getText()
         const identifier = new Node.Identifier(value)
-        return this.decorate(identifier, this.asMarker(this.asMetadata(ctx.getSourceInterval())))
+        return this.decorate(identifier, this.asMarker(ctx))
     }
 
     /**
