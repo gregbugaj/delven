@@ -836,7 +836,7 @@ export class SwitchCase {
     readonly type: string
     readonly test: Expression | null
     readonly consequent: Statement[]
-    constructor(test: Expression, consequent: Statement[]) {
+    constructor(test: Expression | null, consequent: Statement[]) {
         this.type = Syntax.SwitchCase
         this.test = test
         this.consequent = consequent

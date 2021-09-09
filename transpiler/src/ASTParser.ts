@@ -1294,7 +1294,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         } else if (iVariableDeclarationListContext) {
             lhs = this.visitVariableDeclarationList(iVariableDeclarationListContext)
         } else {
-            throw new TypeError("")
+            throw new TypeError("Invalid type")
         }
 
         const rhs: Node.Expression = this.coerceToExpressionOrSequence(
@@ -1321,6 +1321,8 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             left = this.coerceToExpressionOrSequence(this.singleExpression(ctx.singleExpression()))
         } else if (ctx.variableDeclarationList()) {
             left = this.visitVariableDeclarationList(ctx.variableDeclarationList())
+        } else {
+            throw new TypeError("Invalid type")
         }
 
         const right: Node.Expression = this.coerceToExpressionOrSequence(
