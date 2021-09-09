@@ -5,6 +5,7 @@
             "type": "ExpressionStatement",
             "expression": {
                 "type": "OptionalCallExpression",
+                "optional": false,
                 "callee": {
                     "type": "OptionalMemberExpression",
                     "computed": false,
@@ -15,13 +16,10 @@
                     },
                     "property": {
                         "type": "Identifier",
-                        "name": "y",
-                        "start": 0,
-                        "end": 0
+                        "name": "y"
                     }
                 },
-                "arguments": [],
-                "optional": true
+                "arguments": []
             }
         }
     ],

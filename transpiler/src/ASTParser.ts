@@ -196,7 +196,7 @@ export default abstract class ASTParser {
     private readonly visitor: DelvenASTVisitor
 
     static _trace = false
-    static _trace_tokens = false
+    static _trace_tokens = true
 
     /**
      * Enable trace messages
@@ -238,7 +238,7 @@ export default abstract class ASTParser {
         if (ASTParser._trace_tokens) {
             tokenStream.fill()
             const tokens = tokenStream.getTokens()
-            console.log(`Token trace size : = ${tokens} >> `)
+            console.log(`Token trace size : = ${tokens.length} >> `)
             for (const token in tokens) {
                 console.log(token)
             }
@@ -1148,13 +1148,12 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      *    ;
      * @param ctx VariableDeclarationContext
      */
-    //
     visitVariableDeclaration(ctx: RuleContext): Node.VariableDeclarator {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.VariableDeclarationContext)
         const assignableContext = this.getTypedRuleContext(ctx, ECMAScriptParser.AssignableContext, 0)
         const assignable = this.visitAssignable(assignableContext)
-        let init
+        let init:Expression | null = null
         if (ctx.getChildCount() == 3) {
             init = this.singleExpression(ctx.getChild(2))
         }
@@ -1162,7 +1161,10 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         return new Node.VariableDeclarator(assignable, init)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#emptyStatement.
+    /**
+     *  Visit a parse tree produced by ECMAScriptParser#emptyStatement.
+     * @param ctx
+     */
     visitEmptyStatement(ctx: RuleContext): Node.EmptyStatement {
         this.log(ctx, Trace.frame())
         return new Node.EmptyStatement()
@@ -1314,7 +1316,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ForInStatementContext)
 
-        let left: Node.Expression
+        let left: Node.Expression | null = null
         if (ctx.singleExpression()) {
             left = this.coerceToExpressionOrSequence(this.singleExpression(ctx.singleExpression()))
         } else if (ctx.variableDeclarationList()) {
@@ -1394,11 +1396,14 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         return new Node.ForStatement(init, test, update, body)
     }
 
-    // Visit a parse tree produced by ECMAScriptParser#continueStatement.
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#continueStatement.
+     * @param ctx
+     */
     visitContinueStatement(ctx: RuleContext): Node.ContinueStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ContinueStatementContext)
-        let identifier
+        let identifier:Identifier | null = null
         if (ctx.identifier()) {
             identifier = this.visitIdentifier(ctx.identifier())
         }
@@ -1412,7 +1417,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitBreakStatement(ctx: RuleContext): Node.BreakStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BreakStatementContext)
-        let identifier
+        let identifier: Identifier | null = null
         if (ctx.identifier()) {
             identifier = this.visitIdentifier(ctx.identifier())
         }
@@ -1423,10 +1428,11 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitReturnStatement(ctx: RuleContext): Node.ReturnStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ReturnStatementContext)
-        let expression
+        let expression: Expression | null = null
         if (ctx.expressionSequence()) {
             expression = this.coerceToExpressionOrSequence(this.visitExpressionSequence(ctx.expressionSequence()))
         }
+
         return new Node.ReturnStatement(expression)
     }
 
@@ -2907,6 +2913,11 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * ```
      * | singleExpression arguments                # ArgumentsExpression
      * ```
+     *
+     * Example
+     * <pre>
+     * x?.y()
+     * </pre>
      * @param ctx
      */
     visitArgumentsExpression(ctx: RuleContext): Node.CallExpression | Node.OptionalCallExpression {
@@ -2918,7 +2929,8 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         const dot = this.getTypedRuleContext(ctx, ECMAScriptParser.MemberDotExpressionContext)
         const isOptional = this.hasToken(dot, ECMAScriptParser.QuestionMark)
 
-        return isOptional ? new Node.OptionalCallExpression(callee, args) : new Node.CallExpression(callee, args)
+        // console.info('$$$$$ : ' + isOptional)
+        return isOptional ? new Node.OptionalCallExpression(callee, args, false) : new Node.CallExpression(callee, args)
     }
 
     /**

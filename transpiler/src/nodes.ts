@@ -264,11 +264,11 @@ export class OptionalCallExpression {
     readonly optional: boolean
     readonly callee: Expression | Import
     readonly arguments: ArgumentListElement[]
-    constructor(callee: Expression | Import, args: ArgumentListElement[]) {
+    constructor(callee: Expression | Import, args: ArgumentListElement[], optional:boolean) {
         this.type = Syntax.OptionalCallExpression
+        this.optional = optional
         this.callee = callee
         this.arguments = args
-        this.optional = true
     }
 }
 

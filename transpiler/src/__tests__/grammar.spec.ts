@@ -67,13 +67,9 @@ function discover(expectType: TestType): TestCase[] {
         }
     }
 
-    // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')
-    // return cases.filter(c => c.name === 'es2017.trailing-commas[trailing-comma-new]')
-    // return cases.filter(c => c.name === 'prettier.sequence[sequence-001]')
-    // return cases.filter(c => c.name === 'antlr.ArrowFunctions[StatementBodies]')
-    // return cases.filter(c => c.name === 'statement.labelled[migrated_0001]')
-    // return cases.filter(c => c.name === 'ES6.identifier[escaped_math_alef]')
-    // return cases.filter(c => c.name === 'ES6.identifier[escaped_math_dal_part]')
+    // return cases.filter(c => c.name === 'statement.iteration[migrated_0003]')
+    // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')# BUG
+    // return cases.filter(c => c.name === 'ES6.identifier[ethiopic_digits]')
     // return cases.filter(c => c.name.indexOf('class-001') > -1)
     // return [cases[0]]
     return cases
@@ -155,37 +151,6 @@ const assertSame = function (expected, ast): { same: boolean; delta: any } {
     return {same: delta == undefined, delta: delta}
 }
 
-if (false)
-    describe("Generated Grammar Test Suite", () => {
-        beforeAll(() => {
-            ASTParser.trace(false)
-        })
-
-        const cases: TestCase[] = discover("tree")
-        const mapped = cases.map(_case => [_case.name, _case])
-
-        it.each(mapped)(`%# AST : %s`, (label, _case) => {
-            const deck = _case as TestCase
-            const ast = ASTParser.parse({type: "code", value: deck.code})
-
-            if (hasError(ast)) {
-                const detail = ast.toString()
-                const emsg = `Parsing error for :
-            \n${detail}\n
-            ------------------Source-----------------------
-            \n${deck.code}\n
-             `
-                throw new Error(emsg)
-            }
-
-            const expected = JSON.parse(deck.expected) as ASTNode
-            const {same, delta} = assertSame(expected, ast)
-
-            expect(delta).toBeUndefined()
-        })
-    })
-
-
 /**
  *
  * @param obj the object to sanitize
@@ -210,42 +175,84 @@ function sanitize(obj: any | null): void {
     }
 }
 
-describe("Source-to-Source Test", () => {
-    beforeAll(() => {
-        ASTParser.trace(false)
-    })
+if (false)
+    describe("Generated Grammar Test Suite", () => {
+        beforeAll(() => {
+            ASTParser.trace(false)
+        })
 
-    const cases: TestCase[] = discover("raw")
-    const mapped = cases.map(_case => [_case.name, _case])
+        const cases: TestCase[] = discover("tree")
+        const mapped = cases.map(_case => [_case.name, _case])
 
-    it.each(mapped)(`%# Source : %s`, (label, _case) => {
-        const deck = _case as TestCase
-         // deck.code = `   var 𞸀`
-        // console.info(deck.code)
-        const ast = ASTParser.parse({type: "code", value: deck.code})
+        it.each(mapped)(`%# AST : %s`, (label, _case) => {
+            const deck = _case as TestCase
+            const ast = ASTParser.parse({type: "code", value: deck.code})
 
-        if (hasError(ast)) {
-            const detail = ast.toString()
-            const emsg = `Parsing error for source-to-source translation :
+            if (hasError(ast)) {
+                const detail = ast.toString()
+                const emsg = `Parsing error for :
             \n${detail}\n
             ------------------Source-----------------------
             \n${deck.code}\n
              `
-            throw new Error(emsg)
-        }
+                throw new Error(emsg)
+            }
 
-        const generator = new SourceGeneratorWithBuilder()
-        let script = generator.toSource(ast)
+            const expected = JSON.parse(deck.expected) as ASTNode
 
-        console.info("script")
-        console.info(deck.code)
-        console.info(script)
+            sanitize(ast)
+            sanitize(expected)
 
-        const ast2 = ASTParser.parse({type: "code", value: script})
+            const a = Utils.toJson(ast)
+            const b = Utils.toJson(expected)
+            console.info(a)
+            console.info(b)
+            Utils._write('/tmp/delta-a.json', a)
+            Utils._write('/tmp/delta-b.json', b)
 
-        if (hasError(ast2)) {
-            const detail = ast2.toString()
-            const emsg = `Parsing error for source-to-source translation :
+            const {same, delta} = assertSame(expected, ast)
+
+            expect(delta).toBeUndefined()
+        })
+    })
+
+if (true)
+    describe("Source-to-Source Test", () => {
+        beforeAll(() => {
+            ASTParser.trace(false)
+        })
+
+        const cases: TestCase[] = discover("raw")
+        const mapped = cases.map(_case => [_case.name, _case])
+
+        it.each(mapped)(`%# Source : %s`, (label, _case) => {
+            const deck = _case as TestCase
+            // deck.code = `   var 𞸀`
+            // console.info(deck.code)
+            const ast = ASTParser.parse({type: "code", value: deck.code})
+
+            if (hasError(ast)) {
+                const detail = ast.toString()
+                const emsg = `Parsing error for source-to-source translation :
+            \n${detail}\n
+            ------------------Source-----------------------
+            \n${deck.code}\n
+             `
+                throw new Error(emsg)
+            }
+
+            const generator = new SourceGeneratorWithBuilder()
+            let script = generator.toSource(ast)
+
+            console.info("script")
+            console.info(deck.code)
+            console.info(script)
+
+            const ast2 = ASTParser.parse({type: "code", value: script})
+
+            if (hasError(ast2)) {
+                const detail = ast2.toString()
+                const emsg = `Parsing error for source-to-source translation :
             \n${detail}\n
             ------------------Source-----------------------
             \n${deck.code}\n
@@ -253,25 +260,25 @@ describe("Source-to-Source Test", () => {
             \n${script}\n
             -----------------------------------------------
              `
-            throw new Error(emsg)
-        }
+                throw new Error(emsg)
+            }
 
-        // both source and target AST should be this same
-        sanitize(ast)
-        sanitize(ast2)
+            // both source and target AST should be this same
+            sanitize(ast)
+            sanitize(ast2)
 
-        const {same, delta} = assertSame(ast, ast2)
+            const {same, delta} = assertSame(ast, ast2)
 
-        if (delta) {
-            console.info("AST Trees")
-            const a = Utils.toJson(ast)
-            const b = Utils.toJson(ast2)
-            console.info(a)
-            console.info(b)
-            // Utils._write('/tmp/delta-a.json', a)
-            // Utils._write('/tmp/delta-b.json', b)
-        }
+            if (delta) {
+                console.info("AST Trees")
+                const a = Utils.toJson(ast)
+                const b = Utils.toJson(ast2)
+                console.info(a)
+                console.info(b)
+                // Utils._write('/tmp/delta-a.json', a)
+                // Utils._write('/tmp/delta-b.json', b)
+            }
 
-        expect(delta).toBeUndefined()
+            expect(delta).toBeUndefined()
+        })
     })
-})
