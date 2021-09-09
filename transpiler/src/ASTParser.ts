@@ -2978,8 +2978,8 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         let exp
         if (node instanceof ECMAScriptParser.FunctionDeclContext) {
             exp = this.visitFunctionDecl(ctx.getChild(0))
-        } else if (node instanceof ECMAScriptParser.AnoymousFunctionDeclContext) {
-            exp = this.visitAnoymousFunctionDecl(ctx.getChild(0))
+        } else if (node instanceof ECMAScriptParser.AnonymousFunctionDeclContext) {
+            exp = this.visitAnonymousFunctionDecl(ctx.getChild(0))
         } else if (node instanceof ECMAScriptParser.ArrowFunctionContext) {
             exp = this.visitArrowFunction(ctx.getChild(0))
         } else {
@@ -3004,9 +3004,9 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * ```
      * @param ctx
      */
-    visitAnoymousFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration {
+    visitAnonymousFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration {
         this.log(ctx, Trace.frame())
-        this.assertType(ctx, ECMAScriptParser.AnoymousFunctionDeclContext)
+        this.assertType(ctx, ECMAScriptParser.AnonymousFunctionDeclContext)
         return this.functionDeclaration(ctx)
     }
 
@@ -3876,8 +3876,6 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
                     return this.createLiteralValue(node, raw === "true", raw)
                 case ECMAScriptParser.StringLiteral:
                     return this.createLiteralValue(node, raw.replace(/"/g, "").replace(/'/g, ""), raw)
-                case ECMAScriptParser.TemplateStringLiteral:
-                    return this.createTemplateLiteral(node)
                 case ECMAScriptParser.RegularExpressionLiteral:
                     return this.createRegularExpressionLiteral(node)
             }
@@ -3887,9 +3885,34 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             return this.visitNumericLiteral(node)
         } else if (node instanceof ECMAScriptParser.BigintLiteralContext) {
             return this.visitBigintLiteral(node)
+        }else if (node instanceof ECMAScriptParser.TemplateStringLiteralContext) {
+            return this.visitTemplateStringLiteral(node)
         }
-
         this.throwInsanceError(this.dumpContext(node))
+    }
+
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#templateStringLiteral.
+     * @param ctx
+     */
+    visitTemplateStringLiteral(ctx) {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.TemplateStringLiteralContext)
+        this.dumpContextAllChildren(ctx)
+        // this.assertNodeCount(ctx, 2)
+
+        // return this.createTemplateLiteral(node)
+    }
+
+
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#templateStringAtom.
+     * @param ctx
+     */
+    visitTemplateStringAtom(ctx) {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.TemplateStringLiteralContext)
+        this.assertNodeCount(ctx, 1)
     }
 
     /**

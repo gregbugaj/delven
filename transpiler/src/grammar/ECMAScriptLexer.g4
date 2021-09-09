@@ -44,6 +44,7 @@ CloseBracket:                   ']';
 OpenParen:                      '(';
 CloseParen:                     ')';
 OpenBrace:                      '{' {this.ProcessOpenBrace();};
+TemplateCloseBrace:             {this.IsInTemplateString()}? '}' -> popMode;
 CloseBrace:                     '}' {this.ProcessCloseBrace();};
 SemiColon:                      ';';
 Comma:                          ',';
@@ -200,14 +201,12 @@ StringLiteral:                 ('"' DoubleStringCharacter* '"'
              |                  '\'' SingleStringCharacter* '\'') {this.ProcessStringLiteral();}
              ;
 
-// TODO: `${`tmp`}`
-TemplateStringLiteral:          '`' ('\\`' | ~'`')* '`';
+BackTick:                       '`' {this.IncreaseTemplateDepth();} -> pushMode(TEMPLATE);
+//BackTick:                       '`'  -> pushMode(TEMPLATE);
 
 WhiteSpaces:                    [\t\u000B\u000C\u0020\u00A0]+ -> channel(HIDDEN);
 
 LineTerminator:                 [\r\n\u2028\u2029] -> channel(HIDDEN);
-
-NEWLINE : '\n';
 
 /// Comments
 
@@ -215,6 +214,12 @@ NEWLINE : '\n';
 HtmlComment:                    '<!--' .*? '-->' -> channel(HIDDEN);
 CDataComment:                   '<![CDATA[' .*? ']]>' -> channel(HIDDEN);
 UnexpectedCharacter:            . -> channel(ERROR);
+mode TEMPLATE;
+
+BackTickInside:                 '`' {this.DecreaseTemplateDepth();} -> type(BackTick), popMode;
+//BackTickInside:                 '`'  -> type(BackTick), popMode;
+TemplateStringStartExpression:  '${' -> pushMode(DEFAULT_MODE);
+TemplateStringAtom:             ~[`];
 
 // Fragment rules
 

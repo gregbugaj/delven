@@ -186,7 +186,7 @@ async function main() {
     `
 
     code = `
-        var 𞸀
+        class a13 extends \`Test \${a} \` {}
     `
 
     const parser_label = chalk.green("parser")

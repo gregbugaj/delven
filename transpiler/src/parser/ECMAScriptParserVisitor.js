@@ -714,8 +714,8 @@ export default class ECMAScriptParserVisitor extends antlr4.tree.ParseTreeVisito
 	}
 
 
-	// Visit a parse tree produced by ECMAScriptParser#AnoymousFunctionDecl.
-	visitAnoymousFunctionDecl(ctx) {
+	// Visit a parse tree produced by ECMAScriptParser#AnonymousFunctionDecl.
+	visitAnonymousFunctionDecl(ctx) {
 	  return this.visitChildren(ctx);
 	}
 
@@ -746,6 +746,18 @@ export default class ECMAScriptParserVisitor extends antlr4.tree.ParseTreeVisito
 
 	// Visit a parse tree produced by ECMAScriptParser#literal.
 	visitLiteral(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ECMAScriptParser#templateStringLiteral.
+	visitTemplateStringLiteral(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by ECMAScriptParser#templateStringAtom.
+	visitTemplateStringAtom(ctx) {
 	  return this.visitChildren(ctx);
 	}
 

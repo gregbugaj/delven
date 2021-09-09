@@ -317,13 +317,14 @@ expressionSequence
  ;
 
 singleExpression
-    : anoymousFunction                                                      # FunctionExpression  // GB: footnote 5
+    : anonymousFunction                                                      # FunctionExpression  // GB: footnote 5
     | Class identifier? classTail                                           # ClassExpression
     | singleExpression '[' expressionSequence ']'                           # MemberIndexExpression
     | New singleExpression '.' identifierName arguments                     # MemberNewExpression  // GB: Footnote 8
     | singleExpression '?'? '.' '#'? identifierName                         # MemberDotExpression
+    // Split to try `new Date()` first, then `new Date`.
     | New singleExpression arguments                                        # NewExpression      // GB:footnote 4
-    | New singleExpression arguments?                                       # NewExpression      // GB:footnote 4
+    | New singleExpression                                                  # NewExpression      // GB:footnote 4
     | New '.' identifier                                                    # MetaExpression     // new.target
     | singleExpression arguments                                            # ArgumentsExpression
     | singleExpression {this.notLineTerminator()}? '++'                     # PostIncrementExpression
@@ -356,7 +357,7 @@ singleExpression
     | <assoc=right> singleExpression '=' singleExpression                   # AssignmentExpression
     | <assoc=right> singleExpression assignmentOperator singleExpression    # AssignmentOperatorExpression
     | Import '(' singleExpression ')'                                       # ImportExpression
-    | singleExpression TemplateStringLiteral                                # TemplateStringExpression  // ECMAScript 6
+    | singleExpression templateStringLiteral                                # TemplateStringExpression  // ECMAScript 6
     | This                                                                  # ThisExpression
     | Yield ({this.notLineTerminator()}? ('*')? expressionSequence)?        # YieldExpression           // ECMAScript 6 : GB Footnote 1, 6
     | identifier                                                            # IdentifierExpression
@@ -378,9 +379,9 @@ objectLiteral
     : '{' (propertyAssignment (',' propertyAssignment)*)? ','? '}'
     ;
 
-anoymousFunction
+anonymousFunction
     : functionDeclaration                                                       # FunctionDecl
-    | Async? Function_ '*'? '(' formalParameterList? ')' '{' functionBody '}'    # AnoymousFunctionDecl
+    | Async? Function_ '*'? '(' formalParameterList? ')' '{' functionBody '}'    # AnonymousFunctionDecl
     | Async? arrowFunctionParameters '=>' arrowFunctionBody                     # ArrowFunction
     ;
 
@@ -419,10 +420,19 @@ literal
     : NullLiteral
     | BooleanLiteral
     | StringLiteral
-    | TemplateStringLiteral
+    | templateStringLiteral
     | RegularExpressionLiteral
     | numericLiteral
     | bigintLiteral
+    ;
+
+templateStringLiteral
+    : BackTick templateStringAtom* BackTick
+    ;
+
+templateStringAtom
+    : TemplateStringAtom
+    | TemplateStringStartExpression singleExpression TemplateCloseBrace
     ;
 
 numericLiteral
