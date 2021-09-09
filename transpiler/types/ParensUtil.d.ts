@@ -3,5 +3,5 @@
  *
  * @param node the node the check
  */
-declare function hasParenthesis(node: any, name?: string | null): boolean;
-export { hasParenthesis };
+declare function hasParenthesis(node: any, name?: string | null): boolean
+export {hasParenthesis}

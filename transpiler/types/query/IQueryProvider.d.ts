@@ -1,5 +1,5 @@
-import * as Node from "../nodes";
-import { IQueryable } from "./IQueryable";
+import * as Node from "../nodes"
+import {IQueryable} from "./IQueryable"
 /**
  * The query provider responsible for interpreting and executing the query.
  *
@@ -11,10 +11,10 @@ export default interface IQueryProvider {
      * Create queries that are associated with the data source.
      * @param expression
      */
-    CreateQuery<T>(expression: Node.Expression): IQueryable<T>;
+    CreateQuery<T>(expression: Node.Expression): IQueryable<T>
     /**
      * Execute method sends queries off to be executed.
      * @param expression
      */
-    Execute<T>(expression: Node.Expression): T;
+    Execute<T>(expression: Node.Expression): T
 }

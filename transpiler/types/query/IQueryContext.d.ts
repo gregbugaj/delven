@@ -1,5 +1,4 @@
 /**
  * Marker interface
  */
-export interface IQueryContext {
-}
+export interface IQueryContext {}

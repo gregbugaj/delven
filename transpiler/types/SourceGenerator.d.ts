@@ -1,4 +1,4 @@
-import * as Node from "./nodes";
+import * as Node from "./nodes"
 /**
  * Source generator to transform valid AST back into ECMAScript
  * JS does not support overloading, so the visit methods need different names.
@@ -18,7 +18,7 @@ export default class SourceGeneratorWithBuilder {
      *
      * @param node
      */
-    toSource(node: Node.Module): string;
+    toSource(node: Node.Module): string
     /**
      * Decorate node with new properties `__path__` and `__parent__`
      * to provide additional information durning source transpilling
@@ -30,5 +30,5 @@ export default class SourceGeneratorWithBuilder {
      * @param parent the partent node
      * @param path the current path in the object graph
      */
-    decorate(node: any, parent: any | null, path: string): void;
+    decorate(node: any, parent: any | null, path: string): void
 }

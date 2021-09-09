@@ -44,7 +44,7 @@ export class Enumerable<T> extends IEnumerable<T> {
      * @returns val or evaluated function value
      */
     protected unwrap(val: any): any {
-        if (typeof val === 'function') {
+        if (typeof val === "function") {
             return val()
         }
         return val
@@ -55,10 +55,9 @@ export class Enumerable<T> extends IEnumerable<T> {
      * @param source
      */
     static of<T>(source: IterableDataSource<T> | T): IEnumerable<T> {
-        const isIterable = (obj) => {
-            if (obj == null)
-                return false;
-            return typeof obj[Symbol.iterator] === 'function' || typeof obj[Symbol.asyncIterator] === 'function'
+        const isIterable = obj => {
+            if (obj == null) return false
+            return typeof obj[Symbol.iterator] === "function" || typeof obj[Symbol.asyncIterator] === "function"
         }
         if (isIterable(source)) {
             return new Enumerable(<IterableDataSource<T>>source)
@@ -216,7 +215,7 @@ export class Enumerable<T> extends IEnumerable<T> {
         return new ConcatEnumerable<T>(this, secondSource)
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
         for await (const val of this.source) {
             yield val
         }
@@ -250,29 +249,28 @@ export class Enumerable<T> extends IEnumerable<T> {
  * let enumerable = [1, 2].asEnumerable();
  */
 
-
 export {}
 declare global {
     interface Array<T> {
-        count(): number;
+        count(): number
 
-        asEnumerable(): IEnumerable<T>;
+        asEnumerable(): IEnumerable<T>
     }
 }
 
 if (!Array.prototype.asEnumerable) {
-    Object.defineProperty(Array.prototype, 'asEnumerable', {
+    Object.defineProperty(Array.prototype, "asEnumerable", {
         enumerable: false,
         writable: false,
         configurable: false,
         value: function asEnumerable() {
-            return new Enumerable(this);
+            return new Enumerable(this)
         }
     })
 }
 // Testing only
 if (!Array.prototype.count) {
-    Object.defineProperty(Array.prototype, 'count', {
+    Object.defineProperty(Array.prototype, "count", {
         enumerable: false,
         writable: false,
         configurable: false,

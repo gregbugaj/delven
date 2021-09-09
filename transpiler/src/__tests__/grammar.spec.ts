@@ -6,7 +6,7 @@ import * as path from "path"
 import Utils from "../util"
 // import { diffString, diff } from 'json-diff'
 import * as jsondiffpatch from "jsondiffpatch"
-import SourceGeneratorWithBuilder from "../SourceGenerator";
+import SourceGeneratorWithBuilder from "../SourceGenerator"
 
 export type TestType = "tree" | "tokens" | "path" | "failure" | "raw"
 export type TestCase = {
@@ -76,10 +76,10 @@ function discover(expectType: TestType): TestCase[] {
     // return []
 }
 
-const createOptions = function () {
+const createOptions = function() {
     return {
         // used to match objects when diffing arrays, by default only === operator is used
-        objectHash: function (obj) {
+        objectHash: function(obj) {
             // this function is used only to when objects are not equal by ref
             return obj._id || obj.id
         },
@@ -92,7 +92,7 @@ const createOptions = function () {
         textDiff: {
             // default 60, minimum string length (left and right sides) to use text diff algorythm: google-diff-match-patch
             minLength: 60
-        },
+        }
 
         /*  propertyFilter: function (name, context) {
               console.info(`:::: ${name}`)
@@ -123,7 +123,7 @@ const createOptions = function () {
 
 const hasError = (ast: any): boolean => ast instanceof ErrorNode
 
-const assertSame = function (expected, ast): { same: boolean; delta: any } {
+const assertSame = function(expected, ast): {same: boolean; delta: any} {
     const a = Utils.toJson(ast)
     const b = Utils.toJson(expected)
 
@@ -169,7 +169,7 @@ function sanitize(obj: any | null): void {
     for (const key in keys) {
         const name = keys[key]
         // make sure that we are not following
-        if (obj[name] && typeof obj[name] === "object" && name !== '__parent__') {
+        if (obj[name] && typeof obj[name] === "object" && name !== "__parent__") {
             sanitize(obj[name])
         }
     }
@@ -207,8 +207,8 @@ if (false)
             const b = Utils.toJson(expected)
             console.info(a)
             console.info(b)
-            Utils._write('/tmp/delta-a.json', a)
-            Utils._write('/tmp/delta-b.json', b)
+            Utils._write("/tmp/delta-a.json", a)
+            Utils._write("/tmp/delta-b.json", b)
 
             const {same, delta} = assertSame(expected, ast)
 

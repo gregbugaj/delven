@@ -21,7 +21,6 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult 
     }
 
     async *asyncIterator(): AsyncGenerator<TResult | Tuple<TFirst, TSecond>, unknown, unknown> {
-
         const lhs = this.first.asyncIterator()
         const rhs = this.second.asyncIterator()
 

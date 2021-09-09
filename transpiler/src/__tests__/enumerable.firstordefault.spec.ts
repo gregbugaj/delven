@@ -2,8 +2,7 @@ import {Enumerable} from "../query/internal"
 
 describe("Enumerable FirstOrDefault", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    beforeAll(() => {
-    })
+    beforeAll(() => {})
 
     test("FirstOrDefault-001", async () => {
         const numbers = Enumerable.of([2, 6, 4, 8])

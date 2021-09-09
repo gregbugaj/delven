@@ -6,8 +6,7 @@ import {Enumerable} from "../query/internal"
  */
 describe("Enumerable Iterator", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    beforeAll(() => {
-    })
+    beforeAll(() => {})
 
     test("basic-async-iter", async () => {
         const src = [2, 6, 4, 8]
@@ -40,6 +39,6 @@ describe("Enumerable Iterator", () => {
         for await (const val of enumerable) {
             results.push(val)
         }
-        expect(results).toEqual(['T', 'E', 'S', 'T'])
+        expect(results).toEqual(["T", "E", "S", "T"])
     })
 })

@@ -949,7 +949,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
             this.write(";", false)
         }
 
-        if(sequence.expressions.length > 1){
+        if (sequence.expressions.length > 1) {
             this.write("(", false)
         }
 
@@ -965,10 +965,9 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
             }
         }
 
-        if(sequence.expressions.length > 1){
+        if (sequence.expressions.length > 1) {
             this.write(")", false)
         }
-
     }
 
     visitTemplateLiteral(template: Node.TemplateLiteral): void {

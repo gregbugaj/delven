@@ -86,16 +86,16 @@ export type SourceCode = {
 }
 
 export interface Marker {
-    start: number,
-    end: number,
+    start: number
+    end: number
     loc: {
         start: {
-            line: number,
-            column: number,
-        },
+            line: number
+            column: number
+        }
         end: {
-            line: number,
-            column: number,
+            line: number
+            column: number
         }
     }
 }
@@ -323,7 +323,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     private dumpContext(ctx: RuleContext) {
         const keys = Object.getOwnPropertyNames(DelvenParser)
-        const context:any = []
+        const context: any = []
         for (const key in keys) {
             const name = keys[key]
             // this only test inheritance
@@ -352,7 +352,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             let longest = 0
             for (const key in context) {
                 const name = context[key]
-                let obj:any = ECMAScriptParser[name]
+                let obj: any = ECMAScriptParser[name]
                 let chain = 1
                 do {
                     ++chain
@@ -393,7 +393,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     }
 
     private asMarker(ctx: RuleContext): Marker {
-        if(ctx.start == null){
+        if (ctx.start == null) {
             ctx = ctx.parentCtx
         }
         return {
@@ -402,11 +402,11 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             loc: {
                 start: {
                     line: ctx.start.line,
-                    column: ctx.start.column,
+                    column: ctx.start.column
                 },
                 end: {
                     line: ctx.stop.line,
-                    column: ctx.stop.column,
+                    column: ctx.stop.column
                 }
             }
         }
@@ -452,7 +452,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitProgram(ctx: RuleContext): Node.Module {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ProgramContext)
-        const statements:Node.Statement[] = []
+        const statements: Node.Statement[] = []
         const node = ctx.getChild(0)
         for (let i = 0; i < node.getChildCount(); ++i) {
             const stm = node.getChild(i).getChild(0)
@@ -836,7 +836,9 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * ```
      * @param ctx
      */
-    visitExportStatement(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportDefaultDeclaration | Node.ExportAllDeclaration {
+    visitExportStatement(
+        ctx: RuleContext
+    ): Node.ExportNamedDeclaration | Node.ExportDefaultDeclaration | Node.ExportAllDeclaration {
         this.log(ctx, Trace.frame())
         if (ctx instanceof ECMAScriptParser.ExportDeclarationContext) {
             return this.visitExportDeclaration(ctx)
@@ -1044,7 +1046,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitBlock(ctx: RuleContext): Node.BlockStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BlockContext)
-        const body:any[] = []
+        const body: any[] = []
         for (let i = 1; i < ctx.getChildCount() - 1; ++i) {
             const node: RuleContext = ctx.getChild(i)
             if (node instanceof ECMAScriptParser.StatementListContext) {
@@ -1153,7 +1155,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.assertType(ctx, ECMAScriptParser.VariableDeclarationContext)
         const assignableContext = this.getTypedRuleContext(ctx, ECMAScriptParser.AssignableContext, 0)
         const assignable = this.visitAssignable(assignableContext)
-        let init:Expression | null = null
+        let init: Expression | null = null
         if (ctx.getChildCount() == 3) {
             init = this.singleExpression(ctx.getChild(2))
         }
@@ -1405,7 +1407,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitContinueStatement(ctx: RuleContext): Node.ContinueStatement {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.ContinueStatementContext)
-        let identifier:Identifier | null = null
+        let identifier: Identifier | null = null
         if (ctx.identifier()) {
             identifier = this.visitIdentifier(ctx.identifier())
         }
@@ -2383,10 +2385,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         for (const node of this.filterSymbols(ctx)) {
             expressions.push(this.singleExpression(node))
         }
-        return this.decorate(
-            new Node.SequenceExpression(expressions),
-            this.asMarker(ctx)
-        )
+        return this.decorate(new Node.SequenceExpression(expressions), this.asMarker(ctx))
     }
 
     /**
@@ -3409,7 +3408,9 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      *
      * @param expression
      */
-    private coerceToExpressionOrSequence(expression: Node.SequenceExpression | Node.Expression): Node.SequenceExpression | Node.Expression {
+    private coerceToExpressionOrSequence(
+        expression: Node.SequenceExpression | Node.Expression
+    ): Node.SequenceExpression | Node.Expression {
         if (expression instanceof Node.SequenceExpression) {
             if (expression.expressions) {
                 if (expression.expressions.length == 1) {

@@ -3,8 +3,7 @@ import InvalidOperationException from "../query/InvalidOperationException"
 
 describe("Enumerable First", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    beforeAll(() => {
-    })
+    beforeAll(() => {})
 
     test("first-001", async () => {
         const numbers = Enumerable.of([2, 6, 4, 8])

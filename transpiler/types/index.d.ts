@@ -1,3 +1,3 @@
-import ASTParser from "./ASTParser";
-import SourceGenerator from "./SourceGenerator";
-export { ASTParser, SourceGenerator };
+import ASTParser from "./ASTParser"
+import SourceGenerator from "./SourceGenerator"
+export {ASTParser, SourceGenerator}

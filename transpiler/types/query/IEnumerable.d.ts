@@ -25,7 +25,7 @@
 /**
  * Tuple can contain two values of different data types.
  */
-export declare type Tuple<TFirts, TSecond> = [TFirts, TSecond];
+export declare type Tuple<TFirts, TSecond> = [TFirts, TSecond]
 /**
  * Action interface represents a function that accepts one argument and produces a result.
  *
@@ -34,7 +34,7 @@ export declare type Tuple<TFirts, TSecond> = [TFirts, TSecond];
  *   R - the type of the result of the function
  */
 export interface Action<T = any, R = any> {
-    (val: T): R;
+    (val: T): R
 }
 /**
  * BiAction interface represents a function that accepts two arguments and produces a result.
@@ -45,61 +45,61 @@ export interface Action<T = any, R = any> {
  *   TReturn - the type of the result of the function
  */
 export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
-    (first: TFirst, second: TSecond): TReturn;
+    (first: TFirst, second: TSecond): TReturn
 }
 export declare abstract class IEnumerable<T> {
     /**
      * Return iterator for current datasouce
      */
-    abstract asyncIterator(): AsyncGenerator<unknown, unknown, unknown>;
-    iterator(): IterableIterator<T>;
+    abstract asyncIterator(): AsyncGenerator<unknown, unknown, unknown>
+    iterator(): IterableIterator<T>
     /**
      * Return chainable iterator
      */
-    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>;
+    abstract iterOfIter(): AsyncGenerator<T, unknown, T | unknown>
     /**
      * Return current 'async' iterator
      */
-    [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown>;
+    [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown>
     /**
      * Prevent default use of non asycn iterator
      */
-    [Symbol.iterator](): IterableIterator<T>;
+    [Symbol.iterator](): IterableIterator<T>
     /**
      * Use the toArray method to create an array from results of a query.
      * Calling toArray also forces immediate execution of the query.
      */
-    abstract toArray(): Promise<ArrayLike<any>>;
+    abstract toArray(): Promise<ArrayLike<any>>
     /**
      * Determines wheter a sequence contains any elements
      * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
      */
-    abstract Any(): boolean;
+    abstract Any(): boolean
     /**
      * Gets the number of elements in the collection
      */
-    abstract Count(): number;
+    abstract Count(): number
     /**
      * Filters a sequence of values based on a predicate.
      * @param predicate
      */
-    abstract Where(predicate: Action<T, boolean>): IEnumerable<T>;
+    abstract Where(predicate: Action<T, boolean>): IEnumerable<T>
     /**
      * Projects each element of a sequence into a new form.
      * @param selector
      */
-    abstract Select<R>(selector: Action<T, R>): IEnumerable<R>;
+    abstract Select<R>(selector: Action<T, R>): IEnumerable<R>
     /**
      * Return new Enumerable where first n elements are taken
      * @param count
      */
-    abstract Take(count: number): IEnumerable<T>;
+    abstract Take(count: number): IEnumerable<T>
     /**
      * Computes the sum of the sequence of that are obtained by invoking a transform
      * function on each element of the input sequence
      * @param action A transform function to apply to each element.
      */
-    abstract Sum<R extends number>(action?: Action<T, R>): number;
+    abstract Sum<R extends number>(action?: Action<T, R>): number
     /**
      * Produces a sequence of tuples with elements from the two specified sequences.
      * The function will only iterate over the smallest list passed
@@ -107,5 +107,8 @@ export declare abstract class IEnumerable<T> {
      * @param other
      * @param transformer
      */
-    abstract Zip<TSecond, TResult>(other: IEnumerable<TSecond>, transformer?: BiAction<T, TSecond, TResult>): IEnumerable<TResult | Tuple<T, TSecond>>;
+    abstract Zip<TSecond, TResult>(
+        other: IEnumerable<TSecond>,
+        transformer?: BiAction<T, TSecond, TResult>
+    ): IEnumerable<TResult | Tuple<T, TSecond>>
 }
