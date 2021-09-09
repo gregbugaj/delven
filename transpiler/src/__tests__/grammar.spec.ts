@@ -72,7 +72,8 @@ function discover(expectType: TestType): TestCase[] {
     // return cases.filter(c => c.name === 'prettier.sequence[sequence-001]')
     // return cases.filter(c => c.name === 'antlr.ArrowFunctions[StatementBodies]')
     // return cases.filter(c => c.name === 'statement.labelled[migrated_0001]')
-    return cases.filter(c => c.name === 'ES6.identifier[escaped_math_alef]')
+    // return cases.filter(c => c.name === 'ES6.identifier[escaped_math_alef]')
+    // return cases.filter(c => c.name === 'ES6.identifier[escaped_math_dal_part]')
     // return cases.filter(c => c.name.indexOf('class-001') > -1)
     // return [cases[0]]
     return cases
@@ -219,7 +220,7 @@ describe("Source-to-Source Test", () => {
 
     it.each(mapped)(`%# Source : %s`, (label, _case) => {
         const deck = _case as TestCase
-         deck.code = `   var 𞸀`
+         // deck.code = `   var 𞸀`
         // console.info(deck.code)
         const ast = ASTParser.parse({type: "code", value: deck.code})
 
@@ -260,7 +261,6 @@ describe("Source-to-Source Test", () => {
         sanitize(ast2)
 
         const {same, delta} = assertSame(ast, ast2)
-        // console.info(`same == ${same}`)
 
         if (delta) {
             console.info("AST Trees")

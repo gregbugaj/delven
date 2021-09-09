@@ -184,8 +184,8 @@ async function main() {
     // if(x==y) return 3
     // }
     `
-    // var \u{1EE00}
-    code = `
+
+		code = `
         var 𞸀
     `
 
@@ -253,7 +253,7 @@ async function enumerable() {
     }
 }
 
-;(async () => {
+(async () => {
     // await query()
     await main()
 

@@ -30,7 +30,7 @@
 			"program": "./node_modules/jest/bin/jest",
 			"stopOnEntry": false,
 			"args": [
-				"./src/__tests__/enumerable.firstordefault.spec.ts",
+				// "./src/__tests__/enumerable.firstordefault.spec.ts",
 				// "./src/__tests__/enumerable.concat.spec.ts",
 				// "./src/__tests__/enumerable.first.spec.ts",
 				// "./src/__tests__/enumerable.firstordefault.spec.ts",
@@ -42,6 +42,7 @@
 				// "./src/__tests__/enumerable.zip.spec.ts",
 				// // "./src/__tests__/enumerable.iterator.spec.ts",
 				// "./src/__tests__/enumerable.extension.spec.ts",
+				"./src/__tests__/grammar.spec.ts",
 			],
 			"cwd": "${workspaceFolder}/transpiler",
 			"console": "integratedTerminal",

@@ -2,18 +2,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import * as antlr4 from "antlr4"
 import {RuleContext} from "antlr4"
-
-// import ECMAScriptParserVisitor, {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
-// import {ECMAScriptParser as DelvenParser, ECMAScriptParser} from "./parser/ECMAScriptParser"
-// import {ECMAScriptLexer as DelvenLexer} from "./parser/ECMAScriptLexer"
-// import {RuleContext} from "antlr4/RuleContext"
-
 import ECMAScriptParserVisitor from "./parser/ECMAScriptParserVisitor"
 import ECMAScriptParser from "./parser/ECMAScriptParser"
 import ECMAScriptLexer from "./parser/ECMAScriptLexer"
-
-const DelvenParser = ECMAScriptParser
-const DelvenLexer = ECMAScriptLexer
 
 import {
     ExpressionStatement,
@@ -73,6 +64,9 @@ import {Interval, Recognizer, Token} from "antlr4"
 import Trace, {CallSite} from "./trace"
 import * as fs from "fs"
 import ASTNode from "./ASTNode"
+
+const DelvenParser = ECMAScriptParser
+const DelvenLexer = ECMAScriptLexer
 
 /**
  * Version that we generate the AST for.
@@ -202,6 +196,7 @@ export default abstract class ASTParser {
     private readonly visitor: DelvenASTVisitor
 
     static _trace = false
+    static _trace_tokens = false
 
     /**
      * Enable trace messages
@@ -231,15 +226,25 @@ export default abstract class ASTParser {
         }
 
         // https://github.com/antlr/antlr4/blob/master/doc/unicode.md
-
         const errorHandler = new DelvenErrorListener(code)
-        const chars = new antlr4.InputStream(code)
+        const chars = antlr4.CharStreams.fromString(code)
         const lexer = new DelvenLexer(chars)
 
         lexer.removeErrorListeners()
         lexer.addErrorListener(errorHandler)
 
-        const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
+        const tokenStream = new antlr4.CommonTokenStream(lexer)
+
+        if (ASTParser._trace_tokens) {
+            tokenStream.fill()
+            const tokens = tokenStream.getTokens()
+            console.log(`Token trace size : = ${tokens} >> `)
+            for (const token in tokens) {
+                console.log(token)
+            }
+        }
+
+        const parser = new DelvenParser(tokenStream)
         parser.setTrace(ASTParser._trace)
 
         parser.removeErrorListeners()
@@ -318,7 +323,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     private dumpContext(ctx: RuleContext) {
         const keys = Object.getOwnPropertyNames(DelvenParser)
-        const context = []
+        const context:any = []
         for (const key in keys) {
             const name = keys[key]
             // this only test inheritance
@@ -347,7 +352,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             let longest = 0
             for (const key in context) {
                 const name = context[key]
-                let obj = ECMAScriptParser[name]
+                let obj:any = ECMAScriptParser[name]
                 let chain = 1
                 do {
                     ++chain
@@ -1256,7 +1261,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     /**
      * Visit for statement
-     * Sample 
+     * Sample
      * ```
      *  for await (let num of asyncIterable) {
      *     console.log(num);
@@ -1267,7 +1272,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * ```
      *    | For Await? '(' (singleExpression | variableDeclarationList) identifier{this.p("of")}? expressionSequence ')' statement  # ForOfStatement
      * ```
-     * @param ctx 
+     * @param ctx
      */
     visitForOfStatement(ctx: RuleContext): Node.ForOfStatement {
         this.log(ctx, Trace.frame())
@@ -1440,13 +1445,13 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#switchStatement.
-     * 
+     *
      * ```
      * switchStatement
      *   : Switch '(' expressionSequence ')' caseBlock
          ;
      * ```
-     * @param ctx 
+     * @param ctx
      */
     visitSwitchStatement(ctx: RuleContext): Node.SwitchStatement {
         this.log(ctx, Trace.frame())
@@ -2217,14 +2222,14 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#PropertySetter.
-     * Sample: 
+     * Sample:
      * ```
-     *  y =  {  		
+     *  y =  {
      *          set z(_x) { x = _x },
      *       };
      * ```
-     
-     * Grammar : 
+
+     * Grammar :
      * ```
      * | setter '(' formalParameterArg ')' '{' functionBody '}'                        # PropertySetter
      * ```
