@@ -2722,7 +2722,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     }
 
     /**
-     * We have to perform converions here for the ArrayLiteral and ObjectLiteral
+     * We have to perform conversions here for the ArrayLiteral and ObjectLiteral
      *
      * Code :
      * ```
@@ -2972,7 +2972,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.FunctionExpressionContext)
 
-        // determinte if we are performing expression or declaration
+        // determine if we are performing expression or declaration
         //  FunctionExpression | FunctionDeclaration
         const node = ctx.getChild(0)
         let exp
@@ -3068,7 +3068,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             return []
         }
 
-        let params = []
+        let params:any[] = []
         for (const node of this.iterable(ctx)) {
             if (node instanceof ECMAScriptParser.IdentifierContext) {
                 params.push(this.visitIdentifier(node))
@@ -3373,6 +3373,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.BitOrExpressionContext)
         this.assertNodeCount(ctx, 3)
+
         return this._binaryExpression(ctx)
     }
 
@@ -3446,6 +3447,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.AdditiveExpressionContext)
         this.assertNodeCount(ctx, 3)
+
         return this._binaryExpression(ctx)
     }
 
@@ -3533,6 +3535,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         const right = ctx.getChild(2)
         const lhs = this._visitBinaryExpression(left)
         const rhs = this._visitBinaryExpression(right)
+
         return new BinaryExpression(operator, lhs, rhs)
     }
 
@@ -3584,6 +3587,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitPostDecreaseExpression(ctx: RuleContext): Node.UpdateExpression {
         this.assertType(ctx, ECMAScriptParser.PostDecreaseExpressionContext)
         this.assertNodeCount(ctx, 2)
+
         return this.getUpdateExpression(ctx, false)
     }
 
@@ -3814,10 +3818,10 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.AssignmentOperatorExpressionContext)
         this.assertNodeCount(ctx, 3)
-        const initialiser = ctx.getChild(0)
+        const initializer = ctx.getChild(0)
         const operator = ctx.getChild(1).getText()
         const expression = ctx.getChild(2)
-        const lhs = this.singleExpression(initialiser)
+        const lhs = this.singleExpression(initializer)
         const rhs = this.singleExpression(expression)
 
         return new Node.AssignmentExpression(operator, lhs, rhs)
@@ -3840,7 +3844,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     /**
      * Visit a parse tree produced by ECMAScriptParser#literal.
      *
-     * `numericLiteral` and  `bigintLiteral` are production rules, everthing else is a `TerminalNode`
+     * `numericLiteral` and  `bigintLiteral` are production rules, everything else is a `TerminalNode`
      * We inspect Token type to figure out what type of literal we are working with
      *
      * ```
@@ -3919,7 +3923,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
 
     /**
      * This is quick and dirty implementation of TemplateLiteral string interpolation
-     * TODO : Update grammar to use ANTLR lexer modes to properly parse the expressions tree rather than reinterpeting expression here
+     * TODO : Update grammar to use ANTLR lexer modes to properly parse the expressions tree rather than reinterpreting expression here
      *
      * Example
      * ```
