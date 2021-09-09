@@ -3405,15 +3405,17 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * Coerce SequenceExpression that have only one node will be pulled up to `Node.Expression`
      * compliance(esprima)
      *
-     * @param sequence
+     * @param expression
      */
-    private coerceToExpressionOrSequence(sequence: Node.SequenceExpression): Node.SequenceExpression | Node.Expression {
-        if (sequence.expressions) {
-            if (sequence.expressions.length == 1) {
-                return sequence.expressions[0]
+    private coerceToExpressionOrSequence(expression: Node.SequenceExpression | Node.Expression): Node.SequenceExpression | Node.Expression {
+        if (expression instanceof Node.SequenceExpression) {
+            if (expression.expressions) {
+                if (expression.expressions.length == 1) {
+                    return expression.expressions[0]
+                }
             }
         }
-        return sequence
+        return expression
     }
 
     /**
