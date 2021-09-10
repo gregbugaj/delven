@@ -102,8 +102,8 @@ export interface Marker {
 
 class ModuleSpecifier {
     readonly lhs: Identifier
-    readonly rhs: Identifier
-    constructor(lhs: Identifier, rhs: Identifier) {
+    readonly rhs: Identifier | null
+    constructor(lhs: Identifier, rhs: Identifier | null) {
         this.lhs = lhs
         this.rhs = rhs
     }

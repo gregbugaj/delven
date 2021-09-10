@@ -606,9 +606,9 @@ export class ImportNamespaceSpecifier {
 
 export class ImportSpecifier {
     readonly type: string
-    readonly local: Identifier
+    readonly local: Identifier | null
     readonly imported: Identifier
-    constructor(local: Identifier, imported: Identifier) {
+    constructor(local: Identifier | null, imported: Identifier) {
         this.type = Syntax.ImportSpecifier
         this.local = local
         this.imported = imported
