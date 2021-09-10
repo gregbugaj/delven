@@ -3899,7 +3899,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.TemplateStringLiteralContext)
         this.dumpContextAllChildren(ctx)
-        // this.assertNodeCount(ctx, 2)
+        this.assertNodeCount(ctx, 2)
 
         // return this.createTemplateLiteral(node)
     }
@@ -4375,3 +4375,5 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         }
     }
 }
+ktfv27drqumu34tej3fvhfywteyjtrvfhcrvyuexcvhtrctvyxrfcdevxwrtchtvyf dacdsvx32qrtwvdtrhhrtcd eqsawdcrevxhejwt546375825g
+
