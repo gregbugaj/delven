@@ -184,9 +184,12 @@ async function main() {
     // if(x==y) return 3
     // }
     `
+    // class a13 extends `Test ${a} ` {}
+    // let z = tag`Value`
+    // let z = tag`Start ${a} ${b} End`
 
     code = `
-        class a13 extends \`Test \${a} \` {}
+        class a13 extends \`\` {}
     `
 
     const parser_label = chalk.green("parser")

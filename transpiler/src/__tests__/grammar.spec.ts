@@ -71,7 +71,7 @@ function discover(expectType: TestType): TestCase[] {
     // return cases.filter(c => c.name === 'es2018.rest-property[destructuring-mirror]')# BUG
     // return cases.filter(c => c.name === 'ES6.identifier[ethiopic_digits]')
     // return cases.filter(c => c.name === 'ES6.meta-property[new-target-expression]')
-    return cases.filter(c => c.name === 'prettier.class-extends[class-014]')
+    // return cases.filter(c => c.name === 'prettier.class-extends[class-014]')
     // return cases.filter(c => c.name.indexOf('class-001') > -1)
     // return [cases[0]]
     return cases
@@ -129,8 +129,6 @@ const assertSame = function(expected, ast): {same: boolean; delta: any} {
     const a = Utils.toJson(ast)
     const b = Utils.toJson(expected)
 
-    console.debug(a)
-    console.debug(b)
     // bug in json diffpatcher when there is an array with null values `"elements": [null, null, {} ]`
     // to cause a bad compare, example : expression.primary.array[array-0004]
     if (a === b) {

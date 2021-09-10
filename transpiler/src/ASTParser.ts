@@ -3895,15 +3895,11 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * Visit a parse tree produced by ECMAScriptParser#templateStringLiteral.
      * @param ctx
      */
-    visitTemplateStringLiteral(ctx) {
+    visitTemplateStringLiteral(ctx): Node.TemplateLiteral {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.TemplateStringLiteralContext)
-        this.dumpContextAllChildren(ctx)
-        // this.assertNodeCount(ctx, 2)
-
-        // return this.createTemplateLiteral(node)
+        return this.createTemplateLiteral(ctx)
     }
-
 
     /**
      * Visit a parse tree produced by ECMAScriptParser#templateStringAtom.
@@ -3956,38 +3952,27 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * @param ctx
      */
     private createTemplateLiteral(ctx: RuleContext): Node.TemplateLiteral {
+        this.log(ctx, Trace.frame())
+        this.assertType(ctx, ECMAScriptParser.TemplateStringLiteralContext)
+
         const expressions: Node.Expression[] = []
         const quasis: Node.TemplateElement[] = []
-        const txt = ctx.getText()
-        const literal = txt.substring(txt.indexOf("`") + 1, txt.lastIndexOf("`"))
-        const evalTemplateLiteral = (fragment: string) => {
-            const chars = new antlr4.InputStream(fragment)
-            const lexer = new DelvenLexer(chars)
-            const parser = new DelvenParser(new antlr4.CommonTokenStream(lexer))
-            const tree = parser.singleExpression(0)
-            return tree.accept(this)
-        }
-
-        const regex = /\${(.+?)\}/gi
-        let m
-        let pos = 0
-
-        while ((m = regex.exec(literal)) !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (m.index === regex.lastIndex) {
-                regex.lastIndex++
+        // base case
+        if (ctx.getChildCount() === 2) {
+            quasis.push(new Node.TemplateElement({raw: '', cooked: ''}, true))
+        } else {
+            let buffer = ""
+            for (let i = 1; i < ctx.getChildCount() - 1; ++i) {
+                const node = ctx.getChild(i)
+                if (node.getChildCount() == 1) {
+                    buffer += node.getText()
+                } else {
+                    quasis.push(new Node.TemplateElement({raw: buffer, cooked: buffer}, false))
+                    expressions.push(this.singleExpression(node.getChild(1)))
+                    buffer = ""
+                }
             }
-
-            const raw = literal.substring(pos, m.index)
-            pos = m[0].length + m.index
-            expressions.push(evalTemplateLiteral(m[1]))
-            quasis.push(new Node.TemplateElement({raw: raw, cooked: raw}, false))
-        }
-
-        // check for tail
-        if (pos < literal.length) {
-            const raw = literal.substring(pos)
-            quasis.push(new Node.TemplateElement({raw: raw, cooked: raw}, true))
+            quasis.push(new Node.TemplateElement({raw: buffer, cooked: buffer}, true))
         }
 
         return new Node.TemplateLiteral(quasis, expressions)
@@ -4009,8 +3994,9 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitTemplateStringExpression(ctx: RuleContext): Node.TaggedTemplateExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.TemplateStringExpressionContext)
-        const tag = this.singleExpression(ctx.singleExpression())
         this.dumpContextAllChildren(ctx)
+
+        const tag = this.singleExpression(ctx.singleExpression())
         const quasi = this.createTemplateLiteral(ctx.getChild(1))
 
         return new Node.TaggedTemplateExpression(tag, quasi)
