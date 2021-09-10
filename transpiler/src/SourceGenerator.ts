@@ -633,6 +633,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
         this.visitBlockStatement(clause.body)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     visitEmptyStatement(statement: Node.EmptyStatement): void {
         this.write(";", false)
     }
