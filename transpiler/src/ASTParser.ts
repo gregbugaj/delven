@@ -3948,7 +3948,6 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
      * ```
      * const code =  "let x = `A ${1+2} B + C${b}D`"
      * ```
-     *
      * @param ctx
      */
     private createTemplateLiteral(ctx: RuleContext): Node.TemplateLiteral {
@@ -3994,7 +3993,6 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
     visitTemplateStringExpression(ctx: RuleContext): Node.TaggedTemplateExpression {
         this.log(ctx, Trace.frame())
         this.assertType(ctx, ECMAScriptParser.TemplateStringExpressionContext)
-        this.dumpContextAllChildren(ctx)
 
         const tag = this.singleExpression(ctx.singleExpression())
         const quasi = this.createTemplateLiteral(ctx.getChild(1))
