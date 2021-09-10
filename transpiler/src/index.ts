@@ -191,6 +191,12 @@ async function main() {
     code = `
         class a13 extends \`\` {}
     `
+    code = `
+       let k = \`Test \${a} :: \${b}\`
+    `
+    code = `
+       let k = tag\`Test\`
+    `
 
     const parser_label = chalk.green("parser")
     console.time(parser_label)
