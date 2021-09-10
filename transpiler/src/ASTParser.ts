@@ -3068,7 +3068,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             return []
         }
 
-        let params:any[] = []
+        let params: any[] = []
         for (const node of this.iterable(ctx)) {
             if (node instanceof ECMAScriptParser.IdentifierContext) {
                 params.push(this.visitIdentifier(node))
@@ -3885,7 +3885,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
             return this.visitNumericLiteral(node)
         } else if (node instanceof ECMAScriptParser.BigintLiteralContext) {
             return this.visitBigintLiteral(node)
-        }else if (node instanceof ECMAScriptParser.TemplateStringLiteralContext) {
+        } else if (node instanceof ECMAScriptParser.TemplateStringLiteralContext) {
             return this.visitTemplateStringLiteral(node)
         }
         this.throwInsanceError(this.dumpContext(node))
@@ -3958,7 +3958,7 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         const quasis: Node.TemplateElement[] = []
         // base case
         if (ctx.getChildCount() === 2) {
-            quasis.push(new Node.TemplateElement({raw: '', cooked: ''}, true))
+            quasis.push(new Node.TemplateElement({raw: "", cooked: ""}, true))
         } else {
             let buffer = ""
             for (let i = 1; i < ctx.getChildCount() - 1; ++i) {
@@ -4359,5 +4359,3 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         }
     }
 }
-ktfv27drqumu34tej3fvhfywteyjtrvfhcrvyuexcvhtrctvyxrfcdevxwrtchtvyf dacdsvx32qrtwvdtrhhrtcd eqsawdcrevxhejwt546375825g
-
