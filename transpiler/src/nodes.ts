@@ -274,9 +274,9 @@ export class OptionalCallExpression {
 
 export class CatchClause {
     readonly type: string
-    readonly param: BindingIdentifier | BindingPattern
+    readonly param: BindingIdentifier | BindingPattern | null
     readonly body: BlockStatement
-    constructor(param: BindingIdentifier | BindingPattern, body: BlockStatement) {
+    constructor(param: BindingIdentifier | BindingPattern | null, body: BlockStatement) {
         this.type = Syntax.CatchClause
         this.param = param
         this.body = body
@@ -292,7 +292,7 @@ export class ClassBody {
     }
 }
 
-// GB : Changed supertClass to allow for Expressions
+// GB : Changed superClass to allow for Expressions
 export class ClassDeclaration {
     readonly type: string
     readonly id: Identifier | null
