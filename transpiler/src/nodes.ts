@@ -444,9 +444,9 @@ export class ExportNamedDeclaration {
 
 export class ExportSpecifier {
     readonly type: string
-    readonly exported: Identifier
+    readonly exported: Identifier | null
     readonly local: Identifier
-    constructor(local: Identifier, exported: Identifier) {
+    constructor(local: Identifier, exported: Identifier | null) {
         this.type = Syntax.ExportSpecifier
         this.exported = exported
         this.local = local
