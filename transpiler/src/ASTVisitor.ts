@@ -134,13 +134,13 @@ export default abstract class ASTVisitor<T> {
      *
      * @param expression
      */
-    abstract vistiRestElement(expression: Node.RestElement): T
+    abstract visitRestElement(expression: Node.RestElement): T
 
     /**
      *
      * @param expression
      */
-    abstract vistSpreadElement(expression: Node.SpreadElement): T
+    abstract visitSpreadElement(expression: Node.SpreadElement): T
 
     /**
      *

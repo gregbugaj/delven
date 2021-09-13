@@ -275,7 +275,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                 break
             }
             case Syntax.SpreadElement: {
-                this.vistSpreadElement(expression as Node.SpreadElement)
+                this.visitSpreadElement(expression as Node.SpreadElement)
                 break
             }
             case Syntax.AssignmentExpression: {
@@ -371,7 +371,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                 break
             }
             case Syntax.RestElement: {
-                this.vistiRestElement(expression as Node.RestElement)
+                this.visitRestElement(expression as Node.RestElement)
                 break
             }
             case Syntax.YieldExpression: {
@@ -430,7 +430,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
 
         if (statement.specifiers && statement.specifiers.length > 0) {
             const specifiers: Node.ImportDeclarationSpecifier[] = statement.specifiers
-            let hasImporSpec = false
+            let hasImportSpec = false
             for (let i = 0; i < specifiers.length; ++i) {
                 const specifier = specifiers[i]
                 if (specifier.type === Syntax.ImportDefaultSpecifier) {
@@ -440,7 +440,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                     }
                 } else if (specifier.type === Syntax.ImportSpecifier) {
                     const is = specifier as Node.ImportSpecifier
-                    this.writeConditional(hasImporSpec == false, "{", false)
+                    this.writeConditional(!hasImportSpec, "{", false)
 
                     if (is.local != null && is.imported) {
                         this.visitIdentifier(is.imported)
@@ -450,7 +450,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                         this.visitIdentifier(is.imported)
                     }
 
-                    hasImporSpec = true
+                    hasImportSpec = true
                 } else if (specifier.type === Syntax.ImportNamespaceSpecifier) {
                     this.write("*", false)
                     this.write(" as ", false)
@@ -463,7 +463,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                 this.writeConditional(i < specifiers.length - 1, ", ", false)
             }
 
-            this.writeConditional(hasImporSpec, "} ", false)
+            this.writeConditional(hasImportSpec, "} ", false)
             this.write("from ", false)
         }
 
@@ -1135,7 +1135,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
         for (let i = 0; i < args.length; ++i) {
             const arg = args[i]
             if (arg instanceof Node.RestElement) {
-                this.vistiRestElement(arg as Node.RestElement)
+                this.visitRestElement(arg as Node.RestElement)
             } else {
                 this.visitExpression(arg as Node.Expression)
             }
@@ -1198,7 +1198,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                 // this.write('null', false)//
                 this.write(" ", false) //
             } else if (element instanceof Node.RestElement) {
-                this.vistiRestElement(element as Node.RestElement)
+                this.visitRestElement(element as Node.RestElement)
             } else {
                 this.visitExpression(element as Node.Expression)
             }
@@ -1207,7 +1207,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
         this.write("]", false)
     }
 
-    vistSpreadElement(expression: Node.SpreadElement): void {
+    visitSpreadElement(expression: Node.SpreadElement): void {
         const wrap = hasParenthesis(expression.argument, "argument")
         this.write("...", false)
         this.writeConditional(wrap, "(", false)
@@ -1215,7 +1215,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
         this.writeConditional(wrap, ")", false)
     }
 
-    vistiRestElement(expression: Node.RestElement): void {
+    visitRestElement(expression: Node.RestElement): void {
         this.write("...", false)
         this.visitExpression(expression.argument)
     }
@@ -1389,7 +1389,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
                 break
             }
             case Syntax.RestElement: {
-                this.vistiRestElement(param as Node.RestElement)
+                this.visitRestElement(param as Node.RestElement)
                 break
             }
             default:
@@ -1404,7 +1404,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
     }
 
     visitBinding(binding: Binding) {
-        if (binding == undefined || binding === null) {
+        if (binding == undefined) {
             return
         }
 
@@ -1569,7 +1569,7 @@ class ExplicitASTNodeVisitor extends ASTVisitor<void> {
     /**
      * Asserts that a object is not null
      *
-     * @param condition
+     * @param obj
      * @param message
      */
     private assertNotNull(obj: any, message = "Assertion failed"): void {
