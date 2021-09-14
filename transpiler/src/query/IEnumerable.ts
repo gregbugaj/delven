@@ -133,11 +133,12 @@ export abstract class IEnumerable<T> {
         selector: Action<T, IterableDataSource<R>>,
         transform?: BiAction<T, R, K>
     ): IEnumerable<K>
+
     /**
      * Concatenates two sequences.
-     * @param selector
+     * @param second
      */
-    // abstract Concat(secondSource: IEnumerable<T>): IEnumerable<T>
+    abstract Concat(second: IEnumerable<T>): IEnumerable<T>
 
     /**
      * Return new Enumerable where first n elements are taken

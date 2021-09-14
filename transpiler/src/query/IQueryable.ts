@@ -10,4 +10,7 @@
 
 import {IEnumerable} from "./IEnumerable"
 
+/**
+ * This interface represents remote queryable datasource
+ */
 export abstract class IQueryable<T> extends IEnumerable<T> {}

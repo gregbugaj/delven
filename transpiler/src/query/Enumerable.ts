@@ -21,14 +21,10 @@ import {
  * Default implementation of IQueryable
  */
 
-export function sleep(ms: number): Promise<number> {
-    return new Promise(resolve => setTimeout(resolve, ms))
-}
-
 // https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
 // https://www.typescriptlang.org/docs/handbook/interfaces.html
 export class Enumerable<T> extends IEnumerable<T> {
-    // source can be of any type and it should not be bount to type T
+    // source can be of any type and it should not be bound to type T
     readonly source: IterableDataSource<any>
     state: "NEW" | "STARTED" | "COMPLETED"
 

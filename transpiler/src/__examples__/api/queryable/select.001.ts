@@ -1,5 +1,7 @@
 import MockQuerySource, {populator} from "../../../query/Queryable"
-;(async () => {
+
+
+(async () => {
     // Query select
 
     ;`
