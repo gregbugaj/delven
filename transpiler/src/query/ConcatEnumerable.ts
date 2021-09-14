@@ -5,7 +5,6 @@ import {Enumerable, IterableDataSource} from "./internal"
  */
 export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
     readonly secondSource: IterableDataSource<TSource>
-
     results: TSource[] // results should have push,pop
 
     constructor(source: IterableDataSource<TSource>, secondSource: IterableDataSource<TSource>) {
@@ -20,13 +19,12 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
         }
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
         this.state = "STARTED"
         for await (const val of this.source) {
             // T = unknown
-            const retval: TSource = val
-            this.push(retval)
-            yield retval
+            this.push(val)
+            yield val
         }
 
         const si = this.secondSource
@@ -43,6 +41,8 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
         if (this.state === "COMPLETED") {
             return this.results
         }
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const item of this) {
             // this.results.push(item)
             // noop to force eval

@@ -23,9 +23,9 @@ import {
  * https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
  */
-export class Enumerable<T> extends IEnumerable<T> {
+export class Enumerable<T extends unknown> extends IEnumerable<T> {
     // source can be of any type and it should not be bound to type T
-    readonly source: IterableDataSource<any>
+    readonly source:IterableDataSource<any>
     state: "NEW" | "STARTED" | "COMPLETED"
 
     constructor(source: IterableDataSource<any>) {
@@ -40,11 +40,8 @@ export class Enumerable<T> extends IEnumerable<T> {
      * @param val the value to unwrap
      * @returns val or evaluated function value
      */
-    protected unwrap<T>(val: T): T {
-        if (typeof val === "function") {
-            return val()
-        }
-        return val
+    protected unwrap<K>(val: K): K {
+        return (typeof val === "function") ? val() : val
     }
 
     /**
@@ -53,7 +50,7 @@ export class Enumerable<T> extends IEnumerable<T> {
      * @param source
      */
     static of<T>(source: IterableDataSource<T> | T): IEnumerable<T> {
-        const isIterable = (obj: any) => {
+        const isIterable = <K>(obj: K) => {
             if (obj == null) return false
             return typeof obj[Symbol.iterator] === "function" || typeof obj[Symbol.asyncIterator] === "function"
         }
@@ -130,7 +127,7 @@ export class Enumerable<T> extends IEnumerable<T> {
     }
 
     async FirstOrDefault(action?: Action<T, boolean>): Promise<T> {
-        const _defaults = (obj: any | null): void => {
+        const _defaults =<K> (obj: K | null): void => {
             if (obj == null) {
                 return
             }
@@ -217,21 +214,22 @@ export class Enumerable<T> extends IEnumerable<T> {
         transformer?: BiAction<T, TSecond, TResult>
     ): IEnumerable<TResult | Tuple<T, TSecond>> {
         // FIXME : Type of the `other` is not correct here
-        return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<any>, transformer)
+        return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<TSecond>, transformer)
     }
 
     /**
      * Default `AsyncIterable` implementation
      */
-    async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
         for await (const val of this.source) {
-            yield val
+            yield val as T
         }
         return undefined
     }
 
     async toArray(): Promise<T[]> {
         const results: T[] = []
+        // calls internally 'sync *[Symbol.asyncIterator]()' via 'this'
         for await (const item of this) {
             results.push(item)
         }

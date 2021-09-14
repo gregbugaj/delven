@@ -1,8 +1,7 @@
-import {Action, BiAction, Enumerable, identityAction, IterableDataSource} from "./internal"
+import {Action, BiAction, Enumerable, IterableDataSource} from "./internal"
 
 export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
     results: K[] // results should have push,pop
-    executed: boolean
     collector: Action<TSource, IterableDataSource<TResult>>
     transform: BiAction<TSource, TResult, K>
 
@@ -13,12 +12,13 @@ export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
     ) {
         super(source)
         this.results = []
-        this.executed = false
         this.collector = collector
         this.transform = transform || ((x: TSource, y: any): K => y)
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<K, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<K, unknown> {
+        this.state = "STARTED"
+
         for await (const val of this.source) {
             // T = unknown
             const source = this.unwrap(val)
@@ -32,18 +32,19 @@ export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
                 // yield this.transform (source, retval)
             }
         }
-        // TReturn = any
+
+        this.state = "COMPLETED"
         return undefined
     }
 
     async toArray(): Promise<K[]> {
-        if (this.executed) {
+        if (this.state === "COMPLETED") {
             return this.results
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const item of this) {
-            this.results.push(item)
+            // noop to force eval
         }
-        this.executed = true
         return this.results
     }
 }

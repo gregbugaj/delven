@@ -1,5 +1,5 @@
 import {Tuple, Enumerable, BiAction, IterableDataSource} from "./internal"
-import ArgumentNullException from "../../../runner/executor/assets/transpiler/src/query/ArgumentNullException"
+import ArgumentNullException from "./ArgumentNullException"
 
 export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult | Tuple<TFirst, TSecond>> {
     results: any[]

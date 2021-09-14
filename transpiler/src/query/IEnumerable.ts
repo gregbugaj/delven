@@ -40,11 +40,11 @@ export type IterableDataSource<TSource> = AsyncIterable<TSource> | Iterable<TSou
  *   T - the type of the input to the function
  *   R - the type of the result of the function
  */
-export interface Action<T = any, R = any> {
+export interface Action<T = unknown, R = unknown> {
     (val: T): R
 }
 
-export const identityAction = <T = any, R = any>(val: T): R => (val as unknown) as R
+export const identityAction = <T = unknown, R = unknown>(val: T): R => (val as unknown) as R
 
 /**
  * BiAction interface represents a function that accepts two arguments and produces a result.
@@ -54,7 +54,7 @@ export const identityAction = <T = any, R = any>(val: T): R => (val as unknown) 
  *   TSecond - the type of the input to the function
  *   TReturn - the type of the result of the function
  */
-export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
+export interface BiAction<TFirst = unknown, TSecond = unknown, TReturn = unknown> {
     (first: TFirst, second: TSecond): TReturn
 }
 
@@ -62,12 +62,7 @@ export abstract class IEnumerable<T> implements AsyncIterable<unknown> {
     /**
      * Return current 'async' iterator
      */
-    abstract [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown>
-
-    /**
-     * Return current iterator
-     */
-    // abstract [Symbol.iterator](): IterableIterator<T>
+    abstract [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown>
 
     /**
      * Use the toArray method to create an array from results of a query.
@@ -119,11 +114,11 @@ export abstract class IEnumerable<T> implements AsyncIterable<unknown> {
 
     /**
      * Projects each element of a sequence to an IEnumerable and flattens the resulting sequences into one sequence.
-     * If no `selector` has been provided an idenity function will be used to return a value
+     * If no `selector` has been provided an identity function will be used to return a value
      * @param selector
      * @param transform
      */
-    abstract SelectMany<R, K = any>(
+    abstract SelectMany<R, K = unknown>(
         selector: Action<T, IterableDataSource<R>>,
         transform?: BiAction<T, R, K>
     ): IEnumerable<K>

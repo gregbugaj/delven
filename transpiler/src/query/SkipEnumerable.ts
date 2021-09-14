@@ -10,13 +10,7 @@ export class SkipEnumerable<TSource> extends Enumerable<TSource> {
         this.count = count
     }
 
-    push(item: TSource): void {
-        if (this.state === "STARTED") {
-            this.results.push(item)
-        }
-    }
-
-    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         let index = 0
         for await (const item of this.source) {
@@ -24,7 +18,7 @@ export class SkipEnumerable<TSource> extends Enumerable<TSource> {
                 continue
             }
             const val = this.unwrap(item)
-            this.push(val)
+            this.results.push(val)
             yield val
         }
 
@@ -36,9 +30,8 @@ export class SkipEnumerable<TSource> extends Enumerable<TSource> {
         if (this.state === "COMPLETED") {
             return this.results
         }
-
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const item of this) {
-            // this.results.push(item)
             // noop to force eval
         }
 

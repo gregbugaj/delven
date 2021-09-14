@@ -1,4 +1,4 @@
-import {Action, BiAction, Enumerable, IterableDataSource} from "./internal"
+import {BiAction, Enumerable, IterableDataSource} from "./internal"
 
 export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
     predicate: BiAction<TSource, number, boolean>
@@ -45,6 +45,7 @@ export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
             return this.results
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const item of this) {
             // NOOP to invoke evaluation
         }
