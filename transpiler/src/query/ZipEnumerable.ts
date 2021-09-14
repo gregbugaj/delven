@@ -12,9 +12,9 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult 
         second: IterableDataSource<TSecond>,
         transformer?: BiAction<TFirst, TSecond, TResult>
     ) {
-        super([])
+        super(first)
         this.results = []
-        this.first = first
+        this.first = this.source
         this.second = second
         this.transformer = transformer
     }
@@ -58,6 +58,7 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult 
             return this.results
         }
 
+        // invokes our `async* [Symbol.asyncIterator]()`
         for await (const item of this) {
             this.results.push(item)
         }
