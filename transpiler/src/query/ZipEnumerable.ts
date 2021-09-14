@@ -28,12 +28,12 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult 
             throw new ArgumentNullException("second should not be null")
         }
 
-        const lhs = this.first[Symbol.asyncIterator]()
-        const rhs = this.second[Symbol.asyncIterator]()
+        const iter1 = this.first[Symbol.asyncIterator]()
+        const iter2 = this.second[Symbol.asyncIterator]()
 
         while (true) {
-            const first = await lhs.next()
-            const second = await rhs.next()
+            const first = await iter1.next()
+            const second = await iter2.next()
 
             if (first == undefined || second == undefined) {
                 break
