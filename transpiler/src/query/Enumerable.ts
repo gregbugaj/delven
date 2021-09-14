@@ -18,11 +18,11 @@ import {
 } from "./internal"
 
 /**
- * Default implementation of IQueryable
+ * Default implementation of IEnumerable
+ *
+ * https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
+ * https://www.typescriptlang.org/docs/handbook/interfaces.html
  */
-
-// https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
-// https://www.typescriptlang.org/docs/handbook/interfaces.html
 export class Enumerable<T> extends IEnumerable<T> {
     // source can be of any type and it should not be bound to type T
     readonly source: IterableDataSource<any>
@@ -35,11 +35,12 @@ export class Enumerable<T> extends IEnumerable<T> {
     }
 
     /**
-     * Unwrap and evaluate item
+     * Unwrap and evaluate item if it is an function
+     *
      * @param val the value to unwrap
      * @returns val or evaluated function value
      */
-    protected unwrap(val: any): any {
+    protected unwrap<T>(val: T): T {
         if (typeof val === "function") {
             return val()
         }
@@ -47,11 +48,12 @@ export class Enumerable<T> extends IEnumerable<T> {
     }
 
     /**
-     * Crate enumerable from a IterableDataSource or non ArrayLike value
+     * Crate enumerable from a IterableDataSource, ArrayLike or non ArrayLike value
+     *
      * @param source
      */
     static of<T>(source: IterableDataSource<T> | T): IEnumerable<T> {
-        const isIterable = obj => {
+        const isIterable = (obj: any) => {
             if (obj == null) return false
             return typeof obj[Symbol.iterator] === "function" || typeof obj[Symbol.asyncIterator] === "function"
         }
@@ -66,7 +68,6 @@ export class Enumerable<T> extends IEnumerable<T> {
         return new SelectEnumerable<T, R>(this, selector)
     }
 
-    // SelectMany<R, K=any>(selector: Action<T, R>, transform?: Action<R, K>): IEnumerable<R>
     SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IEnumerable<K> {
         return new SelectManyEnumerable<T, R, K>(this, selector, transform)
     }
@@ -207,10 +208,21 @@ export class Enumerable<T> extends IEnumerable<T> {
         return sum
     }
 
-    Concat(secondSource: IterableDataSource<T>): IEnumerable<T> {
-        return new ConcatEnumerable<T>(this, secondSource)
+    Concat(second: IterableDataSource<T>): IEnumerable<T> {
+        return new ConcatEnumerable<T>(this, second)
     }
 
+    Zip<TSecond, TResult>(
+        other: IEnumerable<TSecond>,
+        transformer?: BiAction<T, TSecond, TResult>
+    ): IEnumerable<TResult | Tuple<T, TSecond>> {
+        // FIXME : Type of the `other` is not correct here
+        return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<any>, transformer)
+    }
+
+    /**
+     * Default `AsyncIterable` implementation
+     */
     async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown, unknown> {
         for await (const val of this.source) {
             yield val
@@ -218,19 +230,12 @@ export class Enumerable<T> extends IEnumerable<T> {
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<T>> {
+    async toArray(): Promise<T[]> {
         const results: T[] = []
         for await (const item of this) {
             results.push(item)
         }
         return results
-    }
-
-    Zip<TSecond, TResult>(
-        other: IEnumerable<TSecond>,
-        transformer?: BiAction<T, TSecond, TResult>
-    ): IEnumerable<TResult | Tuple<T, TSecond>> {
-        return new ZipEnumerable<T, TSecond, TResult>(this, other, transformer)
     }
 }
 

@@ -32,7 +32,7 @@ export class SkipEnumerable<TSource> extends Enumerable<TSource> {
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<TSource>> {
+    async toArray(): Promise<TSource[]> {
         if (this.state === "COMPLETED") {
             return this.results
         }

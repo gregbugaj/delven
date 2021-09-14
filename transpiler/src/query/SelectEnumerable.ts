@@ -15,14 +15,14 @@ export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
     async *[Symbol.asyncIterator](): AsyncGenerator<TResult, unknown, unknown> {
         for await (const val of this.source) {
             // T = unknown
-            let retval: TResult = this.selector(this.unwrap(val))
+            const retval: TResult = this.selector(this.unwrap(val))
             yield retval
         }
         // TReturn = any
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<TResult>> {
+    async toArray(): Promise<TResult[]> {
         if (this.executed) {
             return this.results
         }

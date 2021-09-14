@@ -10,7 +10,7 @@ export class TakeEnumerable<TSource> extends Enumerable<TSource> {
         this.count = count
     }
 
-    push(item: TSource): void {
+    private push(item: TSource): void {
         if (this.state === "STARTED") {
             this.results.push(item)
         }
@@ -32,7 +32,7 @@ export class TakeEnumerable<TSource> extends Enumerable<TSource> {
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<TSource>> {
+    async toArray(): Promise<TSource[]> {
         if (this.state === "COMPLETED") {
             return this.results
         }

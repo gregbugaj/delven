@@ -11,13 +11,11 @@ export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
         this.results = []
     }
 
-    push(item: TSource): void {
-        if (this.state === "STARTED") {
-            this.results.push(item)
-        }
+    private push(item: TSource): void {
+        this.results.push(item)
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         let index = 0
         for await (const item of this.source) {
@@ -33,7 +31,7 @@ export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<TSource>> {
+    async toArray(): Promise<TSource[]> {
         if (this.state === "COMPLETED") {
             return this.results
         }

@@ -1,7 +1,7 @@
-import {IEnumerable, Enumerable, IterableDataSource} from "./internal"
+import {Enumerable, IterableDataSource} from "./internal"
 
 /**
- * Concatenate two iterable datasources
+ * Concatenate two iterable data sources
  */
 export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
     readonly secondSource: IterableDataSource<TSource>
@@ -20,7 +20,7 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
         }
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         for await (const val of this.source) {
             // T = unknown
@@ -39,7 +39,7 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<TSource>> {
+    async toArray(): Promise<TSource[]> {
         if (this.state === "COMPLETED") {
             return this.results
         }

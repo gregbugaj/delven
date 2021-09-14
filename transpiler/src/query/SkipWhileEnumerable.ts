@@ -17,7 +17,7 @@ export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
         }
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         let index = 0
         let marked = false
@@ -40,7 +40,7 @@ export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<TSource>> {
+    async toArray(): Promise<TSource[]> {
         if (this.state === "COMPLETED") {
             return this.results
         }

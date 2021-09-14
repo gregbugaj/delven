@@ -31,7 +31,7 @@ export type Tuple<TFirst, TSecond> = [TFirst, TSecond]
 /**
  * Datasource that should be used with the IEnumerable
  */
-export type IterableDataSource<TSource> = Iterable<TSource> | AsyncIterable<TSource>
+export type IterableDataSource<TSource> = AsyncIterable<TSource> | Iterable<TSource> | TSource[]
 
 /**
  * Action interface represents a function that accepts one argument and produces a result.
@@ -57,32 +57,26 @@ export const identityAction = <T = any, R = any>(val: T): R => (val as unknown) 
 export interface BiAction<TFirst = any, TSecond = any, TReturn = any> {
     (first: TFirst, second: TSecond): TReturn
 }
-export abstract class IEnumerable<T> {
-    /**
-     * Return async iterator for current datasource
-     */
-    // abstract asyncIterator(): AsyncGenerator<T, unknown, unknown>
 
-    /**
-     * Return iterator for current datasource
-     */
-    // abstract iterator(): IterableIterator<T>
-
+export abstract class IEnumerable<T> implements AsyncIterable<unknown> {
     /**
      * Return current 'async' iterator
      */
     abstract [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown, unknown>
 
     /**
-     * Return current iterator by invoking the to
+     * Return current iterator
      */
     // abstract [Symbol.iterator](): IterableIterator<T>
 
     /**
      * Use the toArray method to create an array from results of a query.
      * Calling toArray also forces immediate execution of the query.
+     *
+     * ES5: ArrayLike was an acceptable type with ES6: Iterable is preferred as RHS assigment of 'for(let x of source)`
+     * requires an iterable
      */
-    abstract toArray(): Promise<ArrayLike<any>>
+    abstract toArray(): Promise<any[]>
 
     /**
      * Determines whether a sequence contains any elements
@@ -138,7 +132,7 @@ export abstract class IEnumerable<T> {
      * Concatenates two sequences.
      * @param second
      */
-    abstract Concat(second: IEnumerable<T>): IEnumerable<T>
+    abstract Concat(second: IterableDataSource<T>): IEnumerable<T>
 
     /**
      * Return new Enumerable where first n elements are taken
@@ -183,6 +177,7 @@ export abstract class IEnumerable<T> {
      */
     //  abstract FirstOrDefault(predicate?: Action<T, boolean> | Action<T, Tuple<boolean, T>>): T
     abstract FirstOrDefault(predicate?: Action<T, boolean>): Promise<T>
+
     /**
      * Produces a sequence of tuples with elements from the two specified sequences.
      * The function will only iterate over the smallest list passed

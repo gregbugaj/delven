@@ -2,20 +2,17 @@ import {Enumerable, Tuple} from "../query/internal"
 import {IEnumerable} from "../query/internal"
 
 describe("Enumerable Zip", () => {
-    beforeAll(() => {})
-
-    test("zip-001-False", async () => {
-        expect(1).toEqual(1)
+    beforeAll(() => {
     })
 
-    /*    test("zip-001-tuple", async () => {
+    test("zip-001-tuple", async () => {
         const numbers = Enumerable.of([1, 2, 3, 4])
         const words = Enumerable.of(["one", "two", "three"])
         const results = numbers.Zip(words) as IEnumerable<Tuple<Number, string>>
 
         let rs: [number, string][] = []
         for await (const x of results) {
-            // console.info(`result : ${[x[0]]} : ${[x[1]]}`)
+            console.info(`result : ${[x[0]]} : ${[x[1]]}`)
             rs.push(x as [number, string])
         }
         const expectedResult = [
@@ -41,5 +38,24 @@ describe("Enumerable Zip", () => {
 
         const expectedResult = ["1-one", "2-two", "3-three"]
         expect(rs).toEqual(expectedResult)
-    })*/
+    })
+
+    test("zip-tuple-toArray", async () => {
+        const numbers = Enumerable.of([1, 2, 3, 4])
+        const words = Enumerable.of(["one", "two", "three"])
+        const results = numbers.Zip(words) as IEnumerable<Tuple<Number, string>>
+        let values = await results.toArray()
+
+        let rs: [number, string][] = []
+        for (const x of values) {
+            console.info(`result : ${[x[0]]} : ${[x[1]]}`)
+            rs.push(x as [number, string])
+        }
+        const expectedResult = [
+            [1, "one"],
+            [2, "two"],
+            [3, "three"]
+        ]
+        expect(rs).toEqual(expectedResult)
+    })
 })

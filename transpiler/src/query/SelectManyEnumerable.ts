@@ -36,7 +36,7 @@ export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
         return undefined
     }
 
-    async toArray(): Promise<ArrayLike<K>> {
+    async toArray(): Promise<K[]> {
         if (this.executed) {
             return this.results
         }

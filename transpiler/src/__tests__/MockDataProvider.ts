@@ -84,7 +84,8 @@ export default class MockDataProvider<T> {
      * Create a mock data source provider
      *
      * @param count
-     * @param timeout
+     * @param sleeptime
+     * @param creator
      */
     static create<T>(count: number, sleeptime: number, creator: TypeCreator<T>): MockDataProvider<T> {
         return new MockDataProvider<T>(count, sleeptime, creator)
