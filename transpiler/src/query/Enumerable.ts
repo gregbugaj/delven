@@ -104,8 +104,8 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
         return new SkipEnumerable(this, count)
     }
 
-    SkipWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
-        return new SkipWhileEnumerable(this, predicate)
+    SkipWhile(action: BiAction<T, number, boolean>): IEnumerable<T> {
+        return new SkipWhileEnumerable(this, action)
     }
 
     async First(predicate?: Action<T, boolean>): Promise<T> {

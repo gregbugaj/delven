@@ -3,7 +3,7 @@ import UserQuery, {Select} from "../query/UserQuery"
 
 describe("Basic Select Expression", () => {
     beforeAll(() => {
-        ASTParser.trace(false)
+      // no-op
     })
 
     test("Basic select", () => {

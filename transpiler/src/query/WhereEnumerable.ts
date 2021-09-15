@@ -11,18 +11,12 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
         this.results = []
     }
 
-    push(item: TSource): void {
-        if (this.state === "STARTED") {
-            this.results.push(item)
-        }
-    }
-
     async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         for await (const item of this.source) {
             const val = this.unwrap(item)
             if (this.predicate(val)) {
-                this.push(val)
+                this.results.push(item)
                 yield val
             }
         }
@@ -35,7 +29,7 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
         if (this.state === "COMPLETED") {
             return this.results
         }
-
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const item of this) {
             // NOOP to invoke evaluation
         }

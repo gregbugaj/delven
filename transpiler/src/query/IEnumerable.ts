@@ -147,10 +147,10 @@ export abstract class IEnumerable<T> implements AsyncIterable<unknown> {
      * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
      * If predicate returns true for all elements in the sequence, an empty IEnumerable<T> is returned.
      *
-     * @param predicate a function to test each element for a condition
+     * @param action a function to test each element for a condition
      * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
      */
-    abstract SkipWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T>
+    abstract SkipWhile(action: BiAction<T, number, boolean>): IEnumerable<T>
 
     /**
      * Computes the sum of the sequence of that are obtained by invoking a transform

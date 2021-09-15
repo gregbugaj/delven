@@ -25,12 +25,10 @@ export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
         if (this.state === "COMPLETED") {
             return this.results
         }
-
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const item of this) {
-            // this.results.push(item)
             // noop to force eval
         }
-
         return this.results
     }
 }
