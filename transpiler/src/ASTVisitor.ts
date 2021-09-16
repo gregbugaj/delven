@@ -80,7 +80,7 @@ export default abstract class ASTVisitor<T> {
 
     /**
      *
-     * @param property
+     * @param expression
      */
     abstract visitObjectExpressionProperty(expression: Node.ObjectExpressionProperty): T
 
@@ -297,7 +297,7 @@ export default abstract class ASTVisitor<T> {
 
     /**
      *
-     * @param expression
+     * @param statement
      */
     abstract visitExportAllDeclaration(statement: Node.ExportAllDeclaration): T
 
@@ -345,7 +345,7 @@ export default abstract class ASTVisitor<T> {
 
     /**
      *
-     * @param statement
+     * @param expression
      */
     abstract visitOptionalMemberExpression(expression: Node.OptionalMemberExpression): T
 
