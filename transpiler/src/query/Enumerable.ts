@@ -25,7 +25,7 @@ import {
  */
 export class Enumerable<T extends unknown> extends IEnumerable<T> {
     // source can be of any type and it should not be bound to type T
-    readonly source:IterableDataSource<any>
+    readonly source: IterableDataSource<any>
     state: "NEW" | "STARTED" | "COMPLETED"
 
     constructor(source: IterableDataSource<any>) {
@@ -49,7 +49,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      *
      * @param source
      */
-    static of<T>(source: IterableDataSource<T> | T): IEnumerable<T> {
+    static of<T>(source: IterableDataSource<T> | T): Enumerable<T> {
         const isIterable = <K>(obj: K) => {
             if (obj == null) return false
             return typeof obj[Symbol.iterator] === "function" || typeof obj[Symbol.asyncIterator] === "function"
@@ -61,31 +61,64 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
         }
     }
 
-    Select<R>(selector: Action<T, R>): IEnumerable<R> {
+    /**
+     * Projects each element of a sequence into a new form.
+     * If no `selector` has been provided an identity function will be used to return a value
+     * @param selector
+     */
+    Select<R>(selector: Action<T, R>): Enumerable<R> {
         return new SelectEnumerable<T, R>(this, selector)
     }
 
-    SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IEnumerable<K> {
+    /**
+     * Projects each element of a sequence to an IEnumerable and flattens the resulting sequences into one sequence.
+     * If no `selector` has been provided an identity function will be used to return a value
+     * @param selector
+     * @param transform
+     */
+    SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): Enumerable<K> {
         return new SelectManyEnumerable<T, R, K>(this, selector, transform)
     }
 
+    /**
+     * Determines whether a sequence contains any elements
+     * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
+     */
     async Any(): Promise<boolean> {
         throw new Error("Method not implemented.")
     }
 
+    /**
+     * Gets the number of elements in the collection
+     */
     async Count(): Promise<number> {
         // return this.source?.length
         throw new Error("Method not implemented.")
     }
 
-    Where(predicate: Action<T, boolean>): IEnumerable<T> {
+    /**
+     * Filters a sequence of values based on a predicate.
+     * @alias Array.filter
+     * @param predicate a function to test each element for a condition
+     * @returns
+     */
+    Where(predicate: Action<T, boolean>): Enumerable<T> {
         return new WhereEnumerable(this, predicate)
     }
 
-    TakeWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
+    /**
+     * Returns elements from an Enumerable as long as a specified condition is true, and then skips the remaining elements
+     * @param predicate a function to test each element for a condition
+     * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
+     */
+    TakeWhile(predicate: BiAction<T, number, boolean>): Enumerable<T> {
         return new TakeWhileEnumerable(this, predicate)
     }
 
+    /**
+     * Determines whether all elements of a sequence satisfy a condition.
+     * @param predicate A function to test each element for a condition.
+     */
     async All(predicate: Action<T, boolean>): Promise<boolean> {
         for await (const item of this) {
             const val = this.unwrap(item)
@@ -96,18 +129,40 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
         return true
     }
 
-    Take(count: number): IEnumerable<T> {
+    /**
+     * Return new Enumerable where first n elements are taken
+     *
+     * @param count The number of elements to skip before returning the remaining elements.
+     */
+    Take(count: number): Enumerable<T> {
         return new TakeEnumerable(this, count)
     }
 
-    Skip(count: number): IEnumerable<T> {
+    /**
+     * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
+     *
+     * @param count
+     */
+    Skip(count: number): Enumerable<T> {
         return new SkipEnumerable(this, count)
     }
 
-    SkipWhile(action: BiAction<T, number, boolean>): IEnumerable<T> {
+    /**
+     * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
+     * If predicate returns true for all elements in the sequence, an empty IEnumerable<T> is returned.
+     *
+     * @param action a function to test each element for a condition
+     * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
+     */
+    SkipWhile(action: BiAction<T, number, boolean>): Enumerable<T> {
         return new SkipWhileEnumerable(this, action)
     }
 
+    /**
+     * Returns the first element of a sequence that satisfies a specified condition.
+     * Method throws an exception if no matching element is found in source.
+     * @param predicate A function to test each element for a condition.
+     */
     async First(predicate?: Action<T, boolean>): Promise<T> {
         if (this.source == undefined) {
             throw new ArgumentNullException("source should not be null")
@@ -126,8 +181,12 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
         throw new InvalidOperationException("No element satisfies the condition in predicate.")
     }
 
+    /**
+     * Returns the first element of the sequence that satisfies a condition or a default value if no such element is found.
+     * @param action A function to test each element for a condition.
+     */
     async FirstOrDefault(action?: Action<T, boolean>): Promise<T> {
-        const _defaults =<K> (obj: K | null): void => {
+        const _defaults = <K>(obj: K | null): void => {
             if (obj == null) {
                 return
             }
@@ -181,6 +240,11 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
         return (null as unknown) as T
     }
 
+    /**
+     * Computes the sum of the sequence of that are obtained by invoking a transform
+     * function on each element of the input sequence
+     * @param action A transform function to apply to each element.
+     */
     async Sum(action?: Action<T, number>): Promise<number> {
         if (typeof action === "undefined") {
             // identity action
@@ -205,28 +269,45 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
         return sum
     }
 
-    Concat(second: IterableDataSource<T>): IEnumerable<T> {
+    /**
+     * Concatenates two sequences.
+     * @param second
+     */
+    Concat(second: IterableDataSource<T>): Enumerable<T> {
         return new ConcatEnumerable<T>(this, second)
     }
 
+    /**
+     * Produces a sequence of tuples with elements from the two specified sequences.
+     * The function will only iterate over the smallest list passed
+     *
+     * @param other
+     * @param transformer
+     */
     Zip<TSecond, TResult>(
-        other: IEnumerable<TSecond>,
+        other: Enumerable<TSecond>,
         transformer?: BiAction<T, TSecond, TResult>
-    ): IEnumerable<TResult | Tuple<T, TSecond>> {
-        // FIXME : Type of the `other` is not correct here
+    ): Enumerable<TResult | Tuple<T, TSecond>> {
         return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<TSecond>, transformer)
     }
 
     /**
-     * Default `AsyncIterable` implementation
+     * Default IEnumerable aka `AsyncIterable` implementation
      */
-    async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
         for await (const val of this.source) {
             yield val as T
         }
         return undefined
     }
 
+    /**
+     * Use the toArray method to create an array from results of a query.
+     * Calling toArray also forces immediate execution of the query.
+     *
+     * ES5: ArrayLike was an acceptable type with ES6: Iterable is preferred as RHS assigment of 'for(let x of source)`
+     * requires an iterable
+     */
     async toArray(): Promise<T[]> {
         const results: T[] = []
         // calls internally 'sync *[Symbol.asyncIterator]()' via 'this'
@@ -253,7 +334,7 @@ declare global {
     interface Array<T> {
         count(): number
 
-        asEnumerable(): IEnumerable<T>
+        asEnumerable(): Enumerable<T>
     }
 }
 

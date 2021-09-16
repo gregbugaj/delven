@@ -1,8 +1,8 @@
 import {Enumerable, IterableDataSource} from "./internal"
 
 export class TakeEnumerable<TSource> extends Enumerable<TSource> {
-    results: TSource[]
-    count: number
+    readonly results: TSource[]
+    readonly count: number
 
     constructor(source: IterableDataSource<TSource>, count: number) {
         super(source)
@@ -10,7 +10,7 @@ export class TakeEnumerable<TSource> extends Enumerable<TSource> {
         this.count = count
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
         this.state = "STARTED"
         let index = 0
         for await (const item of this.source) {

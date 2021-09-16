@@ -1,9 +1,8 @@
 import {Action, BiAction, Enumerable, IterableDataSource} from "./internal"
 
 export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
-    predicate: BiAction<TSource, number, boolean>
-
-    results: TSource[]
+    readonly predicate: BiAction<TSource, number, boolean>
+    readonly results: TSource[]
 
     constructor(source: IterableDataSource<TSource>, predicate: BiAction<TSource, number, boolean>) {
         super(source)

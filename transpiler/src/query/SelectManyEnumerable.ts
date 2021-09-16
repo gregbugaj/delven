@@ -1,9 +1,9 @@
 import {Action, BiAction, Enumerable, IterableDataSource} from "./internal"
 
 export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
-    results: K[] // results should have push,pop
-    collector: Action<TSource, IterableDataSource<TResult>>
-    transform: BiAction<TSource, TResult, K>
+    readonly results: K[] // results should have push,pop
+    readonly collector: Action<TSource, IterableDataSource<TResult>>
+    readonly transform: BiAction<TSource, TResult, K>
 
     constructor(
         source: IterableDataSource<TSource>,
@@ -25,7 +25,10 @@ export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
             const retval = this.collector(source)
             if (Array.isArray(retval)) {
                 for await (const col of retval) {
-                    yield this.transform(source, col)
+                    const tval = this.transform(source, col)
+                    this.results.push(tval)
+                    // console.info(`tval : ${tval}`)
+                    yield tval
                 }
             } else {
                 throw new Error("Collector did not return an arraylike object")

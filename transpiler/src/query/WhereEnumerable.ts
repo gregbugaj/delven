@@ -1,9 +1,8 @@
 import {Action, Enumerable, IterableDataSource} from "./internal"
 
 export class WhereEnumerable<TSource> extends Enumerable<TSource> {
-    predicate: Action<TSource, boolean>
-
-    results: TSource[]
+    readonly predicate: Action<TSource, boolean>
+    readonly results: TSource[]
 
     constructor(source: IterableDataSource<TSource>, predicate: Action<TSource, boolean>) {
         super(source)
@@ -11,7 +10,7 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
         this.results = []
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         for await (const item of this.source) {
             const val = this.unwrap(item)

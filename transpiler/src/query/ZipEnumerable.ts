@@ -2,10 +2,10 @@ import {Tuple, Enumerable, BiAction, IterableDataSource} from "./internal"
 import ArgumentNullException from "./ArgumentNullException"
 
 export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult | Tuple<TFirst, TSecond>> {
-    results: any[]
-    first: IterableDataSource<TFirst>
-    second: IterableDataSource<TSecond>
-    transformer: BiAction<TFirst, TSecond, TResult> | undefined
+    readonly results: any[]
+    readonly first: IterableDataSource<TFirst>
+    readonly second: IterableDataSource<TSecond>
+    readonly transformer: BiAction<TFirst, TSecond, TResult> | undefined
 
     constructor(
         first: IterableDataSource<TFirst>,

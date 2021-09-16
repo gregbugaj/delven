@@ -43,7 +43,7 @@ describe("Enumerable Zip", () => {
     test("zip-tuple-toArray", async () => {
         const numbers = Enumerable.of([1, 2, 3, 4])
         const words = Enumerable.of(["one", "two", "three"])
-        const results = numbers.Zip(words) as IEnumerable<Tuple<Number, string>>
+        const results = numbers.Zip(words) as Enumerable<Tuple<Number, string>>
         let values = await results.toArray()
 
         let rs: [number, string][] = []

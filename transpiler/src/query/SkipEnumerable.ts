@@ -1,8 +1,8 @@
 import {Enumerable, IterableDataSource} from "./internal"
 
 export class SkipEnumerable<TSource> extends Enumerable<TSource> {
-    results: TSource[]
-    count: number
+    readonly results: TSource[]
+    readonly count: number
 
     constructor(source: IterableDataSource<TSource>, count: number) {
         super(source)

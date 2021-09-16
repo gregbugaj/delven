@@ -1,9 +1,8 @@
 import {BiAction, Enumerable, IterableDataSource} from "./internal"
 
 export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
-    predicate: BiAction<TSource, number, boolean>
-
-    results: TSource[]
+    readonly predicate: BiAction<TSource, number, boolean>
+    readonly results: TSource[]
 
     constructor(source: IterableDataSource<TSource>, predicate: BiAction<TSource, number, boolean>) {
         super(source)
@@ -11,13 +10,7 @@ export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
         this.results = []
     }
 
-    push(item: TSource): void {
-        if (this.state === "STARTED") {
-            this.results.push(item)
-        }
-    }
-
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
         this.state = "STARTED"
         let index = 0
         let marked = false
@@ -32,7 +25,7 @@ export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
                     marked = true
                 }
             }
-            this.push(val)
+            this.results.push(val)
             yield val
         }
         this.state = "COMPLETED"
