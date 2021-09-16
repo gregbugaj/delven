@@ -1,4 +1,4 @@
-import MockQuerySource from "../../../query/Queryable"
+import MockQuerySource from "../../../query/queryable/Queryable"
 ;(async () => {
     const provider = MockQuerySource.create<number>(10, 100, index => index)
 

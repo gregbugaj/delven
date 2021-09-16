@@ -1,4 +1,4 @@
-import {Enumerable, IterableDataSource} from "./internal"
+import {Enumerable, IterableDataSource} from "../internal"
 
 /**
  * Concatenate two iterable data sources

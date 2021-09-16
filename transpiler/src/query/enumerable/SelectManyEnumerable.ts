@@ -1,4 +1,4 @@
-import {Action, BiAction, Enumerable, IterableDataSource} from "./internal"
+import {Action, BiAction, Enumerable, IterableDataSource} from "../internal"
 
 export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
     readonly results: K[] // results should have push,pop

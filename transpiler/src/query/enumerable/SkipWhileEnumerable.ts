@@ -1,6 +1,6 @@
-import {Action, BiAction, Enumerable, IterableDataSource} from "./internal"
+import {BiAction, Enumerable, IterableDataSource} from "../internal"
 
-export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
+export class SkipWhileEnumerable<TSource> extends Enumerable<TSource> {
     readonly predicate: BiAction<TSource, number, boolean>
     readonly results: TSource[]
 
@@ -10,19 +10,22 @@ export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
         this.results = []
     }
 
-    private push(item: TSource): void {
-        this.results.push(item)
-    }
-
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
         this.state = "STARTED"
         let index = 0
+        let marked = false
+
         for await (const item of this.source) {
             const val = this.unwrap(item)
-            if (!this.predicate(val, index++)) {
-                return undefined
+            const currentIndex = index++
+            if (!marked) {
+                if (this.predicate(val, currentIndex)) {
+                    continue
+                } else {
+                    marked = true
+                }
             }
-            this.push(val)
+            this.results.push(val)
             yield val
         }
         this.state = "COMPLETED"
@@ -35,6 +38,7 @@ export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
             return this.results
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const item of this) {
             // NOOP to invoke evaluation
         }

@@ -1,4 +1,4 @@
-import {Enumerable, IterableDataSource} from "./internal"
+import {Enumerable, IterableDataSource} from "../internal"
 
 export class SkipEnumerable<TSource> extends Enumerable<TSource> {
     readonly results: TSource[]

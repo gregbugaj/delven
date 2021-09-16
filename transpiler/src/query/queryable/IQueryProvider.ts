@@ -1,5 +1,4 @@
-import {IQueryable} from "./IQueryable"
-import {Action} from "./types"
+import {Action, IQueryable} from "../internal"
 
 /**
  * The query provider responsible for interpreting and executing the query.
@@ -7,10 +6,16 @@ import {Action} from "./types"
  * The definition of "executing" is specific to a query provider.
  * For example, it may involve translating the expression tree to a query language appropriate for an underlying data source.
  */
-export default interface IQueryProvider<T> {
+export interface IQueryProvider<T> extends AsyncIterable<unknown> {
+
+    /**
+     * Return current 'async' iterator
+     */
+    [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown>
 
     Select<R>(selector: Action<T, R>): IQueryable<R>
 
-    // CreateQuery<T>(): IQueryable<T>
-    // Execute<T>(): T
+    Where(predicate: Action<T, boolean>): IQueryable<T>
+
+    toArray(): Promise<any[]>
 }

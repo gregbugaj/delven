@@ -1,19 +1,30 @@
 /**
- * Provides functionality to evaluate queries against a specific data source
+ * Interface provides the ability to iterate through the collection by exposing
+ * the different types of AsyncGenerator
  *
- * Much of the API has been driven by the original LINQ API design
+ * LINQ provides two different behaviors of Query Execution –
+ *   Deferred Execution
+ *   Immediate Execution
+ *
+ * Much of the API has been driven the original MS-LINQ implementation
  *
  * https://github.com/microsoft/TypeScript/issues/25710
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
  * https://docs.microsoft.com/en-us/dotnet/api/system.linq.iqueryable-1
+ *
+ * Async Generators
+ *
+ * https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-3.html
+ * https://fnune.com/typescript/2020/07/31/typescript-series-4-poor-mans-async-await-in-typescript-using-generators/
+ * https://javascript.info/async-iterators-generators
+ * https://github.com/microsoft/TypeScript/issues/33458
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield
+ *
+ * https://www.typescriptlang.org/docs/handbook/generics.html
  */
+import {Tuple, IterableDataSource, Action, BiAction, IQueryable} from "../internal"
 
-/**
- * This interface represents remote queryable datasource
- */
-import {Tuple, IterableDataSource, Action, BiAction, identityAction} from "./types"
-
-export interface IQueryable<T> extends AsyncIterable<unknown> {
+export interface IEnumerable<T> extends AsyncIterable<unknown> {
 
     /**
      * Return current 'async' iterator
@@ -46,14 +57,14 @@ export interface IQueryable<T> extends AsyncIterable<unknown> {
      * @param predicate a function to test each element for a condition
      * @returns
      */
-    Where(predicate: Action<T, boolean>): IQueryable<T>
+    Where(predicate: Action<T, boolean>): IEnumerable<T>
 
     /**
      * Returns elements from an Enumerable as long as a specified condition is true, and then skips the remaining elements
      * @param predicate a function to test each element for a condition
      * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
      */
-    TakeWhile(predicate: BiAction<T, number, boolean>): IQueryable<T>
+    TakeWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T>
 
     /**
      * Determines whether all elements of a sequence satisfy a condition.
@@ -66,7 +77,7 @@ export interface IQueryable<T> extends AsyncIterable<unknown> {
      * If no `selector` has been provided an identity function will be used to return a value
      * @param selector
      */
-    Select<R>(selector?: Action<T, R>): IQueryable<R>
+    Select<R>(selector?: Action<T, R>): IEnumerable<R>
 
     /**
      * Projects each element of a sequence to an IEnumerable and flattens the resulting sequences into one sequence.
@@ -77,27 +88,27 @@ export interface IQueryable<T> extends AsyncIterable<unknown> {
     SelectMany<R, K = unknown>(
         selector: Action<T, IterableDataSource<R>>,
         transform?: BiAction<T, R, K>
-    ): IQueryable<K>
+    ): IEnumerable<K>
 
     /**
      * Concatenates two sequences.
      * @param second
      */
-    Concat(second: IterableDataSource<T>): IQueryable<T>
+    Concat(second: IterableDataSource<T>): IEnumerable<T>
 
     /**
      * Return new Enumerable where first n elements are taken
      *
      * @param count The number of elements to skip before returning the remaining elements.
      */
-    Take(count: number): IQueryable<T>
+    Take(count: number): IEnumerable<T>
 
     /**
      * Bypasses a specified number of elements in a sequence and then returns the remaining elements.
      *
      * @param count
      */
-    Skip(count: number): IQueryable<T>
+    Skip(count: number): IEnumerable<T>
 
     /**
      * Bypasses elements in a sequence as long as a specified condition is true and then returns the remaining elements.
@@ -106,7 +117,7 @@ export interface IQueryable<T> extends AsyncIterable<unknown> {
      * @param action a function to test each element for a condition
      * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
      */
-    SkipWhile(action: BiAction<T, number, boolean>): IQueryable<T>
+    SkipWhile(action: BiAction<T, number, boolean>): IEnumerable<T>
 
     /**
      * Computes the sum of the sequence of that are obtained by invoking a transform
@@ -137,8 +148,12 @@ export interface IQueryable<T> extends AsyncIterable<unknown> {
      * @param transformer
      */
     Zip<TSecond, TResult>(
-        other: IQueryable<TSecond>,
+        other: IEnumerable<TSecond>,
         transformer?: BiAction<T, TSecond, TResult>
-    ): IQueryable<TResult | Tuple<T, TSecond>>
-}
+    ): IEnumerable<TResult | Tuple<T, TSecond>>
 
+    /**
+     * Converts a generic IEnumerable<T> to a generic IQueryable<T>.
+     */
+    AsQueryable(): IQueryable<T>
+}

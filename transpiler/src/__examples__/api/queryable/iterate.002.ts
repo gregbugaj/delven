@@ -1,4 +1,4 @@
-import MockQuerySource, {populator} from "../../../query/Queryable"
+import MockQuerySource, {populator} from "../../../query/queryable/Queryable"
 ;(async () => {
     class Dynamic {
         val: number = 0

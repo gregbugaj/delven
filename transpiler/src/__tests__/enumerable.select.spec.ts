@@ -50,9 +50,7 @@ describe("Enumerable Select", () => {
             name: val.name
         }))
 
-        const names = selection.toArray()
-        const results = await names
-
+        const results = await selection.toArray()
         const expectedResult = [{name: "Greg"}, {name: "Roman"}, {name: "Leo"}]
         expect(results).toEqual(expectedResult)
     })

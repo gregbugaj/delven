@@ -1,12 +1,11 @@
-import ArgumentNullException from "./ArgumentNullException"
-import InvalidOperationException from "./InvalidOperationException"
+import ArgumentNullException from "../ArgumentNullException"
+import InvalidOperationException from "../InvalidOperationException"
 import {
     Action,
     BiAction,
     IterableDataSource,
     Tuple,
     IEnumerable,
-    IQueryable,
     ConcatEnumerable,
     SelectEnumerable,
     SelectManyEnumerable,
@@ -15,10 +14,11 @@ import {
     TakeEnumerable,
     TakeWhileEnumerable,
     WhereEnumerable,
-    ZipEnumerable
-} from "./internal"
-import Queryable from "./Queryable"
-import IQueryProvider from "./IQueryProvider"
+    ZipEnumerable,
+    IQueryable,
+    Queryable,
+    IQueryProvider
+} from "../internal"
 
 /**
  * Default implementation of IEnumerable
@@ -319,19 +319,29 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
         return results
     }
 
-    /**
-     * Converts a generic IEnumerable<T> to a generic IQueryable<T>.
-     */
     AsQueryable(): IQueryable<T> {
         class _internal implements IQueryProvider<T> {
-            private delegate: IEnumerable<any>
+            private readonly delegate: IEnumerable<any>
 
             constructor(delegate: IEnumerable<any>) {
                 this.delegate = delegate
             }
 
+            [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown> {
+                return this.delegate[Symbol.asyncIterator]()
+            }
+
             Select<R>(selector: Action<T, R>): IQueryable<R> {
                 return this.delegate.Select(selector).AsQueryable()
+            }
+
+            toArray(): Promise<any[]> {
+                return this.delegate.toArray()
+            }
+
+            Where(predicate: Action<T, boolean>): IQueryable<T> {
+                let w = this.delegate.Where(predicate)
+                return w.AsQueryable()
             }
         }
 
@@ -354,6 +364,7 @@ export {}
 declare global {
     interface Array<T> {
         count(): number
+
         asEnumerable(): Enumerable<T>
     }
 }

@@ -1,7 +1,4 @@
-import {IQueryable} from "./IQueryable"
-import {IQueryContext} from "./IQueryContext"
-import IQueryProvider from "./IQueryProvider"
-import {Action} from "./types"
+import {Action, IQueryContext, IQueryable, IQueryProvider} from "../internal"
 
 export class QueryProvider<T = unknown> implements IQueryProvider<T> {
     readonly context: IQueryContext

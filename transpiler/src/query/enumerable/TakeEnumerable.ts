@@ -1,4 +1,4 @@
-import {Enumerable, IterableDataSource} from "./internal"
+import {Enumerable, IterableDataSource} from "../internal"
 
 export class TakeEnumerable<TSource> extends Enumerable<TSource> {
     readonly results: TSource[]

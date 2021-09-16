@@ -1,5 +1,5 @@
 import ASTParser from "../ASTParser"
-import UserQuery, {Select} from "../query/UserQuery"
+import UserQuery, {Select} from "../query/queryable/UserQuery"
 
 describe("Basic Select Expression", () => {
     beforeAll(() => {

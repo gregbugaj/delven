@@ -1,11 +1,9 @@
-import IQueryProvider from "./IQueryProvider"
-import {IQueryable} from "./IQueryable"
-import {Action, BiAction, IterableDataSource, Tuple} from "./types"
+import {Action, BiAction, IterableDataSource, Tuple, IQueryable, IQueryProvider} from "../internal"
 
 /**
  * Provides functionality to evaluate queries against a specific data source wherein the type of the data is known.
  */
-export default class Queryable<T> implements IQueryable<T> {
+export class Queryable<T> implements IQueryable<T> {
     readonly provider: IQueryProvider<T>
 
     constructor(provider: IQueryProvider<T>) {
@@ -13,6 +11,7 @@ export default class Queryable<T> implements IQueryable<T> {
     }
 
     Select<R>(selector: Action<T, R>): IQueryable<R> {
+        this.assertMethodPresent(Queryable.prototype.Select.name)
         return this.provider.Select(selector)
     }
 
@@ -30,7 +29,8 @@ export default class Queryable<T> implements IQueryable<T> {
     }
 
     Where(predicate: Action<T, boolean>): IQueryable<T> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.Where.name)
+        return this.provider.Where(predicate)
     }
 
     TakeWhile(predicate: BiAction<T, number, boolean>): IQueryable<T> {
@@ -77,11 +77,19 @@ export default class Queryable<T> implements IQueryable<T> {
         throw new Error("Method not implemented.")
     }
 
+    // eslint-disable-next-line require-yield
     async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
-        throw new Error("Method not implemented.")
+        return this.provider[Symbol.asyncIterator]()
     }
 
     async toArray(): Promise<T[]> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.toArray.name)
+        return this.provider.toArray()
+    }
+
+    assertMethodPresent(name: string): void {
+        if (this.provider[name] === undefined) {
+            throw new Error(`IQueryProvider does not implement : ${name}`)
+        }
     }
 }
