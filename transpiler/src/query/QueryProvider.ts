@@ -1,4 +1,3 @@
-import {Expression} from "../nodes"
 import {IQueryable} from "./IQueryable"
 import {IQueryContext} from "./IQueryContext"
 import IQueryProvider from "./IQueryProvider"
@@ -11,12 +10,12 @@ export class QueryProvider implements IQueryProvider {
         this.context = context
     }
 
-    CreateQuery<T>(expression: Expression): IQueryable<T> {
-        return new Queryable<T>(this, expression)
+    CreateQuery<T>(): IQueryable<T> {
+        return new Queryable<T>(this)
     }
 
-    Execute<T>(expression: Expression): T {
-        const query = this.CreateQuery(expression)
+    Execute<T>(): T {
+        const query = this.CreateQuery()
         // this should invoke the iterator on teh crated expresisson
         return undefined
     }

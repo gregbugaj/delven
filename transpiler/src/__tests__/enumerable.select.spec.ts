@@ -38,4 +38,22 @@ describe("Enumerable Select", () => {
         const expectedResult = [{name: "Greg"}, {name: "Roman"}, {name: "Leo"}]
         expect(results).toEqual(expectedResult)
     })
+
+    test("select-AsEnumerable", async () => {
+        const queryable = Enumerable.of([
+            {name: "Greg", val: 50},
+            {name: "Roman", val: 60},
+            {name: "Leo", val: 50}
+        ]).AsQueryable()
+
+        const selection = queryable.Select((val): {name: string} => ({
+            name: val.name
+        }))
+
+        const names = selection.toArray()
+        const results = await names
+
+        const expectedResult = [{name: "Greg"}, {name: "Roman"}, {name: "Leo"}]
+        expect(results).toEqual(expectedResult)
+    })
 })

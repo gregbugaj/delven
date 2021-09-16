@@ -3,19 +3,22 @@ import InvalidOperationException from "./InvalidOperationException"
 import {
     Action,
     BiAction,
-    ConcatEnumerable,
-    IEnumerable,
     IterableDataSource,
+    Tuple,
+    IEnumerable,
+    IQueryable,
+    ConcatEnumerable,
     SelectEnumerable,
     SelectManyEnumerable,
     SkipEnumerable,
     SkipWhileEnumerable,
     TakeEnumerable,
     TakeWhileEnumerable,
-    Tuple,
     WhereEnumerable,
     ZipEnumerable
 } from "./internal"
+import Queryable from "./Queryable"
+import IQueryProvider from "./IQueryProvider"
 
 /**
  * Default implementation of IEnumerable
@@ -23,13 +26,12 @@ import {
  * https://stackoverflow.com/questions/39614311/class-constructor-type-in-typescript
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
  */
-export class Enumerable<T extends unknown> extends IEnumerable<T> {
+export class Enumerable<T extends unknown> implements IEnumerable<T> {
     // source can be of any type and it should not be bound to type T
     readonly source: IterableDataSource<any>
     state: "NEW" | "STARTED" | "COMPLETED"
 
     constructor(source: IterableDataSource<any>) {
-        super()
         this.source = source
         this.state = "NEW"
     }
@@ -49,7 +51,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      *
      * @param source
      */
-    static of<T>(source: IterableDataSource<T> | T): Enumerable<T> {
+    static of<T>(source: IterableDataSource<T> | T): IEnumerable<T> {
         const isIterable = <K>(obj: K) => {
             if (obj == null) return false
             return typeof obj[Symbol.iterator] === "function" || typeof obj[Symbol.asyncIterator] === "function"
@@ -66,7 +68,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      * If no `selector` has been provided an identity function will be used to return a value
      * @param selector
      */
-    Select<R>(selector: Action<T, R>): Enumerable<R> {
+    Select<R>(selector: Action<T, R>): IEnumerable<R> {
         return new SelectEnumerable<T, R>(this, selector)
     }
 
@@ -76,7 +78,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      * @param selector
      * @param transform
      */
-    SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): Enumerable<K> {
+    SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IEnumerable<K> {
         return new SelectManyEnumerable<T, R, K>(this, selector, transform)
     }
 
@@ -102,7 +104,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      * @param predicate a function to test each element for a condition
      * @returns
      */
-    Where(predicate: Action<T, boolean>): Enumerable<T> {
+    Where(predicate: Action<T, boolean>): IEnumerable<T> {
         return new WhereEnumerable(this, predicate)
     }
 
@@ -111,7 +113,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      * @param predicate a function to test each element for a condition
      * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
      */
-    TakeWhile(predicate: BiAction<T, number, boolean>): Enumerable<T> {
+    TakeWhile(predicate: BiAction<T, number, boolean>): IEnumerable<T> {
         return new TakeWhileEnumerable(this, predicate)
     }
 
@@ -134,7 +136,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      *
      * @param count The number of elements to skip before returning the remaining elements.
      */
-    Take(count: number): Enumerable<T> {
+    Take(count: number): IEnumerable<T> {
         return new TakeEnumerable(this, count)
     }
 
@@ -143,7 +145,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      *
      * @param count
      */
-    Skip(count: number): Enumerable<T> {
+    Skip(count: number): IEnumerable<T> {
         return new SkipEnumerable(this, count)
     }
 
@@ -154,7 +156,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      * @param action a function to test each element for a condition
      * @returns An Enumerable that contains the elements from the input sequence before the predicate failed
      */
-    SkipWhile(action: BiAction<T, number, boolean>): Enumerable<T> {
+    SkipWhile(action: BiAction<T, number, boolean>): IEnumerable<T> {
         return new SkipWhileEnumerable(this, action)
     }
 
@@ -273,7 +275,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
      * Concatenates two sequences.
      * @param second
      */
-    Concat(second: IterableDataSource<T>): Enumerable<T> {
+    Concat(second: IterableDataSource<T>): IEnumerable<T> {
         return new ConcatEnumerable<T>(this, second)
     }
 
@@ -287,7 +289,7 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
     Zip<TSecond, TResult>(
         other: Enumerable<TSecond>,
         transformer?: BiAction<T, TSecond, TResult>
-    ): Enumerable<TResult | Tuple<T, TSecond>> {
+    ): IEnumerable<TResult | Tuple<T, TSecond>> {
         return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<TSecond>, transformer)
     }
 
@@ -316,6 +318,25 @@ export class Enumerable<T extends unknown> extends IEnumerable<T> {
         }
         return results
     }
+
+    /**
+     * Converts a generic IEnumerable<T> to a generic IQueryable<T>.
+     */
+    AsQueryable(): IQueryable<T> {
+        class _internal implements IQueryProvider<T> {
+            private delegate: IEnumerable<any>
+
+            constructor(delegate: IEnumerable<any>) {
+                this.delegate = delegate
+            }
+
+            Select<R>(selector: Action<T, R>): IQueryable<R> {
+                return this.delegate.Select(selector).AsQueryable()
+            }
+        }
+
+        return new Queryable(new _internal(this))
+    }
 }
 
 /**
@@ -333,7 +354,6 @@ export {}
 declare global {
     interface Array<T> {
         count(): number
-
         asEnumerable(): Enumerable<T>
     }
 }

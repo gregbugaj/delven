@@ -5,6 +5,7 @@
  * </pre>
  */
 
+export * from "./types"
 export * from "./IEnumerable"
 export * from "./Enumerable"
 export * from "./SelectEnumerable"
@@ -16,3 +17,7 @@ export * from "./TakeWhileEnumerable"
 export * from "./SkipEnumerable"
 export * from "./SkipWhileEnumerable"
 export * from "./SelectManyEnumerable"
+
+export * from "./IQueryable"
+export * from "./IQueryProvider"
+export * from "./Queryable"
