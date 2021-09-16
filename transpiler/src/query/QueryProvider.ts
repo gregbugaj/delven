@@ -1,22 +1,17 @@
 import {IQueryable} from "./IQueryable"
 import {IQueryContext} from "./IQueryContext"
 import IQueryProvider from "./IQueryProvider"
-import Queryable from "./Queryable"
+import {Action} from "./types"
 
-export class QueryProvider implements IQueryProvider {
+export class QueryProvider<T = unknown> implements IQueryProvider<T> {
     readonly context: IQueryContext
 
     constructor(context: IQueryContext) {
         this.context = context
     }
 
-    CreateQuery<T>(): IQueryable<T> {
-        return new Queryable<T>(this)
-    }
-
-    Execute<T>(): T {
-        const query = this.CreateQuery()
-        // this should invoke the iterator on teh crated expresisson
+    Select<R>(selector: Action<T, R>): IQueryable<R> {
         return undefined
     }
+
 }
