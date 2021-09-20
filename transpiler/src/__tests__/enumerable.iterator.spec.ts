@@ -41,4 +41,14 @@ describe("Enumerable Iterator", () => {
         }
         expect(results).toEqual(["T", "E", "S", "T"])
     })
+
+    test("basic-iter", async () => {
+        const src = [2, 6, 4, 8]
+        const numbers = Enumerable.of(src)
+        const results = []
+        for (const val of numbers) {
+            results.push(val)
+        }
+        expect(results).toEqual(src)
+    })
 })

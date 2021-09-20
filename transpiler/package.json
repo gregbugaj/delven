@@ -7,7 +7,7 @@
     "___type": "module",
     "scripts": {
         "g4": "java -Xmx500M -cp \"/usr/local/lib/antlr/antlr-4.8-complete.jar:$CLASSPATH\" org.antlr.v4.Tool -Dlanguage=JavaScript ./src/grammar/*.g4 -visitor -o ./src/parser",
-        "test": "jest",
+        "test": "ts-jest",
         "build": "./node_modules/.bin/babel src --out-dir dist --extensions '.ts,.js' --source-maps inline",
         "watch": "./node_modules/.bin/babel --watch src --out-dir dist --extensions '.ts,.js'",
         "check-types": "tsc",
@@ -46,10 +46,9 @@
         "eslint-plugin-node": "^11.1.0",
         "eslint-plugin-promise": "^4.2.1",
         "eslint-plugin-standard": "^4.0.1",
-        "jest": "^26.1.0",
         "nodemon": "^2.0.4",
         "prettier": "^1.9.2",
-        "ts-jest": "^26.1.1",
+        "ts-jest": "^26.5.6",
         "typescript": "^3.9.5",
         "webpack": "^5.52.1",
         "webpack-cli": "^3.3.11"

@@ -21,4 +21,6 @@ export interface IQueryProvider<T> extends AsyncIterable<unknown> {
     toArray(): Promise<any[]>
 
     First(predicate?: Action<T, boolean>): Promise<T>
+
+    FirstOrDefault(predicate?: Action<T, boolean>): Promise<T>
 }

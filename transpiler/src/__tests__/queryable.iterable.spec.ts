@@ -5,7 +5,7 @@ describe("Enumerable Iterable", () => {
     })
 
     test("iterable-enumerables-await", async () => {
-        const sequence1 = Enumerable.of([1, 2, 3])
+        const sequence1 = Enumerable.of([1, 2, 3]).AsQueryable()
         const expectedResult = [1, 2, 3]
         const arr = []
 
@@ -16,7 +16,7 @@ describe("Enumerable Iterable", () => {
     })
 
     test("iterable-toArray", async () => {
-        const sequence1 = Enumerable.of([1, 2, 3])
+        const sequence1 = Enumerable.of([1, 2, 3]).AsQueryable()
         const values = await sequence1.toArray()
         const expectedResult = [1, 2, 3]
         const arr = []

@@ -59,8 +59,9 @@ export class Queryable<T> implements IQueryable<T> {
         return this.provider.First(predicate)
     }
 
-    async FirstOrDefault(action?: Action<T, boolean>): Promise<T> {
-        throw new Error("Method not implemented.")
+    async FirstOrDefault(predicate?: Action<T, boolean>): Promise<T> {
+        this.assertMethodPresent(Queryable.prototype.FirstOrDefault.name)
+        return this.provider.FirstOrDefault(predicate)
     }
 
     async Sum(action?: Action<T, number>): Promise<number> {

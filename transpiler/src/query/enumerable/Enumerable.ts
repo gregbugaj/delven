@@ -46,6 +46,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
     // source can be of any type and it should not be bound to type T
     readonly source: IterableDataSource<any>
     state: "NEW" | "STARTED" | "COMPLETED"
+    private warn = false
 
     constructor(source: IterableDataSource<any>) {
         this.source = source
@@ -313,7 +314,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * Default IEnumerable aka `AsyncIterable` implementation
      */
     async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
-        if (!isAsyncIterator(this.source)) {
+        if (this.warn && !isAsyncIterator(this.source)) {
             console.warn(`Source is not an isAsyncIterator: ${this.source}`)
         }
 
@@ -328,6 +329,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
             for (const val of this.source) {
                 yield val as T
             }
+            return undefined
         }
         throw new InvalidOperationException("Source is not Iterable")
     }
@@ -378,6 +380,10 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
 
             First(predicate?: Action<T, boolean>): Promise<T> {
                 return this.delegate.First(predicate)
+            }
+
+            FirstOrDefault(predicate?: Action<T, boolean>): Promise<T> {
+                return this.delegate.FirstOrDefault(predicate)
             }
         }
 

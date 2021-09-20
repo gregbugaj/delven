@@ -28,3 +28,5 @@ module.exports = {
     "coverageReporters": ["json", "html"],
     "bail": 1
 };
+
+// Use compiler option '--downlevelIteration' to allow iterating of iterators.
