@@ -758,7 +758,8 @@ class DelvenASTVisitor extends ECMAScriptParserVisitor {
         for (let i = 0; i < aliases.length; ++i) {
             const alias = aliases[i]
             const lhs: Node.Identifier = this.visitIdentifierName(alias.getChild(0))
-            const rhs: Node.Identifier | null = alias.getChildCount() == 3 ? this.visitIdentifierName(alias.getChild(2)) : null
+            const rhs: Node.Identifier | null =
+                alias.getChildCount() == 3 ? this.visitIdentifierName(alias.getChild(2)) : null
             specifiers.push(new ModuleSpecifier(lhs, rhs))
         }
 

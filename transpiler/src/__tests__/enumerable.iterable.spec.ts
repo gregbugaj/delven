@@ -1,8 +1,7 @@
 import {Enumerable} from "../query/internal"
 
 describe("Enumerable Iterable", () => {
-    beforeAll(() => {
-    })
+    beforeAll(() => {})
 
     test("iterable-enumerables", async () => {
         const sequence1 = Enumerable.of([1, 2, 3])

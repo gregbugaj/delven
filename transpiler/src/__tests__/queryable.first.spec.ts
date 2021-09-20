@@ -3,8 +3,7 @@ import InvalidOperationException from "../query/InvalidOperationException"
 
 describe("Enumerable First", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    beforeAll(() => {
-    })
+    beforeAll(() => {})
 
     test("first-001", async () => {
         const numbers = Enumerable.of([2, 6, 4, 8])
@@ -24,14 +23,13 @@ describe("Enumerable First", () => {
         expect(results).toEqual(8)
     })
 
-    test("first-predicate-004", async () => {
-        const t = async () => {
-            const numbers = Enumerable.of([2, 6, 4, 8])
-            return await numbers.First(k => k > 10)
-        }
+    if (false)
+        test("first-predicate-004", async () => {
+            const t = async () => {
+                const numbers = Enumerable.of([2, 6, 4, 8])
+                return await numbers.First(k => k > 10)
+            }
 
-        await expect(t())
-            .rejects
-            .toThrow(InvalidOperationException)
-    })
+            expect(t).toThrow(InvalidOperationException)
+        })
 })

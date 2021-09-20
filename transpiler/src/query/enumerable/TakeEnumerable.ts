@@ -10,7 +10,7 @@ export class TakeEnumerable<TSource> extends Enumerable<TSource> {
         this.count = count
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
         this.state = "STARTED"
         let index = 0
         for await (const item of this.source) {

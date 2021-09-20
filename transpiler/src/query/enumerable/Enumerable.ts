@@ -20,7 +20,6 @@ import {
     IQueryProvider
 } from "../internal"
 
-
 /**
  * Iterable type guard
  * @param x
@@ -60,7 +59,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * @returns val or evaluated function value
      */
     protected unwrap<K>(val: K): K {
-        return (typeof val === "function") ? val() : val
+        return typeof val === "function" ? val() : val
     }
 
     /**
@@ -314,11 +313,12 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * Default IEnumerable aka `AsyncIterable` implementation
      */
     async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
-        // if (isAsyncIterator(this.source))
-        {
-            for await (const val of this.source) {
-                yield val as T
-            }
+        if (!isAsyncIterator(this.source)) {
+            console.warn(`Source is not an isAsyncIterator: ${this.source}`)
+        }
+
+        for await (const val of this.source) {
+            yield val as T
         }
         return undefined
     }
@@ -329,7 +329,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 yield val as T
             }
         }
-        return undefined
+        throw new InvalidOperationException("Source is not Iterable")
     }
 
     /**

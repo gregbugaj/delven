@@ -14,7 +14,7 @@ export class TakeWhileEnumerable<TSource> extends Enumerable<TSource> {
         this.results.push(item)
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         let index = 0
         for await (const item of this.source) {

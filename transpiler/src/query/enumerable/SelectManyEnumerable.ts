@@ -16,7 +16,7 @@ export class SelectManyEnumerable<TSource, TResult, K> extends Enumerable<K> {
         this.transform = transform || ((x: TSource, y: any): K => y)
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<K, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<K, unknown> {
         this.state = "STARTED"
 
         for await (const val of this.source) {

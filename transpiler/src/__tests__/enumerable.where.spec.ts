@@ -1,8 +1,7 @@
 import {Enumerable} from "../query/internal"
 
 describe("Enumerable Where", () => {
-    beforeAll(() => {
-    })
+    beforeAll(() => {})
 
     test("where-toArray()", async () => {
         let queryWhere = new Enumerable([1, 2, "A", 1, 2, 3, 2, 3])

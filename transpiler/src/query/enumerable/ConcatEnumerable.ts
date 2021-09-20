@@ -13,7 +13,7 @@ export class ConcatEnumerable<TSource> extends Enumerable<TSource> {
         this.results = []
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
         this.state = "STARTED"
         for await (const val of this.source) {
             // T = unknown

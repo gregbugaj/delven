@@ -10,7 +10,7 @@ export class SelectEnumerable<TSource, TResult> extends Enumerable<TResult> {
         this.selector = selector
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<TResult, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TResult, unknown> {
         for await (const val of this.source) {
             // T = unknown
             const ret: TResult = this.selector(this.unwrap(val))

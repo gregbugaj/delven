@@ -10,7 +10,7 @@ export class SkipEnumerable<TSource> extends Enumerable<TSource> {
         this.count = count
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown, unknown> {
         this.state = "STARTED"
         let index = 0
         for await (const item of this.source) {

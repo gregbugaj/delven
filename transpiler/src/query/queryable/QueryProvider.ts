@@ -10,5 +10,4 @@ export class QueryProvider<T = unknown> implements IQueryProvider<T> {
     Select<R>(selector: Action<T, R>): IQueryable<R> {
         return undefined
     }
-
 }

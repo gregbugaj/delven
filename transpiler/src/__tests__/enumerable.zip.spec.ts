@@ -2,8 +2,7 @@ import {Enumerable, Tuple} from "../query/internal"
 import {IEnumerable} from "../query/internal"
 
 describe("Enumerable Zip", () => {
-    beforeAll(() => {
-    })
+    beforeAll(() => {})
 
     test("zip-001-tuple", async () => {
         const numbers = Enumerable.of([1, 2, 3, 4])

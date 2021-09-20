@@ -1,4 +1,4 @@
-import { Action, BiAction, IterableDataSource, Tuple, IQueryable, IQueryProvider } from "../internal"
+import {Action, BiAction, IterableDataSource, Tuple, IQueryable, IQueryProvider} from "../internal"
 
 /**
  * Provides functionality to evaluate queries against a specific data source wherein the type of the data is known.
@@ -41,7 +41,6 @@ export class Queryable<T> implements IQueryable<T> {
         throw new Error("Method not implemented.")
     }
 
-
     Take(count: number): IQueryable<T> {
         this.assertMethodPresent(Queryable.prototype.Take.name)
         return this.provider.Take(count)
@@ -83,7 +82,7 @@ export class Queryable<T> implements IQueryable<T> {
         return this.provider.toArray()
     }
 
-    async*[Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
         for await (const val of this.provider[Symbol.asyncIterator]()) {
             yield val as T
         }

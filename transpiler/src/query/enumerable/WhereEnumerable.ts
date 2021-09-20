@@ -10,7 +10,7 @@ export class WhereEnumerable<TSource> extends Enumerable<TSource> {
         this.results = []
     }
 
-    async* [Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TSource, unknown> {
         this.state = "STARTED"
         for await (const item of this.source) {
             const val = this.unwrap(item)

@@ -8,13 +8,9 @@
  * https://docs.microsoft.com/en-us/dotnet/api/system.linq.iqueryable-1
  */
 
-/**
- * This interface represents remote queryable datasource
- */
 import { Tuple, IterableDataSource, Action, BiAction } from "../types"
 
 export interface IQueryable<T> extends AsyncIterable<unknown> {
-
     /**
      * Return current 'async' iterator
      */
@@ -74,10 +70,7 @@ export interface IQueryable<T> extends AsyncIterable<unknown> {
      * @param selector
      * @param transform
      */
-    SelectMany<R, K = unknown>(
-        selector: Action<T, IterableDataSource<R>>,
-        transform?: BiAction<T, R, K>
-    ): IQueryable<K>
+    SelectMany<R, K = unknown>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IQueryable<K>
 
     /**
      * Concatenates two sequences.
@@ -141,4 +134,3 @@ export interface IQueryable<T> extends AsyncIterable<unknown> {
         transformer?: BiAction<T, TSecond, TResult>
     ): IQueryable<TResult | Tuple<T, TSecond>>
 }
-

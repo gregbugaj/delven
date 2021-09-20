@@ -12,8 +12,7 @@ describe("Enumerable Select-Fluent", () => {
             {name: "Leo", val: 50}
         ]
 
-        const selection = Enumerable
-            .of(source)
+        const selection = Enumerable.of(source)
             .Where(p => p.val == 50)
             .Select((val): {name: string} => ({
                 name: val.name
@@ -37,8 +36,7 @@ describe("Enumerable Select-Fluent", () => {
             {name: "Leo", val: 50}
         ]
 
-        const selection = Enumerable
-            .of(source)
+        const selection = Enumerable.of(source)
             .Select(sel => sel)
             .Where(p => p.val == 50)
             .Select((val): {name: string} => ({

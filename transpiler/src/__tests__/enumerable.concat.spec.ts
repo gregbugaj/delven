@@ -17,7 +17,6 @@ describe("Enumerable Concat", () => {
         expect(arr).toEqual(expectedResult)
     })
 
-
     test("concat-iterable", async () => {
         const sequence1 = Enumerable.of([1, 2, 3])
         const sequence2 = [4, 5, 6]

@@ -25,7 +25,6 @@
 import {Tuple, IterableDataSource, Action, BiAction, IQueryable} from "../internal"
 
 export interface IEnumerable<T> extends AsyncIterable<unknown>, Iterable<unknown> {
-
     /**
      * Return current 'async' iterator
      */
@@ -34,7 +33,7 @@ export interface IEnumerable<T> extends AsyncIterable<unknown>, Iterable<unknown
     /**
      *
      */
-     [Symbol.iterator](): Iterator<T>
+    [Symbol.iterator](): Iterator<T>
 
     /**
      * Use the toArray method to create an array from results of a query.
