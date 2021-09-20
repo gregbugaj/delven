@@ -20,6 +20,23 @@ import {
     IQueryProvider
 } from "../internal"
 
+
+/**
+ * Iterable type guard
+ * @param x
+ */
+function isIterator(x: any): x is Iterable<unknown> {
+    return Symbol.iterator in x
+}
+
+/**
+ * Async iterator type guard
+ * @param x
+ */
+function isAsyncIterator(x: any): x is AsyncGenerator<unknown> {
+    return Symbol.asyncIterator in x
+}
+
 /**
  * Default implementation of IEnumerable
  *
@@ -297,8 +314,20 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * Default IEnumerable aka `AsyncIterable` implementation
      */
     async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
-        for await (const val of this.source) {
-            yield val as T
+        // if (isAsyncIterator(this.source))
+        {
+            for await (const val of this.source) {
+                yield val as T
+            }
+        }
+        return undefined
+    }
+
+    * [Symbol.iterator](): Iterator<T> {
+        if (isIterator(this.source)) {
+            for (const val of this.source) {
+                yield val as T
+            }
         }
         return undefined
     }
@@ -327,6 +356,10 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 this.delegate = delegate
             }
 
+            Take(count: number): IQueryable<T> {
+                return this.delegate.Take(count).AsQueryable()
+            }
+
             [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown> {
                 return this.delegate[Symbol.asyncIterator]()
             }
@@ -340,8 +373,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
             }
 
             Where(predicate: Action<T, boolean>): IQueryable<T> {
-                let w = this.delegate.Where(predicate)
-                return w.AsQueryable()
+                return this.delegate.Where(predicate).AsQueryable()
             }
         }
 

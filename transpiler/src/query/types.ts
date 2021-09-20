@@ -6,7 +6,7 @@ export type Tuple<TFirst, TSecond> = [TFirst, TSecond]
 /**
  * Datasource that should be used with the IEnumerable
  */
-export type IterableDataSource<TSource> = AsyncIterable<TSource> | Iterable<TSource> | TSource[]
+export type IterableDataSource<TSource> = AsyncIterable<TSource> | Iterable<TSource> | Iterator<TSource>
 
 /**
  * Action interface represents a function that accepts one argument and produces a result.

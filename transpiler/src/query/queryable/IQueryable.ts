@@ -11,7 +11,7 @@
 /**
  * This interface represents remote queryable datasource
  */
-import {Tuple, IterableDataSource, Action, BiAction} from "../types"
+import { Tuple, IterableDataSource, Action, BiAction } from "../types"
 
 export interface IQueryable<T> extends AsyncIterable<unknown> {
 

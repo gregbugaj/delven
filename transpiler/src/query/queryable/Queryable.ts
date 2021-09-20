@@ -1,4 +1,4 @@
-import {Action, BiAction, IterableDataSource, Tuple, IQueryable, IQueryProvider} from "../internal"
+import { Action, BiAction, IterableDataSource, Tuple, IQueryable, IQueryProvider } from "../internal"
 
 /**
  * Provides functionality to evaluate queries against a specific data source wherein the type of the data is known.
@@ -43,7 +43,8 @@ export class Queryable<T> implements IQueryable<T> {
 
 
     Take(count: number): IQueryable<T> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.Take.name)
+        return this.provider.Take(count)
     }
 
     Skip(count: number): IQueryable<T> {
@@ -77,16 +78,22 @@ export class Queryable<T> implements IQueryable<T> {
         throw new Error("Method not implemented.")
     }
 
-    // eslint-disable-next-line require-yield
-    async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
-        return this.provider[Symbol.asyncIterator]()
-    }
-
     async toArray(): Promise<T[]> {
         this.assertMethodPresent(Queryable.prototype.toArray.name)
         return this.provider.toArray()
     }
 
+    async*[Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
+        for await (const val of this.provider[Symbol.asyncIterator]()) {
+            yield val as T
+        }
+        return undefined
+    }
+
+    /**
+     * Check if object has specific method present and if not throw an Error
+     * @param name the name of the method to check
+     */
     assertMethodPresent(name: string): void {
         if (this.provider[name] === undefined) {
             throw new Error(`IQueryProvider does not implement : ${name}`)

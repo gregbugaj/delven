@@ -17,5 +17,7 @@ export interface IQueryProvider<T> extends AsyncIterable<unknown> {
 
     Where(predicate: Action<T, boolean>): IQueryable<T>
 
+    Take(count: number): IQueryable<T>
+    
     toArray(): Promise<any[]>
 }

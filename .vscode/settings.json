@@ -1,17 +1,19 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-  "editor.detectIndentation": false,
-  "editor.tabSize": 2,
-  "editor.formatOnSave": false,
-  "editor.rulers": [
-    120
-  ],
-  "editor.wordWrapColumn": 120,
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
-  "files.eol": "\n",
-	"editor.insertSpaces": false,
-
-  "typescript.tsdk": "./node_modules/typescript/lib",
-
+    "editor.detectIndentation": false,
+    // The number of spaces a tab is equal to. This setting is overridden
+    // based on the file contents when `editor.detectIndentation` is true.
+    "editor.tabSize": 4,
+    "editor.formatOnSave": false,
+    "editor.rulers": [
+        120
+    ],
+    "editor.wordWrapColumn": 120,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.eol": "\n",
+    // Insert spaces when pressing Tab. This setting is overriden
+    // based on the file contents when `editor.detectIndentation` is true.
+    "editor.insertSpaces": true,
+    "typescript.tsdk": "./node_modules/typescript/lib",
 }
