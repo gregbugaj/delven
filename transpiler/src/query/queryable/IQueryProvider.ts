@@ -1,4 +1,4 @@
-import { Action, IQueryable } from "../internal"
+import {Action, IQueryable} from "../internal"
 
 /**
  * The query provider responsible for interpreting and executing the query.
@@ -19,4 +19,6 @@ export interface IQueryProvider<T> extends AsyncIterable<unknown> {
     Take(count: number): IQueryable<T>
 
     toArray(): Promise<any[]>
+
+    First(predicate?: Action<T, boolean>): Promise<T>
 }

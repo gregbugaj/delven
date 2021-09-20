@@ -55,7 +55,8 @@ export class Queryable<T> implements IQueryable<T> {
     }
 
     async First(predicate?: Action<T, boolean>): Promise<T> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.First.name)
+        return this.provider.First(predicate)
     }
 
     async FirstOrDefault(action?: Action<T, boolean>): Promise<T> {
@@ -82,7 +83,7 @@ export class Queryable<T> implements IQueryable<T> {
         return this.provider.toArray()
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
+    async* [Symbol.asyncIterator](): AsyncGenerator<T, unknown> {
         for await (const val of this.provider[Symbol.asyncIterator]()) {
             yield val as T
         }

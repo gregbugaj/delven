@@ -375,6 +375,10 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
             Where(predicate: Action<T, boolean>): IQueryable<T> {
                 return this.delegate.Where(predicate).AsQueryable()
             }
+
+            First(predicate?: Action<T, boolean>): Promise<T> {
+                return this.delegate.First(predicate)
+            }
         }
 
         return new Queryable(new _internal(this))
