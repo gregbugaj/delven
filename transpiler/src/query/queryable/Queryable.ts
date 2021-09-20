@@ -91,6 +91,10 @@ export class Queryable<T> implements IQueryable<T> {
         return undefined
     }
 
+    [Symbol.iterator](): Iterator<unknown> {
+        throw new Error("Method not implemented.")
+    }
+
     /**
      * Check if object has specific method present and if not throw an Error
      * @param name the name of the method to check

@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target___": "ES2020",
+    "target": "esnext",
     "lib": [
       "es2017",
       "esnext",
@@ -22,7 +23,9 @@
     "noEmit": true,
     "sourceMap": true,
     "pretty": true,
-    "downlevelIteration": true,  /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
+    "downlevelIteration": true,
+    "noFallthroughCasesInSwitch": true,
+    "jsx": "react"
   },
   "include": [
     "src/**/*.ts",

@@ -10,7 +10,7 @@
 
 import { Tuple, IterableDataSource, Action, BiAction } from "../types"
 
-export interface IQueryable<T> extends AsyncIterable<unknown> {
+export interface IQueryable<T> extends AsyncIterable<unknown>, Iterable<unknown> {
     /**
      * Return current 'async' iterator
      */
