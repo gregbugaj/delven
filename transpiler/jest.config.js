@@ -13,6 +13,7 @@ module.exports = {
         //   "^.+\\.(ts|tsx)$": "ts-jest"
         // transforming JS files as they are using ES6 module system
         "^.+\\.(ts|tsx|js)$": "babel-jest"
+        // "^.+\\.(ts|tsx|js)$": "ts-jest" // TS-JEST fails for number of  test with compilation errors
     },
 
     globals: {
@@ -26,7 +27,8 @@ module.exports = {
 
     "collectCoverage": true,
     "coverageReporters": ["json", "html"],
-    "bail": 1
+    "bail": 1,
+    preset: 'ts-jest/presets/js-with-ts',
 };
 
 // Use compiler option '--downlevelIteration' to allow iterating of iterators.
