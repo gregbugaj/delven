@@ -91,8 +91,11 @@ export class Queryable<T> implements IQueryable<T> {
         return undefined
     }
 
-    [Symbol.iterator](): Iterator<unknown> {
-        throw new Error("Method not implemented.")
+    [Symbol.iterator](): Iterator<T> {
+        // for (const val in this.provider){
+        //     console.info(val)
+        // }
+        return this.provider[Symbol.iterator]()
     }
 
     /**

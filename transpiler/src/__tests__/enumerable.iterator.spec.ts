@@ -6,7 +6,8 @@ import {Enumerable} from "../query/internal"
  */
 describe("Enumerable Iterator", () => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    beforeAll(() => {})
+    beforeAll(() => {
+    })
 
     test("basic-async-iter", async () => {
         const src = [2, 6, 4, 8]
@@ -46,6 +47,7 @@ describe("Enumerable Iterator", () => {
         const src = [2, 6, 4, 8]
         const numbers = Enumerable.of(src)
         const results = []
+        // @ts-ignore
         for (const val of numbers) {
             results.push(val)
         }

@@ -17,6 +17,11 @@ export interface IQueryable<T> extends AsyncIterable<unknown>, Iterable<unknown>
     [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown>
 
     /**
+     * Iterable interface
+     */
+    [Symbol.iterator](): Iterator<T>
+
+    /**
      * Use the toArray method to create an array from results of a query.
      * Calling toArray also forces immediate execution of the query.
      *

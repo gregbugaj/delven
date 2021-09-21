@@ -6,11 +6,16 @@ import {Action, IQueryable} from "../internal"
  * The definition of "executing" is specific to a query provider.
  * For example, it may involve translating the expression tree to a query language appropriate for an underlying data source.
  */
-export interface IQueryProvider<T> extends AsyncIterable<unknown> {
+export interface IQueryProvider<T> extends AsyncIterable<unknown>, Iterable<unknown> {
     /**
      * Return current 'async' iterator
      */
     [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown>
+
+    /**
+     * Iterable interface
+     */
+    [Symbol.iterator](): Iterator<T>
 
     Select<R>(selector: Action<T, R>): IQueryable<R>
 

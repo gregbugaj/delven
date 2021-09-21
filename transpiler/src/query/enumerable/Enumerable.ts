@@ -324,6 +324,10 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
         return undefined
     }
 
+    /**
+     * Return an generator for the current iterator, this allows us to use the `yield`  instead of implementing the
+     * `next` method and having to trac the state
+     */
     * [Symbol.iterator](): Iterator<T> {
         if (isIterator(this.source)) {
             for (const val of this.source) {
@@ -366,11 +370,15 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 return this.delegate[Symbol.asyncIterator]()
             }
 
+            [Symbol.iterator](): Iterator<T> {
+                return this.delegate[Symbol.iterator]()
+            }
+
             Select<R>(selector: Action<T, R>): IQueryable<R> {
                 return this.delegate.Select(selector).AsQueryable()
             }
 
-            toArray(): Promise<any[]> {
+            async toArray(): Promise<any[]> {
                 return this.delegate.toArray()
             }
 
@@ -385,6 +393,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
             FirstOrDefault(predicate?: Action<T, boolean>): Promise<T> {
                 return this.delegate.FirstOrDefault(predicate)
             }
+
         }
 
         return new Queryable(new _internal(this))

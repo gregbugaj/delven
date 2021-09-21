@@ -31,7 +31,7 @@ export interface IEnumerable<T> extends AsyncIterable<unknown>, Iterable<unknown
     [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown>
 
     /**
-     *
+     * Iterable interface
      */
     [Symbol.iterator](): Iterator<T>
 
