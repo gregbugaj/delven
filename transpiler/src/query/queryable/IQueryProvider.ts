@@ -44,4 +44,6 @@ export interface IQueryProvider<T> extends AsyncIterable<unknown>, Iterable<unkn
     Zip<TSecond, TResult>(other: IterableDataSource<TSecond>, transformer?: BiAction<T, TSecond, TResult>): IQueryable<TResult | Tuple<T, TSecond>>
 
     All(predicate: Action<T, boolean>): Promise<boolean>
+
+    Any(predicate?: Action<T, boolean>): Promise<boolean>
 }

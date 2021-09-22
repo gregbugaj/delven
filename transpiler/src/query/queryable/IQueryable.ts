@@ -32,9 +32,10 @@ export interface IQueryable<T> extends AsyncIterable<unknown>, Iterable<unknown>
 
     /**
      * Determines whether a sequence contains any elements
+     * @param predicate A function to test each element for a condition.
      * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
      */
-    Any(): Promise<boolean>
+    Any(predicate?: Action<T, boolean>): Promise<boolean>
 
     /**
      * Gets the number of elements in the collection

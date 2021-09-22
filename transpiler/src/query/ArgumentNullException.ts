@@ -5,6 +5,6 @@ export default class ArgumentNullException extends Error {
     constructor(message?: string) {
         super(message)
         this.name = "ArgumentNullException"
-        this.stack = (<any>new Error()).stack()
+        this.stack = (<any>new Error()).stack
     }
 }

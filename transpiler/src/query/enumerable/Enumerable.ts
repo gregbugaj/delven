@@ -107,8 +107,18 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * Determines whether a sequence contains any elements
      * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
      */
-    async Any(): Promise<boolean> {
-        throw new Error("Method not implemented.")
+    async Any(predicate?: Action<T, boolean>): Promise<boolean> {
+        for await (const item of this) {
+            const val = this.unwrap(item)
+            if (predicate !== undefined) {
+                if (predicate(val)) {
+                    return true
+                }
+            } else {
+                return true
+            }
+        }
+        return false
     }
 
     /**
@@ -143,6 +153,9 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * @param predicate A function to test each element for a condition.
      */
     async All(predicate: Action<T, boolean>): Promise<boolean> {
+        if (predicate == null) {
+            throw new ArgumentNullException("predicate should not be null")
+        }
         for await (const item of this) {
             const val = this.unwrap(item)
             if (!predicate(val)) {
@@ -429,6 +442,10 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
 
             All(predicate: Action<T, boolean>): Promise<boolean> {
                 return this.delegate.All(predicate)
+            }
+
+            Any(predicate?: Action<T, boolean>): Promise<boolean>{
+                return this.delegate.Any(predicate)
             }
         }
 

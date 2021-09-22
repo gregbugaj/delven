@@ -20,12 +20,12 @@ export class Queryable<T> implements IQueryable<T> {
         return this.provider.SelectMany(selector, transform)
     }
 
-    async Any(): Promise<boolean> {
-        throw new Error("Method not implemented.")
+    async Any(predicate?: Action<T, boolean>): Promise<boolean> {
+        this.assertMethodPresent(Queryable.prototype.Any.name)
+        return this.provider.Any(predicate)
     }
 
     async Count(): Promise<number> {
-        // return this.source?.length
         throw new Error("Method not implemented.")
     }
 
