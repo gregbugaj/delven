@@ -25,8 +25,9 @@ export class Queryable<T> implements IQueryable<T> {
         return this.provider.Any(predicate)
     }
 
-    async Count(): Promise<number> {
-        throw new Error("Method not implemented.")
+    async Count(predicate?: Action<T, boolean>): Promise<number>{
+        this.assertMethodPresent(Queryable.prototype.Count.name)
+        return this.provider.Count(predicate)
     }
 
     Where(predicate: Action<T, boolean>): IQueryable<T> {

@@ -105,16 +105,17 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
 
     /**
      * Determines whether a sequence contains any elements
+     * @param predicate A function to test each element for a condition.
      * @returns <code>true</code> if the source sequence contains any elements; otherwise, <code>false</code>.
      */
     async Any(predicate?: Action<T, boolean>): Promise<boolean> {
+        if (predicate == undefined) {
+            predicate = (x) => true
+        }
+
         for await (const item of this) {
             const val = this.unwrap(item)
-            if (predicate !== undefined) {
-                if (predicate(val)) {
-                    return true
-                }
-            } else {
+            if (predicate(val)) {
                 return true
             }
         }
@@ -124,9 +125,17 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
     /**
      * Gets the number of elements in the collection
      */
-    async Count(): Promise<number> {
-        // return this.source?.length
-        throw new Error("Method not implemented.")
+    async Count(predicate?: Action<T, boolean>): Promise<number> {
+        if (predicate == undefined) {
+            predicate = (x) => true
+        }
+        let count = 0
+        for await (const element of this) {
+            if (predicate(element)) {
+                count++
+            }
+        }
+        return count
     }
 
     /**
@@ -428,11 +437,11 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 return this.delegate.Concat(second).AsQueryable()
             }
 
-            First(predicate?: Action<T, boolean>): Promise<T> {
+            async First(predicate?: Action<T, boolean>): Promise<T> {
                 return this.delegate.First(predicate)
             }
 
-            FirstOrDefault(predicate?: Action<T, boolean>): Promise<T> {
+            async FirstOrDefault(predicate?: Action<T, boolean>): Promise<T> {
                 return this.delegate.FirstOrDefault(predicate)
             }
 
@@ -440,12 +449,16 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 return this.delegate.Zip(other, transformer)
             }
 
-            All(predicate: Action<T, boolean>): Promise<boolean> {
+            async All(predicate: Action<T, boolean>): Promise<boolean> {
                 return this.delegate.All(predicate)
             }
 
-            Any(predicate?: Action<T, boolean>): Promise<boolean>{
+            async Any(predicate?: Action<T, boolean>): Promise<boolean> {
                 return this.delegate.Any(predicate)
+            }
+
+            async Count(predicate?: Action<T, boolean>): Promise<number> {
+                return this.delegate.Count(predicate)
             }
         }
 

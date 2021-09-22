@@ -53,8 +53,9 @@ export interface IEnumerable<T> extends AsyncIterable<unknown>, Iterable<unknown
 
     /**
      * Gets the number of elements in the collection
+     * @param predicate A function to test each element for a condition.
      */
-    Count(): Promise<number>
+    Count(predicate?: Action<T, boolean>): Promise<number>
 
     /**
      * Filters a sequence of values based on a predicate.
