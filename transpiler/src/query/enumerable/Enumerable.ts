@@ -338,6 +338,11 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
     }
 
     async Contains(value: unknown): Promise<boolean> {
+        // ECMAScript 2016 support
+        if(Array.isArray(this.source)){
+            return this.source.includes(value)
+        }
+
         for await (const element of this) {
             const val = this.unwrap(element)
             if (val === value) {
