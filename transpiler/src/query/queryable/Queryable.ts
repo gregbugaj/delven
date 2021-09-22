@@ -16,7 +16,8 @@ export class Queryable<T> implements IQueryable<T> {
     }
 
     SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IQueryable<K> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.SelectMany.name)
+        return this.provider.SelectMany(selector, transform)
     }
 
     async Any(): Promise<boolean> {
@@ -34,11 +35,13 @@ export class Queryable<T> implements IQueryable<T> {
     }
 
     TakeWhile(predicate: BiAction<T, number, boolean>): IQueryable<T> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.TakeWhile.name)
+        return this.provider.TakeWhile(predicate)
     }
 
     async All(predicate: Action<T, boolean>): Promise<boolean> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.All.name)
+        return this.provider.All(predicate)
     }
 
     Take(count: number): IQueryable<T> {
@@ -47,11 +50,13 @@ export class Queryable<T> implements IQueryable<T> {
     }
 
     Skip(count: number): IQueryable<T> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.Skip.name)
+        return this.provider.Skip(count)
     }
 
     SkipWhile(action: BiAction<T, number, boolean>): IQueryable<T> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.Skip.name)
+        return this.provider.SkipWhile(action)
     }
 
     async First(predicate?: Action<T, boolean>): Promise<T> {
@@ -65,18 +70,21 @@ export class Queryable<T> implements IQueryable<T> {
     }
 
     async Sum(action?: Action<T, number>): Promise<number> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.Sum.name)
+        return this.provider.Sum(action)
     }
 
     Concat(second: IterableDataSource<T>): IQueryable<T> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.Concat.name)
+        return this.provider.Concat(second)
     }
 
     Zip<TSecond, TResult>(
-        other: IQueryable<TSecond>,
+        other: IterableDataSource<TSecond>,
         transformer?: BiAction<T, TSecond, TResult>
     ): IQueryable<TResult | Tuple<T, TSecond>> {
-        throw new Error("Method not implemented.")
+        this.assertMethodPresent(Queryable.prototype.Zip.name)
+        return this.provider.Zip(other, transformer)
     }
 
     async toArray(): Promise<T[]> {

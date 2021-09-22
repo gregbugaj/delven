@@ -19,7 +19,7 @@ export class ZipEnumerable<TFirst, TSecond, TResult> extends Enumerable<TResult 
         this.transformer = transformer
     }
 
-    async *[Symbol.asyncIterator](): AsyncGenerator<TResult | Tuple<TFirst, TSecond>, unknown, unknown> {
+    async *[Symbol.asyncIterator](): AsyncGenerator<TResult | Tuple<TFirst, TSecond>, unknown> {
         this.state = "STARTED"
         if (this.first == undefined) {
             throw new ArgumentNullException("first should not be null")

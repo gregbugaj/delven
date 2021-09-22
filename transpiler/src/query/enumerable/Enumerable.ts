@@ -47,6 +47,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
     readonly source: IterableDataSource<any>
     state: "NEW" | "STARTED" | "COMPLETED"
     private warn = false
+    private unwrap_functions = false
 
     constructor(source: IterableDataSource<any>) {
         this.source = source
@@ -60,6 +61,9 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * @returns val or evaluated function value
      */
     protected unwrap<K>(val: K): K {
+        // TODO : need to figure out if we are going to parametize this
+        if(!this.unwrap_functions)
+            return val
         return typeof val === "function" ? val() : val
     }
 
@@ -304,10 +308,11 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      * @param transformer
      */
     Zip<TSecond, TResult>(
-        other: Enumerable<TSecond>,
+        other: IterableDataSource<TSecond>,
         transformer?: BiAction<T, TSecond, TResult>
     ): IEnumerable<TResult | Tuple<T, TSecond>> {
-        return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<TSecond>, transformer)
+        return new ZipEnumerable<T, TSecond, TResult>(this, other, transformer)
+        // return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<TSecond>, transformer)
     }
 
     /**
@@ -362,10 +367,6 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 this.delegate = delegate
             }
 
-            Take(count: number): IQueryable<T> {
-                return this.delegate.Take(count).AsQueryable()
-            }
-
             [Symbol.asyncIterator](): AsyncGenerator<unknown, unknown> {
                 return this.delegate[Symbol.asyncIterator]()
             }
@@ -378,12 +379,40 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 return this.delegate.Select(selector).AsQueryable()
             }
 
+            SelectMany<R, K>(selector: Action<T, IterableDataSource<R>>, transform?: BiAction<T, R, K>): IQueryable<K> {
+                return this.delegate.SelectMany(selector, transform).AsQueryable()
+            }
+
+            Take(count: number): IQueryable<T> {
+                return this.delegate.Take(count).AsQueryable()
+            }
+
+            TakeWhile(predicate: BiAction<T, number, boolean>): IQueryable<T> {
+                return this.delegate.TakeWhile(predicate).AsQueryable()
+            }
+
+            Skip(count: number): IQueryable<T> {
+                return this.delegate.Skip(count).AsQueryable()
+            }
+
+            SkipWhile(action: BiAction<T, number, boolean>): IQueryable<T> {
+                return this.delegate.SkipWhile(action).AsQueryable()
+            }
+
+            async Sum(action?: Action<T, number>): Promise<number> {
+                return this.delegate.Sum(action)
+            }
+
             async toArray(): Promise<any[]> {
                 return this.delegate.toArray()
             }
 
             Where(predicate: Action<T, boolean>): IQueryable<T> {
                 return this.delegate.Where(predicate).AsQueryable()
+            }
+
+            Concat(second: IterableDataSource<T>): IQueryable<T> {
+                return this.delegate.Concat(second).AsQueryable()
             }
 
             First(predicate?: Action<T, boolean>): Promise<T> {
@@ -394,6 +423,13 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
                 return this.delegate.FirstOrDefault(predicate)
             }
 
+            Zip<TSecond, TResult>(other: IterableDataSource<TSecond>, transformer?: BiAction<T, TSecond, TResult>): IQueryable<TResult | Tuple<T, TSecond>> {
+                return this.delegate.Zip(other, transformer)
+            }
+
+            All(predicate: Action<T, boolean>): Promise<boolean> {
+                return this.delegate.All(predicate)
+            }
         }
 
         return new Queryable(new _internal(this))

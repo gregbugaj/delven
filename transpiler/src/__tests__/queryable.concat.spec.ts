@@ -1,11 +1,11 @@
 import {Enumerable} from "../query/internal"
 
-describe("Enumerable Concat", () => {
+describe("Queryable Concat", () => {
     beforeAll(() => {})
 
     test("concat-enumerables", async () => {
-        const sequence1 = Enumerable.of([1, 2, 3])
-        const sequence2 = Enumerable.of([4, 5, 6])
+        const sequence1 = Enumerable.of([1, 2, 3]).AsQueryable()
+        const sequence2 = Enumerable.of([4, 5, 6]).AsQueryable()
 
         const results = sequence1.Concat(sequence2)
 
@@ -18,7 +18,7 @@ describe("Enumerable Concat", () => {
     })
 
     test("concat-iterable", async () => {
-        const sequence1 = Enumerable.of([1, 2, 3])
+        const sequence1 = Enumerable.of([1, 2, 3]).AsQueryable()
         const sequence2 = [4, 5, 6]
 
         const results = sequence1.Concat(sequence2)

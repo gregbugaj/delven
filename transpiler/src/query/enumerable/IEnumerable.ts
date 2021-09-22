@@ -152,7 +152,7 @@ export interface IEnumerable<T> extends AsyncIterable<unknown>, Iterable<unknown
      * @param transformer
      */
     Zip<TSecond, TResult>(
-        other: IEnumerable<TSecond>,
+        other: IterableDataSource<TSecond>,
         transformer?: BiAction<T, TSecond, TResult>
     ): IEnumerable<TResult | Tuple<T, TSecond>>
 
