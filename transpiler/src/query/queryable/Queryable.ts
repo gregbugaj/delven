@@ -100,9 +100,6 @@ export class Queryable<T> implements IQueryable<T> {
     }
 
     [Symbol.iterator](): Iterator<T> {
-        // for (const val in this.provider){
-        //     console.info(val)
-        // }
         return this.provider[Symbol.iterator]()
     }
 

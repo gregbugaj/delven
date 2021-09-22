@@ -62,7 +62,7 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
      */
     protected unwrap<K>(val: K): K {
         // TODO : need to figure out if we are going to parametize this
-        if(!this.unwrap_functions)
+        if (!this.unwrap_functions)
             return val
         return typeof val === "function" ? val() : val
     }
