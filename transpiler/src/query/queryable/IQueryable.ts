@@ -140,4 +140,11 @@ export interface IQueryable<T> extends AsyncIterable<unknown>, Iterable<unknown>
         other: IQueryable<TSecond>,
         transformer?: BiAction<T, TSecond, TResult>
     ): IQueryable<TResult | Tuple<T, TSecond>>
+
+    /**
+     * Determines whether a sequence contains a specified element by using the default equality comparer.
+     * @param value The value to locate in the sequence.
+     * @returns <code>true</code> if the source sequence contains elements; otherwise, <code>false</code>.
+     */
+    Contains(value: unknown): Promise<boolean>
 }

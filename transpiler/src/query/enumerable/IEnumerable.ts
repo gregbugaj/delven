@@ -159,6 +159,13 @@ export interface IEnumerable<T> extends AsyncIterable<unknown>, Iterable<unknown
     ): IEnumerable<TResult | Tuple<T, TSecond>>
 
     /**
+     * Determines whether a sequence contains a specified element by using the default equality comparer.
+     * @param value The value to locate in the sequence.
+     * @returns <code>true</code> if the source sequence contains elements; otherwise, <code>false</code>.
+     */
+    Contains(value: unknown): Promise<boolean>
+
+    /**
      * Converts a generic IEnumerable<T> to a generic IQueryable<T>.
      */
     AsQueryable(): IQueryable<T>

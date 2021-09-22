@@ -32,7 +32,7 @@ export interface IQueryProvider<T> extends AsyncIterable<unknown>, Iterable<unkn
     Sum(action?: Action<T, number>): Promise<number>
 
     Count(predicate?: Action<T, boolean>): Promise<number>
-    
+
     SkipWhile(action: BiAction<T, number, boolean>): IQueryable<T>
 
     toArray(): Promise<any[]>
@@ -48,4 +48,6 @@ export interface IQueryProvider<T> extends AsyncIterable<unknown>, Iterable<unkn
     All(predicate: Action<T, boolean>): Promise<boolean>
 
     Any(predicate?: Action<T, boolean>): Promise<boolean>
+
+    Contains(value: unknown): Promise<boolean>
 }

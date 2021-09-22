@@ -88,6 +88,11 @@ export class Queryable<T> implements IQueryable<T> {
         return this.provider.Zip(other, transformer)
     }
 
+    async Contains(value: unknown): Promise<boolean>{
+        this.assertMethodPresent(Queryable.prototype.Contains.name)
+        return this.provider.Contains(value)
+    }
+
     async toArray(): Promise<T[]> {
         this.assertMethodPresent(Queryable.prototype.toArray.name)
         return this.provider.toArray()

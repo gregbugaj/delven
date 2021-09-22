@@ -337,6 +337,16 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
         // return new ZipEnumerable<T, TSecond, TResult>(this, other as Enumerable<TSecond>, transformer)
     }
 
+    async Contains(value: unknown): Promise<boolean> {
+        for await (const element of this) {
+            const val = this.unwrap(element)
+            if (val === value) {
+                return true
+            }
+        }
+        return false
+    }
+
     /**
      * Default IEnumerable aka `AsyncIterable` implementation
      */
@@ -459,6 +469,10 @@ export class Enumerable<T extends unknown> implements IEnumerable<T> {
 
             async Count(predicate?: Action<T, boolean>): Promise<number> {
                 return this.delegate.Count(predicate)
+            }
+
+            async Contains(value: unknown): Promise<boolean> {
+                return this.delegate.Contains(value)
             }
         }
 
