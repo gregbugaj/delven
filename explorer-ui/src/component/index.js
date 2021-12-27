@@ -1,0 +1,1 @@
+export { EuiComponent } from "./component";
