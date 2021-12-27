@@ -103,7 +103,7 @@ log "Preflight check complete"
 
 # setup NVM to use correct node version
 # We should not depend on NVM being present
-NVM_MIN_VERSION='v14.5.0'
+NVM_MIN_VERSION=`cat .nvmrc`
 # source the NVM to make it available to our shell
 . ~/.nvm/nvm.sh --version
 nvm use $NVM_MIN_VERSION
@@ -134,7 +134,7 @@ npm link delven-transpiler
 cd ../..
 log "Transpiler linked"
 
-pane_cmd_1='cd ./explorer-ui && npm run start'
+pane_cmd_1='cd ./explorer-ui && yarn run start'
 pane_cmd_2='cd ./runner/executor && npm run dev'
 pane_cmd_3='cd ./explorer-server && npm run dev'
 pane_cmd_4='cd ./runner/executor && npm run watch-ts'

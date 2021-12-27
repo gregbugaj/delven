@@ -59,6 +59,14 @@ lxc exec  delven-invoker -- sudo --login --user ubuntu
  sudo adduser greg lxd
 ```
 
+
+NPM-Yarn migration
+
+https://classic.yarnpkg.com/en/docs/migrating-from-npm/
+https://shift.infinite.red/npm-vs-yarn-cheat-sheet-8755b092e5cc
+
+
+
 https://github.com/tpokorra/lxd-scripts
 https://www.cyberciti.biz/faq/how-to-create-lxd-vm-when-the-cloud-instance-launches/
 https://discuss.linuxcontainers.org/t/script-run-in-lxd/3999
