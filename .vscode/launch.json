@@ -21,7 +21,9 @@
 			"sourceMaps": true,
 			"runtimeExecutable": null,
 			"runtimeArgs": [],
-			"env": {},
+			"env": {
+        "NODE_ENV": "development"
+      },
 		},
 		{
 			"request": "launch",
@@ -51,7 +53,9 @@
 			"sourceMaps": true,
 			"runtimeExecutable": null,
 			"runtimeArgs": [],
-			"env": {},
+			      "env": {
+        "NODE_ENV": "development"
+      },
 		},
 		{
 			"type": "node",
