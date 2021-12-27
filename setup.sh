@@ -2,7 +2,7 @@
 
 # Failfast on any errors
 # set -eu -o pipefail
-MIN_VERSION='v14.5.0'
+MIN_VERSION=`cat .nvmrc`
 RUN_AUDIT_FIX=$1
 
 function dependency_check() {
@@ -12,16 +12,18 @@ function dependency_check() {
   . ~/.nvm/nvm.sh --version
 
   if ! command -v nvm &>/dev/null; then
-    printf '\e[1;91m%-6s\e[0m \n' "nvm command not found or not available to the script"
+    printf '\e[1;91m%-6s\e[0m \n' "nvm(Node Version Manager) command not found or not available to the script"
     printf '\e[1;91m%-6s\e[0m \n' "Try executing as '. ./setup.sh'"
+    printf '\e[1;91m%-6s\e[0m \n' "NVM installation : https://github.com/nvm-sh/nvm#installation-and-update"
+
     exit 1
   fi
 
   if command -v nvm &>/dev/null; then
     printf "Installing Node version : %s\n" $MIN_VERSION
     nvm cache clear
-    nvm install v14.5.0
-    nvm use v14.5.0
+    nvm install $MIN_VERSION
+    nvm use $MIN_VERSION
   fi
 
   # Verify that the node is present
