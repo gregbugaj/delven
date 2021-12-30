@@ -41,7 +41,8 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 import { EuiText, EuiSpacer } from "@elastic/eui";
 import { EuiComponent } from "./component";
 
-import "./styles.scss";
+
+// import "./styles.scss";
 
 
 const drawerWidth = 240;
