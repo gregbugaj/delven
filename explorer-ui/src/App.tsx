@@ -38,10 +38,7 @@ import { mainListItems, secondaryListItems } from './listItems';
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
 
 
-// import * as euiVars from '@elastic/eui/dist/eui_theme_light.json';
-
 import { EuiText, EuiSpacer } from "@elastic/eui";
-import '@elastic/eui/dist/eui_theme_light.json';
 import { EuiComponent } from "./component";
 
 import "./styles.scss";
