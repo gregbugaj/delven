@@ -22,6 +22,7 @@ npm link ../delven-transpiler/lib
 ```
 
 
+
 ## Edit and add types to prevent errors
 
 ```
@@ -121,6 +122,16 @@ https://github.com/elastic/gatsby-eui-starter/tree/master
 https://codesandbox.io/examples/package/@elastic/eui
 https://codesandbox.io/s/l9pwrw289?file=/src/styles.scss
 
+
+ESLint
+
+```
+    "@typescript-eslint/eslint-plugin": "^5.5.0",
+    "eslint": "<8.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-jsx-a11y": "^5.0.1"
+```
 ## References
 
 [https://create-react-app.dev/docs/adding-typescript/]
@@ -128,3 +139,57 @@ https://codesandbox.io/s/l9pwrw289?file=/src/styles.scss
 
 https://tatiyants.com/pev/#/plans/plan_1617915061062
 
+
+
+Notes :
+
+
+
+export const SidenavWithContent = ({ button = <></>, content }) => (
+  <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize='none'> 
+    <EuiFlexGroup
+      className="eui-fullHeight"
+      gutterSize="none"
+      direction="column"
+      responsive={false}
+    >
+
+      {/* <EuiFlexItem grow={false}>
+        <EuiPanel color="danger" >
+          TOP Panel
+        </EuiPanel>
+      </EuiFlexItem> 
+
+      <EuiSpacer size="l" />
+
+      */}
+
+      <EuiFlexItem className="eui-fullHeight">
+        <EuiFlexGroup className="eui-fullHeight" gutterSize="l">
+
+          <EuiFlexItem grow={false}>
+            <EuiPanel tabIndex={0} className="eui-" hasShadow={false} style={{background:'red', width:60}}>
+              {content}
+            </EuiPanel>
+          </EuiFlexItem>
+
+          <EuiFlexItem grow={2}>
+            <EuiPanel tabIndex={0} className="eui-yScroll" hasShadow={false}>
+              {content}
+              {content}
+              {content}
+            </EuiPanel>
+          </EuiFlexItem>
+
+
+          <EuiFlexItem>
+            <EuiPanel hasShadow={false}>
+              {button}
+            </EuiPanel>
+          </EuiFlexItem>
+
+        </EuiFlexGroup>
+      </EuiFlexItem>
+    </EuiFlexGroup>
+  </EuiPageTemplate>
+);

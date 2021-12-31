@@ -13,15 +13,13 @@
     "codemirror": "^5.59.4",
     "core-js": "^3.20.1",
     "moment": "^2.29.1",
-    "node-sass-package-importer": "^5.3.2",
     "prop-types": "^15.8.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-hotkeys": "^2.0.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
-    "rxjs": "^6.6.6",
-    "typescript": "^4.2.3",
+    "rxjs": "^6.6.6",    
     "uuid": "^8.3.2"
   },
   "scripts": {
@@ -30,6 +28,15 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gregbugaj/delven"
+  },
+  "bugs": {
+    "url": "https://github.com/gregbugaj/delven/issues"
+  },
+
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -57,13 +64,22 @@
     "@types/material-ui": "^0.21.8",
     "@types/node": "^14.14.31",
     "@types/prop-types": "15.5.8",
+    
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@types/react-router-dom": "^5.1.7",
+
     "sass": "^1.45.1",
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^4.2.2",
-    "webpack-sources": "^1.4.1"
+    "webpack-sources": "^1.4.1",
+    "copy-webpack-plugin": "^10.0.0",
+
+    "prettier": "^2.5.0",
+    "typescript": "^4.5.2",
+    "typescript-plugin-css-modules": "^3.4.0"
+
+
   },
   "peerDependencies": {
     "webpack": "^5.0.0"
