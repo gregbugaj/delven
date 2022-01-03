@@ -1,439 +1,232 @@
-import React, { useState } from 'react';
-import find from 'lodash/find';
-import findIndex from 'lodash/findIndex';
+import React from 'react';
 
-import {
-  EuiCollapsibleNav,
-  EuiCollapsibleNavGroup,
-  EuiHeaderSectionItemButton,
-  EuiHeaderLogo,
-  EuiHeader,
-  EuiIcon,
-  EuiButton,
-  EuiButtonEmpty,
-  EuiPageTemplate,
-  EuiPinnableListGroup,
-  EuiPinnableListGroupItemProps,
-  EuiFlexItem,
-  EuiHorizontalRule,
-  EuiImage,
-  EuiListGroup,
-  EuiText,
-  EuiListGroupProps,
-  EuiSpacer,
-  EuiButtonIcon,
-  EuiLink,
-  EuiPanel,
-  EuiControlBar,
-  EuiFlexGroup,
-  EuiSplitPanel,
-  EuiCode,
-  EuiHeaderSectionItem,
-  EuiHeaderLinks,
-  EuiHeaderLink,
-  useGeneratedHtmlId,
-} from '@elastic/eui';
+import './App.css';
 
-import "./App.css";
-import TerminalSidePanel from './components/explorer/TerminalSidePanel';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles, createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
+import Grid from '@material-ui/core/Grid';
 
-const TopLinks: EuiPinnableListGroupItemProps[] = [
-  {
-    label: 'Home',
-    iconType: 'home',
-    isActive: true,
-    'aria-current': true,
-    onClick: () => { },
-    pinnable: false,
+import Card from "@material-ui/core/Card";
+import CardActions from "@material-ui/core/CardActions";
+import CardContent from "@material-ui/core/CardContent";
+import Button from "@material-ui/core/Button";
+
+import NavBar from './components/NavBar'
+import AstExplorerApplication from "./components/explorer/AstExplorerApplication";
+
+import { BrowserRouter as Router, Route, Link } from "react-router-dom"
+
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints';
+import ExplorerApplication from './components/explorer/ExplorerApplication';
+
+const drawerWidth = 240;
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+    padding: 10
+
   },
-];
 
-const LearnLinks: EuiPinnableListGroupItemProps[] = [
-  { label: 'Docs', onClick: () => { } },
-  { label: 'Blogs', onClick: () => { } },
-  { label: 'Webinars', onClick: () => { } },
-  { label: 'Elastic.co', href: 'https://elastic.co' },
-];
+  card: {
+    maxWidth: 345,
+    minWidth: 345,
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column'
+  },
+
+  grid: {
+    display: 'flex'
+  },
+
+  toolbar: {
+    paddingRight: 24, // keep right padding when drawer closed
+  },
+  toolbarIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    padding: '0 8px',
+    ...theme.mixins.toolbar,
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
+    transition: theme.transitions.create(['width', 'margin'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  menuButton: {
+    marginRight: 36,
+  },
+  menuButtonHidden: {
+    display: 'none',
+  },
+  title: {
+    flexGrow: 1,
+  },
 
 
+  drawerPaper: {
+    position: 'relative',
+    whiteSpace: 'nowrap',
+    width: drawerWidth,
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
 
+  drawerPaperClose: {
+    overflowX: 'hidden',
+    transition: theme.transitions.create('width', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    width: theme.spacing(7),
+    [theme.breakpoints.up('sm')]: {
+      width: theme.spacing(9),
+    },
+  },
 
-const CollapsibleNavAll = () => {
-  const exitPath = () => { return "#" };
-  const [navIsOpen, setNavIsOpen] = useState(true);
+  appBarSpacer: {
+    minHeight: 56,
+  },
 
-  /**
-   * Accordion toggling
-   */
-  const [openGroups, setOpenGroups] = useState(
-    JSON.parse(String(localStorage.getItem('openNavGroups'))) || [
-      'Kibana',
-      'Learn',
-    ]
-  );
+  content: {
+    flexGrow: 1,
+    height: '100vh',
+    overflow: 'auto',
+  },
 
-  // Save which groups are open and which are not with state and local store
-  const toggleAccordion = (isOpen: boolean, title?: string) => {
-    if (!title) return;
-    const itExists = openGroups.includes(title);
-    if (isOpen) {
-      if (itExists) return;
-      openGroups.push(title);
-    } else {
-      const index = openGroups.indexOf(title);
-      if (index > -1) {
-        openGroups.splice(index, 1);
+  container: {
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(4),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflow: 'auto',
+    flexDirection: 'column',
+  },
+  fixedHeight: {
+    height: 240,
+  },
+
+}));
+
+export function Application() {
+  const classes = useStyles();
+
+//create a theme
+// https://fonts.google.com/specimen/Source+Code+Pro?preview.text_type=custom#standard-styles
+  const myTheme = createMuiTheme({
+    typography: {
+        fontFamily: ['"Source Code Pro"', 'monospace'].join(','),
+     },
+  });
+
+  function pxToRem(value) {
+    return `${value / 16}rem`;
+  }
+
+  // Generate breakpoints so we can use them in the theme definition
+  const breakpoints = createBreakpoints({});
+  const theme = createMuiTheme({
+    breakpoints,
+    typography: {
+      fontFamily: ['"Source Code Pro"', 'monospace'].join(','),
+    },
+    overrides: {
+      MuiTypography: {
+
+        body1: {
+          fontSize: pxToRem(12),
+          [breakpoints.up("md")]: {
+            fontSize: pxToRem(14)
+          }
+        },
+        body2: {
+          fontSize: pxToRem(12),
+          [breakpoints.up("md")]: {
+            fontSize: pxToRem(14)
+          }
+        },
+        button: {
+          fontSize: pxToRem(12),
+          [breakpoints.up("md")]: {
+            fontSize: pxToRem(14)
+          }
+        }
       }
     }
-    setOpenGroups([...openGroups]);
-    localStorage.setItem('openNavGroups', JSON.stringify(openGroups));
-  };
+  });
 
-  /**
-   * Pinning
-   */
-  const [pinnedItems, setPinnedItems] = useState<
-    EuiPinnableListGroupItemProps[]
-  >(JSON.parse(String(localStorage.getItem('pinnedItems'))) || []);
-
-  const addPin = (item: any) => {
-    if (!item || find(pinnedItems, { label: item.label })) {
-      return;
-    }
-    item.pinned = true;
-    const newPinnedItems = pinnedItems ? pinnedItems.concat(item) : [item];
-    setPinnedItems(newPinnedItems);
-    localStorage.setItem('pinnedItems', JSON.stringify(newPinnedItems));
-  };
-
-  const removePin = (item: any) => {
-    const pinIndex = findIndex(pinnedItems, { label: item.label });
-    if (pinIndex > -1) {
-      item.pinned = false;
-      const newPinnedItems = pinnedItems;
-      newPinnedItems.splice(pinIndex, 1);
-      setPinnedItems([...newPinnedItems]);
-      localStorage.setItem('pinnedItems', JSON.stringify(newPinnedItems));
-    }
-  };
-
-  const collapsibleNavId = useGeneratedHtmlId({ prefix: 'collapsibleNav' });
 
   return (
-    <>
-      <EuiHeader
-        position="static"
-        sections={[
-          // {
-          //   items: leftSectionItems,
-          //   borders: 'right',
-          // },
-          {
-            items: [
-              <EuiHeaderLogo href='#' iconType="logoElastic">
-                Delven
-              </EuiHeaderLogo>,
-            ]
-          },
-          {
-            items: [
-              <EuiHeaderSectionItem>
-                <EuiHeaderLinks aria-label="App navigation links example">
-                  <EuiHeaderLink isActive>Docs</EuiHeaderLink>
-                  <EuiHeaderLink>Code</EuiHeaderLink>
-                  <EuiHeaderLink iconType="help">Help</EuiHeaderLink>
-                </EuiHeaderLinks>
-              </EuiHeaderSectionItem>
-            ],
-          },
-        ]}
-      />
+   <ThemeProvider theme={theme}>
+      <Router>
+        <Route path='/runner' component={ExplorerApplication} />
+        <Route path='/explorer' component={AstExplorerApplication} />
 
- <SidenavWithContent button={<EuiButton>Sidebar</EuiButton>}
-    content={
-    <>
-            <p>A side nav might be in this one.</p>
-            <p>And you would want the panel on the right to expand with it.el on the right to expand with it.el on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>            <p>A side nav might be in this one.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-<p>A side nav might be in this one.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
-            <p>And you would want the panel on the right to expand with it.</p>
+        <Route exact path="/">
+          <NavBar />
+          <div className={classes.root}>
+            <Grid container justify="flex-start" spacing={8}>
+              <Grid item className={classes.grid}>
+                <Card className={classes.card}>
 
-    </>
-    }
-    />
-    
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="h2">
+                      D-SQL Runner
+                      </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p">
 
-    </>
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" color="primary" component={Link} to="/runner">
+                      Launch
+                      </Button>
+                  </CardActions>
+
+                </Card>
+              </Grid>
+
+              <Grid item className={classes.grid}>
+                <Card className={classes.card}>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="h2">
+                       Explorer
+                      </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                       AST Viewer & Compiler
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" color="primary" component={Link} to="/explorer">
+                      Launch
+                      </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+
+            </Grid>
+          </div>
+        </Route>
+      </Router>
+      </ThemeProvider>
   );
-};
+}
 
-
-export const SidenavWithContent = ({ button = <></>, content }) => (
-  <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize='none'> 
-    <EuiFlexGroup
-      className="eui-fullHeight"
-      gutterSize="none"
-      direction="column"
-      responsive={false}
-    >
-
-      {/* <EuiFlexItem grow={false}>
-        <EuiPanel color="danger" >
-          TOP Panel
-        </EuiPanel>
-      </EuiFlexItem> 
-
-      <EuiSpacer size="l" />
-
-      */}
-
-      {/* eui-yScroll */}
-      <EuiFlexItem className="eui-fullHeight">
-        <EuiFlexGroup className="eui-fullHeight" gutterSize="none">
-
-          <EuiFlexItem grow={false} >
-            <EuiPanel tabIndex={0} className="eui-"
-              hasShadow={false}
-              hasBorder={false}
-              borderRadius='none'
-              paddingSize='none'
-              style={{ background: '#404040', padding: '8px' }}
-            >
-
-              <EuiFlexGroup
-                gutterSize="none"
-                direction="column"
-                className="eui-fullHeight"
-              >
-
-                <EuiFlexItem grow={true} >
-                  <EuiButtonIcon
-                    iconType="apps"
-                    aria-label="Applications"
-                    color="ghost"
-                    size="m"
-                    iconSize="xl"
-                    style={{ marginBottom: '16px' }}
-                  />
-
-                  <EuiButtonIcon
-                    iconType="documents"
-                    aria-label="Sessions and Editors"
-                    color="ghost"
-                    size="m"
-                    iconSize="xl"
-                    style={{ marginBottom: '16px' }}
-                  />
-
-                <EuiButtonIcon
-                    iconType="database"
-                    aria-label="Queries"
-                    color="ghost"
-                    size="m"
-                    iconSize="xl"
-                    style={{ marginBottom: '16px' }}
-                  />
-
-                <EuiButtonIcon
-                    iconType="branch"
-                    aria-label="Share"
-                    color="ghost"
-                    size="m"
-                    iconSize="xl"
-                    style={{ marginBottom: '16px' }}
-                  />
-
-                  <EuiButtonIcon
-                    iconType="gear"
-                    aria-label="Apps"
-                    color="ghost"
-                    size="m"
-                    iconSize="xl"
-                    style={{ marginBottom: '16px' }}
-                  />
-
-                  <EuiButtonIcon
-                    iconType="console"
-                    aria-label="Apps"
-                    color="ghost"
-                    size="m"
-                    iconSize="xl"
-                    style={{ marginBottom: '16px' }}
-                  />
-                </EuiFlexItem>
-
-                {/* anchor to the bottom of the view */}
-                <EuiFlexItem grow={false} >
-                  <EuiButtonIcon
-                    iconType="help"
-                    aria-label="Icon button"
-                    color="ghost"
-                    size="m"
-                    iconSize="xl"
-                  />
-                </EuiFlexItem>
-              </EuiFlexGroup>
-            </EuiPanel>
-          </EuiFlexItem>
-
-
-          <EuiFlexItem grow={false}  style={{ background: ' ', padding: '0px', margin: '0px', maxWidth: '400px', minWidth:'280px' }}>
-
-
-           <TerminalSidePanel></TerminalSidePanel>
- 
-          </EuiFlexItem>
-
-
-          <EuiFlexItem>
-            <EuiPanel 
-              tabIndex={0} 
-              className="eui-yScroll" 
-              hasShadow={false} 
-              hasBorder={false} 
-              borderRadius='none' 
-              paddingSize='none'
-              style={{ background: ' ', padding:'0px', margin:'0px' }}
-              >
-              {content}
-              {content}
-              {content}
-            </EuiPanel>
-          </EuiFlexItem>
-
-
-        </EuiFlexGroup>
-      </EuiFlexItem>
-
-      <EuiFlexItem grow={false}>
-
-        <EuiPanel
-          hasShadow={false}
-          hasBorder={false}
-          borderRadius='none'
-          paddingSize='none'
-          style={{ background: ' ', padding: '0px', margin: '0px', minHeight: '80px' }}
-        >
-
-          <EuiControlBar
-            size="s"
-            position='relative'
-            showContent={false}
-            controls={
-              [{
-                iconType: 'submodule',
-                id: 'root_icon',
-                controlType: 'icon',
-                'aria-label': 'Project Root',
-              },
-              {
-                controlType: 'breadcrumbs',
-                id: 'current_file_path',
-                responsive: true,
-                breadcrumbs: [
-                  {
-                    text: 'src',
-                  },
-                  {
-                    text: 'components',
-                  },
-                ],
-              },
-              {
-                controlType: 'spacer',
-              },
-              {
-                controlType: 'icon',
-                id: 'status_icon',
-                iconType: 'alert',
-                color: 'warning',
-                'aria-label': 'Repo Status',
-              },
-              {
-                controlType: 'divider',
-              },
-              {
-                controlType: 'button',
-                id: 'open_history_view',
-                label: 'Show history',
-                color: 'primary',
-                onClick: () => { }
-              }]
-            }
-          />
-
-
-        </EuiPanel>
-
-      </EuiFlexItem> 
-
-    </EuiFlexGroup>
-
-  
-
-
-  </EuiPageTemplate>
-);
-
-
-
-
-export default CollapsibleNavAll;
+export default Application
