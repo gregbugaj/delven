@@ -3,9 +3,11 @@ import {
     increment,
     decrement,
     changeByValue,
-    selectCount
 } from "./slice";
 import {useAppDispatch, useAppSelector} from "../hooks";
+import {selectCount} from "./selectors";
+
+// https://react-redux.js.org/api/hooks
 
 const Counter = () => {
     const count = useAppSelector(selectCount);
