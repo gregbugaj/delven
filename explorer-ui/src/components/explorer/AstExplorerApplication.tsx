@@ -406,7 +406,7 @@ function AstExplorerApplication() {
 
               <div className='Editor-Container-Footer' style={{ border: "1px solid blue", display: "None" }}>
                 Footer
-              RenderType :  {renderType}  {Date.now()}
+                RenderType :  {renderType}  {Date.now()}
               </div>
             </div>
 

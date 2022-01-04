@@ -19,8 +19,8 @@ export class CodeMirrorManager {
     lineNumbers: true,
     // fixedGutter: true,
     mode: { name: "javascript", json: true },
-    scrollbarStyle:'native',
-    readOnly:false,
+    scrollbarStyle: 'native',
+    readOnly: false,
     smartIndent: true
 
     // extraKeys: {

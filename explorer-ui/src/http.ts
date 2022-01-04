@@ -1,8 +1,8 @@
 // https://www.carlrippon.com/fetch-with-async-await-and-typescript/
 
 /**
- * 
- * @param request 
+ *
+ * @param request
  */
 export async function http<T>(request: RequestInfo): Promise<T> {
     const response = await fetch(request)

@@ -132,6 +132,15 @@ ESLint
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-jsx-a11y": "^5.0.1"
 ```
+
+
+## React Redux 
+
+https://redux-toolkit.js.org/usage/usage-with-typescript
+https://anil-pace.medium.com/redux-vs-redux-toolkit-58afbb9ec887
+https://github.com/zsajjad/rtk-demo/tree/master/app/containers
+
+
 ## References
 
 [https://create-react-app.dev/docs/adding-typescript/]
