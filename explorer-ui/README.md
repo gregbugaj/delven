@@ -140,6 +140,8 @@ https://redux-toolkit.js.org/usage/usage-with-typescript
 https://anil-pace.medium.com/redux-vs-redux-toolkit-58afbb9ec887
 https://github.com/zsajjad/rtk-demo/tree/master/app/containers
 https://openbase.com/js/redux-injectors/documentation
+https://www.freecodecamp.org/news/redux-for-beginners-the-brain-friendly-guide-to-redux/
+
 
 ## References
 
