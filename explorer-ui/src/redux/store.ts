@@ -2,19 +2,20 @@ import {configureStore} from "@reduxjs/toolkit";
 import logger from 'redux-logger'
 import createReducer from './reducers';
 
-import {createInjectorsEnhancer, forceReducerReload} from 'redux-injectors';
-import createSagaMiddleware from 'redux-saga';
+// import {createInjectorsEnhancer, forceReducerReload} from 'redux-injectors';
+// import createSagaMiddleware from 'redux-saga';
+//
+// const reduxSagaMonitorOptions = {};
+// const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
+// const {run: runSaga} = sagaMiddleware;
 
-const reduxSagaMonitorOptions = {};
-const sagaMiddleware = createSagaMiddleware(reduxSagaMonitorOptions);
-const {run: runSaga} = sagaMiddleware;
+// const enhancers = [
+//     createInjectorsEnhancer({
+//         createReducer,
+//         runSaga,
+//     }),
+// ];
 
-const enhancers = [
-    createInjectorsEnhancer({
-        createReducer,
-        runSaga,
-    }),
-];
 export const store = configureStore({
     // reducer: {
     //     counter: counterReducer,
@@ -28,7 +29,7 @@ export const store = configureStore({
             // prepend and concat calls can be chained
             .concat(logger),
     devTools: process.env.NODE_ENV !== 'production',
-    enhancers
+    // enhancers
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

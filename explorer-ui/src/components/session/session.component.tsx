@@ -10,11 +10,10 @@ import { useInjectReducer, useInjectSaga } from 'redux-injectors';
 
 export function useSessions({limit = 1} = {}) {
     useInjectReducer({ key: name, reducer });
-
     console.group();
     console.info('Store created')
     const dispatch = useAppDispatch();
-    const store = useAppSelector(makeSelectSessions(), shallowEqual)
+    const store = useAppSelector(makeSelectSessions, shallowEqual)
     useEffect(() => {
         console.info('useEffect ')
         // @ts-ignore
@@ -67,7 +66,6 @@ function ListSessions() {
     const store = useSessions({limit: 1})
 
     console.info('-----------')
-    console.info(store)
     const items = useAppSelector((state) => {
         console.info('XXX')
         return state['session'].sessions
