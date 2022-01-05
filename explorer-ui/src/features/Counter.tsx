@@ -1,15 +1,13 @@
 import React, {useState} from "react";
-import {
-    increment,
-    decrement,
-    changeByValue,
-} from "./slice";
-import {useAppDispatch, useAppSelector} from "../hooks";
+import {name, actions, reducer} from "./slice";
+import {useAppDispatch, useAppSelector} from "../redux/hooks";
+import {shallowEqual} from 'react-redux'
 import {selectCount} from "./selectors";
 
 // https://react-redux.js.org/api/hooks
 
 const Counter = () => {
+    console.info('Creating XX')
     const count = useAppSelector(selectCount);
     const dispatch = useAppDispatch();
     const [value, setValue] = useState<number>();
@@ -22,9 +20,9 @@ const Counter = () => {
     return (
         <>
             <p>Count: {count}</p>
-            <button onClick={() => dispatch(increment())}>Increment</button>
-            <button onClick={() => dispatch(decrement())}>Decrement</button>
-            <button onClick={() => dispatch(changeByValue(3))}>
+            <button onClick={() => dispatch(actions.increment())}>Create session</button>
+            <button onClick={() => dispatch(actions.decrement())}>Decrement</button>
+            <button onClick={() => dispatch(actions.changeByValue(3))}>
                 Change by Value
             </button>
         </>

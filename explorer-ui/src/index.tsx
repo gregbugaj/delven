@@ -10,19 +10,24 @@ import {Provider} from "react-redux";
 
 // import './index.css';
 // import App from './App';
-import {Store} from "./store";
+import {store} from "./redux/store";
 import Counter from './features/Counter';
+import Session from './components/session/session.component';
 
 const cache = createCache({
     key: 'delven',
     container: document.querySelector('meta[name="global-styles"]'),
 });
 
+
 ReactDOM.render(
-    <EuiProvider cache={cache} colorMode="light">
-        <Provider store={Store}>
-            <Counter/>
-        </Provider>
-    </EuiProvider>,
+    <StrictMode>
+        {/*<EuiProvider colorMode="light">*/}
+        {/*</EuiProvider>*/}
+
+            <Provider store={store}>
+                <Session></Session>
+            </Provider>
+    </StrictMode>,
     document.getElementById('root')
-);
+)
