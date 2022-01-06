@@ -135,6 +135,7 @@ ESLint
 
 
 ## React Redux 
+https://react-typescript-cheatsheet.netlify.app/
 
 https://redux-toolkit.js.org/usage/usage-with-typescript
 https://anil-pace.medium.com/redux-vs-redux-toolkit-58afbb9ec887
