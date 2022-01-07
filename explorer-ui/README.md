@@ -142,7 +142,7 @@ https://anil-pace.medium.com/redux-vs-redux-toolkit-58afbb9ec887
 https://github.com/zsajjad/rtk-demo/tree/master/app/containers
 https://openbase.com/js/redux-injectors/documentation
 https://www.freecodecamp.org/news/redux-for-beginners-the-brain-friendly-guide-to-redux/
-
+https://patrickdesjardins.com/blog/how-to-pass-value-to-usecallback-in-react-hooks
 
 ## References
 
@@ -151,11 +151,7 @@ https://www.freecodecamp.org/news/redux-for-beginners-the-brain-friendly-guide-t
 
 https://tatiyants.com/pev/#/plans/plan_1617915061062
 
-
-
 Notes :
-
-
 
 export const SidenavWithContent = ({ button = <></>, content }) => (
   <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize='none'> 

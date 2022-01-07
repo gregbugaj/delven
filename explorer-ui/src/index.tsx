@@ -8,11 +8,12 @@ import {EuiProvider} from '@elastic/eui';
 import '@elastic/eui/dist/eui_theme_light.css';
 import {Provider} from "react-redux";
 
-// import './index.css';
+import './index.css';
 // import App from './App';
 import {store} from "./redux/store";
 import Counter from './features/Counter';
 import Session from './components/session/session.component';
+import {actions} from "./components/session/slice";
 
 const cache = createCache({
     key: 'delven',
@@ -22,12 +23,13 @@ const cache = createCache({
 
 ReactDOM.render(
     <StrictMode>
-        {/*<EuiProvider colorMode="light">*/}
-        {/*</EuiProvider>*/}
-
+        <EuiProvider colorMode="light">
             <Provider store={store}>
-                <Session></Session>
+                <Session>
+                </Session>
             </Provider>
+
+        </EuiProvider>
     </StrictMode>,
     document.getElementById('root')
 )

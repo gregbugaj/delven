@@ -5,7 +5,7 @@ import {name, initialState} from './slice';
 /**
  * Direct selector to the active state
  */
-const selectSessions = (state) => state.sessions || initialState
+const selectSessions = (state) => state[name] || initialState
 
 /**
  * Default selector
@@ -17,6 +17,6 @@ const makeSelectSessions = () => createSelector(selectSessions, (state) => state
  * Other specific selectors
  * @param state
  */
-export const selectCount = (state) => state.session.sessions.length;
+export const selectCount = (state) => state[name].sessions.length;
 
 export {selectSessions, makeSelectSessions}

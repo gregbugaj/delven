@@ -17,10 +17,6 @@ import createReducer from './reducers';
 // ];
 
 export const store = configureStore({
-    // reducer: {
-    //     counter: counterReducer,
-    //     session: sessionReducer
-    // },
     reducer: createReducer(),
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()

@@ -1,38 +1,51 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import {name, actions, reducer, ISession} from "./slice";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {makeSelectSessions, selectCount} from "./selectors";
-import {shallowEqual, useSelector} from "react-redux";
-
-import { useInjectReducer, useInjectSaga } from 'redux-injectors';
+import {shallowEqual} from "react-redux";
 
 // https://react-redux.js.org/api/hooks
 
 export function useSessions({limit = 1} = {}) {
-    useInjectReducer({ key: name, reducer });
-    console.group();
-    console.info('Store created')
     const dispatch = useAppDispatch();
-    const store = useAppSelector(makeSelectSessions, shallowEqual)
+    const store = useAppSelector(makeSelectSessions(), shallowEqual)
     useEffect(() => {
-        console.info('useEffect ')
-        // @ts-ignore
         if (!store?.sessions?.length && !store?.loading) {
-            console.info('Loading')
+            console.info('useSessions : Loading')
             dispatch(actions.fetch({limit}))
         }
     }, [])
 
-    console.info('Store ready')
-    console.groupEnd();
-    return store
+    return store;
 }
+
+function HeaderTimer() {
+    return (
+        <div>
+            render time [{Date.now()}]
+            <hr/>
+        </div>
+    )
+}
+
 
 function Session({children, props}) {
     console.info('Creating Session')
-    const store = useSessions({limit: 1})
+    return (
+        <>
+            Current : {Date.now()}
+            <HeaderTimer/>
+            <SessionContent/>
+            {children}
+        </>
+    );
+}
 
-    const count = useAppSelector(selectCount);
+function SessionContent({children, props}) {
+    console.info('Creating Session')
+    const state = useSessions({limit: 1})
+    // const count = useAppSelector(selectCount);
+    const count = state.sessions.length
     const dispatch = useAppDispatch();
     const [value, setValue] = useState<number>();
 
@@ -44,40 +57,78 @@ function Session({children, props}) {
     return (
         <>
             {console.info('rendering main***')}
-            <p>Session Counter: {count}</p>
+            <p>Session Counter: {count} [{Date.now()}]</p>
             <button onClick={() => dispatch(actions.createSession())}>Create session</button>
 
             <ListSessions/>
+
+            <hr/>
+            Child component :
+            <HeaderTimer/>
         </>
     );
 };
 
+const EditorItem = ({id}) => {
+    return (
+        <>
+            <HeaderTimer/>
+        </>
+    )
+}
+
 const SessionItem = ({id}) => {
+    const dispatch = useAppDispatch();
     const session = useAppSelector((state) => state.session.sessions.find(item => item.id === id))
+
+    const handleClick = useCallback((id) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        console.info('Event **')
+        console.info(event)
+        console.info(`Handler called : ${id}`)
+        dispatch(actions.removeTabById(id))
+    }, [dispatch]);
+
     if (session === undefined) {
         return <></>
     }
+
     return (
-        <li key={id}> VAL : {session.id} : {session.name}</li>
+        <li key={id}>
+            <div>
+                VAL : {session.id} : {session.name} - [{Date.now()}]
+                <a onClick={() => dispatch(actions.removeSession(session.id))}>Remove</a>
+            </div>
+            <ul>
+                {session.editors.map(editor => {
+                    return (
+                        <>
+                            <EditorItem id={editor.id}/>
+                            <li style={{marginLeft: '20px'}}>
+                                {editor.id} - {editor.name} ::
+                                <button onClick={handleClick(editor.id)}>Remove</button>
+                                {/*onClick={() => handleClick(editor.id)}>Remove</a>*/}
+                                {/*onClick={() => dispatch(actions.removeTabById(editor.id))}>Remove</a>*/}
+                            </li>
+                        </>
+                    )
+                })}
+            </ul>
+        </li>
     )
 }
 
 function ListSessions() {
-    const store = useSessions({limit: 1})
-
-    console.info('-----------')
-    const items = useAppSelector((state) => {
-        console.info('XXX')
-        return state['session'].sessions
-    });
-
+    const state = useSessions({limit: 1})
+    const sessions = state.sessions
+    // const items = useAppSelector((state) => {
+    //     return state['session'].sessions
+    // });
     return (
         <>
             {console.info('rendering items***')}
-            {console.info(items)}
             <h1>Session items</h1>
             <ul>
-                {items.map((item) => (
+                {sessions.map((item) => (
                     <SessionItem id={item.id}/>
                 ))}
             </ul>
@@ -85,5 +136,5 @@ function ListSessions() {
     )
 }
 
-export default Session;
-// export default React.memo(Session);
+// export default Session;
+export default React.memo(Session);

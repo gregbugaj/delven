@@ -34,18 +34,19 @@ export const initialState = {
 
 let mockSession = (): ISession => {
     let max = 100
-    let id = Math.floor(Math.random() * max)
+    const gen = () => Math.floor(Math.random() * max)
+    let id = gen()
     return {
         name: `Session : ${id}`,
         id: `${id}`,
         editors: [
             {
-                id: "00",
-                name: "Editor 00"
+                id: `${gen()}`,
+                name: "Editor 01"
             },
             {
-                id: "01",
-                name: "Editor 01"
+                id: `${gen()}`,
+                name: "Editor 02"
             }
         ]
     }
@@ -69,7 +70,13 @@ const slice = createSlice({
             console.info('fetch')
             state.loading = true;
             state.error = false;
-            state.sessions = JSON.parse(String(localStorage.getItem('sessions')))
+            try {
+                state.sessions = JSON.parse(String(localStorage.getItem('sessions')))
+            } catch (e) {
+                state.error = true
+                console.error(e)
+            }
+            state.loading = false;
         },
 
         /**
@@ -81,8 +88,45 @@ const slice = createSlice({
             state.sessions.push(session)
         },
 
+        /**
+         * Remove session from the store
+         * @param state
+         * @param action
+         */
         removeSession: (state, action) => {
-            let id = action.payload.id
+            const sessionId = action.payload
+            if (sessionId === undefined) {
+                return
+            }
+            const sessions = state.sessions
+            sessions.forEach((item, index) => {
+                if (item.id === sessionId) {
+                    console.info(`Session removed : ${sessionId}`)
+                    sessions.splice(index, 1)
+                }
+            })
+        },
+
+        /**
+         * Remove tab by ID
+         * @param state
+         * @param action
+         */
+        removeTabById: (state, action) => {
+            const tabId = action.payload
+            if (tabId === undefined) {
+                return
+            }
+            const sessions = state.sessions
+            sessions.forEach((session, index) => {
+                let editors = session.editors
+                editors?.forEach((editor, index) => {
+                    if (editor.id === tabId) {
+                        console.info(`Tab removed : ${tabId}`)
+                        editors.splice(index, 1)
+                    }
+                })
+            })
         }
     }
 });
