@@ -1,8 +1,9 @@
-import React, {useEffect, useState, useCallback} from "react";
+import React, {useEffect, useState, useCallback, ReactNode} from "react";
 import {name, actions, reducer, ISession} from "./slice";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {makeSelectSessions, selectCount} from "./selectors";
 import {shallowEqual} from "react-redux";
+import {string} from "prop-types";
 
 // https://react-redux.js.org/api/hooks
 
@@ -61,7 +62,6 @@ function SessionContent({children, props}) {
             <button onClick={() => dispatch(actions.createSession())}>Create session</button>
 
             <ListSessions/>
-
             <hr/>
             Child component :
             <HeaderTimer/>
@@ -69,15 +69,7 @@ function SessionContent({children, props}) {
     );
 };
 
-const EditorItem = ({id}) => {
-    return (
-        <>
-            <HeaderTimer/>
-        </>
-    )
-}
-
-const SessionItem = ({id}) => {
+const SessionItem = React.memo(function ({children}: { children: ReactNode }, {id}: { id: string }) {
     const dispatch = useAppDispatch();
     const session = useAppSelector((state) => state.session.sessions.find(item => item.id === id))
 
@@ -102,12 +94,9 @@ const SessionItem = ({id}) => {
                 {session.editors.map(editor => {
                     return (
                         <>
-                            <EditorItem id={editor.id}/>
                             <li style={{marginLeft: '20px'}}>
                                 {editor.id} - {editor.name} ::
                                 <button onClick={handleClick(editor.id)}>Remove</button>
-                                {/*onClick={() => handleClick(editor.id)}>Remove</a>*/}
-                                {/*onClick={() => dispatch(actions.removeTabById(editor.id))}>Remove</a>*/}
                             </li>
                         </>
                     )
@@ -115,7 +104,7 @@ const SessionItem = ({id}) => {
             </ul>
         </li>
     )
-}
+})
 
 function ListSessions() {
     const state = useSessions({limit: 1})
