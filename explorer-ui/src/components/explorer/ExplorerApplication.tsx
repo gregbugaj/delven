@@ -12,6 +12,10 @@ import {
     EuiHeaderSectionItem,
     EuiHeaderLinks,
     EuiHeaderLink,
+    EuiHeaderSection,
+    EuiHeaderSectionItemButton,
+    EuiIcon,
+    EuiButton,
     useGeneratedHtmlId,
 } from '@elastic/eui';
 
@@ -62,31 +66,34 @@ const ExplorerAppLayout = () => {
         <>
             <EuiHeader
                 position="static"
-                sections={[
-                    // {
-                    //   items: leftSectionItems,
-                    //   borders: 'right',
-                    // },
-                    {
-                        items: [
-                            <EuiHeaderLogo href='#' iconType="logoElastic">
-                                Delven Studio
-                            </EuiHeaderLogo>,
-                        ]
-                    },
-                    {
-                        items: [
-                            <EuiHeaderSectionItem>
-                                <EuiHeaderLinks aria-label="App navigation links">
-                                    <EuiHeaderLink isActive>Docs</EuiHeaderLink>
-                                    <EuiHeaderLink>Code</EuiHeaderLink>
-                                    <EuiHeaderLink iconType="help">Help</EuiHeaderLink>
-                                </EuiHeaderLinks>
-                            </EuiHeaderSectionItem>
-                        ],
-                    },
-                ]}
-            />
+
+            >
+
+                <EuiHeaderSection grow={false}>
+                    <EuiHeaderSectionItem>
+                        <EuiHeaderLogo href='#' iconType="logoElastic">
+                            Delven
+                        </EuiHeaderLogo>
+
+                        <EuiHeaderLinks aria-label="App navigation links">
+                            <EuiButton size="s">Share</EuiButton>
+                            <EuiButton size="s">Fork</EuiButton>
+                        </EuiHeaderLinks>
+
+                    </EuiHeaderSectionItem>
+                </EuiHeaderSection>
+
+                <EuiHeaderSection grow={false}>
+
+                    <EuiHeaderSectionItem>
+                        <EuiHeaderLinks aria-label="App navigation">
+                            <EuiHeaderLink>Docs</EuiHeaderLink>
+                            <EuiHeaderLink>Code</EuiHeaderLink>
+                            <EuiHeaderLink iconType="help">Help</EuiHeaderLink>
+                        </EuiHeaderLinks>
+                    </EuiHeaderSectionItem>
+                </EuiHeaderSection>
+            </EuiHeader>
 
             <SidenavWithContent/>
         </>
@@ -267,33 +274,53 @@ export const SidenavWithContent = () => {
                             {/* <WorkspacePanel></WorkspacePanel> */}
                             {/* <SettingsPanel></SettingsPanel> */}
 
-                          <div id='side-container-editor' style={{ display: renderType === 'editor' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                            editor
-                              RenderType :  {renderType}  {Date.now()}
-                              {/*<EditorPanel></EditorPanel>*/}
-                          </div>
+                            <div id='side-container-editor' style={{
+                                display: renderType === 'editor' ? "flex" : "none",
+                                flexDirection: 'column',
+                                height: '100%'
+                            }}>
+                                editor
+                                RenderType : {renderType} {Date.now()}
+                                {/*<EditorPanel></EditorPanel>*/}
+                            </div>
 
-                          <div id='side-container-workspace' style={{ display: renderType === 'workspace' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                            workspace
-                            RenderType :  {renderType}  {Date.now()}
-                            {/*<WorkspacePanel></WorkspacePanel>*/}
-                          </div>
+                            <div id='side-container-workspace' style={{
+                                display: renderType === 'workspace' ? "flex" : "none",
+                                flexDirection: 'column',
+                                height: '100%'
+                            }}>
+                                workspace
+                                RenderType : {renderType} {Date.now()}
+                                {/*<WorkspacePanel></WorkspacePanel>*/}
+                            </div>
 
-                          <div id='side-container-settings' style={{ display: renderType === 'settings' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                            settings
-                            RenderType :  {renderType}  {Date.now()}
-                            {/*<SettingsPanel></SettingsPanel>*/}
-                          </div>
+                            <div id='side-container-settings' style={{
+                                display: renderType === 'settings' ? "flex" : "none",
+                                flexDirection: 'column',
+                                height: '100%'
+                            }}>
+                                settings
+                                RenderType : {renderType} {Date.now()}
+                                {/*<SettingsPanel></SettingsPanel>*/}
+                            </div>
 
-                          <div id='side-container-runners' style={{ display: renderType === 'runners' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                            runners
-                            RenderType :  {renderType}  {Date.now()}
-                          </div>
+                            <div id='side-container-runners' style={{
+                                display: renderType === 'runners' ? "flex" : "none",
+                                flexDirection: 'column',
+                                height: '100%'
+                            }}>
+                                runners
+                                RenderType : {renderType} {Date.now()}
+                            </div>
 
-                          <div id={`side-container-help`} style={{ display: renderType === 'help' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
-                            help
-                            RenderType :  {renderType}  {Date.now()}
-                          </div>
+                            <div id={`side-container-help`} style={{
+                                display: renderType === 'help' ? "flex" : "none",
+                                flexDirection: 'column',
+                                height: '100%'
+                            }}>
+                                help
+                                RenderType : {renderType} {Date.now()}
+                            </div>
 
                         </EuiFlexItem>
 
@@ -309,7 +336,7 @@ export const SidenavWithContent = () => {
                             >
                                 {/* main content panel */}
                                 RenderType : {renderType} {Date.now()}
-                                <ContentWindow children={undefined} className={undefined} />
+                                <ContentWindow children={undefined} className={undefined}/>
                             </EuiPanel>
                         </EuiFlexItem>
 
@@ -387,11 +414,12 @@ export const SidenavWithContent = () => {
     )
 };
 
-const Counter = React.memo(function Counter({ name, value, onClickIncrement }) {
+const Counter = React.memo(function Counter({name, value, onClickIncrement}) {
     console.log(`Rendering counter ${name}`);
     return (
         <div>
-            {name}: {value} <button onClick={onClickIncrement}>Increment</button>
+            {name}: {value}
+            <button onClick={onClickIncrement}>Increment</button>
         </div>
     );
 });

@@ -9,11 +9,11 @@ import '@elastic/eui/dist/eui_theme_light.css';
 import {Provider} from "react-redux";
 
 import './index.css';
-// import App from './App';
 import {store} from "./redux/store";
-import Counter from './features/Counter';
 import Session, { HeaderTimer } from './components/session/session.component';
-import {actions} from "./components/session/slice";
+
+import App from './App';
+
 
 const cache = createCache({
     key: 'delven',
@@ -24,10 +24,12 @@ ReactDOM.render(
     <StrictMode>
         <EuiProvider colorMode="light">
             <Provider store={store}>
-                <Session label='SessionLabelProp'>
-                     Child component (no session ref)  : {Date.now()}
-                    <HeaderTimer label={`  > Session child : ${Date.now()}`}/>
-                </Session>
+
+                <App/>
+                {/*<Session label='SessionLabelProp'>*/}
+                {/*     Child component (no session ref)  : {Date.now()}*/}
+                {/*    <HeaderTimer label={`  > Session child : ${Date.now()}`}/>*/}
+                {/*</Session>*/}
             </Provider>
         </EuiProvider>
     </StrictMode>,
