@@ -4,12 +4,14 @@ import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {makeSelectSessions, selectCount} from "./selectors";
 import {shallowEqual} from "react-redux";
 import {string} from "prop-types";
+import {EuiProviderProps} from "@elastic/eui/src/components/provider/provider";
 
 // https://react-redux.js.org/api/hooks
 
-export function useSessions({limit = 1} = {}) {
+export function useSessions({limit = 1}) {
     const dispatch = useAppDispatch();
     const store = useAppSelector(makeSelectSessions(), shallowEqual)
+    // Initial load
     useEffect(() => {
         if (!store?.sessions?.length && !store?.loading) {
             console.info('useSessions : Loading')
@@ -30,8 +32,9 @@ function HeaderTimer() {
 }
 
 
-function Session({children, props}) {
-    console.info('Creating Session')
+function Session({children, label}: React.PropsWithChildren<{ label: string }>) {
+    console.info(`Creating Session with :${label}`)
+
     return (
         <>
             Current : {Date.now()}
@@ -42,8 +45,8 @@ function Session({children, props}) {
     );
 }
 
-function SessionContent({children, props}) {
-    console.info('Creating Session')
+function SessionContent() {
+    console.info(`Creating Session content`)
     const state = useSessions({limit: 1})
     // const count = useAppSelector(selectCount);
     const count = state.sessions.length
@@ -63,13 +66,14 @@ function SessionContent({children, props}) {
 
             <ListSessions/>
             <hr/>
-            Child component :
+            Sibling component :
             <HeaderTimer/>
         </>
     );
 };
 
-const SessionItem = React.memo(function ({children}: { children: ReactNode }, {id}: { id: string }) {
+const SessionItem = React.memo(function ({id}: React.PropsWithChildren<{ id: string }>) {
+    console.info(`Session item : ${id}`)
     const dispatch = useAppDispatch();
     const session = useAppSelector((state) => state.session.sessions.find(item => item.id === id))
 
@@ -108,7 +112,7 @@ const SessionItem = React.memo(function ({children}: { children: ReactNode }, {i
 
 function ListSessions() {
     const state = useSessions({limit: 1})
-    const sessions = state.sessions
+    const sessions = state.sessions as ISession[]
     // const items = useAppSelector((state) => {
     //     return state['session'].sessions
     // });

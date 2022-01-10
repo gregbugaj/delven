@@ -25,10 +25,8 @@ ReactDOM.render(
     <StrictMode>
         <EuiProvider colorMode="light">
             <Provider store={store}>
-                <Session>
-                </Session>
+                <Session label='SessionLabelProp'/>
             </Provider>
-
         </EuiProvider>
     </StrictMode>,
     document.getElementById('root')
