@@ -32,6 +32,8 @@ export const initialState = {
     error: false,
 };
 
+export type SessionType = typeof initialState
+
 let mockSession = (): ISession => {
     let max = 100
     const gen = () => Math.floor(Math.random() * max)

@@ -12,7 +12,7 @@ import './index.css';
 // import App from './App';
 import {store} from "./redux/store";
 import Counter from './features/Counter';
-import Session from './components/session/session.component';
+import Session, { HeaderTimer } from './components/session/session.component';
 import {actions} from "./components/session/slice";
 
 const cache = createCache({
@@ -20,12 +20,14 @@ const cache = createCache({
     container: document.querySelector('meta[name="global-styles"]'),
 });
 
-
 ReactDOM.render(
     <StrictMode>
         <EuiProvider colorMode="light">
             <Provider store={store}>
-                <Session label='SessionLabelProp'/>
+                <Session label='SessionLabelProp'>
+                     Child component (no session ref)  : {Date.now()}
+                    <HeaderTimer label={`  > Session child : ${Date.now()}`}/>
+                </Session>
             </Provider>
         </EuiProvider>
     </StrictMode>,

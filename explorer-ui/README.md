@@ -144,10 +144,17 @@ https://openbase.com/js/redux-injectors/documentation
 https://www.freecodecamp.org/news/redux-for-beginners-the-brain-friendly-guide-to-redux/
 https://patrickdesjardins.com/blog/how-to-pass-value-to-usecallback-in-react-hooks
 
+https://github.com/stackblitz/webcontainer-core
+
 ## References
 
 [https://create-react-app.dev/docs/adding-typescript/]
 [https://gist.github.com/bennadel/e40ddc3b7b72f07c992c7b59de7c04b0#file-message-bus-events-ts]
+
+## UI Ideas
+https://stackblitz.com/edit/github-ghucy8?file=babel.config.js
+https://microsoft.github.io/monaco-editor/
+https://emscripten.org/
 
 https://tatiyants.com/pev/#/plans/plan_1617915061062
 

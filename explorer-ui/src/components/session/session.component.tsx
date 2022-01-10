@@ -4,7 +4,6 @@ import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {makeSelectSessions, selectCount} from "./selectors";
 import {shallowEqual} from "react-redux";
 import {string} from "prop-types";
-import {EuiProviderProps} from "@elastic/eui/src/components/provider/provider";
 
 // https://react-redux.js.org/api/hooks
 
@@ -22,10 +21,10 @@ export function useSessions({limit = 1}) {
     return store;
 }
 
-function HeaderTimer() {
+export function HeaderTimer({label}) {
     return (
         <div>
-            render time [{Date.now()}]
+            {label} : time [{Date.now()}]
             <hr/>
         </div>
     )
@@ -37,10 +36,10 @@ function Session({children, label}: React.PropsWithChildren<{ label: string }>) 
 
     return (
         <>
-            Current : {Date.now()}
-            <HeaderTimer/>
+            <HeaderTimer label={`CurrentXX : ${Date.now()}`}/>
             <SessionContent/>
             {children}
+            <hr/>
         </>
     );
 }
@@ -65,9 +64,6 @@ function SessionContent() {
             <button onClick={() => dispatch(actions.createSession())}>Create session</button>
 
             <ListSessions/>
-            <hr/>
-            Sibling component :
-            <HeaderTimer/>
         </>
     );
 };
