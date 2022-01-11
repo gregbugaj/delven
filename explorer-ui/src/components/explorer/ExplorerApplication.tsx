@@ -270,8 +270,8 @@ export const SidenavWithContent = () => {
                         }}>
                             RenderType : {renderType} {Date.now()}
                             {/* <TerminalPanel></TerminalPanel> */}
-                            {/* <EditorPanel></EditorPanel> */}
-                            {/* <WorkspacePanel></WorkspacePanel> */}
+                            {/* <EditorPanel></EditorPanel>*/}
+                             <WorkspacePanel></WorkspacePanel>
                             {/* <SettingsPanel></SettingsPanel> */}
 
                             <div id='side-container-editor' style={{
