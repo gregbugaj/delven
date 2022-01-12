@@ -21,10 +21,14 @@ import {
 
 import "../../App.css";
 import {ThemeProvider} from "./ReferenceDataContext";
-import EditorPanel from "./EditorPanel";
-import WorkspacePanel from "./WorkspacePanel";
-import SettingsPanel from "./SettingsPanel";
-import {ContentWindow} from "./ContentWindow";
+import EditorPanel from "../editor/EditorPanel";
+import WorkspacePanel from "../workspace/WorkspacePanel";
+import SettingsPanel from "../settings/SettingsPanel";
+import TerminalPanel from "../terminal/TerminalPanel";
+import RunnerPanel from "../runner/RunnerPanel";
+import ContentStage from "../stage/Stage";
+import GitPanel from "../repository/RepositoriesPanel";
+import HelpPanel from "../help/HelpPanel";
 
 const ExplorerAppLayout = () => {
 
@@ -102,9 +106,6 @@ const ExplorerAppLayout = () => {
 
 export const SidenavWithContent = () => {
 
-    const [counterA, setCounterA] = React.useState(0);
-    const [counterB, setCounterB] = React.useState(0);
-
     const [compileTime, setCompileTime] = React.useState(0);
     const [renderType, setRenderType] = React.useState("editor");
     // https://kentcdodds.com/blog/how-to-use-react-context-effectively
@@ -113,10 +114,10 @@ export const SidenavWithContent = () => {
     const [open, setOpen] = React.useState(true);
 
     function handleViewChange(renderTypeChange: string) {
-        if (renderTypeChange != renderType) {
+        if (renderTypeChange !== renderType) {
             setOpen(true);
             setRenderType(renderTypeChange)
-        } else if (renderTypeChange == renderType) {
+        } else if (renderTypeChange === renderType) {
             setOpen(!open);
         }
     }
@@ -125,25 +126,6 @@ export const SidenavWithContent = () => {
     return (
 
         <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize='none'>
-
-            <div>
-                <Counter
-                    name="A"
-                    value={counterA}
-                    onClickIncrement={React.useCallback(() => setCounterA(counterA + 1), [
-                        counterA,
-                    ])}
-                />
-                <hr/>
-                <Counter
-                    name="B"
-                    value={counterB}
-                    onClickIncrement={React.useCallback(() => setCounterB(counterB + 1), [
-                        counterB,
-                    ])}
-                />
-            </div>
-
             <EuiFlexGroup
                 className="eui-fullHeight"
                 gutterSize="none"
@@ -152,14 +134,14 @@ export const SidenavWithContent = () => {
             >
 
                 {/* <EuiFlexItem grow={false}>
-        <EuiPanel color="danger" >
-          TOP Panel
-        </EuiPanel>
-      </EuiFlexItem> 
+                    <EuiPanel color="danger" >
+                      TOP Panel
+                    </EuiPanel>
+                  </EuiFlexItem>
 
-      <EuiSpacer size="l" />
+                  <EuiSpacer size="l" />
 
-      */}
+                  */}
 
                 {/* eui-yScroll */}
                 <EuiFlexItem className="eui-fullHeight">
@@ -214,15 +196,13 @@ export const SidenavWithContent = () => {
                                         />
 
                                         <EuiButtonIcon
-                                            iconType="branch"
+                                            iconType="logoGithub"
                                             aria-label="Share"
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
                                             style={{marginBottom: '16px'}}
-                                            onClick={() => {
-                                                console.info("Branch/Share clicked")
-                                            }}
+                                            onClick={(e) => handleViewChange('repository')}
                                         />
 
                                         <EuiButtonIcon
@@ -244,6 +224,7 @@ export const SidenavWithContent = () => {
                                             style={{marginBottom: '16px'}}
                                             onClick={(e) => handleViewChange('terminal')}
                                         />
+
                                     </EuiFlexItem>
 
                                     {/* anchor to the bottom of the view */}
@@ -268,59 +249,63 @@ export const SidenavWithContent = () => {
                             maxWidth: '400px',
                             minWidth: '280px'
                         }}>
-                            RenderType : {renderType} {Date.now()}
-                            {/* <TerminalPanel></TerminalPanel> */}
+
+                             RenderType : {renderType} :: {Date.now()}
+
+                            <EditorPanel isVisible={renderType === 'editor'} label="editor"/>
+                            <WorkspacePanel isVisible={renderType === 'workspace'} label="workspace"/>
+                            <SettingsPanel isVisible={renderType === 'settings'} label="settings"/>
+                            <RunnerPanel isVisible={renderType === 'runners'} label="runners"/>
+                            <GitPanel isVisible={renderType === 'repository'} label="git"/>
+                            <HelpPanel isVisible={renderType === 'help'} label="help"/>
+                            <TerminalPanel isVisible={renderType === 'terminal'} label="terminal"/>
+
                             {/* <EditorPanel></EditorPanel>*/}
-                             <WorkspacePanel></WorkspacePanel>
+                            {/* <WorkspacePanel></WorkspacePanel>*/}
                             {/* <SettingsPanel></SettingsPanel> */}
 
-                            <div id='side-container-editor' style={{
-                                display: renderType === 'editor' ? "flex" : "none",
-                                flexDirection: 'column',
-                                height: '100%'
-                            }}>
-                                editor
-                                RenderType : {renderType} {Date.now()}
-                                {/*<EditorPanel></EditorPanel>*/}
-                            </div>
+                            {/*<div id='side-container-editor' style={{*/}
+                            {/*    display: renderType === 'editor' ? "flex" : "none",*/}
+                            {/*    flexDirection: 'column',*/}
+                            {/*    height: '100%'*/}
+                            {/*}}>*/}
+                            {/*    RenderType : {renderType} {Date.now()}*/}
+                            {/*    /!*<EditorPanel></EditorPanel>*!/*/}
+                            {/*</div>*/}
 
-                            <div id='side-container-workspace' style={{
-                                display: renderType === 'workspace' ? "flex" : "none",
-                                flexDirection: 'column',
-                                height: '100%'
-                            }}>
-                                workspace
-                                RenderType : {renderType} {Date.now()}
-                                {/*<WorkspacePanel></WorkspacePanel>*/}
-                            </div>
+                            {/*<div id='side-container-workspace' style={{*/}
+                            {/*    display: renderType === 'workspace' ? "flex" : "none",*/}
+                            {/*    flexDirection: 'column',*/}
+                            {/*    height: '100%'*/}
+                            {/*}}>*/}
+                            {/*    RenderType : {renderType} {Date.now()}*/}
+                            {/*    /!*<WorkspacePanel></WorkspacePanel>*!/*/}
+                            {/*</div>*/}
 
-                            <div id='side-container-settings' style={{
-                                display: renderType === 'settings' ? "flex" : "none",
-                                flexDirection: 'column',
-                                height: '100%'
-                            }}>
-                                settings
-                                RenderType : {renderType} {Date.now()}
-                                {/*<SettingsPanel></SettingsPanel>*/}
-                            </div>
+                            {/*<div id='side-container-settings' style={{*/}
+                            {/*    display: renderType === 'settings' ? "flex" : "none",*/}
+                            {/*    flexDirection: 'column',*/}
+                            {/*    height: '100%'*/}
+                            {/*}}>*/}
+                            {/*    RenderType : {renderType} {Date.now()}*/}
+                            {/*    /!*<SettingsPanel></SettingsPanel>*!/*/}
+                            {/*</div>*/}
 
-                            <div id='side-container-runners' style={{
-                                display: renderType === 'runners' ? "flex" : "none",
-                                flexDirection: 'column',
-                                height: '100%'
-                            }}>
-                                runners
-                                RenderType : {renderType} {Date.now()}
-                            </div>
+                            {/*<div id='side-container-runners' style={{*/}
+                            {/*    display: renderType === 'runners' ? "flex" : "none",*/}
+                            {/*    flexDirection: 'column',*/}
+                            {/*    height: '100%'*/}
+                            {/*}}>*/}
+                            {/*    RenderType : {renderType} {Date.now()}*/}
+                            {/*</div>*/}
 
-                            <div id={`side-container-help`} style={{
-                                display: renderType === 'help' ? "flex" : "none",
-                                flexDirection: 'column',
-                                height: '100%'
-                            }}>
-                                help
-                                RenderType : {renderType} {Date.now()}
-                            </div>
+                            {/*<div id={`side-container-help`} style={{*/}
+                            {/*    display: renderType === 'help' ? "flex" : "none",*/}
+                            {/*    flexDirection: 'column',*/}
+                            {/*    height: '100%'*/}
+                            {/*}}>*/}
+                            {/*    RenderType : {renderType} {Date.now()}*/}
+                            {/*</div>*/}
 
                         </EuiFlexItem>
 
@@ -336,10 +321,9 @@ export const SidenavWithContent = () => {
                             >
                                 {/* main content panel */}
                                 RenderType : {renderType} {Date.now()}
-                                <ContentWindow children={undefined} className={undefined}/>
+                                <ContentStage label="Main stage"/>
                             </EuiPanel>
                         </EuiFlexItem>
-
 
                     </EuiFlexGroup>
                 </EuiFlexItem>

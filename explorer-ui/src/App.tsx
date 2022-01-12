@@ -172,7 +172,6 @@ export function Application() {
         }
     });
 
-
     return (
         <ThemeProvider theme={theme}>
             <Router>

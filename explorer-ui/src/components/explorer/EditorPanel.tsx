@@ -15,7 +15,7 @@ import { Collapse, ListItemSecondaryAction, IconButton, createStyles } from '@ma
 import { useStylesSidePanel } from './useStylesSidePanel';
 
 import CloseIcon from '@material-ui/icons/Close';
-import { EventTypeAddTab, EventTypeCloseTab } from "../bus/message-bus-events";
+import { EventTypeAddTab, EventTypeCloseTab } from "../../bus/message-bus-events";
 import { useThemeContext } from './ReferenceDataContext';
 import { EditorContext } from './EditorContext';
 

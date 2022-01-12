@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends \
         build-essential \
         ca-certificates \
         curl \
-        git \
+        repository \
         libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 

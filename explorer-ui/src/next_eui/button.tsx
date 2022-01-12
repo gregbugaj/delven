@@ -1,10 +1,10 @@
 import React, {forwardRef} from 'react';
 import {EuiButton} from '@elastic/eui';
 
-/**
+/**EuiCollapsibleNavGroup
  * Next's `<Link/>` component passes a ref to its children, which triggers a warning
  * on EUI buttons (they expect `buttonRef`). Wrap the button component to pass on the
- * ref, and silence the warning.
+ * ref, and silence the warning.EuiCollapsibleNavGroup
  */
 
 type EuiButtonProps = React.ComponentProps<typeof EuiButton>;

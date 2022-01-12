@@ -25,11 +25,11 @@ import { Route, Switch } from "react-router-dom"
 import BreadcrumModule from '../shared/breadcrumbs';
 
 import TabbedEditor from './TabbedEditor'
-import { EventTypeCompileReply, EventTypeEditorKeyDown } from "../bus/message-bus-events";
+import { EventTypeCompileReply, EventTypeEditorKeyDown } from "../../bus/message-bus-events";
 import ShortcutsComponent from "../settings/Shortcuts";
 import EditorPanel from "./EditorPanel";
-import WorkspacePanel from "./WorkspacePanel";
-import SettingsPanel from "./SettingsPanel";
+import WorkspacePanel from "../workspace/WorkspacePanel";
+import SettingsPanel from "../settings/SettingsPanel";
 
 import { ThemeProvider } from "./ReferenceDataContext"
 import { EditorProvider, EditorContext, IEditor, ISession } from "./EditorContext"

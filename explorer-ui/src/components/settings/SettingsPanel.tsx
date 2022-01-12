@@ -10,7 +10,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import {useStylesSidePanel} from './useStylesSidePanel';
+import {useStylesSidePanel} from '../explorer/useStylesSidePanel';
 
 
 import Switch from '@material-ui/core/Switch';
@@ -22,17 +22,69 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        flexGrow: 1,
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme.palette.background.paper,
-    },
 
-}));
+import {
+    EuiCollapsibleNavGroup,
+    EuiButton,
+    EuiPanel,
+    EuiFlexItem,
+    EuiFlexGroup,
+    EuiListGroup,
+} from '@elastic/eui';
 
-export default function SettingsPanel() {
+import "../globalServices"
+import {SharedDeployPanel} from "../shared/SharedPanelContainer";
+
+function SettingsSidePanel({
+                               isVisible,
+                               label
+                           }: React.PropsWithChildren<{ isVisible: boolean, label: string }>) {
+
+    console.info(`SettingsSidePanel visible : ${isVisible} : [${label}]`)
+
+    return (
+        <EuiPanel tabIndex={0}
+                  hasShadow={false}
+                  hasBorder={false}
+                  borderRadius='none'
+                  paddingSize='none'
+                  hidden={!isVisible}
+        >
+            <EuiFlexGroup gutterSize="none" direction="column" className="eui-fullHeight">
+                <EuiFlexItem grow={true}>
+                    <EuiCollapsibleNavGroup
+                        title={
+                            <a
+                                className="eui-textInheritColor"
+                                href="#/settings"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <h1>Settings :: {label}</h1>
+                            </a>
+                        }
+                        buttonElement="div"
+                        iconType="logoKibana"
+                        isCollapsible={true}
+                        initialIsOpen={true}
+                        onToggle={(isOpen: boolean) => () => {
+                        }}
+                    >
+
+                    </EuiCollapsibleNavGroup>
+                </EuiFlexItem>
+
+                {/* anchor to the bottom of the view */}
+                <EuiFlexItem grow={false}>
+                    <SharedDeployPanel/>
+                </EuiFlexItem>
+            </EuiFlexGroup>
+        </EuiPanel>
+    );
+}
+
+export default React.memo(SettingsSidePanel);
+
+function SettingsPanelV1() {
 
     return (
         <div className='Editor-Content'>
@@ -147,3 +199,5 @@ function ListMenu() {
         </List>
     )
 }
+
+

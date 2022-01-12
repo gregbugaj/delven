@@ -5,7 +5,7 @@ import Button from '@material-ui/core/Button';
 import BlurLinearIcon from '@material-ui/icons/BlurLinear';
 import CodeIcon from '@material-ui/icons/Code';
 import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
-import { EventTypeEditorKeyDown, EventTypeCompileReply, EventTypeEvaluateReply, EventTypeSampleQuery, EventTypeEvaluateResult } from "../bus/message-bus-events";
+import { EventTypeEditorKeyDown, EventTypeCompileReply, EventTypeEvaluateReply, EventTypeSampleQuery, EventTypeEvaluateResult } from "../../bus/message-bus-events";
 import { ServerExecutor } from "../../executors";
 
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -27,7 +27,7 @@ import StopOutlinedIcon from '@material-ui/icons/StopOutlined';
 
 import ExpandLess from '@material-ui/icons/ExpandLess';
 import ExpandMore from '@material-ui/icons/ExpandMore';
-import { MessageBusService } from '../bus/message-bus';
+import { MessageBusService } from '../../bus/message-bus';
 
 // https://stackoverflow.com/questions/47659664/flexbox-with-fixed-header-and-footer-and-scrollable-content
 

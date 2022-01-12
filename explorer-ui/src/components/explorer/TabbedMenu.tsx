@@ -15,7 +15,7 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import TreeItem from "@material-ui/lab/TreeItem";
 
-import { EventTypeAddTab, EventTypeSampleQuery } from "../bus/message-bus-events";
+import { EventTypeAddTab, EventTypeSampleQuery } from "../../bus/message-bus-events";
 import "../globalServices"
 import { http } from "../../http"
 

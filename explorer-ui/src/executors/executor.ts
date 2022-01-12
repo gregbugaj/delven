@@ -2,7 +2,7 @@ import {Subscription} from "rxjs";
 
 
 /**
- * Messager returned via WS
+ * Messages returned via WS
  */
 export interface WebSocketMessage {
     type: string | undefined,

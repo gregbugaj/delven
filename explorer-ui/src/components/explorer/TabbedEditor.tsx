@@ -12,14 +12,14 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 
-import { EventTypeAddTab, EventTypeSampleQuery, EventTypeCloseTab } from "../bus/message-bus-events";
+import { EventTypeAddTab, EventTypeSampleQuery, EventTypeCloseTab } from "../../bus/message-bus-events";
 import "../globalServices"
 import Editor from './Editor';
 import { AppBar, Grid, IconButton, withStyles } from '@material-ui/core';
 import { v4 as uuidv4 } from 'uuid';
 import { EditorContext, IEditor, ISession } from './EditorContext';
 import { filter } from 'rxjs/operators';
-import { MessageBusService } from '../bus/message-bus';
+import { MessageBusService } from '../../bus/message-bus';
 
 /**
  * Prevent React component from re-rendering

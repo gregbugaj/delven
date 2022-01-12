@@ -3,7 +3,6 @@ import {name, actions, reducer, ISession} from "./slice";
 import {useAppDispatch, useAppSelector} from "../../redux/hooks";
 import {makeSelectSessions, selectCount} from "./selectors";
 import {shallowEqual} from "react-redux";
-import {string} from "prop-types";
 
 // https://react-redux.js.org/api/hooks
 
@@ -29,7 +28,6 @@ export function HeaderTimer({label}) {
         </div>
     )
 }
-
 
 function Session({children, label}: React.PropsWithChildren<{ label: string }>) {
     console.info(`Creating Session with :${label}`)

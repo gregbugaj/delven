@@ -1,4 +1,4 @@
-import { MessageBusService } from "./bus/message-bus";
+import { MessageBusService } from "../bus/message-bus";
 
 
 // define the child properties and their types.
