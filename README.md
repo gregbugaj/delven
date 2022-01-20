@@ -72,8 +72,13 @@ https://gist.github.com/reqshark/90bed1c082a4a5eb0a5f
 https://github.com/jina-ai/jina
 
 
+Logo creation
+https://www.zarla.com/logo-maker/
+
 [1]: https://docs.delven.io
 [2]: https://delven.io
+
+
 
 
 
