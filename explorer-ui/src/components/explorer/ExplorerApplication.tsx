@@ -20,7 +20,7 @@ import {
 } from '@elastic/eui';
 
 import "../../App.css";
-import {ThemeProvider} from "./ReferenceDataContext";
+
 import EditorPanel from "../editor/EditorPanel";
 import WorkspacePanel from "../workspace/WorkspacePanel";
 import SettingsPanel from "../settings/SettingsPanel";
@@ -104,13 +104,10 @@ const ExplorerAppLayout = () => {
     );
 };
 
+
 export const SidenavWithContent = () => {
 
-    const [compileTime, setCompileTime] = React.useState(0);
     const [renderType, setRenderType] = React.useState("editor");
-    // https://kentcdodds.com/blog/how-to-use-react-context-effectively
-    // const CountContext = React.createContext({ch:1, line:1})
-    const [pos, setEditorPosition] = React.useState({ch: 0, line: 0});
     const [open, setOpen] = React.useState(true);
 
     function handleViewChange(renderTypeChange: string) {
@@ -120,6 +117,14 @@ export const SidenavWithContent = () => {
         } else if (renderTypeChange === renderType) {
             setOpen(!open);
         }
+    }
+
+    let sidePanelOpenStyle = {
+        padding: "0px", margin: "0px", maxWidth: "400px", minWidth: "280px", display: ""
+    }
+
+    let sidePanelCloseStyle =  {
+        padding: "0px", margin: "0px", maxWidth: "0px", minWidth: "0px", display: "none"
     }
 
     // @ts-ignore
@@ -222,9 +227,10 @@ export const SidenavWithContent = () => {
                                             size="m"
                                             iconSize="xl"
                                             style={{marginBottom: '16px'}}
-                                            onClick={(e) => handleViewChange('terminal')}
+                                            // onClick={(e) => handleViewChange('terminal')}
+                                            onClick={() => {}}
+                                            href="/runner/terminal"
                                         />
-
                                     </EuiFlexItem>
 
                                     {/* anchor to the bottom of the view */}
@@ -242,15 +248,12 @@ export const SidenavWithContent = () => {
                             </EuiPanel>
                         </EuiFlexItem>
 
-                        <EuiFlexItem grow={false} style={{
-                            background: ' ',
-                            padding: '0px',
-                            margin: '0px',
-                            maxWidth: '400px',
-                            minWidth: '280px'
-                        }}>
+                        <EuiFlexItem
+                            grow={false}
+                            style={(open) ? sidePanelOpenStyle : sidePanelCloseStyle}
+                        >
 
-                             RenderType : {renderType} :: {Date.now()}
+                            RenderType : {renderType} : {open ? "A" : "B"} :: {Date.now()}
 
                             <EditorPanel isVisible={renderType === 'editor'} label="editor"/>
                             <WorkspacePanel isVisible={renderType === 'workspace'} label="workspace"/>
@@ -259,53 +262,6 @@ export const SidenavWithContent = () => {
                             <GitPanel isVisible={renderType === 'repository'} label="git"/>
                             <HelpPanel isVisible={renderType === 'help'} label="help"/>
                             <TerminalPanel isVisible={renderType === 'terminal'} label="terminal"/>
-
-                            {/* <EditorPanel></EditorPanel>*/}
-                            {/* <WorkspacePanel></WorkspacePanel>*/}
-                            {/* <SettingsPanel></SettingsPanel> */}
-
-                            {/*<div id='side-container-editor' style={{*/}
-                            {/*    display: renderType === 'editor' ? "flex" : "none",*/}
-                            {/*    flexDirection: 'column',*/}
-                            {/*    height: '100%'*/}
-                            {/*}}>*/}
-                            {/*    RenderType : {renderType} {Date.now()}*/}
-                            {/*    /!*<EditorPanel></EditorPanel>*!/*/}
-                            {/*</div>*/}
-
-                            {/*<div id='side-container-workspace' style={{*/}
-                            {/*    display: renderType === 'workspace' ? "flex" : "none",*/}
-                            {/*    flexDirection: 'column',*/}
-                            {/*    height: '100%'*/}
-                            {/*}}>*/}
-                            {/*    RenderType : {renderType} {Date.now()}*/}
-                            {/*    /!*<WorkspacePanel></WorkspacePanel>*!/*/}
-                            {/*</div>*/}
-
-                            {/*<div id='side-container-settings' style={{*/}
-                            {/*    display: renderType === 'settings' ? "flex" : "none",*/}
-                            {/*    flexDirection: 'column',*/}
-                            {/*    height: '100%'*/}
-                            {/*}}>*/}
-                            {/*    RenderType : {renderType} {Date.now()}*/}
-                            {/*    /!*<SettingsPanel></SettingsPanel>*!/*/}
-                            {/*</div>*/}
-
-                            {/*<div id='side-container-runners' style={{*/}
-                            {/*    display: renderType === 'runners' ? "flex" : "none",*/}
-                            {/*    flexDirection: 'column',*/}
-                            {/*    height: '100%'*/}
-                            {/*}}>*/}
-                            {/*    RenderType : {renderType} {Date.now()}*/}
-                            {/*</div>*/}
-
-                            {/*<div id={`side-container-help`} style={{*/}
-                            {/*    display: renderType === 'help' ? "flex" : "none",*/}
-                            {/*    flexDirection: 'column',*/}
-                            {/*    height: '100%'*/}
-                            {/*}}>*/}
-                            {/*    RenderType : {renderType} {Date.now()}*/}
-                            {/*</div>*/}
 
                         </EuiFlexItem>
 

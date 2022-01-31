@@ -1,75 +1,60 @@
 import React from "react"
 import PropTypes from "prop-types"
-import classNames from "classnames"
-import {EuiPanel, EuiCode, EuiSpacer} from "@elastic/eui"
 
-import {EuiText, EuiResizableContainer} from "@elastic/eui"
-import ResizibleDivider from "../explorer/ResizibleDivider"
+import {Route, Switch} from "react-router-dom"
+import ShortcutsComponent from "../settings/Shortcuts"
 
-
-function LHSPanel() {
-    const classes = classNames("euiComponent", "content-stage")
+const DefaultComponent = () => {
     return (
-        <div className={classes}>
-            Content Window Panel<br />
-            RenderTime : {Date.now()}
+        <div>
+            Default Component
+        </div>
+        // <div style={{ border: '0px solid red', height: '100%' }}>
+        //     <TabbedEditor></TabbedEditor>
+        // </div>
+    )
+}
+
+const SettingsComponent = () => {
+    return (
+        <div>
+            Settings Component
         </div>
     )
 }
 
-const LHSPane = React.memo(LHSPanel)
+const TerminalComponent = () => {
+    return (
+        <div>
+            Terminal Component
+        </div>
+    )
+}
+
+const IntegrationComponent = () => {
+    return (
+        <div>
+            Integration Component
+        </div>
+    )
+}
 
 function Stage({
                    children,
                    label
                }: React.PropsWithChildren<{label: string}>) {
-    const classes = classNames("euiComponent", "content-stage")
-
     return (
-        <>
-            <div style={{display: "flex", height: "100px", border: "2px solid blue"}}>
-                <div style={{display: "flex", width: "50%", border: "1px solid green", minWidth: "400px"}}>Left
-
-                    Content Window Panel<br />
-                    RenderTime : {Date.now()}
-
-                </div>
-                <ResizibleDivider direction="horizontal" />
-                <div style={{display: "flex", flex: "1 1 0%", border: "2px solid pink", minWidth: "400px"}}>Right
-
-                    Content Window Panel<br />
-                    RenderTime : {Date.now()}
-                </div>
-            </div>
-
-            <hr />
-
-            <EuiResizableContainer onPanelWidthChange={() => {
-                console.info("Resized")
-            }}>
-
-                {(EuiResizablePanel, EuiResizableButton) => (
-                    <>
-                        <EuiResizablePanel initialSize={50} minSize="200px" mode="custom">
-
-                            <LHSPane></LHSPane>
-                        </EuiResizablePanel>
-
-                        <EuiResizableButton style={{border: "1px solid pink"}} />
-
-                        <EuiResizablePanel initialSize={50} minSize="200px">
-                            Right Panel
-                            <div className={classes}>
-                                Content Window Panel<br />
-                                RenderTime : {Date.now()}
-                            </div>
-
-                        </EuiResizablePanel>
-                    </>
-                )}
-            </EuiResizableContainer>
-
-        </>
+        <React.Fragment>
+            {/*<Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 32px)' }} >*/}
+            <Switch>
+                <Route exact path="/runner" component={DefaultComponent} />
+                <Route exact path="/runner/terminal" component={TerminalComponent} />
+                <Route exact path="/explorer/settings" component={SettingsComponent} />
+                <Route path="/explorer/integration" component={IntegrationComponent} />
+                <Route path="/explorer/settings/shortcuts" component={ShortcutsComponent} />
+            </Switch>
+            {/*</Container>*/}
+        </React.Fragment>
     )
 }
 

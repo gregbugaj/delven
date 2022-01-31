@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"
 
 import {
     EuiCollapsibleNavGroup,
@@ -6,16 +6,16 @@ import {
     EuiPanel,
     EuiFlexItem,
     EuiFlexGroup,
-    EuiListGroup,
-} from '@elastic/eui';
+    EuiListGroup
+} from "@elastic/eui"
 
 import "../globalServices"
-import {SharedDeployPanel} from "../shared/SharedPanelContainer";
+import {SharedDeployPanel} from "../shared/SharedPanelContainer"
 
 function EditorSidePanel({
-                               isVisible,
-                               label
-                           }: React.PropsWithChildren<{ isVisible: boolean, label: string }>) {
+                             isVisible,
+                             label
+                         }: React.PropsWithChildren<{isVisible: boolean, label: string}>) {
 
     console.info(`EditorSidePanel visible : ${isVisible} : [${label}]`)
 
@@ -23,13 +23,13 @@ function EditorSidePanel({
         <EuiPanel tabIndex={0}
                   hasShadow={false}
                   hasBorder={false}
-                  borderRadius='none'
-                  paddingSize='none'
+                  borderRadius="none"
+                  paddingSize="none"
                   hidden={!isVisible}
         >
             <EuiFlexGroup gutterSize="none" direction="column" className="eui-fullHeight">
                 <EuiFlexItem grow={true}>
-                    <h1>View : {isVisible ? 'show' : 'hide'} : [{label}] : {Date.now()}</h1>
+                    <h1>View : {isVisible ? "show" : "hide"} : [{label}] : {Date.now()}</h1>
                     <EuiCollapsibleNavGroup>
                         <EuiButton fill fullWidth iconType="plusInCircleFilled">
                             New Tab
@@ -57,17 +57,17 @@ function EditorSidePanel({
                             aria-label="Panel" // A11y : EuiCollapsibleNavGroup can't correctly pass the `title` as the `aria-label` to the right HTML element, so it must be added manually
                             listItems={[
                                 {
-                                    label: 'Discover', onClick: () => {
+                                    label: "Discover", onClick: () => {
                                     }
                                 },
                                 {
-                                    label: 'Visualize', onClick: () => {
+                                    label: "Visualize", onClick: () => {
                                     }
                                 },
                                 {
-                                    label: 'Graph', onClick: () => {
+                                    label: "Graph", onClick: () => {
                                     }
-                                },
+                                }
                             ]}
                             maxWidth="none"
                             color="subdued"
@@ -79,11 +79,12 @@ function EditorSidePanel({
 
                 {/* anchor to the bottom of the view */}
                 <EuiFlexItem grow={false}>
-                    <SharedDeployPanel/>
+                    <SharedDeployPanel />
                 </EuiFlexItem>
             </EuiFlexGroup>
         </EuiPanel>
-    );
+    )
 }
 
-export default React.memo(EditorSidePanel);
+export default React.memo(EditorSidePanel)
+

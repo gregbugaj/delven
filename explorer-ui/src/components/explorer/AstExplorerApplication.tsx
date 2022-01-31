@@ -196,10 +196,10 @@ function AstExplorerApplication() {
   const [open, setOpen] = React.useState(true);
 
   function handleViewChange(renderTypeChange: string) {
-    if (renderTypeChange != renderType) {
+    if (renderTypeChange !== renderType) {
       setOpen(true);
       setRenderType(renderTypeChange)
-    } else if (renderTypeChange == renderType) {
+    } else if (renderTypeChange === renderType) {
       setOpen(!open);
     }
   }
