@@ -2,12 +2,12 @@ import {EuiButtonIcon, EuiFlexGroup, EuiFlexItem, EuiPanel} from "@elastic/eui"
 import React from "react"
 import "../globalServices"
 
-function TerminalComponent({
+function SampleComponent({
                                isVisible,
                                label
                            }: React.PropsWithChildren<{isVisible: boolean, label: string}>) {
 
-    console.info(`TerminalComponent visible : ${isVisible} : [${label}]`)
+    console.info(`Sample Component visible : ${isVisible} : [${label}]`)
 
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
     return (
@@ -55,5 +55,5 @@ function TerminalComponent({
     )
 }
 
-export default React.memo(TerminalComponent)
+export default React.memo(SampleComponent)
 

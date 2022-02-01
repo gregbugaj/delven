@@ -4,6 +4,9 @@ import PropTypes from "prop-types"
 import {Route, Switch} from "react-router-dom"
 import ShortcutsComponent from "../settings/Shortcuts"
 
+import TerminalComponent from "../terminal/terminal.component"
+import TabbedEditorComponent from "../editor/tabbed-editor.component"
+
 const DefaultComponent = () => {
     return (
         <div>
@@ -23,7 +26,7 @@ const SettingsComponent = () => {
     )
 }
 
-const TerminalComponent = () => {
+const TerminalComponentXX = () => {
     return (
         <div>
             Terminal Component
@@ -45,15 +48,13 @@ function Stage({
                }: React.PropsWithChildren<{label: string}>) {
     return (
         <React.Fragment>
-            {/*<Container maxWidth="xl" className={classes.container} style={{ border: '0px solid green', padding: '0px', height: 'calc(100vh - 32px)' }} >*/}
             <Switch>
-                <Route exact path="/runner" component={DefaultComponent} />
+                <Route exact path="/runner" component={TabbedEditorComponent} />
                 <Route exact path="/runner/terminal" component={TerminalComponent} />
                 <Route exact path="/explorer/settings" component={SettingsComponent} />
                 <Route path="/explorer/integration" component={IntegrationComponent} />
                 <Route path="/explorer/settings/shortcuts" component={ShortcutsComponent} />
             </Switch>
-            {/*</Container>*/}
         </React.Fragment>
     )
 }

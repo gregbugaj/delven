@@ -6,10 +6,10 @@ function RepositoryComponent({
                                label
                            }: React.PropsWithChildren<{ isVisible: boolean, label: string }>) {
 
-    console.info(`TerminalComponent visible : ${isVisible} : [${label}]`)
+    console.info(`RepositoryComponent visible : ${isVisible} : [${label}]`)
 
     return (
-        <div>Terminal component</div>
+        <div>Repository component</div>
     );
 }
 

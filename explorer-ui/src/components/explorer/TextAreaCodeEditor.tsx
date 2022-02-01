@@ -22,7 +22,7 @@ function TextAreaCodeEditorInner(props: TextAreaCodeEditorProps) {
 
   useLayoutEffect(() => {
     if (ref.current === null) {
-      throw new Error('ref.current is null exptected HTMLTextArea')
+      throw new Error('ref.current is null expected HTMLTextArea')
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

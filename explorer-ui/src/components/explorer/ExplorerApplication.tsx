@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState} from "react"
 
 import {
     EuiHeaderLogo,
@@ -16,55 +16,55 @@ import {
     EuiHeaderSectionItemButton,
     EuiIcon,
     EuiButton,
-    useGeneratedHtmlId,
-} from '@elastic/eui';
+    useGeneratedHtmlId
+} from "@elastic/eui"
 
-import "../../App.css";
+import "../../App.css"
 
-import EditorPanel from "../editor/EditorPanel";
-import WorkspacePanel from "../workspace/WorkspacePanel";
-import SettingsPanel from "../settings/SettingsPanel";
-import TerminalPanel from "../terminal/TerminalPanel";
-import RunnerPanel from "../runner/RunnerPanel";
-import ContentStage from "../stage/Stage";
-import GitPanel from "../repository/RepositoriesPanel";
-import HelpPanel from "../help/HelpPanel";
+import EditorPanel from "../editor/EditorPanel"
+import WorkspacePanel from "../workspace/WorkspacePanel"
+import SettingsPanel from "../settings/SettingsPanel"
+import TerminalPanel from "../terminal/TerminalPanel"
+import RunnerPanel from "../runner/RunnerPanel"
+import ContentStage from "../stage/Stage"
+import GitPanel from "../repository/RepositoriesPanel"
+import HelpPanel from "../help/HelpPanel"
 
 const ExplorerAppLayout = () => {
 
     const exitPath = () => {
         return "#"
-    };
-    const [navIsOpen, setNavIsOpen] = useState(true);
+    }
+    const [navIsOpen, setNavIsOpen] = useState(true)
 
     /**
      * Accordion toggling
      */
     const [openGroups, setOpenGroups] = useState(
-        JSON.parse(String(localStorage.getItem('openNavGroups'))) || [
-            'Kibana',
-            'Learn',
+        JSON.parse(String(localStorage.getItem("openNavGroups"))) || [
+            "Kibana",
+            "Learn"
         ]
-    );
+    )
 
     // Save which groups are open and which are not with state and local store
     const toggleAccordion = (isOpen: boolean, title?: string) => {
-        if (!title) return;
-        const itExists = openGroups.includes(title);
+        if (!title) return
+        const itExists = openGroups.includes(title)
         if (isOpen) {
-            if (itExists) return;
-            openGroups.push(title);
+            if (itExists) return
+            openGroups.push(title)
         } else {
-            const index = openGroups.indexOf(title);
+            const index = openGroups.indexOf(title)
             if (index > -1) {
-                openGroups.splice(index, 1);
+                openGroups.splice(index, 1)
             }
         }
-        setOpenGroups([...openGroups]);
-        localStorage.setItem('openNavGroups', JSON.stringify(openGroups));
-    };
+        setOpenGroups([...openGroups])
+        localStorage.setItem("openNavGroups", JSON.stringify(openGroups))
+    }
 
-    const collapsibleNavId = useGeneratedHtmlId({prefix: 'collapsibleNav'});
+    const collapsibleNavId = useGeneratedHtmlId({prefix: "collapsibleNav"})
 
     return (
         <>
@@ -75,7 +75,7 @@ const ExplorerAppLayout = () => {
 
                 <EuiHeaderSection grow={false}>
                     <EuiHeaderSectionItem>
-                        <EuiHeaderLogo href='#' iconType="logoElastic">
+                        <EuiHeaderLogo href="#" iconType="logoElastic">
                             Delven
                         </EuiHeaderLogo>
 
@@ -99,23 +99,23 @@ const ExplorerAppLayout = () => {
                 </EuiHeaderSection>
             </EuiHeader>
 
-            <SidenavWithContent/>
+            <SidenavWithContent />
         </>
-    );
-};
+    )
+}
 
 
 export const SidenavWithContent = () => {
 
-    const [renderType, setRenderType] = React.useState("editor");
-    const [open, setOpen] = React.useState(true);
+    const [renderType, setRenderType] = React.useState("editor")
+    const [open, setOpen] = React.useState(true)
 
     function handleViewChange(renderTypeChange: string) {
         if (renderTypeChange !== renderType) {
-            setOpen(true);
+            setOpen(true)
             setRenderType(renderTypeChange)
         } else if (renderTypeChange === renderType) {
-            setOpen(!open);
+            setOpen(!open)
         }
     }
 
@@ -123,14 +123,14 @@ export const SidenavWithContent = () => {
         padding: "0px", margin: "0px", maxWidth: "400px", minWidth: "280px", display: ""
     }
 
-    let sidePanelCloseStyle =  {
+    let sidePanelCloseStyle = {
         padding: "0px", margin: "0px", maxWidth: "0px", minWidth: "0px", display: "none"
     }
 
     // @ts-ignore
     return (
 
-        <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize='none'>
+        <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize="none">
             <EuiFlexGroup
                 className="eui-fullHeight"
                 gutterSize="none"
@@ -156,9 +156,9 @@ export const SidenavWithContent = () => {
                             <EuiPanel tabIndex={0} className="eui-"
                                       hasShadow={false}
                                       hasBorder={false}
-                                      borderRadius='none'
-                                      paddingSize='none'
-                                      style={{background: '#404040', padding: '8px'}}
+                                      borderRadius="none"
+                                      paddingSize="none"
+                                      style={{background: "#404040", padding: "8px"}}
                             >
 
                                 <EuiFlexGroup
@@ -174,7 +174,7 @@ export const SidenavWithContent = () => {
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
-                                            style={{marginBottom: '16px'}}
+                                            style={{marginBottom: "16px"}}
                                             onClick={() => {
                                                 console.info("Apps clicked")
                                             }}
@@ -186,8 +186,8 @@ export const SidenavWithContent = () => {
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
-                                            style={{marginBottom: '16px'}}
-                                            onClick={(e) => handleViewChange('editor')}
+                                            style={{marginBottom: "16px"}}
+                                            onClick={(e) => handleViewChange("editor")}
                                         />
 
                                         <EuiButtonIcon
@@ -196,8 +196,8 @@ export const SidenavWithContent = () => {
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
-                                            style={{marginBottom: '16px'}}
-                                            onClick={(e) => handleViewChange('workspace')}
+                                            style={{marginBottom: "16px"}}
+                                            onClick={(e) => handleViewChange("workspace")}
                                         />
 
                                         <EuiButtonIcon
@@ -206,8 +206,8 @@ export const SidenavWithContent = () => {
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
-                                            style={{marginBottom: '16px'}}
-                                            onClick={(e) => handleViewChange('repository')}
+                                            style={{marginBottom: "16px"}}
+                                            onClick={(e) => handleViewChange("repository")}
                                         />
 
                                         <EuiButtonIcon
@@ -216,8 +216,8 @@ export const SidenavWithContent = () => {
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
-                                            style={{marginBottom: '16px'}}
-                                            onClick={(e) => handleViewChange('settings')}
+                                            style={{marginBottom: "16px"}}
+                                            onClick={(e) => handleViewChange("settings")}
                                         />
 
                                         <EuiButtonIcon
@@ -226,9 +226,10 @@ export const SidenavWithContent = () => {
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
-                                            style={{marginBottom: '16px'}}
+                                            style={{marginBottom: "16px"}}
                                             // onClick={(e) => handleViewChange('terminal')}
-                                            onClick={() => {}}
+                                            onClick={() => {
+                                            }}
                                             href="/runner/terminal"
                                         />
                                     </EuiFlexItem>
@@ -241,7 +242,7 @@ export const SidenavWithContent = () => {
                                             color="ghost"
                                             size="m"
                                             iconSize="xl"
-                                            onClick={(e) => handleViewChange('help')}
+                                            onClick={(e) => handleViewChange("help")}
                                         />
                                     </EuiFlexItem>
                                 </EuiFlexGroup>
@@ -253,34 +254,24 @@ export const SidenavWithContent = () => {
                             style={(open) ? sidePanelOpenStyle : sidePanelCloseStyle}
                         >
 
-                            RenderType : {renderType} : {open ? "A" : "B"} :: {Date.now()}
+                            {/*
+                            RenderType : {renderType} : {Date.now()}
+*/}
 
-                            <EditorPanel isVisible={renderType === 'editor'} label="editor"/>
-                            <WorkspacePanel isVisible={renderType === 'workspace'} label="workspace"/>
-                            <SettingsPanel isVisible={renderType === 'settings'} label="settings"/>
-                            <RunnerPanel isVisible={renderType === 'runners'} label="runners"/>
-                            <GitPanel isVisible={renderType === 'repository'} label="git"/>
-                            <HelpPanel isVisible={renderType === 'help'} label="help"/>
-                            <TerminalPanel isVisible={renderType === 'terminal'} label="terminal"/>
+                            <EditorPanel isVisible={renderType === "editor"} label="editor" />
+                            <WorkspacePanel isVisible={renderType === "workspace"} label="workspace" />
+                            <SettingsPanel isVisible={renderType === "settings"} label="settings" />
+                            <RunnerPanel isVisible={renderType === "runners"} label="runners" />
+                            <GitPanel isVisible={renderType === "repository"} label="git" />
+                            <HelpPanel isVisible={renderType === "help"} label="help" />
+                            <TerminalPanel isVisible={renderType === "terminal"} label="terminal" />
 
                         </EuiFlexItem>
 
                         <EuiFlexItem>
-                            <EuiPanel
-                                tabIndex={0}
-                                // className="eui-yScroll"
-                                hasShadow={false}
-                                hasBorder={false}
-                                borderRadius='none'
-                                paddingSize='none'
-                                style={{background: '#CCC', padding: '0px', margin: '0px'}}
-                            >
-                                {/* main content panel */}
-                                RenderType : {renderType} {Date.now()}
-                                <ContentStage label="Main stage"/>
-                            </EuiPanel>
+                            {/* main content panel */}
+                            <ContentStage label="Main stage" />
                         </EuiFlexItem>
-
                     </EuiFlexGroup>
                 </EuiFlexItem>
 
@@ -289,79 +280,65 @@ export const SidenavWithContent = () => {
                     <EuiPanel
                         hasShadow={false}
                         hasBorder={false}
-                        borderRadius='none'
-                        paddingSize='none'
-                        style={{background: ' ', padding: '0px', margin: '0px', minHeight: '80px'}}
+                        borderRadius="none"
+                        paddingSize="none"
+                        style={{background: " ", padding: "0px", margin: "0px", minHeight: "80px"}}
                     >
 
                         <EuiControlBar
                             size="s"
-                            position='relative'
+                            position="relative"
                             showContent={false}
                             controls={
                                 [{
-                                    iconType: 'submodule',
-                                    id: 'root_icon',
-                                    controlType: 'icon',
-                                    'aria-label': 'Project Root',
+                                    iconType: "submodule",
+                                    id: "root_icon",
+                                    controlType: "icon",
+                                    "aria-label": "Project Root"
                                 },
                                     {
-                                        controlType: 'breadcrumbs',
-                                        id: 'current_file_path',
+                                        controlType: "breadcrumbs",
+                                        id: "current_file_path",
                                         responsive: true,
                                         breadcrumbs: [
                                             {
-                                                text: 'src',
+                                                text: "src"
                                             },
                                             {
-                                                text: 'components',
-                                            },
-                                        ],
+                                                text: "components"
+                                            }
+                                        ]
                                     },
                                     {
-                                        controlType: 'spacer',
+                                        controlType: "spacer"
                                     },
                                     {
-                                        controlType: 'icon',
-                                        id: 'status_icon',
-                                        iconType: 'alert',
-                                        color: 'warning',
-                                        'aria-label': 'Repo Status',
+                                        controlType: "icon",
+                                        id: "status_icon",
+                                        iconType: "alert",
+                                        color: "warning",
+                                        "aria-label": "Repo Status"
                                     },
                                     {
-                                        controlType: 'divider',
+                                        controlType: "divider"
                                     },
                                     {
-                                        controlType: 'button',
-                                        id: 'open_history_view',
-                                        label: 'Show history',
-                                        color: 'primary',
+                                        controlType: "button",
+                                        id: "open_history_view",
+                                        label: "Show history",
+                                        color: "primary",
                                         onClick: () => {
                                         }
                                     }]
                             }
                         />
 
-
                     </EuiPanel>
-
                 </EuiFlexItem>
-
             </EuiFlexGroup>
-
-
         </EuiPageTemplate>
     )
-};
+}
 
-const Counter = React.memo(function Counter({name, value, onClickIncrement}) {
-    console.log(`Rendering counter ${name}`);
-    return (
-        <div>
-            {name}: {value}
-            <button onClick={onClickIncrement}>Increment</button>
-        </div>
-    );
-});
 
-export default ExplorerAppLayout;
+export default ExplorerAppLayout

@@ -6,10 +6,10 @@ function HelpComponent({
                                label
                            }: React.PropsWithChildren<{ isVisible: boolean, label: string }>) {
 
-    console.info(`TerminalComponent visible : ${isVisible} : [${label}]`)
+    console.info(`HelpComponent visible : ${isVisible} : [${label}]`)
 
     return (
-        <div>Terminal component</div>
+        <div>Help component</div>
     );
 }
 
