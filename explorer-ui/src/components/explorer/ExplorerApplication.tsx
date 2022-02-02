@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useLayoutEffect, useState} from "react"
 
 import {
     EuiHeaderLogo,
@@ -133,8 +133,16 @@ export const SidenavWithContent = () => {
     const resizablePanelLhsId = useGeneratedHtmlId({prefix: "resizablePanel"})
     const resizablePanelRhsId = useGeneratedHtmlId({prefix: "resizablePanel"})
 
-    const resizablePanelLhsRef= React.useRef<HTMLDivElement>();
-    const resizablePanelRhsRef = React.useRef<HTMLDivElement>();
+    const resizablePanelLhsRef= React.useRef<HTMLDivElement>(null);
+    const resizablePanelRhsRef = React.useRef<HTMLDivElement>(null);
+
+    // Current error
+    // Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()
+    useLayoutEffect(() => {
+        console.info('Render complete')
+        console.log(resizablePanelLhsRef);
+        console.log(resizablePanelRhsRef);
+    })
 
     // @ts-ignore
     return (
@@ -285,7 +293,7 @@ export const SidenavWithContent = () => {
 
                         </EuiFlexItem>
 
-                        <EuiFlexItem id={resizablePanelRhsId} >
+                        <EuiFlexItem id={resizablePanelRhsId} ref={resizablePanelRhsRef}>
                             {/* main content panel */}
                             <ContentStage label="Main stage" />
                         </EuiFlexItem>
