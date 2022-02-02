@@ -6,6 +6,7 @@ import ShortcutsComponent from "../settings/Shortcuts"
 
 import TerminalComponent from "../terminal/terminal.component"
 import TabbedEditorComponent from "../editor/tabbed-editor.component"
+import {EuiResizableContainer} from "@elastic/eui"
 
 const DefaultComponent = () => {
     return (

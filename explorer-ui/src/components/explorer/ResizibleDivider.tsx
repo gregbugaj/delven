@@ -1,11 +1,17 @@
 import React from 'react'
 
 // ref : https://htmldom.dev/create-resizable-split-views/
-export default function ResizibleDivider(props: { direction: "vertical" | "horizontal" }) {
+export default function ResizibleDivider(props: {direction: "vertical" | "horizontal", containerARef?: string | undefined, containerBRef?: string | undefined}) {
 
-    const {direction} = props
+    const {direction, containerARef, containerBRef} = props
     const resizerRef = React.createRef<HTMLDivElement>();
     const cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';
+
+
+    console.info("refs ")
+    console.info(containerARef)
+    console.info(containerBRef)
+
 
     // The current position of mouse
     let x = 0;
@@ -36,6 +42,7 @@ export default function ResizibleDivider(props: { direction: "vertical" | "horiz
     }
 
     const handleMouseUp = (event) => {
+
         const resizer = resizerRef.current;
         if (resizer === null) {
             return
@@ -44,6 +51,12 @@ export default function ResizibleDivider(props: { direction: "vertical" | "horiz
         const prevSibling = resizer.previousElementSibling as HTMLDivElement;
         const nextSibling = resizer.nextElementSibling as HTMLDivElement;
         console.info('message: "Mouse UP"')
+
+        console.info("refs ")
+        console.info(containerARef)
+        console.info(containerBRef)
+
+
 
         // resizer.style.removeProperty('cursor');
         document.body.style.removeProperty('cursor');
@@ -103,7 +116,7 @@ export default function ResizibleDivider(props: { direction: "vertical" | "horiz
 
     const horizontalContainer = (
         <div
-            style={{border: "1px solid red", cursor: cursor, backgroundColor: "#cbd5e0", width: '4px', height: '100%'}}
+            style={{border: "0px solid red", cursor: cursor, backgroundColor: "#cbd5e0", width: '4px', height: '100%'}}
             ref={resizerRef}
             onMouseDown={handleMouseDown}>
         </div>

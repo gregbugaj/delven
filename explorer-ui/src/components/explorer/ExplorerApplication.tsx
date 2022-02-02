@@ -21,6 +21,9 @@ import {
 
 import "../../App.css"
 
+import ResizibleDivider from './ResizibleDivider';
+
+
 import EditorPanel from "../editor/EditorPanel"
 import WorkspacePanel from "../workspace/WorkspacePanel"
 import SettingsPanel from "../settings/SettingsPanel"
@@ -126,6 +129,12 @@ export const SidenavWithContent = () => {
     let sidePanelCloseStyle = {
         padding: "0px", margin: "0px", maxWidth: "0px", minWidth: "0px", display: "none"
     }
+
+    const resizablePanelLhsId = useGeneratedHtmlId({prefix: "resizablePanel"})
+    const resizablePanelRhsId = useGeneratedHtmlId({prefix: "resizablePanel"})
+
+    const resizablePanelLhsRef= React.useRef<HTMLDivElement>();
+    const resizablePanelRhsRef = React.useRef<HTMLDivElement>();
 
     // @ts-ignore
     return (
@@ -250,13 +259,10 @@ export const SidenavWithContent = () => {
                         </EuiFlexItem>
 
                         <EuiFlexItem
+                            id={resizablePanelLhsId}
                             grow={false}
                             style={(open) ? sidePanelOpenStyle : sidePanelCloseStyle}
                         >
-
-                            {/*
-                            RenderType : {renderType} : {Date.now()}
-*/}
 
                             <EditorPanel isVisible={renderType === "editor"} label="editor" />
                             <WorkspacePanel isVisible={renderType === "workspace"} label="workspace" />
@@ -268,7 +274,18 @@ export const SidenavWithContent = () => {
 
                         </EuiFlexItem>
 
-                        <EuiFlexItem>
+
+                        <EuiFlexItem grow={false} style={{minWidth:"120px"}} >
+                            {/*<ResizibleDivider direction="horizontal"/>*/}
+                            <div>
+                                <div style={{ display:"flex", width:"50%"}}>Left</div>
+                                  <ResizibleDivider direction="vertical" containerARef={resizablePanelLhsRef} containerBRef={resizablePanelRhsRef}/>
+                                <div style={{display:"flex", flex: "1 1 0%", border: "0px solid pink" }}>Right</div>
+                            </div>
+
+                        </EuiFlexItem>
+
+                        <EuiFlexItem id={resizablePanelRhsId} >
                             {/* main content panel */}
                             <ContentStage label="Main stage" />
                         </EuiFlexItem>

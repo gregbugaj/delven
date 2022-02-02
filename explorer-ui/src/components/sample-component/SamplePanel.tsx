@@ -29,7 +29,7 @@ function TerminalSidePanel({
         >
             <EuiFlexGroup gutterSize="none" direction="column" className="eui-fullHeight">
                 <EuiFlexItem grow={true}>
-                    <h1>View : {isVisible ? 'show' : 'hide'} : [{label}] : {Date.now()}</h1>
+                    {/*<h1>View : {isVisible ? 'show' : 'hide'} : [{label}] : {Date.now()}</h1>*/}
                     <EuiCollapsibleNavGroup>
                         <EuiButton fill fullWidth iconType="plusInCircleFilled">
                             Add data
