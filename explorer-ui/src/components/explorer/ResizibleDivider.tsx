@@ -70,7 +70,6 @@ export default function ResizibleDivider(props: {direction: "vertical" | "horizo
     }
 
     const handleMouseMove = (event) => {
-        // console.info('message: "Mouse Move"')
         const resizer = resizerRef.current;
         if (resizer === null) {
             return
@@ -86,15 +85,20 @@ export default function ResizibleDivider(props: {direction: "vertical" | "horizo
             return
         }
 
+        let rh = resizer.parentNode.getBoundingClientRect().height
+        let rw = resizer.parentNode.getBoundingClientRect().width
+
         switch (direction) {
             case 'vertical':
                 // @ts-ignore
-                const h = (prevSiblingHeight + dy) * 100 / resizer.parentNode.getBoundingClientRect().height;
+                const h = (prevSiblingHeight + dy) * 100 / rh;
                 prevSibling.style.height = `${h}%`;
                 break;
             case 'horizontal':
                 // @ts-ignore
-                const w = (prevSiblingWidth + dx) * 100 / resizer.parentNode.getBoundingClientRect().width;
+                const w = (prevSiblingWidth + dx) * 100 / rw;
+                console.info(`message: "Mouse Move : ${w}"`)
+
                 prevSibling.style.width = `${w}%`;
                 break;
         }
@@ -113,7 +117,7 @@ export default function ResizibleDivider(props: {direction: "vertical" | "horizo
     //"#cbd5e0"
     const horizontalContainer = (
         <div
-            style={{border: "0px solid red", cursor: cursor, backgroundColor: "#000", width: '4px', height: '100%'}}
+            style={{border: "0px solid red", cursor: cursor, backgroundColor: "#000", width: '2px', height: '100%'}}
             ref={resizerRef}
             onMouseDown={handleMouseDown}>
         </div>

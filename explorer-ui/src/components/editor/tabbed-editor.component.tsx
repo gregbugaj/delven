@@ -123,22 +123,29 @@ function TabbedEditorComponent({
 
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
     return (
+    <>
 
-        <EuiFlexItem  className="eui-fullHeight" style={{background: "#FFF", display:"flex", width:"100%",  padding: "0px", margin: "0px", border: "2px solid red"}}>
+        <div style={{ display:"flex", width:"100%", height:"25%"}}>
+            <div style={{ display:"flex", width:"50%"}}>Left</div>
+                    <ResizibleDivider direction="horizontal"/>
+            <div style={{ display:"flex", width:"50%"}}>Left</div>
+        </div>
 
-            <EuiFlexItem grow={false}  style={{background: "#FFF", width:"25%",  padding: "0px", margin: "0px", border: "2px solid green"}}>
+
+        <div style={{background: "#FFF", display:"flex", width:"100%",  padding: "0px", margin: "0px", border: "2px solid purple"}}>
+            <div  style={{ position:"relative", background: "#FFF", width:"25%",  padding: "0px", margin: "0px", border: "2px solid green"}}>
                 LHS
-            </EuiFlexItem>
+            </div>
 
-            {/*<ResizibleDivider direction="horizontal" />*/}
+            <ResizibleDivider direction="horizontal" />
 
-            <EuiFlexItem grow={false}  style={{background: "#FFF", width:"25%", padding: "0px", margin: "0px", border: "2px solid blue"}}>
+            <div style={{position:"relative", background: "#FFF", width:"25%", padding: "0px", margin: "0px", border: "2px solid blue"}}>
                 RHS
-            </EuiFlexItem>
+            </div>
+        </div>
 
-        </EuiFlexItem>
-
-/*        <EuiResizableContainer onPanelWidthChange={() => {
+                <hr/>
+        <EuiResizableContainer onPanelWidthChange={() => {
             console.info("Resized")
         }}>
 
@@ -148,7 +155,7 @@ function TabbedEditorComponent({
                         LHS Panel
                     </EuiResizablePanel>
 
-                    <EuiResizableButton style={{border: "5px solid pink"}} />
+                    <EuiResizableButton style={{border: "5px solid pink", width:"1px"}} />
 
                     <EuiResizablePanel initialSize={50} minSize="200px"  style={{border:"1px solid blue"}}>
                         Right Panel
@@ -160,9 +167,11 @@ function TabbedEditorComponent({
                     </EuiResizablePanel>
                 </>
             )}
-        </EuiResizableContainer>*/
+        </EuiResizableContainer>
 
+   </>
     )
+
 }
 
 
