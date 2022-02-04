@@ -1,4 +1,4 @@
-import {EuiButtonIcon, EuiFlexGroup, EuiFlexItem, EuiPanel} from "@elastic/eui"
+import {EuiButtonIcon, EuiFlexGroup, EuiFlexItem, EuiPanel, EuiResizableContainer} from "@elastic/eui"
 import React, {useState, Fragment, useMemo} from "react"
 
 import {
@@ -11,6 +11,7 @@ import {
 } from "@elastic/eui"
 
 import "../globalServices"
+import ResizibleDivider from "../explorer/ResizibleDivider"
 
 const tabs = [
     {
@@ -18,7 +19,6 @@ const tabs = [
         name: "Cobalt",
         content: (
             <Fragment>
-                <EuiSpacer />
                 <EuiText>
                     <p>
                         Cobalt is a chemical element with symbol Co and atomic number 27.
@@ -36,7 +36,6 @@ const tabs = [
         name: "Dextrose",
         content: (
             <Fragment>
-                <EuiSpacer />
                 <EuiText>
                     <p>
                         Intravenous sugar solution, also known as dextrose solution, is a
@@ -54,7 +53,6 @@ const tabs = [
         prepend: <EuiIcon type="heatmap" />,
         content: (
             <Fragment>
-                <EuiSpacer />
                 <EuiText>
                     <p>
                         Hydrogen is a chemical element with symbol H and atomic number 1.
@@ -126,14 +124,170 @@ function TabbedEditorComponent({
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
     return (
 
-        <EuiFlexItem
-            style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid red"}}
-            grow={true}>
+        <EuiFlexItem  className="eui-fullHeight" style={{background: "#FFF", display:"flex", width:"100%",  padding: "0px", margin: "0px", border: "2px solid red"}}>
 
-            <EuiTabs size={"s"}>{renderTabs()}</EuiTabs>
-            {selectedTabContent}
+            <EuiFlexItem grow={false}  style={{background: "#FFF", width:"25%",  padding: "0px", margin: "0px", border: "2px solid green"}}>
+                LHS
+            </EuiFlexItem>
+
+            {/*<ResizibleDivider direction="horizontal" />*/}
+
+            <EuiFlexItem grow={false}  style={{background: "#FFF", width:"25%", padding: "0px", margin: "0px", border: "2px solid blue"}}>
+                RHS
+            </EuiFlexItem>
+
         </EuiFlexItem>
+
+/*        <EuiResizableContainer onPanelWidthChange={() => {
+            console.info("Resized")
+        }}>
+
+            {(EuiResizablePanel, EuiResizableButton) => (
+                <>
+                    <EuiResizablePanel initialSize={50} minSize="200px" mode="custom" style={{border:"1px solid red"}}>
+                        LHS Panel
+                    </EuiResizablePanel>
+
+                    <EuiResizableButton style={{border: "5px solid pink"}} />
+
+                    <EuiResizablePanel initialSize={50} minSize="200px"  style={{border:"1px solid blue"}}>
+                        Right Panel
+                        <div>
+                            Content Window Panel<br />
+                            RenderTime : {Date.now()}
+                        </div>
+
+                    </EuiResizablePanel>
+                </>
+            )}
+        </EuiResizableContainer>*/
+
     )
 }
 
+
+/*
+
+<EuiFlexItem grow={false}    className="eui-fullHeight" style={{background: "#FFF", width:"50%",  padding: "0px", margin: "0px", border: "2px solid red"}}>
+
+
+    <EuiFlexItem grow={false}  style={{background: "#FFF", width:"50%",  padding: "0px", margin: "0px", border: "2px solid green"}}>
+        LHS
+    </EuiFlexItem>
+
+    <ResizibleDivider direction="horizontal" />
+
+    <EuiFlexItem grow={false}  style={{background: "#FFF", width:"50%", padding: "0px", margin: "0px", border: "2px solid blue"}}>
+        RHS
+    </EuiFlexItem>
+
+</EuiFlexItem>
+*/
+
+
+
+/*
+
+        <EuiFlexGroup
+            className="eui-fullHeight"
+            gutterSize="none"
+            direction="row"
+        >
+        </EuiFlexGroup>
+
+
+
+                <EuiFlexGroup
+                    style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid green"}}
+                    gutterSize="none"
+                    direction="column"
+                >
+
+                    <EuiFlexItem grow={false}>
+                        <EuiFlexGroup gutterSize="none"
+                                      responsive={false}
+                                      style={{
+                                          background: "#FFF",
+                                          padding: "0px",
+                                          margin: "0px",
+                                          border: "0px solid red"
+                                      }}>
+                            <EuiFlexItem grow={true}>
+                                <EuiTabs size={"s"}>{renderTabs()}</EuiTabs>
+                            </EuiFlexItem>
+
+                            <EuiFlexItem grow={false}>
+                                Expand | Collapse
+                            </EuiFlexItem>
+
+                        </EuiFlexGroup>
+                    </EuiFlexItem>
+
+                    <hr/>
+                    <EuiFlexItem grow={true}
+                                 style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid red"}}>
+                        {selectedTabContent}
+                    </EuiFlexItem>
+                </EuiFlexGroup>
+
+*/
+
+/*
+<EuiFlexGroup
+    style={{background: "#FFF", padding: "0px", margin: "0px", border: "4px solid green"}}
+    grow={true}
+    className="eui-fullHeight"
+    gutterSize="none"
+    direction="column"
+>
+    <EuiFlexItem grow={false}>
+        {/!*        <EuiFlexGroup gutterSize="none"
+                              responsive={false}
+                              style={{background: "#FFF", padding: "0px", margin: "0px", border: "1px solid red"}}>
+                    <EuiFlexItem grow={true}>
+                        <EuiTabs size={"s"}>{renderTabs()}</EuiTabs>
+                    </EuiFlexItem>
+                    <EuiFlexItem grow={false}>
+                        RHS
+                    </EuiFlexItem>
+                </EuiFlexGroup>*!/}
+    </EuiFlexItem>
+
+    <EuiFlexItem grow={true}
+                 style={{background: "#CCC", padding: "0px", margin: "0px", border: "1px solid red"}}>
+        {selectedTabContent}
+    </EuiFlexItem>
+</EuiFlexGroup>
+
+*/
+
 export default React.memo(TabbedEditorComponent)
+
+
+/*
+
+<EuiFlexGroup
+style={{background: "#FFF", padding: "0px", margin: "0px", border: "4px solid green"}}
+grow={true}
+className="eui-fullHeight"
+gutterSize="none"
+direction="column"
+    >
+    <EuiFlexItem grow={false}>
+    <EuiFlexGroup gutterSize="none"
+responsive={false}
+style={{background: "#FFF", padding: "0px", margin: "0px", border: "1px solid red"}}>
+<EuiFlexItem grow={true}>
+    <EuiTabs size={"s"}>{renderTabs()}</EuiTabs>
+</EuiFlexItem>
+<EuiFlexItem grow={false}>
+    RHS
+</EuiFlexItem>
+</EuiFlexGroup>
+</EuiFlexItem>
+
+<EuiFlexItem grow={true}
+             style={{background: "#CCC", padding: "0px", margin: "0px", border: "1px solid red"}}>
+    {selectedTabContent}
+</EuiFlexItem>
+</EuiFlexGroup>*/

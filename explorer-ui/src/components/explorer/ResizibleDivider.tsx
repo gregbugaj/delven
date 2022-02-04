@@ -7,11 +7,9 @@ export default function ResizibleDivider(props: {direction: "vertical" | "horizo
     const resizerRef = React.createRef<HTMLDivElement>();
     const cursor = direction === 'horizontal' ? 'col-resize' : 'row-resize';
 
-
     console.info("refs ")
     console.info(containerARef)
     console.info(containerBRef)
-
 
     // The current position of mouse
     let x = 0;
@@ -55,8 +53,6 @@ export default function ResizibleDivider(props: {direction: "vertical" | "horizo
         console.info("refs ")
         console.info(containerARef)
         console.info(containerBRef)
-
-
 
         // resizer.style.removeProperty('cursor');
         document.body.style.removeProperty('cursor');
@@ -114,9 +110,10 @@ export default function ResizibleDivider(props: {direction: "vertical" | "horizo
         nextSibling.style.pointerEvents = 'none';
     }
 
+    //"#cbd5e0"
     const horizontalContainer = (
         <div
-            style={{border: "0px solid red", cursor: cursor, backgroundColor: "#cbd5e0", width: '4px', height: '100%'}}
+            style={{border: "0px solid red", cursor: cursor, backgroundColor: "#000", width: '4px', height: '100%'}}
             ref={resizerRef}
             onMouseDown={handleMouseDown}>
         </div>
