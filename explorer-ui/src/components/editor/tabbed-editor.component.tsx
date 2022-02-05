@@ -11,7 +11,7 @@ import {
 } from "@elastic/eui"
 
 import "../globalServices"
-import ResizibleDivider from "../explorer/ResizibleDivider"
+import ResizableDivider from "../explorer/ResizableDivider"
 
 const tabs = [
     {
@@ -123,52 +123,41 @@ function TabbedEditorComponent({
 
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
     return (
-    <>
-        <div style={{ display:"flex", width:"100%", height:"25%"}}>
-            <div style={{ display:"flex", width:"50%"}}>Left</div>
-                    <ResizibleDivider direction="horizontal"/>
-            <div style={{ display:"flex", width:"50%"}}>Right</div>
-        </div>
-
-
-        <div style={{background: "#FFF", display:"flex", width:"100%",  padding: "0px", margin: "0px", border: "2px solid purple"}}>
-            <div  style={{ position:"relative", background: "#FFF", width:"25%",  padding: "0px", margin: "0px", border: "2px solid green"}}>
-                LHS
+        <>
+            <div style={{display: "flex", width: "100%", height: "25%"}}>
+                <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Left</div>
+                <ResizableDivider direction="horizontal" />
+                <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Right</div>
             </div>
 
-            <ResizibleDivider direction="horizontal" />
+            <hr />
 
-            <div style={{position:"relative", background: "#FFF", width:"25%", padding: "0px", margin: "0px", border: "2px solid blue"}}>
-                RHS
-            </div>
-        </div>
+            <EuiResizableContainer onPanelWidthChange={() => {
+                console.info("Resized")
+            }}>
 
-                <hr/>
-        <EuiResizableContainer onPanelWidthChange={() => {
-            console.info("Resized")
-        }}>
+                {(EuiResizablePanel, EuiResizableButton) => (
+                    <>
+                        <EuiResizablePanel initialSize={50} minSize="200px" mode="custom"
+                                           style={{border: "1px solid red"}}>
+                            LHS Panel
+                        </EuiResizablePanel>
 
-            {(EuiResizablePanel, EuiResizableButton) => (
-                <>
-                    <EuiResizablePanel initialSize={50} minSize="200px" mode="custom" style={{border:"1px solid red"}}>
-                        LHS Panel
-                    </EuiResizablePanel>
+                        <EuiResizableButton style={{border: "5px solid pink", width: "1px"}} />
 
-                    <EuiResizableButton style={{border: "5px solid pink", width:"1px"}} />
+                        <EuiResizablePanel initialSize={50} minSize="200px" style={{border: "1px solid blue"}}>
+                            Right Panel
+                            <div>
+                                Content Window Panel<br />
+                                RenderTime : {Date.now()}
+                            </div>
 
-                    <EuiResizablePanel initialSize={50} minSize="200px"  style={{border:"1px solid blue"}}>
-                        Right Panel
-                        <div>
-                            Content Window Panel<br />
-                            RenderTime : {Date.now()}
-                        </div>
+                        </EuiResizablePanel>
+                    </>
+                )}
+            </EuiResizableContainer>
 
-                    </EuiResizablePanel>
-                </>
-            )}
-        </EuiResizableContainer>
-
-   </>
+        </>
     )
 
 }
@@ -191,7 +180,6 @@ function TabbedEditorComponent({
 
 </EuiFlexItem>
 */
-
 
 
 /*

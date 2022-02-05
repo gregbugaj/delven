@@ -20,7 +20,7 @@ import TextAreaCodeEditor from './TextAreaCodeEditor';
 import { v4 as uuidv4 } from 'uuid';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import { http } from '../../http';
-import ResizibleDivider from './ResizibleDivider';
+import ResizableDivider from './ResizableDivider';
 import { IconButton, Link } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import StopOutlinedIcon from '@material-ui/icons/StopOutlined';
@@ -508,7 +508,7 @@ function EditorImpl(props: EditorProps) {
                 <EcmaEditorContentMemo id={id} onEditorReady={onEditorReadyEcma} />
               </div>
 
-              <ResizibleDivider direction="horizontal" />
+              <ResizableDivider direction="horizontal" />
 
               <div style={{ flex: ' 1 1 0%', border: "0px solid purple" }}>
                 <div ref={jsonContainerRef} id={`json-container:${id}`} style={{ display: renderType === 'json' ? "flex" : "none", flexDirection: 'column', height: '100%' }}>
@@ -552,7 +552,7 @@ function EditorImpl(props: EditorProps) {
             </div>
           </div>
 
-          <ResizibleDivider direction="vertical" />
+          <ResizableDivider direction="vertical" />
 
           <div className='Editor-Container-Footer' style={{ display: "flex", flex: "1 1 0%", height:'25vh', border: "0px solid purple", }}>
             <BottomConsolePanel tabId={id} stageRef={editorMainStageRef} />

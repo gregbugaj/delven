@@ -21,7 +21,7 @@ import {
 
 import "../../App.css"
 
-import ResizibleDivider from './ResizibleDivider';
+import ResizableDivider from './ResizableDivider';
 
 
 import EditorPanel from "../editor/EditorPanel"
@@ -288,7 +288,7 @@ export const SidenavWithContent = () => {
                         {/*<ResizibleDivider direction="horizontal" containerARef={resizablePanelLhsRef} containerBRef={resizablePanelRhsRef}/>*/}
                         {/*</div>*/}
 
-                        <ResizibleDivider direction="horizontal"/>
+                        <ResizableDivider direction="horizontal"/>
                         {/*style={{ display:"flex", width:"100%", minWidth:"300px"}}*/}
                         <EuiFlexItem id={resizablePanelRhsId}  >
                             <ContentStage label="Main stage" />

@@ -4,7 +4,7 @@ import classNames from "classnames"
 import {EuiPanel, EuiCode, EuiSpacer} from "@elastic/eui"
 
 import {EuiText, EuiResizableContainer} from "@elastic/eui"
-import ResizibleDivider from "../explorer/ResizibleDivider"
+import ResizableDivider from "../explorer/ResizableDivider"
 import {Route, Switch} from "react-router-dom"
 import ShortcutsComponent from "../settings/Shortcuts"
 

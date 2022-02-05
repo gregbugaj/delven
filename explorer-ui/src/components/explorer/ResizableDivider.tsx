@@ -13,7 +13,7 @@ import React from "react"
  * @param props
  * @constructor
  */
-export default function ResizibleDivider(props: {direction: "vertical" | "horizontal"}) {
+export default function ResizableDivider(props: {direction: "vertical" | "horizontal"}) {
 
     const {direction} = props
     const resizerRef = React.createRef<HTMLDivElement>()
@@ -158,3 +158,11 @@ export default function ResizibleDivider(props: {direction: "vertical" | "horizo
 
     return direction === "horizontal" ? horizontalContainer : verticalContainer
 }
+
+/*
+    <div style={{display: "flex", width: "100%", height: "25%"}}>
+        <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Left</div>
+        <ResizibleDivider direction="horizontal" />
+        <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Right</div>
+    </div>
+ */
