@@ -124,11 +124,10 @@ function TabbedEditorComponent({
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
     return (
     <>
-
         <div style={{ display:"flex", width:"100%", height:"25%"}}>
             <div style={{ display:"flex", width:"50%"}}>Left</div>
                     <ResizibleDivider direction="horizontal"/>
-            <div style={{ display:"flex", width:"50%"}}>Left</div>
+            <div style={{ display:"flex", width:"50%"}}>Right</div>
         </div>
 
 
