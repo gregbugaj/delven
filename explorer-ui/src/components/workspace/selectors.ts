@@ -19,6 +19,4 @@ const makeSelectSessions = () => createSelector(selectSessions, (state) => state
  */
 export const selectCount = (state) => state[name].sessions.length;
 
-export const selectActiveSession= (state) => state[name].sessions.length;
-
 export {selectSessions, makeSelectSessions}

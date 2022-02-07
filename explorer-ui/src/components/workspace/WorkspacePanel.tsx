@@ -1,22 +1,4 @@
-import React, {useContext} from 'react';
-import {makeStyles, Theme} from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
-
-
-import "../globalServices"
-
-import {SideTreeView} from '../explorer/TabbedMenu';
-import {Button, Collapse} from '@material-ui/core';
-
-
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ExpandLess from '@material-ui/icons/ExpandLess';
-import ExpandMore from '@material-ui/icons/ExpandMore';
-import {useStylesSidePanel} from '../explorer/useStylesSidePanel';
-import {EditorContext} from '../explorer/EditorContext';
-
+import React, {useCallback, useContext, useEffect} from "react"
 import {
     EuiCollapsibleNavGroup,
     EuiButton,
@@ -24,134 +6,122 @@ import {
     EuiFlexItem,
     EuiFlexGroup,
     EuiListGroup,
-} from '@elastic/eui';
+    EuiListGroupItem, EuiButtonIcon
+} from "@elastic/eui"
 
 import "../globalServices"
-import {SharedDeployPanel} from "../shared/SharedPanelContainer";
+import {SharedDeployPanel} from "../shared/SharedPanelContainer"
+import {useAppDispatch, useAppSelector} from "../../redux/hooks"
+import {makeSelectSessions} from "./selectors"
+import {shallowEqual} from "react-redux"
+import {actions, ISession} from "./slice"
 
+// https://react-redux.js.org/api/hooks
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        flexGrow: 1,
-        width: '100%',
-        height: '100%',
-        backgroundColor: theme.palette.background.paper,
-    },
+export function useSessions({limit = 100}) {
+    const dispatch = useAppDispatch()
+    const store = useAppSelector(makeSelectSessions(), shallowEqual)
+    // Initial load
+    useEffect(() => {
+        if (!store?.sessions?.length && !store?.loading) {
+            console.info("useSessions : Loading")
+            dispatch(actions.fetch({limit}))
+        }
+    }, [])
 
-}));
-
-function WorkspacePanelV1() {
-    const [session, setSession] = React.useContext(EditorContext)
-
-    return (
-        <div className='Editor-Content'>
-            <div className='Editor-Container' style={{padding: "0px", border: "0px solid red"}}>
-                <div className='Editor-Container-Header' style={{border: "1px solid blue", display: "none"}}>
-                    HD : {Date.now()}
-                </div>
-
-                <div className='Editor-Content' style={{border: "px solid green"}}>
-                    {/* Editors:
-          <ul>
-            {
-              session.editors?.map((editor, i) => (
-                <li>
-                  {editor.name} <br />
-                </li>
-              ))
-            }
-          </ul> */}
-                    <ListMenu/>
-                </div>
-
-                <div className='Editor-Container-Footer' style={{
-                    border: "0px solid blue",
-                    display: "",
-                    minHeight: "120px",
-                    padding: "2px",
-                    backgroundColor: "#F5F5F5"
-                }}>
-                    <div style={{overflowWrap: "break-word"}}>
-                        {/* <p>FT :   {Date.now()}</p> */}
-                        <h5>Link GitHub Account to save your work</h5>
-                        <Button variant="outlined" color="primary">
-                            Link
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+    return store
 }
 
 
-function ListMenu() {
+const SessionItem = React.memo(function({id}: React.PropsWithChildren<{id: string}>) {
+    console.info(`Session item : ${id}`)
+    const dispatch = useAppDispatch()
+    const session = useAppSelector((state) => state.session.sessions.find(item => item.id === id))
 
-    const [openEditor, setOpenEditor] = React.useState(true);
-    const [openSession, setOpenSession] = React.useState(true);
+    // useCallback
+    const removeSessionHandler = useCallback((id) => {
+        console.info(`Removing session : ${id}`)
+        dispatch(actions.removeSession(session.id))
+    }, [dispatch])
 
-    const handleEditorClick = () => {
-        setOpenEditor(!openEditor);
-    };
+    /* (id) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+         console.info(`Activate session : ${id}`)
+         console.info(event)
+         // dispatch(actions.removeSession(session.id))
+     }*/
 
-    const handleSessionClick = () => {
-        setOpenSession(!openSession);
-    };
+    const activateSessionHandler = useCallback((id) => {
+        console.info(`Activate session : ${id}`)
+        dispatch(actions.markSessionActive(session.id))
+    }, [dispatch])
 
-    const classes = useStylesSidePanel();
+    if (session === undefined) {
+        return <></>
+    }
+
+    let label = `${Date.now()} - ${session.name}`
     return (
-        <List className={classes.root}>
+        <EuiListGroupItem href="#" label={label} color="text" onClick={() => {
+            console.info(`Group item exec : ${session.id}`)
+            activateSessionHandler(session.id)
+        }}
+                          extraAction={{
+                              color: "text",
+                              onClick: () => {
+                                  console.info("Group item exec:delete")
+                                  removeSessionHandler(session.id)
+                              },
+                              iconType: "trash",
+                              iconSize: "s",
+                              "aria-label": `Remove session : ${session.id}`,
+                              alwaysShow: true
+                          }}
 
-            <ListItem button onClick={handleEditorClick} className={classes.item}>
-                <ListItemText
-                    disableTypography
-                    primary={<Typography className={classes.heading}>My Queries</Typography>}
-                />
-                {openEditor ? <ExpandLess/> : <ExpandMore/>}
-            </ListItem>
+        />
+    )
+})
 
-            <Collapse in={openEditor} timeout="auto" className={classes.details}>
-                <p>No items present</p>
-
-                <hr/>
-                <Button size="small" variant="contained" color="primary">
-                    Add Script
-                </Button>
-            </Collapse>
-
-            <ListItem button onClick={handleSessionClick} className={classes.item}>
-
-                <ListItemText
-                    disableTypography
-                    primary={<Typography className={classes.heading}>Sample Queries</Typography>}
-                />
-                {openSession ? <ExpandLess/> : <ExpandMore/>}
-            </ListItem>
-
-            <Collapse in={openSession} timeout="auto" className={classes.details}>
-                <SideTreeView></SideTreeView>
-            </Collapse>
-        </List>
+function ListSessions() {
+    const state = useSessions({limit: 100})
+    const sessions = state.sessions as ISession[]
+    // const items = useAppSelector((state) => {
+    //     return state['session'].sessions
+    // });
+    return (
+        <>
+            {sessions.map((item) => (
+                <SessionItem key={item.id} id={item.id} />
+            ))}
+        </>
     )
 }
 
 function WorkspaceSidePanel({
-                               isVisible,
-                               label
-                           }: React.PropsWithChildren<{ isVisible: boolean, label: string }>) {
+                                isVisible,
+                                label
+                            }: React.PropsWithChildren<{isVisible: boolean, label: string}>) {
 
     console.info(`WorkspaceSidePanel visible : ${isVisible} : [${label}]`)
+    const dispatch = useAppDispatch()
 
     return (
         <EuiPanel tabIndex={0}
                   hasShadow={false}
                   hasBorder={false}
-                  borderRadius='none'
-                  paddingSize='none'
+                  borderRadius="none"
+                  paddingSize="none"
                   hidden={!isVisible}
         >
             <EuiFlexGroup gutterSize="none" direction="column" className="eui-fullHeight">
                 <EuiFlexItem grow={true}>
+
+                    <EuiCollapsibleNavGroup>
+                        <EuiButton fill fullWidth iconType="plusInCircleFilled"
+                                   onClick={() => dispatch(actions.createSession())}>
+                            Create Workspace
+                        </EuiButton>
+                    </EuiCollapsibleNavGroup>
+
                     <EuiCollapsibleNavGroup
                         title={
                             <a
@@ -159,28 +129,37 @@ function WorkspaceSidePanel({
                                 href="#/workspace"
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <h1>Workspace :: {label}</h1>
+                                <h1>Workspaces</h1>
                             </a>
                         }
                         buttonElement="div"
-                        iconType="logoKibana"
+                        iconType="logoAppSearch"
                         isCollapsible={true}
                         initialIsOpen={true}
                         onToggle={(isOpen: boolean) => () => {
                         }}
                     >
+                        <EuiListGroup
+                            aria-label="Panel" // A11y : EuiCollapsibleNavGroup can't correctly pass the `title` as the `aria-label` to the right HTML element, so it must be added manually
+                            maxWidth="none"
+                            color="subdued"
+                            gutterSize="none"
+                            size="s"
+                        >
+                            <ListSessions />
+                        </EuiListGroup>
 
-                        <div>Workspace content</div>
+
                     </EuiCollapsibleNavGroup>
                 </EuiFlexItem>
 
                 {/* anchor to the bottom of the view */}
                 <EuiFlexItem grow={false}>
-                    <SharedDeployPanel/>
+                    <SharedDeployPanel />
                 </EuiFlexItem>
             </EuiFlexGroup>
         </EuiPanel>
-    );
+    )
 }
 
-export default React.memo(WorkspaceSidePanel);
+export default React.memo(WorkspaceSidePanel)

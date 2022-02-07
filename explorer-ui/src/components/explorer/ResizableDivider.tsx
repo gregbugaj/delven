@@ -1,4 +1,28 @@
 import React from "react"
+import styled from 'styled-components'
+
+const VerticalDiv = styled.div`
+      cursor: row-resize;
+      background-color: #cbd5e0;
+      width: 100%;
+      height: 1px;
+
+      &:hover {
+        box-shadow: 0 0 0 3px rgba(220, 220, 220, 0.3);
+      }
+    `
+
+const HorizontalDiv = styled.div`
+      cursor: col-resize;
+      background-color: #cbd5e0;
+      width: 1px;
+      height: 100%;
+
+      &:hover {
+        box-shadow: 0 0 0 3px rgba(220, 220, 220, 0.3);
+      }
+    `
+
 
 /**
  * Resizable divider
@@ -13,6 +37,7 @@ import React from "react"
  * @param props
  * @constructor
  */
+
 export default function ResizableDivider(props: {direction: "vertical" | "horizontal"}) {
 
     const {direction} = props
@@ -139,30 +164,29 @@ export default function ResizableDivider(props: {direction: "vertical" | "horizo
         nextSibling.style.pointerEvents = "none"
     }
 
-    //"#cbd5e0"
     const horizontalContainer = (
-        <div
-            style={{border: "0px solid red", cursor: cursor, backgroundColor: "#cbd5e0", width: "4px", height: "100%"}}
+        <HorizontalDiv
             ref={resizerRef}
             onMouseDown={handleMouseDown}>
-        </div>
+        </HorizontalDiv>
     )
 
     const verticalContainer = (
-        <div
-            style={{border: "0px solid red", cursor: cursor, backgroundColor: "#cbd5e0", width: "100%", height: "4px"}}
+        <VerticalDiv
+            style={{}}
             ref={resizerRef}
             onMouseDown={handleMouseDown}>
-        </div>
+        </VerticalDiv>
     )
 
     return direction === "horizontal" ? horizontalContainer : verticalContainer
 }
 
 /*
-    <div style={{display: "flex", width: "100%", height: "25%"}}>
-        <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Left</div>
-        <ResizibleDivider direction="horizontal" />
-        <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Right</div>
-    </div>
+    Horizontal Split
+      <div style={{display: "flex", width: "100%", height: "25%"}}>
+            <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Left</div>
+            <ResizableDivider direction="horizontal" />
+            <div style={{display: "flex", width: "50%", minWidth: "200px"}}>Right</div>
+      </div>
  */

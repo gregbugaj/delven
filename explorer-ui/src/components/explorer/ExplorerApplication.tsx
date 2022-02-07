@@ -21,7 +21,7 @@ import {
 
 import "../../App.css"
 
-import ResizableDivider from './ResizableDivider';
+import ResizableDivider from "./ResizableDivider"
 
 
 import EditorPanel from "../editor/EditorPanel"
@@ -73,12 +73,11 @@ const ExplorerAppLayout = () => {
         <>
             <EuiHeader
                 position="static"
-
+                style={{border: "0px", boxShadow: "none"}}
             >
-
                 <EuiHeaderSection grow={false}>
                     <EuiHeaderSectionItem>
-                        <EuiHeaderLogo href="#" iconType="logoElastic">
+                        <EuiHeaderLogo href="#" iconType="logoCode">
                             Delven
                         </EuiHeaderLogo>
 
@@ -91,7 +90,6 @@ const ExplorerAppLayout = () => {
                 </EuiHeaderSection>
 
                 <EuiHeaderSection grow={false}>
-
                     <EuiHeaderSectionItem>
                         <EuiHeaderLinks aria-label="App navigation">
                             <EuiHeaderLink>Docs</EuiHeaderLink>
@@ -107,8 +105,7 @@ const ExplorerAppLayout = () => {
     )
 }
 
-
-export const SidenavWithContent = () => {
+export const SidenavWithContent = React.memo(() => {
 
     const [renderType, setRenderType] = React.useState("editor")
     const [open, setOpen] = React.useState(true)
@@ -123,47 +120,43 @@ export const SidenavWithContent = () => {
     }
 
     let sidePanelOpenStyle = {
-        padding: "0px", margin: "0px", width:"240px", maxWidth: "540px", minWidth: "240px", display: ""
+        padding: "0px", margin: "0px", width: "240px", maxWidth: "540px", minWidth: "240px", display: ""
     }
 
     let sidePanelCloseStyle = {
-        padding: "0px", margin: "0px", width: "0px", maxWidth: "540px",  display: "none"
+        padding: "0px", margin: "0px", width: "0px", maxWidth: "540px", display: "none"
     }
 
     const resizablePanelLhsId = useGeneratedHtmlId({prefix: "resizablePanel"})
     const resizablePanelRhsId = useGeneratedHtmlId({prefix: "resizablePanel"})
 
-    const resizablePanelLhsRef= React.useRef<HTMLDivElement>(null);
-    const resizablePanelRhsRef = React.useRef<HTMLDivElement>(null);
+    const resizablePanelLhsRef = React.useRef<HTMLDivElement>(null)
+    const resizablePanelRhsRef = React.useRef<HTMLDivElement>(null)
 
     // Current error
     // Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()
     useLayoutEffect(() => {
-        console.info('Render complete')
-        console.log(resizablePanelLhsRef);
-        console.log(resizablePanelRhsRef);
+        console.info("Render complete")
     })
 
     // @ts-ignore
     return (
-
-        <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize="none">
+        // <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize="none">
+        <>
             <EuiFlexGroup
                 className="eui-fullHeight"
                 gutterSize="none"
                 direction="column"
                 responsive={false}
             >
-
-                {/* <EuiFlexItem grow={false}>
-                    <EuiPanel color="danger" >
-                      TOP Panel
-                    </EuiPanel>
-                  </EuiFlexItem>
-
-                  <EuiSpacer size="l" />
-
-                  */}
+                <EuiFlexItem grow={false}>
+                    <EuiPanel color="danger" paddingSize="none" style={{
+                        border: "0px solid red",
+                        height: "1px",
+                        color: "#CCC",
+                        backgroundColor: "#CCC"
+                    }} />
+                </EuiFlexItem>
 
                 {/* eui-yScroll */}
                 <EuiFlexItem className="eui-fullHeight">
@@ -288,9 +281,9 @@ export const SidenavWithContent = () => {
                         {/*<ResizibleDivider direction="horizontal" containerARef={resizablePanelLhsRef} containerBRef={resizablePanelRhsRef}/>*/}
                         {/*</div>*/}
 
-                        <ResizableDivider direction="horizontal"/>
+                        <ResizableDivider direction="horizontal" />
                         {/*style={{ display:"flex", width:"100%", minWidth:"300px"}}*/}
-                        <EuiFlexItem id={resizablePanelRhsId}  >
+                        <EuiFlexItem id={resizablePanelRhsId}>
                             <ContentStage label="Main stage" />
                         </EuiFlexItem>
                     </EuiFlexGroup>
@@ -357,9 +350,9 @@ export const SidenavWithContent = () => {
                     </EuiPanel>
                 </EuiFlexItem>
             </EuiFlexGroup>
-        </EuiPageTemplate>
+        </>
+        /*</EuiPageTemplate>*/
     )
-}
-
+})
 
 export default ExplorerAppLayout

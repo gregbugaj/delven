@@ -12,6 +12,7 @@
  *
  */
 import {createSlice} from "@reduxjs/toolkit"
+import {string} from "prop-types"
 
 const key = "sessions"
 
@@ -30,6 +31,7 @@ export type ISession = {
 // The initial state of the component
 export const initialState = {
     sessions: [] as ISession[],
+    activeSessionId: "",
     loading: false,
     error: false
 }
@@ -60,9 +62,9 @@ if (false) {
     let sessions = [mockSession(), mockSession(), mockSession()]
     localStorage.setItem(key, JSON.stringify(sessions))
 }
-
-console.info("**** Sessions")
-console.info(localStorage.getItem(key))
+//
+// console.info("**** Sessions")
+// console.info(localStorage.getItem(key))
 
 // Lets create default session
 if (!localStorage.getItem(key)) {
@@ -130,6 +132,20 @@ const slice = createSlice({
                     sessions.splice(index, 1)
                 }
             })
+        },
+
+        /**
+         * Mark an active session
+         * @param state
+         * @param action
+         */
+        markSessionActive: (state, action) => {
+            const sessionId = action.payload
+            if (sessionId === undefined) {
+                return
+            }
+            state.activeSessionId = sessionId
+            console.info(`Session marked active : ${sessionId}`)
         },
 
         /**
