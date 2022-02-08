@@ -1,4 +1,5 @@
-import React, {useState, Fragment, useMemo} from "react"
+import {useState, Fragment, useMemo} from "react"
+import * as React from "react"
 
 import {
     EuiButton,
@@ -25,6 +26,7 @@ import styled from "styled-components"
 import {ISession} from "../workspace/slice"
 import {useSessions} from "../workspace/WorkspacePanel"
 import {useAppDispatch, useAppSelector} from "../../redux/hooks"
+import {selectActiveSession} from "../workspace/selectors"
 
 const XComponent = styled.div`
   &:hover {
@@ -88,7 +90,8 @@ const tabs = [
         name: "Sample Script",
         append: (
             <XComponent>
-                <EuiIcon type="cross" size="s" onClick={() => {  }}  />
+                <EuiIcon type="cross" size="s" onClick={() => {
+                }} />
             </XComponent>
         ),
         href: "#/navigation/tabs#monosodium",
@@ -202,11 +205,8 @@ function TabbedEditorComponent({
         </EuiContextMenuItem>
     ]
 
-    const state = useSessions({limit: 100})
-    const sessions = state.sessions as ISession[]
-
-    const session = useAppSelector((state) => state.session.sessions.find(item => item.id === state.activeSessionId))
-    console.info(session)
+    const [toggle1On, setToggle1On] = useState(true)
+    const activeSession = useAppSelector(selectActiveSession)
 
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
     return (
@@ -243,7 +243,6 @@ function TabbedEditorComponent({
                                         {/*doubleArrowLeft doubleArrowRight*/}
                                         <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
                                             <EuiButtonIcon
-                                                display="base"
                                                 size="xs"
                                                 iconType={isCenterPanelOpen ? "doubleArrowLeft" : "doubleArrowRight"}
                                                 aria-label="More"
@@ -255,7 +254,6 @@ function TabbedEditorComponent({
                                                 id={splitButtonPopoverId}
                                                 button={
                                                     <EuiButtonIcon
-                                                        display="base"
                                                         size="xs"
                                                         iconType="boxesVertical"
                                                         aria-label="More"
@@ -275,13 +273,55 @@ function TabbedEditorComponent({
                             </EuiFlexGroup>
                         </EuiFlexItem>
 
+                        {/*Divider bar*/}
                         <EuiFlexItem grow={false}>
                             <EuiPanel color="danger" paddingSize="none" style={{
-                                border: "0px solid red",
-                                height: "1px",
-                                color: "#CCC",
-                                backgroundColor: "#CCC"
+                                borderBottom: "1px solid #CCC",
+                                height: "1px"
                             }} />
+                        </EuiFlexItem>
+
+                        {/*Toolbar*/}
+                        <EuiFlexItem grow={false}>
+                            <EuiPanel color="danger" paddingSize="none"
+                                      hasShadow={false}
+                                      hasBorder={false}
+                                      borderRadius="none"
+                                      style={{
+                                          border: "0px solid red",
+                                          color: "#cfcfcf",
+                                          backgroundColor: "#F5F5F5",
+                                          borderBottom: "1px solid #CCC"
+                                      }}>
+
+                                <EuiFlexGroup responsive={false} gutterSize="xs"
+                                              style={{border: "0px solid green", marginLeft: "auto"}}>
+
+                                    {/*doubleArrowLeft doubleArrowRight*/}
+                                    <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
+
+                                        <EuiButtonIcon
+                                            title={toggle1On ? "Play" : "Pause"}
+                                            aria-label={toggle1On ? "Play" : "Pause"}
+                                            iconType={toggle1On ? "play" : "pause"}
+                                            onClick={() => {
+                                                setToggle1On((isOn) => !isOn)
+                                            }}
+                                            color={"success"}
+                                        />
+
+                                    </EuiFlexItem>
+                                    <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
+                                        <EuiButtonIcon
+                                            size="xs"
+                                            iconType="stop"
+                                            aria-label="Stop"
+                                            color={"danger"}
+                                        />
+                                    </EuiFlexItem>
+                                </EuiFlexGroup>
+
+                            </EuiPanel>
                         </EuiFlexItem>
 
                         <EuiFlexItem grow={true}
@@ -292,9 +332,12 @@ function TabbedEditorComponent({
                                          border: "0px solid red"
                                      }}>
 
+                            Session INFO : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
+                            <hr />
 
-                            Session Content : {sessions.map((session, index) => (<h1 key={session.id}>{session.name}</h1>))}
-                            <hr/>
+                            {activeSession?.editors.map((editor, key) => (
+                                <h1>Editor : {editor.name} : {editor.id}</h1>
+                            ))}
 
                             {selectedTabContent}
 
@@ -313,7 +356,7 @@ function TabbedEditorComponent({
                         flex: "1 1 auto",
                         overflow: "hidden"
                     }}>
-                        <div style={{backgroundColor:"#FFF", display: "flex", height: "75%", minHeight: "200px"}}>
+                        <div style={{backgroundColor: "#FFF", display: "flex", height: "75%", minHeight: "200px"}}>
 
                             <EuiFlexGroup gutterSize="none"
                                           responsive={false}
@@ -329,28 +372,28 @@ function TabbedEditorComponent({
                                 <EuiFlexItem grow={false}>
                                     <EuiTabs size={"s"} bottomBorder={false}>
                                         <EuiTab
-                                            key='ast'
+                                            key="ast"
                                             href={"#/"}
-                                            onClick={() => onSelectedSuperTabChanged('supertab-ast--id')}
-                                            isSelected={'supertab-ast--id' === selectedSuperTabId}
+                                            onClick={() => onSelectedSuperTabChanged("supertab-ast--id")}
+                                            isSelected={"supertab-ast--id" === selectedSuperTabId}
                                         >
-                                         Syntax Tree(AST)
+                                            Syntax Tree(AST)
                                         </EuiTab>
 
                                         <EuiTab
-                                            key='compiledjs'
+                                            key="compiledjs"
                                             href={"#/"}
-                                            onClick={() => onSelectedSuperTabChanged('supertab-compiledjs--id')}
-                                            isSelected={'supertab-compiledjs--id' === selectedSuperTabId}
+                                            onClick={() => onSelectedSuperTabChanged("supertab-compiledjs--id")}
+                                            isSelected={"supertab-compiledjs--id" === selectedSuperTabId}
                                         >
-                                         Generated Code
+                                            Generated Code
                                         </EuiTab>
 
                                         <EuiTab
-                                            key='supertab-optimized'
+                                            key="supertab-optimized"
                                             href={"#/"}
-                                            onClick={() => onSelectedSuperTabChanged('supertab-optimized--id')}
-                                            isSelected={'supertab-optimized--id' === selectedSuperTabId}
+                                            onClick={() => onSelectedSuperTabChanged("supertab-optimized--id")}
+                                            isSelected={"supertab-optimized--id" === selectedSuperTabId}
                                         >
                                             Job Graph / Optimizer
                                         </EuiTab>

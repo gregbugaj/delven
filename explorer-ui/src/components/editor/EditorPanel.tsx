@@ -1,4 +1,5 @@
-import React from "react"
+// import React from "react"
+import * as React from "react"
 
 import {
     EuiCollapsibleNavGroup,
@@ -11,6 +12,8 @@ import {
 
 import "../globalServices"
 import {SharedDeployPanel} from "../shared/SharedPanelContainer"
+import {useAppSelector} from "../../redux/hooks"
+import {selectActiveSession} from "../workspace/selectors"
 
 function EditorSidePanel({
                              isVisible,
@@ -18,6 +21,19 @@ function EditorSidePanel({
                          }: React.PropsWithChildren<{isVisible: boolean, label: string}>) {
 
     console.info(`EditorSidePanel visible : ${isVisible} : [${label}]`)
+
+    const activeSession = useAppSelector(selectActiveSession)
+    let editorItems = []
+    if (activeSession?.editors) {
+        let editors = activeSession.editors
+        for (let editor of editors) {
+            let node = {
+                label: `${editor.name} : ${editor.id}`, onClick: () => {
+                }
+            }
+            editorItems.push(node)
+        }
+    }
 
     return (
         <EuiPanel tabIndex={0}
@@ -32,19 +48,20 @@ function EditorSidePanel({
                     {/*<h1>View : {isVisible ? "show" : "hide"} : [{label}] : {Date.now()}</h1>*/}
                     <EuiCollapsibleNavGroup>
                         <EuiButton fill fullWidth iconType="plusInCircleFilled">
-                            New Tab
+                            Add
                         </EuiButton>
                     </EuiCollapsibleNavGroup>
-
                     <EuiCollapsibleNavGroup
                         title={
-                            <a
-                                className="eui-textInheritColor"
-                                href="#/editor"
-                                onClick={(e) => e.stopPropagation()}
-                            >
-                                <h1>Editor :: {label}</h1>
-                            </a>
+                            <>
+                                <a
+                                    className="eui-textInheritColor"
+                                    href="#/editor"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    Editors
+                                </a>
+                            </>
                         }
                         buttonElement="div"
                         iconType="logoKibana"
@@ -55,20 +72,7 @@ function EditorSidePanel({
                     >
                         <EuiListGroup
                             aria-label="Panel" // A11y : EuiCollapsibleNavGroup can't correctly pass the `title` as the `aria-label` to the right HTML element, so it must be added manually
-                            listItems={[
-                                {
-                                    label: "Discover", onClick: () => {
-                                    }
-                                },
-                                {
-                                    label: "Visualize", onClick: () => {
-                                    }
-                                },
-                                {
-                                    label: "Graph", onClick: () => {
-                                    }
-                                }
-                            ]}
+                            listItems={editorItems}
                             maxWidth="none"
                             color="subdued"
                             gutterSize="none"

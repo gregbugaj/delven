@@ -76,7 +76,6 @@ const SessionItem = React.memo(function({id}: React.PropsWithChildren<{id: strin
                               "aria-label": `Remove session : ${session.id}`,
                               alwaysShow: true
                           }}
-
         />
     )
 })

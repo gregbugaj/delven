@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useCallback} from "react"
 import {name, actions, reducer, ISession} from "./slice"
-import {useAppDispatch, useAppSelector} from "../../redux/hooks"
+import {useAppDispatch, useAppSelector} from "../../src/redux/hooks"
 import {makeSelectSessions, selectCount} from "./selectors"
 import {shallowEqual} from "react-redux"
 

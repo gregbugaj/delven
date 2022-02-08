@@ -31,7 +31,7 @@ export type ISession = {
 // The initial state of the component
 export const initialState = {
     sessions: [] as ISession[],
-    activeSessionId: "",
+    activeSessionId: null,
     loading: false,
     error: false
 }
@@ -95,15 +95,16 @@ const slice = createSlice({
          */
         fetch: (state, payload) => {
             console.info("fetch")
-            state.loading = true
-            state.error = false
             try {
+                state.loading = true
+                state.error = false
                 state.sessions = JSON.parse(String(localStorage.getItem(key)))
             } catch (e) {
                 state.error = true
                 console.error(e)
+            } finally {
+                state.loading = false
             }
-            state.loading = false
         },
 
         /**

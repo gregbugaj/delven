@@ -10,7 +10,7 @@ import {Provider} from "react-redux";
 
 import './index.css';
 import {store} from "./redux/store";
-import Session, { HeaderTimer } from './components/session/session.component';
+import Session, { HeaderTimer } from '../examples/session/session.component';
 
 import App from './App';
 
