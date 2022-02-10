@@ -163,7 +163,8 @@ https://codesandbox.io/s/l4oqzp5z1q?fontsize=14&file=/src/index.js
 
 https://github.com/uiwjs/react-md-editor/tree/master/src/commands
 
-
+Add codicon
+https://microsoft.github.io/vscode-codicons/dist/codicon.html
 
 Notes :
 
