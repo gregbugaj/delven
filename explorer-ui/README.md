@@ -158,7 +158,7 @@ https://emscripten.org/
 
 https://tatiyants.com/pev/#/plans/plan_1617915061062
 
-Good callback example
+Good callback/memoize example
 https://codesandbox.io/s/l4oqzp5z1q?fontsize=14&file=/src/index.js
 
 https://github.com/uiwjs/react-md-editor/tree/master/src/commands
