@@ -166,53 +166,6 @@ https://github.com/uiwjs/react-md-editor/tree/master/src/commands
 Add codicon
 https://microsoft.github.io/vscode-codicons/dist/codicon.html
 
-Notes :
 
-export const SidenavWithContent = ({ button = <></>, content }) => (
-  <EuiPageTemplate fullHeight template="empty" restrictWidth={false} paddingSize='none'> 
-    <EuiFlexGroup
-      className="eui-fullHeight"
-      gutterSize="none"
-      direction="column"
-      responsive={false}
-    >
-
-      {/* <EuiFlexItem grow={false}>
-        <EuiPanel color="danger" >
-          TOP Panel
-        </EuiPanel>
-      </EuiFlexItem> 
-
-      <EuiSpacer size="l" />
-
-      */}
-
-      <EuiFlexItem className="eui-fullHeight">
-        <EuiFlexGroup className="eui-fullHeight" gutterSize="l">
-
-          <EuiFlexItem grow={false}>
-            <EuiPanel tabIndex={0} className="eui-" hasShadow={false} style={{background:'red', width:60}}>
-              {content}
-            </EuiPanel>
-          </EuiFlexItem>
-
-          <EuiFlexItem grow={2}>
-            <EuiPanel tabIndex={0} className="eui-yScroll" hasShadow={false}>
-              {content}
-              {content}
-              {content}
-            </EuiPanel>
-          </EuiFlexItem>
-
-
-          <EuiFlexItem>
-            <EuiPanel hasShadow={false}>
-              {button}
-            </EuiPanel>
-          </EuiFlexItem>
-
-        </EuiFlexGroup>
-      </EuiFlexItem>
-    </EuiFlexGroup>
-  </EuiPageTemplate>
-);
+UI components
+Konva.js - HTML5 2d canvas js library for desktop and mobile applications
