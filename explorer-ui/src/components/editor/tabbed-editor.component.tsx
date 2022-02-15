@@ -161,8 +161,8 @@ function TabbedEditorComponent({
     const leftPanelId = useGeneratedHtmlId({prefix: "splitPanelLeft"})
     const rightPanelId = useGeneratedHtmlId({prefix: "splitPanelRight"})
 
-    const leftPanelRef = React.createRef<HTMLDivElement>(null)
-    const rightPanelRef = React.createRef<HTMLDivElement>(null)
+    const leftPanelRef = React.createRef<HTMLDivElement>()
+    const rightPanelRef = React.createRef<HTMLDivElement>()
 
     const onExpandCollapseButtonClick = () => {
         setCenterPanelOpen(!isCenterPanelOpen)
@@ -209,161 +209,151 @@ function TabbedEditorComponent({
     const activeSession = useAppSelector(selectActiveSession)
 
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
+
+
     return (
         <>
-            <div style={{display: "flex", width: "100%", height: "25%"}} className="eui-fullHeight">
-                <div id={leftPanelId} ref={leftPanelRef} style={{display: "flex", width: "50%", minWidth: "200px"}}>
+            <div style={{display: "flex", flexDirection: "column", width: "100%", border: "0px solid red", backgroundColor:"#FFF"}} className="eui-fullHeight">
+                <div style={{display: "flex", flex: "1 1 auto", width: "100%", border: "0px solid blue" , height: "70%", minHeight: "30%", }}>
+                    <div id={leftPanelId} ref={leftPanelRef} className="panel_main" style={{display: "flex", width: "50%", minWidth: "200px"}} >
 
-                    <EuiFlexGroup
-                        style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid green"}}
-                        gutterSize="none"
-                        direction="column"
-                    >
+                        <EuiFlexGroup
+                            style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid green"}}
+                            gutterSize="none"
+                            direction="column"
+                        >
 
-                        <EuiFlexItem grow={false}>
-                            <EuiFlexGroup gutterSize="none"
-                                          responsive={false}
+                            <EuiFlexItem grow={false}>
+                                <EuiFlexGroup gutterSize="none"
+                                              responsive={false}
+                                              style={{
+                                                  background: "#FFF",
+                                                  paddingRight: "8px",
+                                                  margin: "0px",
+                                                  border: "0px solid red"
+                                              }}>
+
+                                    <EuiFlexItem grow={true}>
+                                        <EuiTabs size={"s"} bottomBorder={false}>{renderTabs()}</EuiTabs>
+                                    </EuiFlexItem>
+
+                                    <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue"}}>
+                                        {/*marginLeft: Floats the items to the right of the container*/}
+                                        <EuiFlexGroup responsive={false} gutterSize="xs"
+                                                      style={{border: "0px solid green", marginLeft: "auto"}}>
+
+                                            <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
+                                                <EuiButtonIcon
+                                                    size="xs"
+                                                    iconType={isCenterPanelOpen ? "arrowLeft" : "arrowRight"}
+                                                    aria-label="More"
+                                                    onClick={onExpandCollapseButtonClick}
+                                                />
+                                            </EuiFlexItem>
+                                            <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
+                                                <EuiPopover
+                                                    id={splitButtonPopoverId}
+                                                    button={
+                                                        <EuiButtonIcon
+                                                            size="xs"
+                                                            iconType="boxesVertical"
+                                                            aria-label="More"
+                                                            onClick={onButtonClick}
+                                                        />
+                                                    }
+                                                    isOpen={isPopoverOpen}
+                                                    closePopover={closePopover}
+                                                    panelPaddingSize="none"
+                                                    anchorPosition="downLeft"
+                                                >
+                                                    <EuiContextMenuPanel size="s" items={items} />
+                                                </EuiPopover>
+                                            </EuiFlexItem>
+                                        </EuiFlexGroup>
+                                    </EuiFlexItem>
+                                </EuiFlexGroup>
+                            </EuiFlexItem>
+
+                            {/*Divider bar*/}
+                            <EuiFlexItem grow={false}>
+                                <EuiPanel color="danger" paddingSize="none" style={{
+                                    borderBottom: "1px solid #CCC",
+                                    height: "1px"
+                                }} />
+                            </EuiFlexItem>
+
+                            {/*Toolbar*/}
+                            <EuiFlexItem grow={false}>
+                                <EuiPanel color="danger" paddingSize="none"
+                                          hasShadow={false}
+                                          hasBorder={false}
+                                          borderRadius="none"
                                           style={{
-                                              background: "#FFF",
-                                              paddingTop: "8px",
-                                              paddingRight: "8px",
-                                              margin: "0px",
-                                              border: "0px solid red"
+                                              border: "0px solid red",
+                                              color: "#cfcfcf",
+                                              backgroundColor: "#F5F5F5",
+                                              borderBottom: "1px solid #CCC"
                                           }}>
 
-                                <EuiFlexItem grow={true}>
-                                    <EuiTabs size={"s"} bottomBorder={false}>{renderTabs()}</EuiTabs>
-                                </EuiFlexItem>
-
-                                <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue"}}>
-                                    {/*marginLeft: Floats the items to the right of the container*/}
                                     <EuiFlexGroup responsive={false} gutterSize="xs"
                                                   style={{border: "0px solid green", marginLeft: "auto"}}>
 
                                         {/*doubleArrowLeft doubleArrowRight*/}
                                         <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
+
                                             <EuiButtonIcon
-                                                size="xs"
-                                                iconType={isCenterPanelOpen ? "doubleArrowLeft" : "doubleArrowRight"}
-                                                aria-label="More"
-                                                onClick={onExpandCollapseButtonClick}
+                                                title={toggle1On ? "Play" : "Pause"}
+                                                aria-label={toggle1On ? "Play" : "Pause"}
+                                                iconType={toggle1On ? "play" : "pause"}
+                                                onClick={() => {
+                                                    setToggle1On((isOn) => !isOn)
+                                                }}
+                                                color={"success"}
                                             />
+
                                         </EuiFlexItem>
                                         <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
-                                            <EuiPopover
-                                                id={splitButtonPopoverId}
-                                                button={
-                                                    <EuiButtonIcon
-                                                        size="xs"
-                                                        iconType="boxesVertical"
-                                                        aria-label="More"
-                                                        onClick={onButtonClick}
-                                                    />
-                                                }
-                                                isOpen={isPopoverOpen}
-                                                closePopover={closePopover}
-                                                panelPaddingSize="none"
-                                                anchorPosition="downLeft"
-                                            >
-                                                <EuiContextMenuPanel size="s" items={items} />
-                                            </EuiPopover>
+                                            <EuiButtonIcon
+                                                size="xs"
+                                                iconType="stop"
+                                                aria-label="Stop"
+                                                color={"danger"}
+                                            />
                                         </EuiFlexItem>
                                     </EuiFlexGroup>
-                                </EuiFlexItem>
-                            </EuiFlexGroup>
-                        </EuiFlexItem>
 
-                        {/*Divider bar*/}
-                        <EuiFlexItem grow={false}>
-                            <EuiPanel color="danger" paddingSize="none" style={{
-                                borderBottom: "1px solid #CCC",
-                                height: "1px"
-                            }} />
-                        </EuiFlexItem>
+                                </EuiPanel>
+                            </EuiFlexItem>
 
-                        {/*Toolbar*/}
-                        <EuiFlexItem grow={false}>
-                            <EuiPanel color="danger" paddingSize="none"
-                                      hasShadow={false}
-                                      hasBorder={false}
-                                      borderRadius="none"
-                                      style={{
-                                          border: "0px solid red",
-                                          color: "#cfcfcf",
-                                          backgroundColor: "#F5F5F5",
-                                          borderBottom: "1px solid #CCC"
-                                      }}>
+                            <EuiFlexItem grow={true}>
+                                Session INFO : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
+                                <hr />
+                                {activeSession?.editors.map((editor, key) => (
+                                    <h1>Editor : {editor.name} : {editor.id}</h1>
+                                ))}
 
-                                <EuiFlexGroup responsive={false} gutterSize="xs"
-                                              style={{border: "0px solid green", marginLeft: "auto"}}>
+                                {selectedTabContent}
+                            </EuiFlexItem>
+                        </EuiFlexGroup>
+                    </div>
 
-                                    {/*doubleArrowLeft doubleArrowRight*/}
-                                    <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
+                    <ResizableDivider direction="horizontal" />
 
-                                        <EuiButtonIcon
-                                            title={toggle1On ? "Play" : "Pause"}
-                                            aria-label={toggle1On ? "Play" : "Pause"}
-                                            iconType={toggle1On ? "play" : "pause"}
-                                            onClick={() => {
-                                                setToggle1On((isOn) => !isOn)
-                                            }}
-                                            color={"success"}
-                                        />
+                    <div id={rightPanelId} ref={rightPanelRef}  style={{display: "flex", width: "50%", minWidth: "200px"}}>
 
-                                    </EuiFlexItem>
-                                    <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
-                                        <EuiButtonIcon
-                                            size="xs"
-                                            iconType="stop"
-                                            aria-label="Stop"
-                                            color={"danger"}
-                                        />
-                                    </EuiFlexItem>
-                                </EuiFlexGroup>
-
-                            </EuiPanel>
-                        </EuiFlexItem>
-
-                        <EuiFlexItem grow={true}
-                                     style={{
-                                         background: "#FFF",
-                                         padding: "0px",
-                                         margin: "0px",
-                                         border: "0px solid red"
-                                     }}>
-
-                            Session INFO : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
-                            <hr />
-
-                            {activeSession?.editors.map((editor, key) => (
-                                <h1>Editor : {editor.name} : {editor.id}</h1>
-                            ))}
-
-                            {selectedTabContent}
-
-                        </EuiFlexItem>
-                    </EuiFlexGroup>
-                </div>
-
-                <ResizableDivider direction="horizontal" />
-
-                <div id={rightPanelId} ref={rightPanelRef} style={{display: "flex", width: "50%", minWidth: "200px"}}>
-
-                    <div style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        width: "100%",
-                        flex: "1 1 auto",
-                        overflow: "hidden"
-                    }}>
-                        <div style={{backgroundColor: "#FFF", display: "flex", height: "75%", minHeight: "200px"}}>
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            width: "100%",
+                            flex: "1 1 auto",
+                            overflow: "hidden"
+                        }}>
 
                             <EuiFlexGroup gutterSize="none"
                                           responsive={false}
                                           direction={"column"}
                                           style={{
                                               background: "#FFF",
-                                              paddingTop: "8px",
                                               paddingRight: "8px",
                                               margin: "0px",
                                               border: "0px solid red"
@@ -412,17 +402,67 @@ function TabbedEditorComponent({
                                 <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue"}}>
                                     <p>Tab {selectedTabId} :: {selectedSuperTabId} </p>
                                 </EuiFlexItem>
-
                             </EuiFlexGroup>
-
-                        </div>
-
-                        <ResizableDivider direction="vertical" />
-
-                        <div style={{display: "flex", height: "25%", minHeight: "120px"}}>
-                            Console terminal
                         </div>
                     </div>
+                </div>
+
+                <ResizableDivider direction="vertical" />
+
+                <div style={{display: "flex", flex: "1 1 auto", width: "100%", height: "30%", border: "0px solid green"}} className="panel_bottom">
+                    <EuiFlexGroup
+                        style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid green"}}
+                        gutterSize="none"
+                        direction="column"
+                    >
+
+                        <EuiFlexItem grow={false} style={{
+                            backgroundColor: "#f5f5f5",
+                            borderBottom: "1px solid #CCC",
+                        }}>
+                            <EuiFlexGroup gutterSize="none"
+                                          responsive={false}
+                                          style={{
+                                              paddingTop: "0px",
+                                              paddingRight: "8px",
+                                              paddingLeft: "8px",
+                                              margin: "0px",
+                                              border: "0px solid red",
+                                          }}>
+
+                                <EuiFlexItem grow={true}>
+                                    <strong>Console</strong>
+                                </EuiFlexItem>
+
+                                <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue", margin: "0px"}}>
+
+                                    {/*marginLeft: Floats the items to the right of the container*/}
+                                    <EuiFlexGroup responsive={false}
+                                                  style={{border: "0px solid green", marginLeft: "auto"}}>
+
+                                        <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
+                                            <EuiButtonIcon
+                                                size="xs"
+                                                // style={{height:"12px"}}
+                                                iconType={isCenterPanelOpen ? "arrowDown" : "arrowUp"}
+                                                aria-label="More"
+                                                onClick={onExpandCollapseButtonClick}
+                                            />
+                                        </EuiFlexItem>
+                                    </EuiFlexGroup>
+                                </EuiFlexItem>
+                            </EuiFlexGroup>
+                        </EuiFlexItem>
+
+
+                        <EuiFlexItem grow={true} >
+                            Console Session INFO : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
+                            {activeSession?.editors.map((editor, key) => (
+                                <h1>Editor : {editor.name} : {editor.id}</h1>
+                            ))}
+
+                        </EuiFlexItem>
+                    </EuiFlexGroup>
                 </div>
             </div>
         </>
@@ -430,6 +470,19 @@ function TabbedEditorComponent({
 }
 
 export default React.memo(TabbedEditorComponent)
+
+/*
+
+    <div style={{backgroundColor: "#FFF", display: "flex", height: "75%", minHeight: "200px"}}>
+
+    </div>
+
+    <ResizableDivider direction="vertical" />
+
+    <div style={{display: "flex", height: "25%", minHeight: "120px"}}>
+        Console terminal
+    </div>
+ */
 
 
 /*
