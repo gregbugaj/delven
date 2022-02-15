@@ -387,6 +387,16 @@ function TabbedEditorComponent({
                                         >
                                             Job Graph / Optimizer
                                         </EuiTab>
+
+                                        <EuiTab
+                                            key="supertab-execution"
+                                            href={"#/"}
+                                            onClick={() => onSelectedSuperTabChanged("supertab-execution--id")}
+                                            isSelected={"supertab-execution--id" === selectedSuperTabId}
+                                        >
+                                            Execution
+                                        </EuiTab>
+
                                     </EuiTabs>
                                 </EuiFlexItem>
 
@@ -431,7 +441,7 @@ function TabbedEditorComponent({
                                           }}>
 
                                 <EuiFlexItem grow={true}>
-                                    <strong>Console</strong>
+                                    <strong>Terminal</strong>
                                 </EuiFlexItem>
 
                                 <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue", margin: "0px"}}>
