@@ -1,8 +1,6 @@
 import {createSelector} from "@reduxjs/toolkit"
 import {name, initialState} from "./slice"
-import {Exception} from "sass"
 
-// createSelector
 // createSelector creates memoized selector functions that only recalculate the output if the inputs change.
 // https://stackoverflow.com/questions/63493433/confusion-about-useselector-and-createselector-with-redux-toolkit
 

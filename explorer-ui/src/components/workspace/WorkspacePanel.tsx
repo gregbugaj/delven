@@ -1,4 +1,6 @@
-import React, {useCallback, useContext, useEffect} from "react"
+import {useCallback, useContext, useEffect} from "react"
+import * as React from "react"
+
 import {
     EuiCollapsibleNavGroup,
     EuiButton,
@@ -9,12 +11,14 @@ import {
     EuiListGroupItem, EuiButtonIcon
 } from "@elastic/eui"
 
-import "../globalServices"
 import {SharedDeployPanel} from "../shared/SharedPanelContainer"
 import {useAppDispatch, useAppSelector} from "../../redux/hooks"
 import {makeSelectSessions} from "./selectors"
 import {shallowEqual} from "react-redux"
 import {actions, ISession} from "./slice"
+
+import '../globalServices';
+console.info(globalThis.services)
 
 // https://react-redux.js.org/api/hooks
 
@@ -31,7 +35,6 @@ export function useSessions({limit = 100}) {
 
     return store
 }
-
 
 const SessionItem = React.memo(function({id}: React.PropsWithChildren<{id: string}>) {
     console.info(`Session item : ${id}`)
@@ -59,7 +62,7 @@ const SessionItem = React.memo(function({id}: React.PropsWithChildren<{id: strin
         return <></>
     }
 
-    let label = `${Date.now()} - ${session.name}`
+    const label = `${Date.now()} - ${session.name}`
     return (
         <EuiListGroupItem href="#" label={label} color="text" onClick={() => {
             console.info(`Group item exec : ${session.id}`)

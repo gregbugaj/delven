@@ -12,7 +12,6 @@
  *
  */
 import {createSlice} from "@reduxjs/toolkit"
-import {string} from "prop-types"
 
 const key = "sessions"
 
@@ -53,13 +52,19 @@ let mockSession = (): ISession => {
             {
                 id: `${gen()}`,
                 name: "Editor 02"
+            }, {
+                id: `${gen()}`,
+                name: "Editor 03"
+            }, {
+                id: `${gen()}`,
+                name: "Editor 04"
             }
         ]
     }
 }
 
 if (false) {
-    let sessions = [mockSession(), mockSession(), mockSession()]
+    let sessions = [mockSession(), mockSession(), mockSession(), mockSession()]
     localStorage.setItem(key, JSON.stringify(sessions))
 }
 //

@@ -2,12 +2,10 @@ import {useState, Fragment, useMemo} from "react"
 import * as React from "react"
 
 import {
-    EuiButton,
     EuiButtonIcon,
     EuiFlexGroup,
     EuiFlexItem,
     EuiPanel,
-    EuiResizableContainer,
     useGeneratedHtmlId,
     EuiContextMenuItem,
     EuiContextMenuPanel,
@@ -15,15 +13,12 @@ import {
     EuiIcon,
     EuiTabs,
     EuiTab,
-    EuiSpacer,
-    EuiText,
-    EuiNotificationBadge
 } from "@elastic/eui"
 
 import "../globalServices"
 import ResizableDivider from "../explorer/ResizableDivider"
 import styled from "styled-components"
-import {ISession} from "../workspace/slice"
+import {IEditor, ISession} from "../workspace/slice"
 import {useSessions} from "../workspace/WorkspacePanel"
 import {useAppDispatch, useAppSelector} from "../../redux/hooks"
 import {selectActiveSession} from "../workspace/selectors"
@@ -34,102 +29,48 @@ const XComponent = styled.div`
     border-radius: 50%;
   }
 `
+// Custom styling of the tabs
+const EuiTabStyled = styled(EuiTab)`
+{
+  color: red;
+}
+`
+console.info(globalThis.services)
 
-const tabs = [
-    {
-        id: "cobalt--id",
-        name: "Cobalt",
-        content: (
-            <Fragment>
-                <EuiText>
-                    <p>
-                        Cobalt is a chemical element with symbol Co and atomic number 27.
-                        Like nickel, cobalt is found in the Earth&rsquo;s crust only in
-                        chemically combined form, save for small deposits found in alloys of
-                        natural meteoric iron. The free element, produced by reductive
-                        smelting, is a hard, lustrous, silver-gray metal.
-                    </p>
-                </EuiText>
-            </Fragment>
-        )
-    },
-    {
-        id: "dextrose--id",
-        name: "Dextrose",
-        content: (
-            <Fragment>
-                <EuiText>
-                    <p>
-                        Intravenous sugar solution, also known as dextrose solution, is a
-                        mixture of dextrose (glucose) and water. It is used to treat low
-                        blood sugar or water loss without electrolyte loss.
-                    </p>
-                </EuiText>
-            </Fragment>
-        )
-    },
-    {
-        id: "hydrogen--id",
-        disabled: false,
-        name: "Hydrogen",
-        prepend: <EuiIcon type="heatmap" />,
-        content: (
-            <Fragment>
-                <EuiText>
-                    <p>
-                        Hydrogen is a chemical element with symbol H and atomic number 1.
-                        With a standard atomic weight of 1.008, hydrogen is the lightest
-                        element on the periodic table
-                    </p>
-                </EuiText>
-            </Fragment>
-        )
-    },
-    {
-        id: "sample-script-001--id",
-        name: "Sample Script",
-        append: (
-            <XComponent>
-                <EuiIcon type="cross" size="s" onClick={() => {
-                }} />
-            </XComponent>
-        ),
-        href: "#/navigation/tabs#monosodium",
-        content: (
-            <Fragment>
-                <EuiSpacer />
-                <EuiText>
-                    <p>
-                        Monosodium glutamate (MSG, also known as sodium glutamate) is the
-                        sodium salt of glutamic acid, one of the most abundant naturally
-                        occurring non-essential amino acids. Monosodium glutamate is found
-                        naturally in tomatoes, cheese and other foods.
-                    </p>
-                </EuiText>
-            </Fragment>
-        )
-    }
-]
+const EditorTabs = React.memo(() => {
+    const [selectedTabId, setSelectedTabId] = useState("editor-01--id")
+    const activeSession = useAppSelector(selectActiveSession)
+    const editors = activeSession?.editors as IEditor[]
+    const tabs = []
 
-function TabbedEditorComponent({
-                                   isVisible,
-                                   label
-                               }: React.PropsWithChildren<{isVisible: boolean, label: string}>) {
-
-    console.info(`Tabbed Component visible`)
-
-    const [selectedSuperTabId, setSelectedSuperTabId] = useState("supertab-ast--id")
-
-    const onSelectedSuperTabChanged = (id: string) => {
-        setSelectedSuperTabId(id)
+    if (!activeSession?.editors) {
+        return (<></>)
     }
 
+    for (const editor of editors) {
+        const tab = {
+            id: `editor-${editor.id}--id`,
+            name: `${editor.name} - ${editor.id}`,
+            append: (
+                <XComponent>
+                    <EuiIcon type="cross" size="s" onClick={() => {
+                        console.info(`Closing tab : ${editor.id}`)
+                    }} />
+                </XComponent>
+            ),
+            prepend: (<></>),
+            disabled: false,
+            href: `#/editor-${editor.id}#`,
+            content: (
+                <> Default </>
+            )
+        }
+        tabs.push(tab)
+    }
 
-    const [selectedTabId, setSelectedTabId] = useState("cobalt--id")
-
-    const selectedTabContent = useMemo(() => {
-        return tabs.find((obj) => obj.id === selectedTabId)?.content
-    }, [selectedTabId])
+    // const selectedTabContent = useMemo(() => {
+    //     return tabs.find((obj) => obj.id === selectedTabId)?.content
+    // }, [selectedTabId])
 
     const onSelectedTabChanged = (id: string) => {
         setSelectedTabId(id)
@@ -137,9 +78,9 @@ function TabbedEditorComponent({
 
     const renderTabs = () => {
         return tabs.map((tab, index) => (
-            <EuiTab
+            <EuiTabStyled
                 key={index}
-                href={tab.href}
+                // href={tab.href}
                 onClick={() => onSelectedTabChanged(tab.id)}
                 isSelected={tab.id === selectedTabId}
                 disabled={tab.disabled}
@@ -147,12 +88,40 @@ function TabbedEditorComponent({
                 append={tab.append}
             >
                 {tab.name}
-            </EuiTab>
+            </EuiTabStyled>
         ))
     }
 
+
+    return (
+        <>
+            <div>AA $: {Date.now()}</div>
+            <EuiTabs size={"s"} bottomBorder={false} style={{lineHeight: "px"}}>{renderTabs()}</EuiTabs>
+        </>
+    )
+})
+
+
+function TabbedEditorComponent({
+                                   isVisible,
+                                   label
+                               }: React.PropsWithChildren<{isVisible: boolean, label: string}>) {
+
+    console.info(`Tabbed Component visible : ${isVisible}`)
+
+    const [selectedSuperTabId, setSelectedSuperTabId] = useState("supertab-ast--id")
+
+    const onSelectedSuperTabChanged = (id: string) => {
+        setSelectedSuperTabId(id)
+    }
+
     const [isPopoverOpen, setPopover] = useState(false)
+
     const [isCenterPanelOpen, setCenterPanelOpen] = useState(false)
+    const [centerPanelState, setCenterPanelState] = useState({lhs: "50%", rhs: "50%"})
+
+    const [isBottomPanelOpen, setBottomPanelOpen] = useState(false)
+    const [bottomPanelState, setBottomPanelState] = useState({top: "70%", bottom: "30%"})
 
     const splitButtonPopoverId = useGeneratedHtmlId({
         prefix: "splitButtonPopover"
@@ -161,27 +130,51 @@ function TabbedEditorComponent({
     const leftPanelId = useGeneratedHtmlId({prefix: "splitPanelLeft"})
     const rightPanelId = useGeneratedHtmlId({prefix: "splitPanelRight"})
 
+    const topPanelRef = React.createRef<HTMLDivElement>()
+    const bottomPanelRef = React.createRef<HTMLDivElement>()
+
     const leftPanelRef = React.createRef<HTMLDivElement>()
     const rightPanelRef = React.createRef<HTMLDivElement>()
 
-    const onExpandCollapseButtonClick = () => {
-        setCenterPanelOpen(!isCenterPanelOpen)
-
+    const onExpandCollapseMainPanelClick = () => {
         const lhs = leftPanelRef.current
         const rhs = rightPanelRef.current
-
         if (!lhs || !rhs) {
             return
         }
 
+        setCenterPanelOpen(!isCenterPanelOpen)
+        setCenterPanelState({lhs: lhs.style.width, rhs: rhs.style.width})
+
         if (isCenterPanelOpen) {
-            lhs.style.width = "50%"
-            rhs.style.width = "50%"
+            lhs.style.width = centerPanelState.lhs //"50%"
+            rhs.style.width = centerPanelState.rhs //"50%"
             rhs.style.display = "flex"
         } else {
             lhs.style.width = "100%"
             rhs.style.width = "0%"
             rhs.style.display = "none"
+        }
+    }
+
+    const onExpandCollapseBottomPanelClick = () => {
+        const top = topPanelRef.current
+        const bottom = bottomPanelRef.current
+        if (!top || !bottom) {
+            return
+        }
+
+        setBottomPanelOpen(!isBottomPanelOpen)
+        setBottomPanelState({top: top.style.height, bottom: bottom.style.height})
+
+        if (isBottomPanelOpen) {
+            top.style.height = bottomPanelState.top
+            bottom.style.height = bottomPanelState.bottom
+            bottom.style.display = "flex"
+        } else {
+            top.style.height = "100%"
+            bottom.style.height = "0%"
+            bottom.style.minHeight = "24px"
         }
     }
 
@@ -210,12 +203,27 @@ function TabbedEditorComponent({
 
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
 
-
     return (
         <>
-            <div style={{display: "flex", flexDirection: "column", width: "100%", border: "0px solid red", backgroundColor:"#FFF"}} className="eui-fullHeight">
-                <div style={{display: "flex", flex: "1 1 auto", width: "100%", border: "0px solid blue" , height: "70%", minHeight: "30%", }}>
-                    <div id={leftPanelId} ref={leftPanelRef} className="panel_main" style={{display: "flex", width: "50%", minWidth: "200px"}} >
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                border: "0px solid red",
+                backgroundColor: "#FFF"
+            }} className="eui-fullHeight">
+
+
+                <div ref={topPanelRef} className="panel_top" style={{
+                    display: "flex",
+                    flex: "1 1 auto",
+                    width: "100%",
+                    border: "0px solid blue",
+                    height: "70%",
+                    minHeight: "30%"
+                }}>
+                    <div id={leftPanelId} ref={leftPanelRef} className="panel_main"
+                         style={{display: "flex", width: "50%", minWidth: "200px"}}>
 
                         <EuiFlexGroup
                             style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid green"}}
@@ -223,7 +231,7 @@ function TabbedEditorComponent({
                             direction="column"
                         >
 
-                            <EuiFlexItem grow={false}>
+                            <EuiFlexItem grow={false} style={{borderBottom: "1px solid #CCC"}}>
                                 <EuiFlexGroup gutterSize="none"
                                               responsive={false}
                                               style={{
@@ -234,7 +242,7 @@ function TabbedEditorComponent({
                                               }}>
 
                                     <EuiFlexItem grow={true}>
-                                        <EuiTabs size={"s"} bottomBorder={false}>{renderTabs()}</EuiTabs>
+                                        <EditorTabs />
                                     </EuiFlexItem>
 
                                     <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue"}}>
@@ -247,7 +255,7 @@ function TabbedEditorComponent({
                                                     size="xs"
                                                     iconType={isCenterPanelOpen ? "arrowLeft" : "arrowRight"}
                                                     aria-label="More"
-                                                    onClick={onExpandCollapseButtonClick}
+                                                    onClick={onExpandCollapseMainPanelClick}
                                                 />
                                             </EuiFlexItem>
                                             <EuiFlexItem grow={false} style={{border: "0px solid red"}}>
@@ -272,14 +280,6 @@ function TabbedEditorComponent({
                                         </EuiFlexGroup>
                                     </EuiFlexItem>
                                 </EuiFlexGroup>
-                            </EuiFlexItem>
-
-                            {/*Divider bar*/}
-                            <EuiFlexItem grow={false}>
-                                <EuiPanel color="danger" paddingSize="none" style={{
-                                    borderBottom: "1px solid #CCC",
-                                    height: "1px"
-                                }} />
                             </EuiFlexItem>
 
                             {/*Toolbar*/}
@@ -326,20 +326,21 @@ function TabbedEditorComponent({
                             </EuiFlexItem>
 
                             <EuiFlexItem grow={true}>
-                                Session INFO : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
+                                Session INFO : {Date.now()} : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
                                 <hr />
                                 {activeSession?.editors.map((editor, key) => (
                                     <h1>Editor : {editor.name} : {editor.id}</h1>
                                 ))}
 
-                                {selectedTabContent}
+                                {/*{selectedTabContent}*/}
                             </EuiFlexItem>
                         </EuiFlexGroup>
                     </div>
 
                     <ResizableDivider direction="horizontal" />
 
-                    <div id={rightPanelId} ref={rightPanelRef}  style={{display: "flex", width: "50%", minWidth: "200px"}}>
+                    <div id={rightPanelId} ref={rightPanelRef}
+                         style={{display: "flex", width: "50%", minWidth: "200px"}}>
 
                         <div style={{
                             display: "flex",
@@ -359,7 +360,7 @@ function TabbedEditorComponent({
                                               border: "0px solid red"
                                           }}>
 
-                                <EuiFlexItem grow={false}>
+                                <EuiFlexItem grow={false} style={{borderBottom: "1px solid #CCC"}}>
                                     <EuiTabs size={"s"} bottomBorder={false}>
                                         <EuiTab
                                             key="ast"
@@ -400,17 +401,8 @@ function TabbedEditorComponent({
                                     </EuiTabs>
                                 </EuiFlexItem>
 
-                                <EuiFlexItem grow={false}>
-                                    <EuiPanel color="danger" paddingSize="none" style={{
-                                        border: "0px solid red",
-                                        height: "1px",
-                                        color: "#CCC",
-                                        backgroundColor: "#CCC"
-                                    }} />
-                                </EuiFlexItem>
-
                                 <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue"}}>
-                                    <p>Tab {selectedTabId} :: {selectedSuperTabId} </p>
+                                    <p>Tab : {Date.now()}: {selectedSuperTabId} </p>
                                 </EuiFlexItem>
                             </EuiFlexGroup>
                         </div>
@@ -419,7 +411,15 @@ function TabbedEditorComponent({
 
                 <ResizableDivider direction="vertical" />
 
-                <div style={{display: "flex", flex: "1 1 auto", width: "100%", height: "30%", border: "0px solid green"}} className="panel_bottom">
+                <div ref={bottomPanelRef}
+                     style={{
+                         display: "flex",
+                         flex: "1 1 auto",
+                         width: "100%",
+                         height: "30%",
+                         border: "0px solid green"
+                     }}
+                     className="panel_bottom">
                     <EuiFlexGroup
                         style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid green"}}
                         gutterSize="none"
@@ -428,7 +428,7 @@ function TabbedEditorComponent({
 
                         <EuiFlexItem grow={false} style={{
                             backgroundColor: "#f5f5f5",
-                            borderBottom: "1px solid #CCC",
+                            borderBottom: "1px solid #CCC"
                         }}>
                             <EuiFlexGroup gutterSize="none"
                                           responsive={false}
@@ -437,14 +437,15 @@ function TabbedEditorComponent({
                                               paddingRight: "8px",
                                               paddingLeft: "8px",
                                               margin: "0px",
-                                              border: "0px solid red",
+                                              border: "0px solid red"
                                           }}>
 
                                 <EuiFlexItem grow={true}>
                                     <strong>Terminal</strong>
                                 </EuiFlexItem>
 
-                                <EuiFlexItem grow={false} style={{minWidth: "180px", border: "0px solid blue", margin: "0px"}}>
+                                <EuiFlexItem grow={false}
+                                             style={{minWidth: "180px", border: "0px solid blue", margin: "0px"}}>
 
                                     {/*marginLeft: Floats the items to the right of the container*/}
                                     <EuiFlexGroup responsive={false}
@@ -454,9 +455,9 @@ function TabbedEditorComponent({
                                             <EuiButtonIcon
                                                 size="xs"
                                                 // style={{height:"12px"}}
-                                                iconType={isCenterPanelOpen ? "arrowDown" : "arrowUp"}
-                                                aria-label="More"
-                                                onClick={onExpandCollapseButtonClick}
+                                                iconType={isBottomPanelOpen ? "arrowDown" : "arrowUp"}
+                                                aria-label="Collapse"
+                                                onClick={onExpandCollapseBottomPanelClick}
                                             />
                                         </EuiFlexItem>
                                     </EuiFlexGroup>
@@ -465,8 +466,8 @@ function TabbedEditorComponent({
                         </EuiFlexItem>
 
 
-                        <EuiFlexItem grow={true} >
-                            Console Session INFO : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
+                        <EuiFlexItem grow={true}>
+                            Console Session INFO : {Date.now()} <h1 key={activeSession?.id}>{activeSession?.name}</h1>
                             {activeSession?.editors.map((editor, key) => (
                                 <h1>Editor : {editor.name} : {editor.id}</h1>
                             ))}
@@ -482,7 +483,6 @@ function TabbedEditorComponent({
 export default React.memo(TabbedEditorComponent)
 
 /*
-
     <div style={{backgroundColor: "#FFF", display: "flex", height: "75%", minHeight: "200px"}}>
 
     </div>
@@ -492,106 +492,4 @@ export default React.memo(TabbedEditorComponent)
     <div style={{display: "flex", height: "25%", minHeight: "120px"}}>
         Console terminal
     </div>
- */
-
-
-/*
-        <EuiFlexGroup
-            className="eui-fullHeight"
-            gutterSize="none"
-            direction="row"
-        >
-        </EuiFlexGroup>
-
-                <EuiFlexGroup
-                    style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid green"}}
-                    gutterSize="none"
-                    direction="column"
-                >
-
-                    <EuiFlexItem grow={false}>
-                        <EuiFlexGroup gutterSize="none"
-                                      responsive={false}
-                                      style={{
-                                          background: "#FFF",
-                                          padding: "0px",
-                                          margin: "0px",
-                                          border: "0px solid red"
-                                      }}>
-                            <EuiFlexItem grow={true}>
-                                <EuiTabs size={"s"}>{renderTabs()}</EuiTabs>
-                            </EuiFlexItem>
-
-                            <EuiFlexItem grow={false}>
-                                Expand | Collapse
-                            </EuiFlexItem>
-
-                        </EuiFlexGroup>
-                    </EuiFlexItem>
-
-                    <hr/>
-                    <EuiFlexItem grow={true}
-                                 style={{background: "#FFF", padding: "0px", margin: "0px", border: "0px solid red"}}>
-                        {selectedTabContent}
-                    </EuiFlexItem>
-                </EuiFlexGroup>
-
 */
-
-/*
-<EuiFlexGroup
-    style={{background: "#FFF", padding: "0px", margin: "0px", border: "4px solid green"}}
-    grow={true}
-    className="eui-fullHeight"
-    gutterSize="none"
-    direction="column"
->
-    <EuiFlexItem grow={false}>
-        {/!*        <EuiFlexGroup gutterSize="none"
-                              responsive={false}
-                              style={{background: "#FFF", padding: "0px", margin: "0px", border: "1px solid red"}}>
-                    <EuiFlexItem grow={true}>
-                        <EuiTabs size={"s"}>{renderTabs()}</EuiTabs>
-                    </EuiFlexItem>
-                    <EuiFlexItem grow={false}>
-                        RHS
-                    </EuiFlexItem>
-                </EuiFlexGroup>*!/}
-    </EuiFlexItem>
-
-    <EuiFlexItem grow={true}
-                 style={{background: "#CCC", padding: "0px", margin: "0px", border: "1px solid red"}}>
-        {selectedTabContent}
-    </EuiFlexItem>
-</EuiFlexGroup>
-
-*/
-
-
-/*
-
-<EuiFlexGroup
-style={{background: "#FFF", padding: "0px", margin: "0px", border: "4px solid green"}}
-grow={true}
-className="eui-fullHeight"
-gutterSize="none"
-direction="column"
-    >
-    <EuiFlexItem grow={false}>
-    <EuiFlexGroup gutterSize="none"
-responsive={false}
-style={{background: "#FFF", padding: "0px", margin: "0px", border: "1px solid red"}}>
-<EuiFlexItem grow={true}>
-    <EuiTabs size={"s"}>{renderTabs()}</EuiTabs>
-</EuiFlexItem>
-<EuiFlexItem grow={false}>
-    RHS
-</EuiFlexItem>
-</EuiFlexGroup>
-</EuiFlexItem>
-
-<EuiFlexItem grow={true}
-             style={{background: "#CCC", padding: "0px", margin: "0px", border: "1px solid red"}}>
-    {selectedTabContent}
-</EuiFlexItem>
-</EuiFlexGroup>*/

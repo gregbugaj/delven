@@ -1,5 +1,6 @@
-import {filter} from "rxjs/operators";
-import {Subject, Subscription} from "rxjs";
+import {filter} from "rxjs/operators"
+import {Subject, Subscription} from "rxjs"
+import {v4 as uuidv4} from "uuid"
 
 interface CallbackFunction<T = any> {
     (event: T): void;
@@ -11,21 +12,23 @@ interface NewableType<T> {
 
 class ErrorHandler {
     public handleError(error: any): void {
-        console.info('Error : ' + error);
+        console.info("Error : " + error)
         console.error(error)
     }
 }
 
 export class MessageBusService {
 
-    private eventStream: Subject<any>;
+    private id = uuidv4()
 
-    private errorHandler: ErrorHandler;
+    private eventStream: Subject<any>
+
+    private errorHandler: ErrorHandler
 
     // constructor(errorHandler: ErrorHandler) {
     constructor() {
         this.errorHandler = new ErrorHandler()
-        this.eventStream = new Subject();
+        this.eventStream = new Subject()
     }
 
     /**
@@ -34,7 +37,7 @@ export class MessageBusService {
      */
     public emit(event: any): void {
         console.warn(`MB.emit : ${JSON.stringify(event)}`)
-        this.eventStream.next(event);
+        this.eventStream.next(event)
     }
 
     /**
@@ -42,23 +45,22 @@ export class MessageBusService {
      * within a single, cohesive context (such as a component).
      */
     public group(): MessageBusGroup {
-        return (new MessageBusGroup(this));
+        return (new MessageBusGroup(this))
     }
 
     /**
      * Subscribe to all events on the message bus.
      */
     public subscribe(callback: CallbackFunction, callbackContext: any = null): Subscription {
-        const subscription = this.eventStream.subscribe(
+        return this.eventStream.subscribe(
             (event: any): void => {
                 try {
-                    callback.call(callbackContext, event);
+                    callback.call(callbackContext, event)
                 } catch (error) {
-                    this.errorHandler.handleError(error);
+                    this.errorHandler.handleError(error)
                 }
             }
-        );
-        return subscription;
+        )
     }
 
     /**
@@ -69,7 +71,7 @@ export class MessageBusService {
      */
     public on<T>(typeFilter: NewableType<T>, callback: CallbackFunction<T>, callbackContext: any = null): Subscription {
         // console.warn(`MB.on : ${JSON.stringify(typeFilter)}`)
-        const subscription = this.eventStream
+        return this.eventStream
             .pipe(filter((event: any): boolean => {
                 return event instanceof typeFilter
             }))
@@ -79,11 +81,10 @@ export class MessageBusService {
                         // callback.call(callbackContext, event);
                         callback.apply(callbackContext, [event])
                     } catch (error) {
-                        this.errorHandler.handleError(error);
+                        this.errorHandler.handleError(error)
                     }
                 }
             )
-        return subscription;
     }
 }
 
@@ -93,12 +94,12 @@ export class MessageBusService {
  * class return a reference to THIS class, instead of a Subscription, allowing for a more fluent API.
  */
 export class MessageBusGroup {
-    private messageBus: MessageBusService;
-    private subscriptions: Subscription[];
+    private messageBus: MessageBusService
+    private subscriptions: Subscription[]
 
     constructor(messageBus: MessageBusService) {
-        this.messageBus = messageBus;
-        this.subscriptions = [];
+        this.messageBus = messageBus
+        this.subscriptions = []
     }
 
     /**
@@ -106,8 +107,8 @@ export class MessageBusGroup {
      * @param event
      */
     public emit(event: any): MessageBusGroup {
-        this.messageBus.emit(event);
-        return this;
+        this.messageBus.emit(event)
+        return this
     }
 
     /**
