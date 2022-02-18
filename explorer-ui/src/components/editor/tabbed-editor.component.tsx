@@ -23,6 +23,9 @@ import {useSessions} from "../workspace/WorkspacePanel"
 import {useAppDispatch, useAppSelector} from "../../redux/hooks"
 import {selectActiveSession} from "../workspace/selectors"
 
+import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from '../console/ConsoleDisplay'
+
+
 const XComponent = styled.div`
   &:hover {
     background-color: #E8E8E8;
@@ -91,7 +94,6 @@ const EditorTabs = React.memo(() => {
             </EuiTabStyled>
         ))
     }
-
 
     return (
         <>
@@ -202,6 +204,26 @@ function TabbedEditorComponent({
     const activeSession = useAppSelector(selectActiveSession)
 
     // Both flex-groups need to have eui-fullHeight in order to have scrollable container
+
+    let messages: ConsoleMessage[] = []
+    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "warn", message: "Important message" })
+    messages.push({ level: "error", message: "Error message" })
+    messages.push({ message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "raw", message: "Raw message" })
+    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "warn", message: "Important message" })
+    messages.push({ level: "error", message: "Error message" })
+    messages.push({ message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "raw", message: "Raw message" })
+    messages.push({ time: new Date().toISOString(), level: "raw", message: "Raw message" })
+    messages.push({ time: new Date().toISOString(), level: "info", message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "warn", message: "Important message" })
+    messages.push({ level: "error", message: "Error message" })
+    messages.push({ message: "Important message" })
+    messages.push({ time: new Date().toISOString(), level: "raw", message: "Raw message" })
+
 
     return (
         <>
@@ -329,7 +351,7 @@ function TabbedEditorComponent({
                                 Session INFO : {Date.now()} : <h1 key={activeSession?.id}>{activeSession?.name}</h1>
                                 <hr />
                                 {activeSession?.editors.map((editor, key) => (
-                                    <h1>Editor : {editor.name} : {editor.id}</h1>
+                                    <h1 key={editor.id}>Editor : {editor.name} : {editor.id}</h1>
                                 ))}
 
                                 {/*{selectedTabContent}*/}
@@ -466,11 +488,11 @@ function TabbedEditorComponent({
                         </EuiFlexItem>
 
 
-                        <EuiFlexItem grow={true}>
-                            Console Session INFO : {Date.now()} <h1 key={activeSession?.id}>{activeSession?.name}</h1>
-                            {activeSession?.editors.map((editor, key) => (
-                                <h1>Editor : {editor.name} : {editor.id}</h1>
-                            ))}
+                        <EuiFlexItem grow={true}  className="eui-yScroll"
+                        				style={{ border: '0px solid red',
+                                        backgroundColor: '#303030', padding: '0px'}}>
+
+                            <ConsoleDisplay key={"main"} messages={messages} />
 
                         </EuiFlexItem>
                     </EuiFlexGroup>

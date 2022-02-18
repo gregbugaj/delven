@@ -23,7 +23,8 @@ function EditorSidePanel({
     console.info(`EditorSidePanel visible : ${isVisible} : [${label}]`)
 
     const activeSession = useAppSelector(selectActiveSession)
-    let editorItems = []
+    const editorItems = []
+
     if (activeSession?.editors) {
         let editors = activeSession.editors
         for (let editor of editors) {

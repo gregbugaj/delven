@@ -36,6 +36,7 @@ CodeMirror
 npm install @types/codemirror
 ```
 
+
 ## Router
 
 ```sh
@@ -151,7 +152,15 @@ https://github.com/stackblitz/webcontainer-core
 [https://create-react-app.dev/docs/adding-typescript/]
 [https://gist.github.com/bennadel/e40ddc3b7b72f07c992c7b59de7c04b0#file-message-bus-events-ts]
 
+
+
+## Inversion of control setup 
+
+https://itnext.io/dependency-injection-in-react-using-inversifyjs-now-with-react-hooks-64f7f077cde6
+
+
 ## UI Ideas
+
 https://stackblitz.com/edit/github-ghucy8?file=babel.config.js
 https://microsoft.github.io/monaco-editor/
 https://emscripten.org/

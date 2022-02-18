@@ -1,5 +1,6 @@
 import {configureStore} from "@reduxjs/toolkit";
 import logger from 'redux-logger'
+import thunkMiddleware from 'redux-thunk'
 import createReducer from './reducers';
 
 // import {createInjectorsEnhancer, forceReducerReload} from 'redux-injectors';
@@ -21,6 +22,7 @@ export const store = configureStore({
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware()
             .prepend(
+                thunkMiddleware
             )
             // prepend and concat calls can be chained
             .concat(logger),

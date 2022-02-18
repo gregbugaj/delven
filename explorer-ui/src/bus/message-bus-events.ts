@@ -65,6 +65,11 @@ export class EventTypeEditorKeyDown extends EventWithPayload<any> {
   public readonly type = EventTypeEditorKeyDown.type
 }
 
+export class EventTypeLogEvent extends EventWithPayload<any> {
+  static readonly type = "LogEvent"
+  public readonly type = EventTypeLogEvent.type
+}
+
 // ----------------------------------------------------------------------------------- //
 // ----------------------------------------------------------------------------------- //
 
@@ -79,5 +84,6 @@ export type EventTypes =
   EventTypeSampleQuery |
   EventTypeAddTab |
   EventTypeCloseTab |
-  EventTypeEditorKeyDown
+  EventTypeEditorKeyDown |
+  EventTypeLogEvent
   ;

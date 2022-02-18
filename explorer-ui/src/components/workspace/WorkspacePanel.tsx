@@ -8,7 +8,7 @@ import {
     EuiFlexItem,
     EuiFlexGroup,
     EuiListGroup,
-    EuiListGroupItem, EuiButtonIcon
+    EuiListGroupItem
 } from "@elastic/eui"
 
 import {SharedDeployPanel} from "../shared/SharedPanelContainer"
@@ -18,6 +18,8 @@ import {shallowEqual} from "react-redux"
 import {actions, ISession} from "./slice"
 
 import '../globalServices';
+import { MessageBusService } from "../../bus/message-bus"
+import { EventTypeLogEvent } from "../../bus/message-bus-events"
 console.info(globalThis.services)
 
 // https://react-redux.js.org/api/hooks
@@ -25,13 +27,14 @@ console.info(globalThis.services)
 export function useSessions({limit = 100}) {
     const dispatch = useAppDispatch()
     const store = useAppSelector(makeSelectSessions(), shallowEqual)
-    // Initial load
-    useEffect(() => {
-        if (!store?.sessions?.length && !store?.loading) {
-            console.info("useSessions : Loading")
-            dispatch(actions.fetch({limit}))
-        }
-    }, [])
+
+    // // Initial load
+    // useEffect(() => {
+    //     if (!store?.sessions?.length && !store?.loading) {
+    //         console.info("useSessions : Loading")
+    //         dispatch(actions.fetch({limit}))
+    //     }
+    // }, [])
 
     return store
 }
@@ -45,7 +48,11 @@ const SessionItem = React.memo(function({id}: React.PropsWithChildren<{id: strin
     const removeSessionHandler = useCallback((id) => {
         console.info(`Removing session : ${id}`)
         dispatch(actions.removeSession(session.id))
-    }, [dispatch])
+
+        const globalEventBus = globalThis.services.eventBus as MessageBusService
+        globalEventBus.emit(new EventTypeLogEvent({ time: new Date().toISOString(), level: "warn", message: `Removing session : ${id}`}));
+
+    }, [dispatch, session.id])
 
     /* (id) => (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
          console.info(`Activate session : ${id}`)
@@ -56,7 +63,10 @@ const SessionItem = React.memo(function({id}: React.PropsWithChildren<{id: strin
     const activateSessionHandler = useCallback((id) => {
         console.info(`Activate session : ${id}`)
         dispatch(actions.markSessionActive(session.id))
-    }, [dispatch])
+
+        const globalEventBus = globalThis.services.eventBus as MessageBusService
+        globalEventBus.emit(new EventTypeLogEvent({ time: new Date().toISOString(), level: "info", message: `Activate session : ${id}`}));
+    }, [dispatch, session.id])
 
     if (session === undefined) {
         return <></>
@@ -71,7 +81,6 @@ const SessionItem = React.memo(function({id}: React.PropsWithChildren<{id: strin
                           extraAction={{
                               color: "text",
                               onClick: () => {
-                                  console.info("Group item exec:delete")
                                   removeSessionHandler(session.id)
                               },
                               iconType: "trash",
@@ -98,6 +107,17 @@ function ListSessions() {
     )
 }
 
+const eventBusMap = new Map<String, MessageBusService>();
+
+const getEventBus = (channelId: string): MessageBusService => {
+  if (!eventBusMap.has(channelId)) {
+    const bus = new MessageBusService();
+    eventBusMap.set(channelId, bus)
+  }
+
+  return eventBusMap.get(channelId)
+}
+
 function WorkspaceSidePanel({
                                 isVisible,
                                 label
@@ -105,6 +125,15 @@ function WorkspaceSidePanel({
 
     console.info(`WorkspaceSidePanel visible : ${isVisible} : [${label}]`)
     const dispatch = useAppDispatch()
+
+    // Load value to the active tab
+    
+    const createSessionOnClick = () => {
+        dispatch(actions.createSession())
+
+        const globalEventBus = globalThis.services.eventBus as MessageBusService
+        globalEventBus.emit(new EventTypeLogEvent({ time: new Date().toISOString(), level: "success", message: "Session created" }));
+    }
 
     return (
         <EuiPanel tabIndex={0}
@@ -118,8 +147,7 @@ function WorkspaceSidePanel({
                 <EuiFlexItem grow={true}>
 
                     <EuiCollapsibleNavGroup>
-                        <EuiButton fill fullWidth iconType="plusInCircleFilled"
-                                   onClick={() => dispatch(actions.createSession())}>
+                        <EuiButton fill fullWidth iconType="plusInCircleFilled" onClick={createSessionOnClick}>
                             Create Workspace
                         </EuiButton>
                     </EuiCollapsibleNavGroup>
@@ -150,7 +178,6 @@ function WorkspaceSidePanel({
                         >
                             <ListSessions />
                         </EuiListGroup>
-
 
                     </EuiCollapsibleNavGroup>
                 </EuiFlexItem>

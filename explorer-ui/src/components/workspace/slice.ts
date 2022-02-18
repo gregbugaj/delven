@@ -98,7 +98,7 @@ const slice = createSlice({
          * Load all sessions from the store
          * @param state
          */
-        fetch: (state, payload) => {
+        fetch: (state, action) => {
             console.info("fetch")
             try {
                 state.loading = true
@@ -117,6 +117,7 @@ const slice = createSlice({
          * @param state
          */
         createSession: (state) => {
+            console.info(state)
             const session = mockSession()
             state.sessions.push(session)
         },
@@ -132,9 +133,9 @@ const slice = createSlice({
                 return
             }
             const sessions = state.sessions
+
             sessions.forEach((item, index) => {
                 if (item.id === sessionId) {
-                    console.info(`Session removed : ${sessionId}`)
                     sessions.splice(index, 1)
                 }
             })

@@ -4,7 +4,7 @@ import { CodeMirrorManager } from './CodeMirror'
 import Button from '@material-ui/core/Button';
 import BlurLinearIcon from '@material-ui/icons/BlurLinear';
 import CodeIcon from '@material-ui/icons/Code';
-import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from './ConsoleDisplay'
+import ConsoleDisplay, { ConsoleMessageLevel, ConsoleMessage } from '../console/ConsoleDisplay'
 import { EventTypeEditorKeyDown, EventTypeCompileReply, EventTypeEvaluateReply, EventTypeSampleQuery, EventTypeEvaluateResult } from "../../bus/message-bus-events";
 import { ServerExecutor } from "../../executors";
 

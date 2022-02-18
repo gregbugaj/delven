@@ -2,6 +2,8 @@ import {filter} from "rxjs/operators"
 import {Subject, Subscription} from "rxjs"
 import {v4 as uuidv4} from "uuid"
 
+
+// https://theia-ide.org/docs/events
 interface CallbackFunction<T = any> {
     (event: T): void;
 }
