@@ -153,7 +153,8 @@ export class Emitter<T = any> {
 
     private static _noop = function (): void { };
 
-    private _event: Event<T> | undefined;
+    // @ts-ignore
+    private _event: Event<T>;
     protected _callbacks: CallbackList | undefined;
     private _disposed = false;
 
