@@ -1,4 +1,4 @@
-import { IExecutor, ISetupParams, WebSocketMessage, CallbackFunction } from './executor';
+import { IExecutor, ISetupParams, ketMessage, CallbackFunction } from './executor';
 
 import { catchError, debounceTime, distinctUntilChanged, filter, finalize, map, tap } from "rxjs/operators";
 import { MonoTypeOperatorFunction, Observable, pipe, Subject } from "rxjs";
