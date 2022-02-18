@@ -19,6 +19,8 @@
 import { Disposable } from './disposable';
 import { MaybePromise } from './types';
 
+import { CancellationToken } from './cancellation';
+
 /**
  * Represents a typed event.
  */
@@ -151,7 +153,7 @@ export class Emitter<T = any> {
 
     private static _noop = function (): void { };
 
-    private _event: Event<T>;
+    private _event: Event<T> | undefined;
     protected _callbacks: CallbackList | undefined;
     private _disposed = false;
 
@@ -330,6 +332,7 @@ export namespace WaitUntilEvent {
             // Asynchronous calls to `waitUntil` should fail.
             Object.freeze(waitables);
         } finally {
+            // @ts-ignore
             delete asyncEvent['waitUntil'];
         }
         if (!waitables.length) {
@@ -342,8 +345,6 @@ export namespace WaitUntilEvent {
         }
     }
 }
-
-import { CancellationToken } from './cancellation';
 
 export class AsyncEmitter<T extends WaitUntilEvent> extends Emitter<T> {
 
@@ -390,6 +391,7 @@ export class AsyncEmitter<T extends WaitUntilEvent> extends Emitter<T> {
             } catch (e) {
                 console.error(e);
             } finally {
+                // @ts-ignore
                 delete asyncEvent['waitUntil'];
             }
             if (!waitables.length) {

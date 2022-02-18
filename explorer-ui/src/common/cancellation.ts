@@ -80,7 +80,7 @@ class MutableToken implements CancellationToken {
 
 export class CancellationTokenSource {
 
-    private _token: CancellationToken;
+    private _token: CancellationToken | undefined;
 
     get token(): CancellationToken {
         if (!this._token) {
