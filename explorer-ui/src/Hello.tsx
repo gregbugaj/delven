@@ -11,7 +11,7 @@ import {ILogger, Logger} from "./common";
 
 export const Hello = () => {
     const provider = useInjection<IProvider<string>>('nameProvider');
-    const logger = useInjection<ILogger>("Logger");
+    const logger = useInjection<ILogger>(ILogger);
 
     console.info(provider)
     console.info(logger)
