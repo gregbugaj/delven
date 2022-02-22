@@ -26,9 +26,11 @@ export class Endpoint {
     static readonly PROTO_WSS: string = 'wss:';
     static readonly PROTO_FILE: string = 'file:';
 
+    // Unexpected use of 'self' no-restricted-globals
+    // Using window to fix the error
     constructor(
         protected readonly options: Endpoint.Options = {},
-        protected readonly location: Endpoint.Location = self.location
+        protected readonly location: Endpoint.Location = window.self.location
     ) { }
 
     getWebSocketUrl(): URI {

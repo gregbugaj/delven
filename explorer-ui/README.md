@@ -154,8 +154,8 @@ https://github.com/stackblitz/webcontainer-core
 
 
 
-## Inversion of control setup 
-
+## Inversion of control setup (IOC)
+https://github.com/tswistak/react-hooks-with-inversify
 https://itnext.io/dependency-injection-in-react-using-inversifyjs-now-with-react-hooks-64f7f077cde6
 
 

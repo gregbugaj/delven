@@ -18,5 +18,7 @@ import { ContainerModule } from 'inversify';
 import { WebSocketConnectionProvider } from './ws-connection-provider';
 
 export const messagingFrontendModule = new ContainerModule(bind => {
+    console.info("BIND:: Messaging Frontend Module")
+
     bind(WebSocketConnectionProvider).toSelf().inSingletonScope();
 });
