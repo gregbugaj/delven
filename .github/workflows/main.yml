@@ -27,7 +27,7 @@ jobs:
 #      run:
 #        working-directory: ./transpiler
 #    steps:
-#    - uses: actions/checkout@v2
+#    - uses: actions/checkout@v3
 #    - uses: actions/setup-node@v2
 #    - run: npm ci
 #    - run: npm run build --if-present
@@ -45,7 +45,7 @@ jobs:
     steps:
       # Checkout the Repository
       - name: Checking out the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Mount links(Privilaged)
         run: |
