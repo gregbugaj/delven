@@ -7,22 +7,20 @@ import createCache from '@emotion/cache';
 import {EuiProvider} from '@elastic/eui';
 import '@elastic/eui/dist/eui_theme_light.css';
 import {Provider} from "react-redux";
-
 import "reflect-metadata";
 
 import './index.css';
 import {store} from "./redux/store";
-import App from './App';
-import {Hello} from "./Hello";
-
+// import App from './App';
 import { container } from './ioc';
 import {InversifyContextProvider} from "./ioc.react";
+import {HelloComponentWithInjection} from "./Hello";
 
 const AppInjected = () => {
     return (
         <InversifyContextProvider container={container}>
             <div>
-                <Hello/>
+                <HelloComponentWithInjection/>
             </div>
         </InversifyContextProvider>
     );
@@ -30,6 +28,7 @@ const AppInjected = () => {
 
 ReactDOM.render(<AppInjected/>, document.getElementById('root'));
 
+/*
 
 if (false) {
     const cache = createCache({
@@ -48,4 +47,4 @@ if (false) {
         ,
         document.getElementById('root')
     )
-}
+}*/

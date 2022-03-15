@@ -1,15 +1,9 @@
 import React from 'react';
 import {useInjection} from './ioc.react';
 import {IProvider} from './providers';
-import {ILogger, Logger} from "./common";
+import {ILogger} from "./common";
 
-// @inject(MessageService)
-// protected readonly messageService: MessageService;
-//
-// @inject(ILogger)
-// protected readonly logger: ILogger;
-
-export const Hello = () => {
+export const HelloComponentWithInjection = () => {
     const provider = useInjection<IProvider<string>>('nameProvider');
     const logger = useInjection<ILogger>(ILogger);
 

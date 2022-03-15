@@ -5,8 +5,6 @@ import { LoggerWatcher } from '../common/logger-watcher';
 import { WebSocketConnectionProvider } from './messaging';
 // import { FrontendApplicationContribution } from './frontend-application';
 
-console.info("Logger Frontend Module")
-
 export const loggerFrontendModule = new ContainerModule(bind => {
 
     console.info("BIND:: Logger Frontend Module")
@@ -22,7 +20,9 @@ export const loggerFrontendModule = new ContainerModule(bind => {
     bind(LoggerWatcher).toSelf().inSingletonScope();
     bind(ILoggerServer).toDynamicValue(ctx => {
         const loggerWatcher = ctx.container.get(LoggerWatcher);
+        console.info(loggerWatcher)
         const connection = ctx.container.get(WebSocketConnectionProvider);
+        console.info(connection)
         const target = connection.createProxy<ILoggerServer>(loggerPath, loggerWatcher.getLoggerClient());
         function get<K extends keyof ILoggerServer>(_: ILoggerServer, property: K): ILoggerServer[K] | ILoggerServer['log'] {
             if (property === 'log') {

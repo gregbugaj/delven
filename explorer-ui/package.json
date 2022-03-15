@@ -32,7 +32,8 @@
     "styled-components": "^5.3.3",
     "uuid": "^8.3.2",
     "vscode-uri": "^3.0.3",
-    "vscode-ws-jsonrpc": "^0.2.0"
+    "vscode-ws-jsonrpc": "^0.2.0",
+    "yarn": "^1.22.17"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -68,7 +69,7 @@
     "@testing-library/react": "^11.2.5",
     "@testing-library/user-event": "^12.8.1",
     "@types/codemirror": "0.0.108",
-    "@types/jest": "^26.0.22",
+    "@types/jest": "^26.0.24",
     "@types/jest-specific-snapshot": "^0.5.5",
     "@types/jest-when": "^2.7.2",
     "@types/material-ui": "^0.21.8",
@@ -88,8 +89,5 @@
     "webpack-cli": "^3.3.12",
     "webpack-merge": "^4.2.2",
     "webpack-sources": "^1.4.1"
-  },
-  "peerDependencies": {
-    "webpack": "^5.0.0"
   }
 }
