@@ -15,10 +15,11 @@ export const loggerFrontendModule = new ContainerModule(bind => {
     //     }
     // }));
 
+    console.info(`rootLoggerName : ${rootLoggerName}`)
     bind(LoggerName).toConstantValue(rootLoggerName);
     bind(ILogger).to(Logger).inSingletonScope().whenTargetIsDefault();
 
-    /*
+    /**/
     bind(LoggerWatcher).toSelf().inSingletonScope();
     bind(ILoggerServer).toDynamicValue(ctx => {
         const loggerWatcher = ctx.container.get(LoggerWatcher);
@@ -45,5 +46,5 @@ export const loggerFrontendModule = new ContainerModule(bind => {
             child.bind(LoggerName).toConstantValue(name);
             return child.get(ILogger);
         }
-    );*/
+    );
 });

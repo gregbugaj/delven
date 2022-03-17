@@ -239,8 +239,10 @@ export class Logger implements ILogger {
 
     protected readonly factory: LoggerFactory
 
-    constructor(@inject(LoggerName) protected name: string){
-        console.info(`Creating new logger : ${name}`)
+    @inject(LoggerName) protected name: string
+
+    constructor(){
+        console.info(`Creating new logger : ${this.name}`)
     }
 
     /**
