@@ -13,9 +13,12 @@ export const container = new Container();
 container.bind<IProvider<string>>('nameProvider').to(NameProvider);
 
 // load exported modules
-// container.load(messagingFrontendModule)
+container.load(messagingFrontendModule)
 container.load(loggerFrontendModule)
+
+
 console.info(loggerFrontendModule)
+
 // let message = container.get<WebSocketConnectionProvider>(WebSocketConnectionProvider)
 // console.info(message)
 let logger = container.get<ILogger>(ILogger)

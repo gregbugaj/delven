@@ -245,8 +245,8 @@ export class Logger implements ILogger {
      * Build a new Logger.
      */
     constructor(
-        // @inject(ILoggerServer) protected readonly server: ILoggerServer,
-        // @inject(LoggerWatcher) protected readonly loggerWatcher: LoggerWatcher,
+        @inject(ILoggerServer) protected readonly server: ILoggerServer,
+        @inject(LoggerWatcher) protected readonly loggerWatcher: LoggerWatcher,
         @inject(LoggerFactory) protected readonly factory: LoggerFactory,
         @inject(LoggerName) protected name: string) {
     
