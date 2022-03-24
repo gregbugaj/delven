@@ -15,6 +15,8 @@
  ********************************************************************************/
 
 import { inject, injectable } from 'inversify';
+import 'reflect-metadata';
+
 import { LoggerWatcher } from './logger-watcher';
 import { ILoggerServer, LogLevel, ConsoleLogger, rootLoggerName } from './logger-protocol';
 
@@ -235,45 +237,41 @@ export class Logger implements ILogger {
     /* A promise resolved when the logger has been created by the backend.  */
     protected created: Promise<void>;
 
-    protected readonly server: ILoggerServer
-
-    protected readonly factory: LoggerFactory
-
-    @inject(LoggerName) protected name: string
-
-    constructor(){
-        console.info(`Creating new logger : ${this.name}`)
-    }
+    // constructor(@inject(LoggerName) protected name: string){
+    //     console.info(`Creating new logger XXA: ${this.name}`)
+    // }
 
     /**
      * Build a new Logger.
      */
-    // constructor(
-    //     @inject(ILoggerServer) protected readonly server: ILoggerServer,
-    //     @inject(LoggerWatcher) protected readonly loggerWatcher: LoggerWatcher,
-    //     @inject(LoggerFactory) protected readonly factory: LoggerFactory,
-    //     @inject(LoggerName) protected name: string) {
-    //
-    //     if (name !== rootLoggerName) {
-    //         /* Creating a child logger.  */
-    //         this.created = server.child(name);
-    //     } else {
-    //         /* Creating the root logger (it already exists at startup).  */
-    //         this.created = Promise.resolve();
-    //     }
-    //
-    //     /* Fetch the log level so it's cached in the frontend.  */
-    //     this._logLevel = this.created.then(_ => this.server.getLogLevel(name));
-    //
-    //     /* Update the log level if it changes in the backend. */
-    //     loggerWatcher.onLogLevelChanged(event => {
-    //         this.created.then(() => {
-    //             if (event.loggerName === name) {
-    //                 this._logLevel = Promise.resolve(event.newLogLevel);
-    //             }
-    //         });
-    //     });
-    // }
+    constructor(
+        // @inject(ILoggerServer) protected readonly server: ILoggerServer,
+        // @inject(LoggerWatcher) protected readonly loggerWatcher: LoggerWatcher,
+        @inject(LoggerFactory) protected readonly factory: LoggerFactory,
+        @inject(LoggerName) protected name: string) {
+    
+        console.info('logger constructor')
+        console.info(factory)
+        if (name !== rootLoggerName) {
+            /* Creating a child logger.  */
+            this.created = server.child(name);
+        } else {
+            /* Creating the root logger (it already exists at startup).  */
+            this.created = Promise.resolve();
+        }
+    
+        /* Fetch the log level so it's cached in the frontend.  */
+        this._logLevel = this.created.then(_ => this.server.getLogLevel(name));
+    
+        /* Update the log level if it changes in the backend. */
+        // loggerWatcher.onLogLevelChanged(event => {
+        //     this.created.then(() => {
+        //         if (event.loggerName === name) {
+        //             this._logLevel = Promise.resolve(event.newLogLevel);
+        //         }
+        //     });
+        // });
+    }
 
     setLogLevel(logLevel: number): Promise<void> {
         return new Promise<void>(resolve => {

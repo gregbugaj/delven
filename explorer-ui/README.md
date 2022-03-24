@@ -178,3 +178,18 @@ https://microsoft.github.io/vscode-codicons/dist/codicon.html
 
 UI components
 Konva.js - HTML5 2d canvas js library for desktop and mobile applications
+
+
+## Webpack 5 setup 
+https://github.com/taniarascia/webpack-boilerplate
+https://www.taniarascia.com/how-to-use-webpack/
+
+BABEL / WEBPACK SEtup
+https://www.carlrippon.com/creating-react-app-with-typescript-eslint-with-webpack5/
+
+
+startin the dev server
+```
+npx webpack serve --config config/webpack.dev.ts --stats-children
+```
+

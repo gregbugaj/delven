@@ -1,16 +1,17 @@
 import React from 'react';
 import {useInjection} from './ioc.react';
 import {IProvider} from './providers';
-import {ILogger} from "./common";
+import {ILogger, LogLevel} from "./common";
 
 export const HelloComponentWithInjection = () => {
     const provider = useInjection<IProvider<string>>('nameProvider');
-    const logger = useInjection<ILogger>(ILogger);
+    // const logger = useInjection<ILogger>(ILogger);
 
     console.info(provider)
-    console.info(logger)
+    // console.info(logger)
+    // logger.log(LogLevel.INFO, "Test From INJECTED LOGGER")
 
     return (
-        <h1>Hello from provider: {provider.provide()}!</h1>
+        <h1>Hello from provider XX: {provider.provide()}!</h1>
     );
 };
