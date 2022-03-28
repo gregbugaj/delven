@@ -50,7 +50,7 @@ RUN apt-get install python3 -y
 WORKDIR /usr/src/delven-ui
 
 # add app
-COPY package.json /usr/src/delven-ui
+COPY native.package.json /usr/src/delven-ui
 COPY package-lock.json /usr/src/delven-ui
 COPY tsconfig.json /usr/src/delven-ui
 COPY webpack.config.js /usr/src/delven-ui

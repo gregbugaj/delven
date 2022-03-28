@@ -264,13 +264,13 @@ export class Logger implements ILogger {
         this._logLevel = this.created.then(_ => this.server.getLogLevel(name));
     
         /* Update the log level if it changes in the backend. */
-        // loggerWatcher.onLogLevelChanged(event => {
-        //     this.created.then(() => {
-        //         if (event.loggerName === name) {
-        //             this._logLevel = Promise.resolve(event.newLogLevel);
-        //         }
-        //     });
-        // });
+        loggerWatcher.onLogLevelChanged(event => {
+            this.created.then(() => {
+                if (event.loggerName === name) {
+                    this._logLevel = Promise.resolve(event.newLogLevel);
+                }
+            });
+        });
     }
 
     setLogLevel(logLevel: number): Promise<void> {

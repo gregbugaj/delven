@@ -3,6 +3,7 @@ import { Configuration as WebpackDevServerConfiguration, WebpackConfiguration } 
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 
+// ref : https://www.pluralsight.com/guides/react-typescript-webpack
 interface Configuration extends WebpackConfiguration {
   devServer?: WebpackDevServerConfiguration;
 }
@@ -40,7 +41,7 @@ const config: Configuration = merge(common, {
       },
     ],
   },
-})
+});
 
 console.info(config)
 export default config
