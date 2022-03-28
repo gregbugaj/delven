@@ -45,8 +45,8 @@
     "yarn": "^1.22.17"
   },
   "scripts": {
-    "start": "NODE_ENV=development webpack serve --config config/webpack.dev.ts",
-    "build": "NODE_ENV=production webpack --config webpack.prod.js",
+    "start": "NODE_ENV=development npx webpack serve --config config/webpack.dev.ts",
+    "build": "NODE_ENV=production  webpack --config webpack.prod.js",
     "lint": "eslint 'src/**/*.js' || true",
     "prettify": "prettier --write 'src/**/*.js'",
     "startA": "npx webpack-dev-server --entry ./src/index.tsx --hot --config webpack.dev.config.ts",
@@ -114,7 +114,7 @@
     "redux-injectors": "^1.3.0",
     "redux-saga": "^1.1.3",
     "sass": "^1.45.1",
-    "typescript": "^4.5.2",
+    "typescript": "^4.6.3",
     "typescript-plugin-css-modules": "^3.4.0",
     "webpack": "^5.58.2",
     "webpack-cli": "^4.9.0",

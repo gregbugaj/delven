@@ -1,4 +1,4 @@
-import { Configuration as WebpackDevServerConfiguration } from 'webpack-dev-server';
+import { Configuration as WebpackDevServerConfiguration, WebpackConfiguration } from 'webpack-dev-server';
 
 const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
