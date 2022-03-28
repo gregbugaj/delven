@@ -237,10 +237,6 @@ export class Logger implements ILogger {
     /* A promise resolved when the logger has been created by the backend.  */
     protected created: Promise<void>;
 
-    // constructor(@inject(LoggerName) protected name: string){
-    //     console.info(`Creating new logger XXA: ${this.name}`)
-    // }
-
     /**
      * Build a new Logger.
      */
@@ -304,6 +300,7 @@ export class Logger implements ILogger {
         );
     }
     log(logLevel: number, arg2: any | Loggable, ...params: any[]): Promise<void> {
+        console.info(logLevel)
         return this.getLog(logLevel).then(log => {
             if (typeof arg2 === 'function') {
                 const loggable = arg2;

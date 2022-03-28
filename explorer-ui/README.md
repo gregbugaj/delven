@@ -153,8 +153,10 @@ https://github.com/stackblitz/webcontainer-core
 [https://gist.github.com/bennadel/e40ddc3b7b72f07c992c7b59de7c04b0#file-message-bus-events-ts]
 
 
-
 ## Inversion of control setup (IOC)
+It is important to use `inversify: "^5.1.1"` and not the latest  `inversify: "^6.0.1"` 
+
+
 https://github.com/tswistak/react-hooks-with-inversify
 https://itnext.io/dependency-injection-in-react-using-inversifyjs-now-with-react-hooks-64f7f077cde6
 

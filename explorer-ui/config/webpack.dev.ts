@@ -1,7 +1,7 @@
 import { Configuration as WebpackDevServerConfiguration, WebpackConfiguration } from 'webpack-dev-server';
 
-const { merge } = require('webpack-merge')
-const common = require('./webpack.common')
+const { merge } = require('webpack-merge');
+const common = require('./webpack.common');
 
 // ref : https://www.pluralsight.com/guides/react-typescript-webpack
 interface Configuration extends WebpackConfiguration {
@@ -13,7 +13,8 @@ const config: Configuration = merge(common, {
   mode: 'development',
 
   // Control how source maps are generated
-  devtool: 'inline-source-map',
+  // devtool: 'inline-source-map',
+  devtool: 'source-map',
 
   // Spin up a server for quick development
   devServer: {
@@ -22,6 +23,15 @@ const config: Configuration = merge(common, {
     compress: false,
     hot: true,
     port: 8080,
+  },
+
+  // https://webpack.js.org/configuration/experiments/
+  experiments: {
+    topLevelAwait: true,
+  },
+
+  optimization: {
+    minimize: false,
   },
 
   module: {
@@ -43,5 +53,5 @@ const config: Configuration = merge(common, {
   },
 });
 
-console.info(config)
-export default config
+console.info(config);
+export default config;

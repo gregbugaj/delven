@@ -22,6 +22,7 @@ import ReconnectingWebSocket from 'reconnecting-websocket';
 import { AbstractConnectionProvider } from '../../common/messaging/abstract-connection-provider';
 
 decorate(injectable(), JsonRpcProxyFactory);
+// @ts-ignore
 decorate(unmanaged(), JsonRpcProxyFactory, 0);
 
 export interface WebSocketOptions {
