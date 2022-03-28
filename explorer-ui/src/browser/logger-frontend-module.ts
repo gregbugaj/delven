@@ -6,6 +6,7 @@ import { ILoggerServer, loggerPath, ConsoleLogger } from '../common/logger-proto
 import { ILogger, Logger, LoggerFactory, setRootLogger, LoggerName, rootLoggerName } from "../common";
 import { LoggerWatcher } from '../common/logger-watcher';
 import { WebSocketConnectionProvider } from './messaging';
+import { container } from "../ioc";
 // import { FrontendApplicationContribution } from './frontend-application';
 
 
@@ -15,6 +16,9 @@ export const loggerFrontendModule = new ContainerModule(bind => {
     console.info(`rootLoggerName : ${rootLoggerName}`)
     bind(LoggerName).toConstantValue(rootLoggerName);
     bind(ILogger).to(Logger).inSingletonScope();
+
+
+
     bind(LoggerWatcher).toSelf().inSingletonScope();
     bind(ILoggerServer).toDynamicValue(ctx => {
         console.info("ILoggerServer:toDynamicValue")

@@ -5,12 +5,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const paths = require('./paths')
 const webpack = require('webpack');
 
-// Reference for some of the issus
+// Reference for some of the issues
 // https://stackoverflow.com/questions/68707553/uncaught-referenceerror-buffer-is-not-defined
+
+const isProduction = typeof NODE_ENV !== 'undefined' && NODE_ENV === 'production';
+const mode = isProduction ? 'production' : 'development';
+const devtool = isProduction ? false : 'inline-source-map';
+
 
 module.exports = {
   // Where webpack looks to start building the bundle
-  entry: [paths.src + '/index.tsx'],
+  entry: [
+    'reflect-metadata',
+    paths.src + '/index.tsx'
+  ],
 
   // Where webpack outputs the assets and bundles
   output: {
@@ -74,14 +82,13 @@ module.exports = {
         test: /\.(ts|js)x?$/i,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader",
+          loader: "ts-loader",
+
           options: {
-            presets: [
-              "@babel/preset-env",
-              "@babel/preset-react",
-              "@babel/preset-typescript",
-            ],
-          },
+            compilerOptions: {
+              "sourceMap": !isProduction,
+            }
+          }
         },
       },
 
