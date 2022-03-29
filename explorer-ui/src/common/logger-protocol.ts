@@ -15,7 +15,7 @@
  ********************************************************************************/
 
 import { injectable } from 'inversify';
-import { JsonRpcServer } from './messaging/proxy-factory';
+import { JsonRpcServer } from "./messaging";
 
 export const ILoggerServer = Symbol('ILoggerServer');
 

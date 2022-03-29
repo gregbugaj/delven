@@ -1,8 +1,12 @@
 {
-  "compilerOptions": {
-    "module": "ESNext", 
-    "target": "ES2020",
+  "$schema": "https://json.schemastore.org/tsconfig",
 
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": ["reflect-metadata", "node"],
+    "module": "commonjs",
+    "target": "ES2020",
     "lib": [
       "es2017",
       "esnext",
@@ -20,7 +24,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    // "noEmit": true, -- GOOD FOR types.d.ts generation
+    "noEmit": false, //-- GOOD FOR types.d.ts generation
     "sourceMap": true,
     "pretty": true,
 

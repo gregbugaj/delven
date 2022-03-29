@@ -44,17 +44,12 @@
     "uuid": "^8.3.2",
     "vscode-uri": "^3.0.3",
     "vscode-ws-jsonrpc": "^0.2.0",
-    "yarn": "^1.22.17"
   },
   "scripts": {
     "start": "NODE_ENV=development yarn webpack serve --config config/webpack.dev.ts",
     "build": "NODE_ENV=production yarn webpack --config webpack.prod.js",
     "lint": "eslint 'src/**/*.js' || true",
     "prettify": "prettier --write 'src/**/*.js'",
-    "startA": "npx webpack-dev-server --entry ./src/index.tsx --hot --config webpack.dev.config.ts",
-    "startAAAA": "webpack serve --config webpack.dev.config.ts",
-    "startXX": "react-scripts start",
-    "buildX": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -120,6 +115,8 @@
     "webpack-cli": "^4.9.0",
     "webpack-dev-server": "^4.3.1",
     "webpack-merge": "^5.8.0",
-    "webpack-serve": "^4.0.0"
+    "webpack-serve": "^4.0.0",
+
+    "yarn": "^1.22.17"
   }
 }
