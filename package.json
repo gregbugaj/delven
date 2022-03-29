@@ -1,5 +1,23 @@
 {
-  "dependencies": {
-    "circular-dependency-plugin": "^5.2.2"
-  }
+  "name": "@project/delven",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "lerna run dev",
+    "build": "lerna run --parallel build",
+    "app:build": "lerna run --scope={@project/ui,@project/server} build",
+    "app:start": "lerna run --scope @project/ui start"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0",
+		"circular-dependency-plugin": "^5.2.2"
+  },
+
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT"
 }

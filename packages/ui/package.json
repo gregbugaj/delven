@@ -1,5 +1,5 @@
 {
-  "name": "delven-explorer",
+	"name": "@delven/ui",
   "version": "0.1.0",
   "private": true,
   "type": "commonjs",
@@ -43,7 +43,7 @@
     "ts-node": "^10.7.0",
     "uuid": "^8.3.2",
     "vscode-uri": "^3.0.3",
-    "vscode-ws-jsonrpc": "^0.2.0",
+    "vscode-ws-jsonrpc": "^0.2.0"
   },
   "scripts": {
     "start": "NODE_ENV=development yarn webpack serve --config config/webpack.dev.ts",
