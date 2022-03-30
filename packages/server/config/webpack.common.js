@@ -1,9 +1,10 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const nodeExternals = require('webpack-node-externals');
+import { CleanWebpackPlugin } from 'clean-webpack-plugin';
 
-const paths = require('./paths')
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import WebpackShellPluginNext from "webpack-shell-plugin-next";
+import nodeExternals from 'webpack-node-externals';
+import paths from './paths.js';
 
 // Reference for some of the issues
 // https://stackoverflow.com/questions/68707553/uncaught-referenceerror-buffer-is-not-defined
@@ -12,7 +13,7 @@ const isProduction = typeof NODE_ENV !== 'undefined' && NODE_ENV === 'production
 const mode = isProduction ? 'production' : 'development';
 const devtool = isProduction ? false : 'inline-source-map';
 
-module.exports = {
+const common = {
   name:'server',
   target: 'node',
 
@@ -79,3 +80,5 @@ module.exports = {
     },
   },
 }
+
+export default common

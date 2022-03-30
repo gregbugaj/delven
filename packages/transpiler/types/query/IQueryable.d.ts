@@ -7,5 +7,6 @@
  * https://www.typescriptlang.org/docs/handbook/interfaces.html
  * https://docs.microsoft.com/en-us/dotnet/api/system.linq.iqueryable-1
  */
-import {IEnumerable} from "./IEnumerable"
-export declare abstract class IQueryable<T> extends IEnumerable<T> {}
+import { IEnumerable } from "./IEnumerable";
+export declare abstract class IQueryable<T> extends IEnumerable<T> {
+}

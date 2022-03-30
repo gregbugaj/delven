@@ -1,35 +1,35 @@
-export var ECMAScriptLexer: typeof ECMAScriptLexer;
-declare function ECMAScriptLexer(input: any): any;
-declare class ECMAScriptLexer {
+declare class ECMAScriptLexer extends ECMAScriptLexerBase {
+    static grammarFileName: string;
+    static channelNames: string[];
+    static modeNames: string[];
+    static literalNames: (string | null)[];
+    static symbolicNames: (string | null)[];
+    static ruleNames: string[];
     constructor(input: any);
     _interp: any;
-    constructor: typeof ECMAScriptLexer;
     get atn(): any;
-    channelNames: string[];
-    modeNames: string[];
-    literalNames: (string | null)[];
-    symbolicNames: (string | null)[];
-    ruleNames: string[];
-    grammarFileName: string;
     action(localctx: any, ruleIndex: any, actionIndex: any): void;
     OpenBrace_action(localctx: any, actionIndex: any): void;
     CloseBrace_action(localctx: any, actionIndex: any): void;
     StringLiteral_action(localctx: any, actionIndex: any): void;
-    sempred(localctx: any, ruleIndex: any, predIndex: any): any;
-    HashBangLine_sempred(localctx: any, predIndex: any): any;
-    RegularExpressionLiteral_sempred(localctx: any, predIndex: any): any;
+    BackTick_action(localctx: any, actionIndex: any): void;
+    BackTickInside_action(localctx: any, actionIndex: any): void;
+    sempred(localctx: any, ruleIndex: any, predIndex: any): boolean;
+    HashBangLine_sempred(localctx: any, predIndex: any): boolean;
+    RegularExpressionLiteral_sempred(localctx: any, predIndex: any): boolean;
+    TemplateCloseBrace_sempred(localctx: any, predIndex: any): boolean;
     OctalIntegerLiteral_sempred(localctx: any, predIndex: any): boolean;
-    Implements_sempred(localctx: any, predIndex: any): any;
-    StrictLet_sempred(localctx: any, predIndex: any): any;
+    Implements_sempred(localctx: any, predIndex: any): boolean;
+    StrictLet_sempred(localctx: any, predIndex: any): boolean;
     NonStrictLet_sempred(localctx: any, predIndex: any): boolean;
-    Private_sempred(localctx: any, predIndex: any): any;
-    Public_sempred(localctx: any, predIndex: any): any;
-    Interface_sempred(localctx: any, predIndex: any): any;
-    Package_sempred(localctx: any, predIndex: any): any;
-    Protected_sempred(localctx: any, predIndex: any): any;
+    Private_sempred(localctx: any, predIndex: any): boolean;
+    Public_sempred(localctx: any, predIndex: any): boolean;
+    Interface_sempred(localctx: any, predIndex: any): boolean;
+    Package_sempred(localctx: any, predIndex: any): boolean;
+    Protected_sempred(localctx: any, predIndex: any): boolean;
 }
 declare namespace ECMAScriptLexer {
-    export const EOF: number;
+    export const EOF: any;
     export const HashBangLine: number;
     export const MultiLineComment: number;
     export const SingleLineComment: number;
@@ -39,6 +39,7 @@ declare namespace ECMAScriptLexer {
     export const OpenParen: number;
     export const CloseParen: number;
     export const OpenBrace: number;
+    export const TemplateCloseBrace: number;
     export const CloseBrace: number;
     export const SemiColon: number;
     export const Comma: number;
@@ -116,7 +117,7 @@ declare namespace ECMAScriptLexer {
     export const Switch: number;
     export const While: number;
     export const Debugger: number;
-    export const Function: number;
+    export const Function_: number;
     export const This: number;
     export const With: number;
     export const Default: number;
@@ -127,7 +128,6 @@ declare namespace ECMAScriptLexer {
     export const Try: number;
     export const As: number;
     export const From: number;
-    export const Let: number;
     export const Class: number;
     export const Enum: number;
     export const Extends: number;
@@ -159,13 +159,16 @@ declare namespace ECMAScriptLexer {
     export const Yield: number;
     export const Identifier: number;
     export const StringLiteral: number;
-    export const TemplateStringLiteral: number;
+    export const BackTick: number;
     export const WhiteSpaces: number;
     export const LineTerminator: number;
-    export const NEWLINE: number;
     export const HtmlComment: number;
     export const CDataComment: number;
     export const UnexpectedCharacter: number;
+    export const TemplateStringStartExpression: number;
+    export const TemplateStringAtom: number;
     export const ERROR: number;
+    export const TEMPLATE: number;
 }
-export {};
+export default ECMAScriptLexer;
+import ECMAScriptLexerBase from "./ECMAScriptLexerBase.js";

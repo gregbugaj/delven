@@ -5,19 +5,28 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "lerna run dev",
-    "build": "lerna run --parallel build",
-    "app:build": "lerna run --scope={@project/ui,@project/server} build",
-    "app:start": "lerna run --scope @project/ui start"
+    "bootstrap": "lerna bootstrap",
+    "buildXX": "lerna run --parallel build --stream",
+    "build": "lerna run --scope={@delven/transpiler,@delven/ui,@delven/server} build --stream",
+    "build:transpiler": "lerna run --scope @delven/transpiler build  --stream",
+    "build:server": "lerna run --scope @delven/server build  --stream",
+    "build:ui": "lerna run --scope @delven/ui build --stream",
+    "app:buildxx": "lerna run --scope={@delven/ui,@delven/server} build",
+    "app:start": "lerna run --scope @delven/server start --stream",
+    "watch:transpiler": "lerna run --scope @delven/transpiler watch  --stream",
+    "watch:server": "lerna run --scope @delven/server watch  --stream",
+    "watch:ui": "lerna run --scope @delven/ui watch --stream"
   },
   "devDependencies": {
-    "lerna": "^4.0.0",
-		"circular-dependency-plugin": "^5.2.2"
+    "circular-dependency-plugin": "^5.2.2",
+    "lerna": "^4.0.0"
   },
-
   "repository": {
     "type": "git",
     "url": ""
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^7.0.0"
+  }
 }

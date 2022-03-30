@@ -1,9 +1,25 @@
-import * as fs from 'fs';
-import bodyParser from 'body-parser';
-import express, { Request, Response } from 'express';
+
+// import express, { Request, Response } from 'express';
+
 import expressWs from 'express-ws';
+import bodyParser from 'body-parser';
+import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
+
+import express, {Express} from "express";
+
+ console.info(express)
+
+//  https://stackoverflow.com/questions/60430761/express-not-working-with-typescript-in-nodejs-app
+
+// const server = (express as any).default();
+
+// const app = express();
+
+/*
+
+if(false){
 
 export interface NodeInfo {
   name: string;
@@ -58,8 +74,16 @@ async function main() {
   };
 
   const expressServer = express();
-  const wss = expressWs(expressServer);
+
+	if(true){
+
+		console.info(Date.now())
+		return
+	}
+
+	const wss = expressWs(expressServer);
   const app = wss.app;
+
 
   // Parse HTTP JSON bodies
   app.use(express.json());
@@ -138,3 +162,7 @@ async function main() {
 })().catch(err => {
   console.error('server error in main', err);
 });
+
+}
+
+*/

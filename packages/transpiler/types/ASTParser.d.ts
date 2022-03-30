@@ -1,18 +1,8 @@
-import {ECMAScriptParserVisitor as DelvenVisitor} from "./parser/ECMAScriptParserVisitor"
-import {RuleContext} from "antlr4/RuleContext"
-import {
-    Literal,
-    Identifier,
-    BinaryExpression,
-    Property,
-    Expression,
-    ClassBody,
-    ArrayExpressionElement,
-    TemplateLiteral,
-    RegexLiteral
-} from "./nodes"
-import * as Node from "./nodes"
-import ASTNode from "./ASTNode"
+import { RuleContext } from "antlr4";
+import ECMAScriptParserVisitor from "./parser/ECMAScriptParserVisitor";
+import { Literal, Identifier, BinaryExpression, Property, Expression, ClassBody, ArrayExpressionElement, TemplateLiteral, RegexLiteral } from "./nodes";
+import * as Node from "./nodes";
+import ASTNode from "./ASTNode";
 /**
  * Version that we generate the AST for.
  * This allows for testing different implementations
@@ -24,48 +14,52 @@ import ASTNode from "./ASTNode"
 export declare enum ParserType {
     ECMAScript = 0
 }
-export declare type SourceType = "code" | "filename"
+export declare type SourceType = "code" | "filename";
 export declare type SourceCode = {
-    type: SourceType
-    value: string
-}
+    type: SourceType;
+    value: string;
+};
 export interface Marker {
-    index: number
-    line: number
-    column: number
+    start: number;
+    end: number;
+    loc: {
+        start: {
+            line: number;
+            column: number;
+        };
+        end: {
+            line: number;
+            column: number;
+        };
+    };
 }
 declare class ModuleSpecifier {
-    readonly lhs: Identifier
-    readonly rhs: Identifier
-    constructor(lhs: Identifier, rhs: Identifier)
+    readonly lhs: Identifier;
+    readonly rhs: Identifier | null;
+    constructor(lhs: Identifier, rhs: Identifier | null);
 }
 declare class ClassTail {
-    readonly superClass: Expression | null
-    readonly body: ClassBody
-    constructor(superClass: Expression | null, body: ClassBody)
+    readonly superClass: Expression | null;
+    readonly body: ClassBody;
+    constructor(superClass: Expression | null, body: ClassBody);
 }
 interface ExportFromBlock {
-    tag: "namespace" | "module"
-    source: Node.Literal | null
-    specifiers: Node.ExportSpecifier[]
-    namespace: Node.ImportDefaultSpecifier | null
+    tag: "namespace" | "module";
+    source: Node.Literal | null;
+    specifiers: Node.ExportSpecifier[];
+    namespace: Node.ImportDefaultSpecifier | null;
 }
-declare type ClassElement = Node.MethodDefinition | Node.EmptyStatement | Node.ClassPrivateProperty | Node.ClassProperty
-declare type IterableStatement =
-    | Node.DoWhileStatement
-    | Node.WhileStatement
-    | Node.ForStatement
-    | Node.ForInStatement
-    | Node.ForOfStatement
+declare type ClassElement = Node.MethodDefinition | Node.EmptyStatement | Node.ClassPrivateProperty | Node.ClassProperty;
+declare type IterableStatement = Node.DoWhileStatement | Node.WhileStatement | Node.ForStatement | Node.ForInStatement | Node.ForOfStatement;
 export declare type ErrorInfo = {
-    line: number
-    column: number
-    msg: string
-}
+    line: number;
+    column: number;
+    msg: string;
+};
 export declare class ErrorNode extends ASTNode {
-    private error
-    constructor(error: ErrorInfo)
-    toString(): string
+    private error;
+    constructor(error: ErrorInfo);
+    toString(): string;
 }
 /**
  * Ecmascript parser fro creating abstract syntax trees (ASTs) that are compliant The ESTree Spec https://github.com/estree/estree
@@ -78,54 +72,54 @@ export declare class ErrorNode extends ASTNode {
  * ```
  */
 export default abstract class ASTParser {
-    private visitor
-    static _trace: boolean
+    private readonly visitor;
+    static _trace: boolean;
+    static _trace_tokens: boolean;
     /**
      * Enable trace messages
      *
      * @param trace
      */
-    static trace(trace: boolean): void
-    constructor(visitor: DelvenASTVisitor)
+    static trace(trace: boolean): void;
+    protected constructor(visitor: DelvenASTVisitor);
     /**
      * Generate source code
      * @param source
      */
-    generate(source: SourceCode): ASTNode
+    generate(source: SourceCode): ASTNode;
     /**
-     * Parse source and genereate AST tree, ParsetType will be used to make determination of what interla parser to use
+     * Parse source and generate AST tree, ParserType will be used to make determination of what implementation of parser to use
      *
      * @param source
      * @param type
      */
-    static parse(source: SourceCode, type?: ParserType): ASTNode
+    static parse(source: SourceCode, type?: ParserType): ASTNode;
 }
 /**
  * Default AST visitor implementation
  */
-declare class DelvenASTVisitor extends DelvenVisitor {
-    private ruleTypeMap
-    constructor()
-    private setupTypeRules
-    private log
-    private dumpContext
-    private dumpContextAllChildren
+declare class DelvenASTVisitor extends ECMAScriptParserVisitor {
+    private ruleTypeMap;
+    constructor();
+    private setupTypeRules;
+    private log;
+    private dumpContext;
+    private dumpContextAllChildren;
     /**
      * Get rule name by the Id
      * @param id
      */
-    getRuleById(id: number): string | undefined
-    private asMarker
-    private decorate
-    private asMetadata
-    private throwTypeError
+    getRuleById(id: number): string | undefined;
+    private asMarker;
+    private decorate;
+    private throwTypeError;
     /**
      * Throw TypeError only when there is a type provided.
-     * This is useful when the node is a TerminalNode
+     * This is useful when there node ita TerminalNode
      * @param type
      */
-    private throwInstanceError
-    private assertType
+    private throwInsanceError;
+    private assertType;
     /**
      * Visit a parse tree produced by ECMAScriptParser#program.
      *
@@ -136,7 +130,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitProgram(ctx: RuleContext): Node.Module
+    visitProgram(ctx: RuleContext): Node.Module;
     /**
      * Visit a parse tree produced by ECMAScriptParser#statement.
      *
@@ -166,7 +160,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *
      * @param ctx
      */
-    visitStatement(ctx: RuleContext): Node.Statement
+    visitStatement(ctx: RuleContext): Node.Statement;
     /**
      * Evaluate a singleExpression
      * Currently singleExpression is called from both Statements and Expressions which causes problems for
@@ -174,7 +168,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *
      * @param node
      */
-    singleExpression(node: RuleContext): Node.Expression
+    singleExpression(node: RuleContext): Node.Expression;
     /**
      *
      * ```
@@ -184,7 +178,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitImportStatement(ctx: RuleContext): Node.ImportDeclaration
+    visitImportStatement(ctx: RuleContext): Node.ImportDeclaration;
     /**
      * Example
      *
@@ -196,7 +190,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * Import '(' singleExpression ')'   # ImportExpression
      * ```
      */
-    visitImportExpression(ctx: RuleContext): Node.CallExpression
+    visitImportExpression(ctx: RuleContext): Node.CallExpression;
     /**
      *
      * ```
@@ -207,7 +201,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitImportFromBlock(ctx: RuleContext): Node.ImportDeclaration
+    visitImportFromBlock(ctx: RuleContext): Node.ImportDeclaration;
     /**
      * This could be called from Import or Export statement
      *
@@ -218,7 +212,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitModuleItems(ctx: RuleContext): ModuleSpecifier[]
+    visitModuleItems(ctx: RuleContext): ModuleSpecifier[];
     /**
      * Examples :
      *
@@ -234,8 +228,8 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitImportNamespace(ctx: RuleContext): Node.ImportNamespaceSpecifier | Node.ImportDefaultSpecifier
-    visitImportDefault(ctx: RuleContext): Node.ImportDefaultSpecifier
+    visitImportNamespace(ctx: RuleContext): Node.ImportNamespaceSpecifier | Node.ImportDefaultSpecifier;
+    visitImportDefault(ctx: RuleContext): Node.ImportDefaultSpecifier;
     /**
      *
      * ```
@@ -245,7 +239,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitImportFrom(ctx: RuleContext): Node.Literal
+    visitImportFrom(ctx: RuleContext): Node.Literal;
     /**
      * Visit a parse tree produced by ECMAScriptParser#iterationStatement.
      * There are two different types of export, named and default.
@@ -262,7 +256,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitExportStatement(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportDefaultDeclaration
+    visitExportStatement(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportDefaultDeclaration | Node.ExportAllDeclaration;
     /**
      * FIXME : This is not fully working for FunctionDeclaration
      * Visit a parse tree produced by ECMAScriptParser#exportStatement.
@@ -287,7 +281,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *
      * @param ctx
      */
-    visitExportDefaultDeclaration(ctx: RuleContext): Node.ExportDefaultDeclaration
+    visitExportDefaultDeclaration(ctx: RuleContext): Node.ExportDefaultDeclaration;
     /**
      * Example
      *
@@ -302,7 +296,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitExportDeclaration(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportAllDeclaration
+    visitExportDeclaration(ctx: RuleContext): Node.ExportNamedDeclaration | Node.ExportAllDeclaration;
     /**
      * Example
      *
@@ -320,7 +314,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *
      * @param ctx
      */
-    visitExportFromBlock(ctx: RuleContext): ExportFromBlock
+    visitExportFromBlock(ctx: RuleContext): ExportFromBlock;
     /**
      *
      * ```
@@ -331,7 +325,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *  ;
      * ```
      */
-    visitDeclaration(ctx: RuleContext): Node.ExportableNamedDeclaration
+    visitDeclaration(ctx: RuleContext): Node.ExportableNamedDeclaration;
     /**
      * Visit a parse tree produced by ECMAScriptParser#iterationStatement.
      *
@@ -346,13 +340,13 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *    ;
      * ```
      */
-    visitIterationStatement(ctx: RuleContext): IterableStatement
+    visitIterationStatement(ctx: RuleContext): IterableStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#block.
      * /// Block :
      * ///     { StatementList? }
      */
-    visitBlock(ctx: RuleContext): Node.BlockStatement
+    visitBlock(ctx: RuleContext): Node.BlockStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#statementList.
      *
@@ -363,8 +357,8 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitStatementList(ctx: RuleContext): Node.Statement[]
-    visitVariableStatement(ctx: RuleContext): Node.VariableDeclaration
+    visitStatementList(ctx: RuleContext): Node.Statement[];
+    visitVariableStatement(ctx: RuleContext): Node.VariableDeclaration;
     /**
      * Get the type rule context
      *
@@ -376,14 +370,14 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * @param type
      * @param index
      */
-    private getTypedRuleContext
+    private getTypedRuleContext;
     /**
      * Get all typed rules
      *
      * @param ctx
      * @param type
      */
-    private getTypedRuleContexts
+    private getTypedRuleContexts;
     /**
      * <pre>
      * variableDeclarationList
@@ -392,7 +386,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * </pre>
      * @param ctx
      */
-    visitVariableDeclarationList(ctx: RuleContext): Node.VariableDeclaration
+    visitVariableDeclarationList(ctx: RuleContext): Node.VariableDeclaration;
     /**
      *  Visit a parse tree produced by ECMAScriptParser#variableDeclaration.
      *  variableDeclaration
@@ -400,9 +394,13 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *    ;
      * @param ctx VariableDeclarationContext
      */
-    visitVariableDeclaration(ctx: RuleContext): Node.VariableDeclarator
-    visitEmptyStatement(ctx: RuleContext): Node.EmptyStatement
-    private assertNodeCount
+    visitVariableDeclaration(ctx: RuleContext): Node.VariableDeclarator;
+    /**
+     *  Visit a parse tree produced by ECMAScriptParser#emptyStatement.
+     * @param ctx
+     */
+    visitEmptyStatement(ctx: RuleContext): Node.EmptyStatement;
+    private assertNodeCount;
     /**
      * Visit a parse tree produced by ECMAScriptParser#expressionStatement.
      *
@@ -413,7 +411,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitExpressionStatement(ctx: RuleContext): Node.ExpressionStatement
+    visitExpressionStatement(ctx: RuleContext): Node.ExpressionStatement;
     /**
      * ifStatement
      *
@@ -428,7 +426,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *   ;
      * ```
      */
-    visitIfStatement(ctx: RuleContext): Node.IfStatement
+    visitIfStatement(ctx: RuleContext): Node.IfStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#DoStatement.
      *
@@ -437,7 +435,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitDoStatement(ctx: RuleContext): Node.DoWhileStatement
+    visitDoStatement(ctx: RuleContext): Node.DoWhileStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#WhileStatement.
      *
@@ -446,7 +444,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitWhileStatement(ctx: RuleContext): Node.WhileStatement
+    visitWhileStatement(ctx: RuleContext): Node.WhileStatement;
     /**
      * Visit for statement
      * Sample
@@ -462,7 +460,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitForOfStatement(ctx: RuleContext): Node.ForOfStatement
+    visitForOfStatement(ctx: RuleContext): Node.ForOfStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#ForInStatement.
      *
@@ -471,7 +469,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitForInStatement(ctx: RuleContext): Node.ForInStatement
+    visitForInStatement(ctx: RuleContext): Node.ForInStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#ForStatement.
      * Grammar
@@ -489,10 +487,18 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *
      * @param ctx
      */
-    visitForStatement(ctx: RuleContext): Node.ForStatement
-    visitContinueStatement(ctx: RuleContext): Node.ContinueStatement
-    visitBreakStatement(ctx: RuleContext): Node.BreakStatement
-    visitReturnStatement(ctx: RuleContext): Node.ReturnStatement
+    visitForStatement(ctx: RuleContext): Node.ForStatement;
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#continueStatement.
+     * @param ctx
+     */
+    visitContinueStatement(ctx: RuleContext): Node.ContinueStatement;
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#breakStatement.
+     * @param ctx
+     */
+    visitBreakStatement(ctx: RuleContext): Node.BreakStatement;
+    visitReturnStatement(ctx: RuleContext): Node.ReturnStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#withStatement.
      * ```
@@ -502,7 +508,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitWithStatement(ctx: RuleContext): Node.WithStatement
+    visitWithStatement(ctx: RuleContext): Node.WithStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#switchStatement.
      *
@@ -513,7 +519,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitSwitchStatement(ctx: RuleContext): Node.SwitchStatement
+    visitSwitchStatement(ctx: RuleContext): Node.SwitchStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#caseBlock.
      *
@@ -524,7 +530,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitCaseBlock(ctx: RuleContext): Node.SwitchCase[]
+    visitCaseBlock(ctx: RuleContext): Node.SwitchCase[];
     /**
      * Visit a parse tree produced by ECMAScriptParser#caseClauses.
      *
@@ -535,7 +541,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitCaseClauses(ctx: RuleContext): Node.SwitchCase[]
+    visitCaseClauses(ctx: RuleContext): Node.SwitchCase[];
     /**
      * Visit a parse tree produced by ECMAScriptParser#caseClause.
      *
@@ -546,7 +552,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitCaseClause(ctx: RuleContext): Node.SwitchCase
+    visitCaseClause(ctx: RuleContext): Node.SwitchCase;
     /**
      * Visit a parse tree produced by ECMAScriptParser#defaultClause.
      *
@@ -557,7 +563,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitDefaultClause(ctx: RuleContext): Node.SwitchCase
+    visitDefaultClause(ctx: RuleContext): Node.SwitchCase;
     /**
      * Visit a parse tree produced by ECMAScriptParser#labelledStatement.
      *
@@ -567,7 +573,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *   ;
      * ```
      */
-    visitLabelledStatement(ctx: RuleContext): Node.LabeledStatement
+    visitLabelledStatement(ctx: RuleContext): Node.LabeledStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#throwStatement.
      *
@@ -578,7 +584,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitThrowStatement(ctx: RuleContext): Node.ThrowStatement
+    visitThrowStatement(ctx: RuleContext): Node.ThrowStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#tryStatement.
      *
@@ -589,7 +595,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitTryStatement(ctx: RuleContext): Node.TryStatement
+    visitTryStatement(ctx: RuleContext): Node.TryStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#catchProduction.
      * Node count
@@ -603,19 +609,19 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitCatchProduction(ctx: RuleContext): Node.CatchClause
+    visitCatchProduction(ctx: RuleContext): Node.CatchClause;
     /**
      * Visit a parse tree produced by ECMAScriptParser#finallyProduction.
      *
      * @param ctx
      */
-    visitFinallyProduction(ctx: RuleContext): Node.BlockStatement
+    visitFinallyProduction(ctx: RuleContext): Node.BlockStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#debuggerStatement.
      *
      * @param ctx
      */
-    visitDebuggerStatement(ctx: RuleContext): Node.DebuggerStatement
+    visitDebuggerStatement(ctx: RuleContext): Node.DebuggerStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#functionDeclaration.
      *
@@ -626,20 +632,18 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitFunctionDeclaration(ctx: RuleContext): Node.FunctionDeclaration | Node.AsyncFunctionDeclaration
+    visitFunctionDeclaration(ctx: RuleContext): Node.FunctionDeclaration | Node.AsyncFunctionDeclaration;
     /**
      * Get funciton attribues
      * @param ctx
      */
-    getFunctionAttributes(
-        ctx: RuleContext
-    ): {
-        isAsync: boolean
-        isGenerator: boolean
-        isStatic: boolean
-    }
+    getFunctionAttributes(ctx: RuleContext): {
+        isAsync: boolean;
+        isGenerator: boolean;
+        isStatic: boolean;
+    };
     /**
-     * Following fragment breaks 'esprima' compliance but is a perfecly valid.
+     * Following fragment breaks 'esprima' compliance but is a perfectly valid.
      * Validated via 'espree'
      * ```
      * async function* gen(){}
@@ -647,8 +651,8 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * @ref https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for-await...of
      * @param ctx
      */
-    private functionDeclaration
-    visitFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration
+    private functionDeclaration;
+    visitFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration;
     /**
      * Visit a parse tree produced by ECMAScriptParser#functionBody.
      *
@@ -659,7 +663,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitFunctionBody(ctx: RuleContext): Node.BlockStatement
+    visitFunctionBody(ctx: RuleContext): Node.BlockStatement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#sourceElements.
      *
@@ -670,7 +674,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitSourceElements(ctx: RuleContext): Node.Statement[]
+    visitSourceElements(ctx: RuleContext): Node.Statement[];
     /**
      * Visit a parse tree produced by ECMAScriptParser#arrayLiteral.
      *
@@ -681,10 +685,10 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArrayLiteral(ctx: RuleContext): Node.ArrayExpressionElement[]
+    visitArrayLiteral(ctx: RuleContext): Node.ArrayExpressionElement[];
     /**
      * Visit a parse tree produced by ECMAScriptParser#elementList.
-     * compliance: esprima compliane of returning `null`
+     * compliance: esprima compliance of returning `null`
      * `[,,]` should have 2 null values
      *
      * ```
@@ -698,13 +702,13 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitElementList(ctx: RuleContext): Node.ArrayExpressionElement[]
+    visitElementList(ctx: RuleContext): Node.ArrayExpressionElement[];
     /**
      * Convert context child nodes into an iterable/arraylike object that can be used with 'for' loops directly
      *
      * @param ctx
      */
-    private iterable
+    private iterable;
     /**
      * Visit a parse tree produced by ECMAScriptParser#arrayElement.
      *
@@ -715,7 +719,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArrayElement(ctx: RuleContext): Node.ArrayExpressionElement
+    visitArrayElement(ctx: RuleContext): Node.ArrayExpressionElement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#objectLiteral.
      *
@@ -744,7 +748,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *```
      * @param ctx
      */
-    visitObjectLiteral(ctx: RuleContext): Node.ObjectExpression
+    visitObjectLiteral(ctx: RuleContext): Node.ObjectExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#propertyShorthand.
      * AssignmentExpression unrolling into ExpressionStatement > ArrowFunctionExpression> ObjectPattern
@@ -774,30 +778,30 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitPropertyShorthand(ctx: RuleContext): Node.ObjectExpressionProperty
+    visitPropertyShorthand(ctx: RuleContext): Node.ObjectExpressionProperty;
     /**
      * Type Guard for Node.PropertyValue
      * @TODO remove TypeError and return false
      * @param expression
      */
-    isPropertyValue(expression: Node.Expression): expression is Node.PropertyValue
+    isPropertyValue(expression: Node.Expression): expression is Node.PropertyValue;
     /**
      * Type Guard for Node.PropertyKey, we are passing in an `Node.Expression`
      *
      * @param expression
      */
-    isPropertyKey(expression: any): expression is Node.PropertyKey
+    isPropertyKey(expression: any): expression is Node.PropertyKey;
     /**
      * Type Guard for Node.Expression type
      * @param expression
      */
-    isExpression(expression: any): expression is Node.Expression
+    isExpression(expression: any): expression is Node.Expression;
     /**
      * Type guard
      * @param val
      * @param types
      */
-    isInstanceOfAny(val: unknown, types: any[]): boolean
+    isInstanceOfAny(val: unknown, types: any[]): boolean;
     /**
      * Visit a parse tree produced by ECMAScriptParser#propertyAssignment.
      *
@@ -815,12 +819,12 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitFunctionProperty(ctx: RuleContext): Node.ObjectExpressionProperty
+    visitFunctionProperty(ctx: RuleContext): Node.ObjectExpressionProperty;
     /**
      * Filter out TerminalNodes (commas, pipes, brackets)
      * @param ctx
      */
-    private filterSymbols
+    private filterSymbols;
     /**
      * Visit a parse tree produced by ECMAScriptParser#PropertyExpressionAssignment.
      *
@@ -831,7 +835,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      *
      */
-    visitPropertyExpressionAssignment(ctx: RuleContext): Node.ObjectExpressionProperty
+    visitPropertyExpressionAssignment(ctx: RuleContext): Node.ObjectExpressionProperty;
     /**
      * Visit a parse tree produced by ECMAScriptParser#PropertyGetter.
      * Sample:
@@ -844,7 +848,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * | getter '(' ')' '{' functionBody '}'                                           # PropertyGetter
      * ```
      */
-    visitPropertyGetter(ctx: RuleContext): Node.Property
+    visitPropertyGetter(ctx: RuleContext): Node.Property;
     /**
      * Visit a parse tree produced by ECMAScriptParser#PropertySetter.
      * Sample:
@@ -853,13 +857,13 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *          set z(_x) { x = _x },
      *       };
      * ```
-     
+
      * Grammar :
      * ```
      * | setter '(' formalParameterArg ')' '{' functionBody '}'                        # PropertySetter
      * ```
      */
-    visitPropertySetter(ctx: RuleContext): Property
+    visitPropertySetter(ctx: RuleContext): Property;
     /**
      * Visit a parse tree produced by ECMAScriptParser#propertyName.
      *
@@ -872,8 +876,8 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *  ;
      * ```
      */
-    visitPropertyName(ctx: RuleContext): Node.PropertyKey
-    private createStringLiteral
+    visitPropertyName(ctx: RuleContext): Node.PropertyKey;
+    private createStringLiteral;
     /**
      * Visit a parse tree produced by ECMAScriptParser#arguments.
      *
@@ -884,7 +888,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArguments(ctx: RuleContext): Node.ArgumentListElement[]
+    visitArguments(ctx: RuleContext): Node.ArgumentListElement[];
     /**
      * Visit a parse tree produced by ECMAScriptParser#argument.
      *
@@ -895,7 +899,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArgument(ctx: RuleContext): Node.ArgumentListElement
+    visitArgument(ctx: RuleContext): Node.ArgumentListElement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#expressionSequence.
      *
@@ -906,7 +910,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitExpressionSequence(ctx: RuleContext): Node.SequenceExpression
+    visitExpressionSequence(ctx: RuleContext): Node.SequenceExpression;
     /**
      * Example :
      * ```
@@ -919,12 +923,12 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitAwaitExpression(ctx: RuleContext): Node.AwaitExpression
+    visitAwaitExpression(ctx: RuleContext): Node.AwaitExpression;
     /**
      *
      * @param ctx
      */
-    visitSuperExpression(ctx: RuleContext): Node.Super
+    visitSuperExpression(ctx: RuleContext): Node.Super;
     /**
      * Visit a parse tree produced by ECMAScriptParser#MetaExpression.
      *
@@ -933,7 +937,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitMetaExpression(ctx: RuleContext): Node.MetaProperty
+    visitMetaExpression(ctx: RuleContext): Node.MetaProperty;
     /**
      * Visit a parse tree produced by ECMAScriptParser#classDeclaration.
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/class
@@ -944,7 +948,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *    ;
      * ```
      */
-    visitClassDeclaration(ctx: RuleContext): Node.ClassDeclaration
+    visitClassDeclaration(ctx: RuleContext): Node.ClassDeclaration;
     /**
      * Visit a parse tree produced by ECMAScriptParser#classTail.
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Classes
@@ -956,7 +960,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitClassTail(ctx: RuleContext): ClassTail
+    visitClassTail(ctx: RuleContext): ClassTail;
     /**
      * Visit a parse tree produced by ECMAScriptParser#classElement.
      *
@@ -969,7 +973,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitClassElement(ctx: RuleContext): ClassElement
+    visitClassElement(ctx: RuleContext): ClassElement;
     /**
      * Examples :
      * ```
@@ -984,7 +988,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitClassExpression(ctx: RuleContext): Node.ClassExpression
+    visitClassExpression(ctx: RuleContext): Node.ClassExpression;
     /**
      * TODO : Implement stage-3 private properties
      *
@@ -999,15 +1003,15 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitMethodDefinition(ctx: RuleContext): Node.MethodDefinition
-    private crateFunctionExpression
+    visitMethodDefinition(ctx: RuleContext): Node.MethodDefinition;
+    private crateFunctionExpression;
     /**
      * Check for specific token type present
      *
      * @param ctx
      * @param tokenType
      */
-    hasToken(ctx: RuleContext, tokenType: number): boolean
+    hasToken(ctx: RuleContext, tokenType: number): boolean;
     /**
      * Visit a parse tree produced by ECMAScriptParser#formalParameterList.
      *
@@ -1019,7 +1023,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitFormalParameterList(ctx: RuleContext): Node.FunctionParameter[]
+    visitFormalParameterList(ctx: RuleContext): Node.FunctionParameter[];
     /**
      * Visit a parse tree produced by ECMAScriptParser#formalParameterArg.
      *
@@ -1030,9 +1034,9 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitFormalParameterArg(ctx: RuleContext): Node.AssignmentPattern | Node.BindingIdentifier | Node.BindingPattern
+    visitFormalParameterArg(ctx: RuleContext): Node.AssignmentPattern | Node.BindingIdentifier | Node.BindingPattern;
     /**
-     * We have to perform converions here for the ArrayLiteral and ObjectLiteral
+     * We have to perform conversions here for the ArrayLiteral and ObjectLiteral
      *
      * Code :
      * ```
@@ -1050,12 +1054,12 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx  AssignableContext
      */
-    visitAssignable(ctx: RuleContext): Node.BindingIdentifier | Node.BindingPattern
+    visitAssignable(ctx: RuleContext): Node.BindingIdentifier | Node.BindingPattern;
     /**
      * Convert SpreadElement to RestElement
      * @param element
      */
-    convertToRestElement(element: Node.SpreadElement): Node.RestElement
+    convertToRestElement(element: Node.SpreadElement): Node.RestElement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#lastFormalParameterArg.
      *
@@ -1063,7 +1067,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *   : Ellipsis singleExpression
      *   ;
      */
-    visitLastFormalParameterArg(ctx: RuleContext): Node.RestElement
+    visitLastFormalParameterArg(ctx: RuleContext): Node.RestElement;
     /**
      * Visit a parse tree produced by ECMAScriptParser#TernaryExpression.
      *
@@ -1072,7 +1076,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitTernaryExpression(ctx: RuleContext): Node.ConditionalExpression
+    visitTernaryExpression(ctx: RuleContext): Node.ConditionalExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#LogicalAndExpression.
      *
@@ -1081,7 +1085,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitLogicalAndExpression(ctx: RuleContext): Node.BinaryExpression
+    visitLogicalAndExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#LogicalOrExpression.
      *
@@ -1090,8 +1094,8 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitLogicalOrExpression(ctx: RuleContext): Node.BinaryExpression
-    visitPowerExpression(ctx: RuleContext): Node.BinaryExpression
+    visitLogicalOrExpression(ctx: RuleContext): Node.BinaryExpression;
+    visitPowerExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Nullish Coalescing Operator
      *
@@ -1105,7 +1109,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitCoalesceExpression(ctx: RuleContext): Node.BinaryExpression
+    visitCoalesceExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Evaluate binary expression.
      * This applies to following types
@@ -1113,12 +1117,12 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * LogicalOrExpressionContext
      * @param ctx
      */
-    _binaryExpression(ctx: RuleContext): Node.BinaryExpression
+    _binaryExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#ObjectLiteralExpression.
      * @param ctx
      */
-    visitObjectLiteralExpression(ctx: RuleContext): Node.ObjectExpression
+    visitObjectLiteralExpression(ctx: RuleContext): Node.ObjectExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#InExpression.
      *
@@ -1127,22 +1131,27 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitInExpression(ctx: RuleContext): BinaryExpression
+    visitInExpression(ctx: RuleContext): BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#ArgumentsExpression.
      *
      * ```
      * | singleExpression arguments                # ArgumentsExpression
      * ```
+     *
+     * Example
+     * <pre>
+     * x?.y()
+     * </pre>
      * @param ctx
      */
-    visitArgumentsExpression(ctx: RuleContext): Node.CallExpression | Node.OptionalCallExpression
+    visitArgumentsExpression(ctx: RuleContext): Node.CallExpression | Node.OptionalCallExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#ThisExpression.
      *
      * @param ctx
      */
-    visitThisExpression(ctx: RuleContext): Node.ThisExpression
+    visitThisExpression(ctx: RuleContext): Node.ThisExpression;
     /**
      * Need to unroll functionDeclaration as a FunctionExpression
      * Visit a parse tree produced by ECMAScriptParser#FunctionExpression.
@@ -1157,15 +1166,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * @param ctx
      * @param isStatement
      */
-    visitFunctionExpression(
-        ctx: RuleContext
-    ):
-        | Node.FunctionExpression
-        | Node.AsyncFunctionExpression
-        | Node.ArrowFunctionExpression
-        | Node.AsyncArrowFunctionExpression
-        | Node.FunctionDeclaration
-        | Node.AsyncFunctionDeclaration
+    visitFunctionExpression(ctx: RuleContext): Node.FunctionExpression | Node.AsyncFunctionExpression | Node.ArrowFunctionExpression | Node.AsyncArrowFunctionExpression | Node.FunctionDeclaration | Node.AsyncFunctionDeclaration;
     /**
      * Visit a parse tree produced by ECMAScriptParser#functionDecl
      * ```
@@ -1175,7 +1176,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitAnoymousFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration
+    visitAnonymousFunctionDecl(ctx: RuleContext): Node.FunctionDeclaration;
     /**
      * Visit a parse tree produced by ECMAScriptParser#functionDecl
      *
@@ -1197,7 +1198,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArrowFunction(ctx: RuleContext): Node.ArrowFunctionExpression
+    visitArrowFunction(ctx: RuleContext): Node.ArrowFunctionExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#arrowFunctionParameters
      *
@@ -1209,7 +1210,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArrowFunctionParameters(ctx: RuleContext): Node.FunctionParameter[]
+    visitArrowFunctionParameters(ctx: RuleContext): Node.FunctionParameter[];
     /**
      * Visit a parse tree produced by ECMAScriptParser#arrowFunctionBody
      *
@@ -1221,7 +1222,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArrowFunctionBody(ctx: RuleContext): Node.BlockStatement | Node.Expression
+    visitArrowFunctionBody(ctx: RuleContext): Node.BlockStatement | Node.Expression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#AssignmentExpression.
      *
@@ -1237,35 +1238,35 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitAssignmentExpression(ctx: RuleContext): Node.AssignmentExpression
+    visitAssignmentExpression(ctx: RuleContext): Node.AssignmentExpression;
     /**
      * Convert ArrayExpression into ArrayPattern subsequently modifying the underlying nodes.
      *
      * @param expression
      */
-    convertToArrayPattern(expression: Node.ArrayExpression): Node.ArrayPattern
+    convertToArrayPattern(expression: Node.ArrayExpression): Node.ArrayPattern;
     /**
      * Type guard to check if node is and BindingIdentifier | BindingPattern
      * @param node
      */
-    isBindingIdentifierOrBindingPattern(node: unknown): node is Node.Identifier | Node.ArrayPattern | Node.ObjectPattern
+    isBindingIdentifierOrBindingPattern(node: unknown): node is Node.Identifier | Node.ArrayPattern | Node.ObjectPattern;
     /**
      * Convert ArrayExpressionElement[] into ArrayPatternElement[]
      * SpreadElement will be converted to RestElement
      * @param elements
      */
-    convertToArrayPatternElements(elements: ArrayExpressionElement[]): Node.ArrayPatternElement[]
+    convertToArrayPatternElements(elements: ArrayExpressionElement[]): Node.ArrayPatternElement[];
     /**
      * Convert ObjectExpressionProperty[] into an ObjectPatternProperty[]
      * @param elements
      */
-    convertToObjectPatternProperty(elements: Node.ObjectExpressionProperty[]): Node.ObjectPatternProperty[]
-    visitTypeofExpression(ctx: RuleContext): Node.UnaryExpression
-    visitInstanceofExpression(ctx: RuleContext): Node.BinaryExpression
-    visitUnaryPlusExpression(ctx: RuleContext): Node.UnaryExpression
-    visitUnaryMinusExpression(ctx: RuleContext): Node.UnaryExpression
-    visitBitNotExpression(ctx: RuleContext): Node.UnaryExpression
-    visitNotExpression(ctx: RuleContext): Node.UnaryExpression
+    convertToObjectPatternProperty(elements: Node.ObjectExpressionProperty[]): Node.ObjectPatternProperty[];
+    visitTypeofExpression(ctx: RuleContext): Node.UnaryExpression;
+    visitInstanceofExpression(ctx: RuleContext): Node.BinaryExpression;
+    visitUnaryPlusExpression(ctx: RuleContext): Node.UnaryExpression;
+    visitUnaryMinusExpression(ctx: RuleContext): Node.UnaryExpression;
+    visitBitNotExpression(ctx: RuleContext): Node.UnaryExpression;
+    visitNotExpression(ctx: RuleContext): Node.UnaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#DeleteExpression.
      * ```
@@ -1273,50 +1274,50 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitDeleteExpression(ctx: RuleContext): Node.UnaryExpression
+    visitDeleteExpression(ctx: RuleContext): Node.UnaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#EqualityExpression.
      *
      * @param ctx
      */
-    visitEqualityExpression(ctx: RuleContext): Node.BinaryExpression
+    visitEqualityExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#BitXOrExpression.
      *
      * @param ctx
      */
-    visitBitXOrExpression(ctx: RuleContext): Node.BinaryExpression
+    visitBitXOrExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#BitAndExpression.
      *
      * @param ctx
      */
-    visitBitAndExpression(ctx: RuleContext): Node.BinaryExpression
+    visitBitAndExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#BitOrExpression.
      *
      * @param ctx
      */
-    visitBitOrExpression(ctx: RuleContext): Node.BinaryExpression
+    visitBitOrExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#MultiplicativeExpression.
      *
      * @param ctx
      */
-    visitMultiplicativeExpression(ctx: RuleContext): Node.BinaryExpression
+    visitMultiplicativeExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#BitShiftExpression.
      *
      * @param ctx
      */
-    visitBitShiftExpression(ctx: RuleContext): Node.BinaryExpression
+    visitBitShiftExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Coerce SequenceExpression that have only one node will be pulled up to `Node.Expression`
-     * complaince(esprima)
+     * compliance(esprima)
      *
-     * @param sequence
+     * @param expression
      */
-    private coerceToExpressionOrSequence
+    private coerceToExpressionOrSequence;
     /**
      * Visit a parse tree produced by ECMAScriptParser#ParenthesizedExpression.
      *
@@ -1325,49 +1326,49 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitParenthesizedExpression(ctx: RuleContext): Node.Expression | Node.SequenceExpression
+    visitParenthesizedExpression(ctx: RuleContext): Node.Expression | Node.SequenceExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#AdditiveExpression.
      *
      * @param ctx
      */
-    visitAdditiveExpression(ctx: RuleContext): Node.BinaryExpression
+    visitAdditiveExpression(ctx: RuleContext): Node.BinaryExpression;
     /**
      * Visit binary expression
      *
      * @param ctx
      */
-    private _visitBinaryExpression
+    private _visitBinaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#RelationalExpression.
      *
      * @param ctx
      */
-    visitRelationalExpression(ctx: RuleContext): Node.BinaryExpression
-    private getUpdateExpression
+    visitRelationalExpression(ctx: RuleContext): Node.BinaryExpression;
+    private getUpdateExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#PostIncrementExpression.
      * @param ctx
      */
-    visitPostIncrementExpression(ctx: RuleContext): Node.UpdateExpression
+    visitPostIncrementExpression(ctx: RuleContext): Node.UpdateExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#PreIncrementExpression.
      *
      * @param ctx
      */
-    visitPreIncrementExpression(ctx: RuleContext): Node.UpdateExpression
+    visitPreIncrementExpression(ctx: RuleContext): Node.UpdateExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#PreDecreaseExpression.
      *
      * @param ctx
      */
-    visitPreDecreaseExpression(ctx: RuleContext): Node.UpdateExpression
+    visitPreDecreaseExpression(ctx: RuleContext): Node.UpdateExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#PostDecreaseExpression.
      *
      * @param ctx
      */
-    visitPostDecreaseExpression(ctx: RuleContext): Node.UpdateExpression
+    visitPostDecreaseExpression(ctx: RuleContext): Node.UpdateExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#NewExpression.
      * This rule is problematic as
@@ -1377,7 +1378,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitNewExpression(ctx: RuleContext): Node.NewExpression
+    visitNewExpression(ctx: RuleContext): Node.NewExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#LiteralExpression.
      *
@@ -1394,7 +1395,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitLiteralExpression(ctx: RuleContext): Literal | RegexLiteral | TemplateLiteral
+    visitLiteralExpression(ctx: RuleContext): Literal | RegexLiteral | TemplateLiteral;
     /**
      *  Visit a parse tree produced by ECMAScriptParser#ArrayLiteralExpression.
      *
@@ -1405,7 +1406,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitArrayLiteralExpression(ctx: RuleContext): Node.ArrayExpression
+    visitArrayLiteralExpression(ctx: RuleContext): Node.ArrayExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#MemberDotExpression.
      *
@@ -1425,7 +1426,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * computed = false `x.z`
      * computed = true `y[1]`
      */
-    visitMemberDotExpression(ctx: RuleContext): Node.StaticMemberExpression | Node.OptionalMemberExpression
+    visitMemberDotExpression(ctx: RuleContext): Node.StaticMemberExpression | Node.OptionalMemberExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#MemberNewExpression.
      *
@@ -1445,7 +1446,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitMemberNewExpression(ctx: RuleContext): Node.NewExpression | Node.CallExpression
+    visitMemberNewExpression(ctx: RuleContext): Node.NewExpression | Node.CallExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#MemberIndexExpression.
      *
@@ -1454,7 +1455,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitMemberIndexExpression(ctx: RuleContext): Node.ComputedMemberExpression
+    visitMemberIndexExpression(ctx: RuleContext): Node.ComputedMemberExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#IdentifierExpression.
      *
@@ -1463,14 +1464,14 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitIdentifierExpression(ctx: RuleContext): Node.Identifier
+    visitIdentifierExpression(ctx: RuleContext): Node.Identifier;
     /**
      * Visit a parse tree produced by ECMAScriptParser#identifier.
      *
      * @ref https://stackoverflow.com/questions/7885096/how-do-i-decode-a-string-with-escaped-unicode
      * @param ctx
      */
-    visitIdentifier(ctx: RuleContext): Node.Identifier
+    visitIdentifier(ctx: RuleContext): Node.Identifier;
     /**
      * Visit a parse tree produced by ECMAScriptParser#AssignmentOperatorExpression.
      *
@@ -1479,7 +1480,7 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitAssignmentOperatorExpression(ctx: RuleContext): Node.AssignmentExpression
+    visitAssignmentOperatorExpression(ctx: RuleContext): Node.AssignmentExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#VoidExpression.
      *
@@ -1488,11 +1489,11 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitVoidExpression(ctx: RuleContext): Node.UnaryExpression
+    visitVoidExpression(ctx: RuleContext): Node.UnaryExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#literal.
      *
-     * `numericLiteral` and  `bigintLiteral` are production rules, everthing else is a `TerminalNode`
+     * `numericLiteral` and  `bigintLiteral` are production rules, everything else is a `TerminalNode`
      * We inspect Token type to figure out what type of literal we are working with
      *
      * ```
@@ -1508,27 +1509,36 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitLiteral(ctx: RuleContext): Node.Literal | Node.TemplateLiteral | Node.RegexLiteral
+    visitLiteral(ctx: RuleContext): Node.Literal | Node.TemplateLiteral | Node.RegexLiteral;
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#templateStringLiteral.
+     * @param ctx
+     */
+    visitTemplateStringLiteral(ctx: any): Node.TemplateLiteral;
+    /**
+     * Visit a parse tree produced by ECMAScriptParser#templateStringAtom.
+     * @param ctx
+     */
+    visitTemplateStringAtom(ctx: any): void;
     /**
      * Visit a parse tree produced by ECMAScriptParser#numericLiteral.
      *
      * @param ctx
      */
-    visitNumericLiteral(ctx: RuleContext): Node.Literal
-    private createLiteralValue
-    private createRegularExpressionLiteral
+    visitNumericLiteral(ctx: RuleContext): Node.Literal;
+    private createLiteralValue;
+    private createRegularExpressionLiteral;
     /**
-     * This is quikc and dirty implemenation of TemplateLiteral string iterpolation
-     * TODO : Update grammar to use ANTLR lexer modes to properly parse the expressions tree rather than reinterpeting expression here
+     * This is quick and dirty implementation of TemplateLiteral string interpolation
+     * TODO : Update grammar to use ANTLR lexer modes to properly parse the expressions tree rather than reinterpreting expression here
      *
      * Example
      * ```
      * const code =  "let x = `A ${1+2} B + C${b}D`"
      * ```
-     *
      * @param ctx
      */
-    private createTemplateLiteral
+    private createTemplateLiteral;
     /**
      * Template string expression
      * Usage
@@ -1542,26 +1552,26 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitTemplateStringExpression(ctx: RuleContext): Node.TaggedTemplateExpression
+    visitTemplateStringExpression(ctx: RuleContext): Node.TaggedTemplateExpression;
     /**
      * Visit a parse tree produced by ECMAScriptParser#identifierName.
      *
      * @param ctx
      */
-    visitIdentifierName(ctx: RuleContext): Node.Identifier
+    visitIdentifierName(ctx: RuleContext): Node.Identifier;
     /**
      * Visit a parse tree produced by ECMAScriptParser#reservedWord.
      *
      * @param ctx
      */
-    visitReservedWord(ctx: RuleContext): void
+    visitReservedWord(ctx: RuleContext): void;
     /**
      * Visit a parse tree produced by ECMAScriptParser#keyword.
      *
      * @param ctx
      */
-    visitKeyword(ctx: RuleContext): void
-    visitFutureReservedWord(ctx: RuleContext): void
+    visitKeyword(ctx: RuleContext): void;
+    visitFutureReservedWord(ctx: RuleContext): void;
     /**
      * Visit a parse tree produced by ECMAScriptParser#getter.
      *
@@ -1585,12 +1595,10 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *
      * @param ctx
      */
-    visitGetter(
-        ctx: RuleContext
-    ): {
-        computed: boolean
-        key: Node.PropertyKey
-    }
+    visitGetter(ctx: RuleContext): {
+        computed: boolean;
+        key: Node.PropertyKey;
+    };
     /**
      * Check if PropertyNameContext is a computed property
      * When IdentifierExpression / LiteralExpressionContext / is present
@@ -1598,13 +1606,13 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      *
      * @param propertyNameCtx
      */
-    isComputedProperty(propertyNameCtx: RuleContext): boolean
+    isComputedProperty(propertyNameCtx: RuleContext): boolean;
     /**
      * Check if current context has computed property
      *
      * @param propertyNameCtx
      */
-    hasComputedProperty(propertyNameCtx: RuleContext): boolean
+    hasComputedProperty(propertyNameCtx: RuleContext): boolean;
     /**
      * Visit a parse tree produced by ECMAScriptParser#setter.
      *
@@ -1615,12 +1623,10 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitSetter(
-        ctx: RuleContext
-    ): {
-        computed: boolean
-        key: Node.PropertyKey
-    }
+    visitSetter(ctx: RuleContext): {
+        computed: boolean;
+        key: Node.PropertyKey;
+    };
     /**
      * Sample :
      * ```
@@ -1639,14 +1645,14 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ;
      * ```
      */
-    visitYieldExpression(ctx: RuleContext): Node.YieldExpression
-    visitInlinedQueryExpression(ctx: RuleContext): Node.QueryExpression
-    visitQuerySelectStatement(ctx: RuleContext): Node.SelectStatement
-    visitQueryExpression(ctx: RuleContext): Node.QueryExpression
-    visitQuerySelectExpression(ctx: RuleContext): Node.QueryExpression
-    visitQuerySelectListExpression(ctx: RuleContext): Node.SelectClause
-    visitQueryFromExpression(ctx: RuleContext): Node.FromClause
-    visitQueryDataSourcesExpression(ctx: RuleContext): Node.FromClauseElement[]
+    visitYieldExpression(ctx: RuleContext): Node.YieldExpression;
+    visitInlinedQueryExpression(ctx: RuleContext): Node.QueryExpression;
+    visitQuerySelectStatement(ctx: RuleContext): Node.SelectStatement;
+    visitQueryExpression(ctx: RuleContext): Node.QueryExpression;
+    visitQuerySelectExpression(ctx: RuleContext): Node.QueryExpression;
+    visitQuerySelectListExpression(ctx: RuleContext): Node.SelectClause;
+    visitQueryFromExpression(ctx: RuleContext): Node.FromClause;
+    visitQueryDataSourcesExpression(ctx: RuleContext): Node.FromClauseElement[];
     /**
      * Visit the DataSource
      *
@@ -1663,8 +1669,8 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * ```
      * @param ctx
      */
-    visitDataSource(ctx: RuleContext): Node.FromClauseElement
-    visitQueryDataSourceItemIdentifierExpression(ctx: RuleContext): Node.FromClauseElement
+    visitDataSource(ctx: RuleContext): Node.FromClauseElement;
+    visitQueryDataSourceItemIdentifierExpression(ctx: RuleContext): Node.FromClauseElement;
     /**
      * Handles ULR style datasources
      *
@@ -1672,15 +1678,15 @@ declare class DelvenASTVisitor extends DelvenVisitor {
      * select x from http://src
      * ```
      */
-    visitQueryDataSourceItemUrlExpression(ctx: RuleContext): Node.FromClauseElement
-    visitQueryDataSourceItemArgumentsExpression(ctx: RuleContext): Node.FromClauseElement
-    visitQueryWhereExpression(ctx: RuleContext): Node.WhereClause
+    visitQueryDataSourceItemUrlExpression(ctx: RuleContext): Node.FromClauseElement;
+    visitQueryDataSourceItemArgumentsExpression(ctx: RuleContext): Node.FromClauseElement;
+    visitQueryWhereExpression(ctx: RuleContext): Node.WhereClause;
     /**
      * Asserts that a condition is true.
      *
      * @param condition
      * @param message
      */
-    assertTrue(condition: boolean, message?: string): void
+    assertTrue(condition: boolean, message?: string): void;
 }
-export {}
+export {};

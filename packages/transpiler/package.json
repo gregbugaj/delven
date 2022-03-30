@@ -1,5 +1,5 @@
 {
-    "name": "delven-transpiler",
+    "name": "@delven/transpiler",
     "version": "1.0.0",
     "description": "delven transpiler",
     "main-ts": "src/index.ts",

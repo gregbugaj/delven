@@ -1,7 +1,4 @@
-export var ECMAScriptParserVisitor: typeof ECMAScriptParserVisitor;
-declare function ECMAScriptParserVisitor(): any;
-declare class ECMAScriptParserVisitor {
-    constructor: typeof ECMAScriptParserVisitor;
+export default class ECMAScriptParserVisitor {
     visitProgram(ctx: any): any;
     visitSourceElement(ctx: any): any;
     visitStatement(ctx: any): any;
@@ -120,12 +117,14 @@ declare class ECMAScriptParserVisitor {
     visitAssignable(ctx: any): any;
     visitObjectLiteral(ctx: any): any;
     visitFunctionDecl(ctx: any): any;
-    visitAnoymousFunctionDecl(ctx: any): any;
+    visitAnonymousFunctionDecl(ctx: any): any;
     visitArrowFunction(ctx: any): any;
     visitArrowFunctionParameters(ctx: any): any;
     visitArrowFunctionBody(ctx: any): any;
     visitAssignmentOperator(ctx: any): any;
     visitLiteral(ctx: any): any;
+    visitTemplateStringLiteral(ctx: any): any;
+    visitTemplateStringAtom(ctx: any): any;
     visitNumericLiteral(ctx: any): any;
     visitBigintLiteral(ctx: any): any;
     visitGetter(ctx: any): any;
@@ -134,6 +133,7 @@ declare class ECMAScriptParserVisitor {
     visitIdentifier(ctx: any): any;
     visitReservedWord(ctx: any): any;
     visitKeyword(ctx: any): any;
+    visitLet_(ctx: any): any;
     visitEos(ctx: any): any;
     visitQuerySelectStatement(ctx: any): any;
     visitQueryExpression(ctx: any): any;
@@ -160,4 +160,3 @@ declare class ECMAScriptParserVisitor {
     visitQueryObjectLiteral(ctx: any): any;
     visitQueryPropertyAssignment(ctx: any): any;
 }
-export {};

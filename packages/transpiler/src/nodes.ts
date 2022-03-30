@@ -482,14 +482,14 @@ export class ForOfStatement {
     readonly left: Expression
     readonly right: Expression
     readonly body: Statement
-    readonly await: boolean
+    readonly await_: boolean
 
-    constructor(left: Expression, right: Expression, body: Statement, await: boolean) {
+    constructor(left: Expression, right: Expression, body: Statement, await_: boolean) {
         this.type = Syntax.ForOfStatement
         this.left = left
         this.right = right
         this.body = body
-        this.await = await
+        this.await_ = await_
     }
 }
 

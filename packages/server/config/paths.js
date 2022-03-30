@@ -1,6 +1,13 @@
-const path = require('path')
+import { fileURLToPath } from 'url'
+import path,  { dirname } from 'path'
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+console.log('directory-name 👉️', __dirname);
+console.log('file-name 👉️', __filename);
+
+export default {
   // Source files
   src: path.resolve(__dirname, '../src'),
 

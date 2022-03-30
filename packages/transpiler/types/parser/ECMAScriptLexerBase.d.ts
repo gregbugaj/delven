@@ -1,20 +1,21 @@
-export var ECMAScriptLexerBase: typeof ECMAScriptLexerBase;
-declare function ECMAScriptLexerBase(input: any): void;
-declare class ECMAScriptLexerBase {
+export default class ECMAScriptLexerBase {
     constructor(input: any);
     scopeStrictModes: any[];
-    lastToken: import("antlr4").Token | null;
+    lastToken: any;
     useStrictDefault: boolean;
     useStrictCurrent: boolean;
+    templateDepth: number;
     getStrictDefault(): boolean;
     setUseStrictDefault(value: any): void;
     IsStrictMode(): boolean;
-    getCurrentToken(): import("antlr4").Token;
-    nextToken(): import("antlr4").Token;
+    IsInTemplateString(): boolean;
+    getCurrentToken(): any;
+    nextToken(): any;
     ProcessOpenBrace(): void;
     ProcessCloseBrace(): void;
     ProcessStringLiteral(): void;
+    IncreaseTemplateDepth(): void;
+    DecreaseTemplateDepth(): void;
     IsRegexPossible(): boolean;
     IsStartOfFile(): boolean;
 }
-export {};

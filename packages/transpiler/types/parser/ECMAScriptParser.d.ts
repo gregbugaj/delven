@@ -1,13 +1,26 @@
-export var ECMAScriptParser: typeof ECMAScriptParser;
-declare function ECMAScriptParser(input: any): any;
-declare class ECMAScriptParser {
+declare class ECMAScriptParser extends ECMAScriptParserBase {
+    static grammarFileName: string;
+    static literalNames: (string | null)[];
+    static symbolicNames: (string | null)[];
+    static ruleNames: string[];
     constructor(input: any);
     _interp: any;
     ruleNames: string[];
     literalNames: (string | null)[];
     symbolicNames: (string | null)[];
-    constructor: typeof ECMAScriptParser;
     get atn(): any;
+    sempred(localctx: any, ruleIndex: any, predIndex: any): any;
+    expressionStatement_sempred(localctx: any, predIndex: any): boolean;
+    iterationStatement_sempred(localctx: any, predIndex: any): boolean;
+    continueStatement_sempred(localctx: any, predIndex: any): boolean;
+    breakStatement_sempred(localctx: any, predIndex: any): boolean;
+    returnStatement_sempred(localctx: any, predIndex: any): boolean;
+    throwStatement_sempred(localctx: any, predIndex: any): boolean;
+    classElement_sempred(localctx: any, predIndex: any): boolean;
+    singleExpression_sempred(localctx: any, predIndex: any): any;
+    getter_sempred(localctx: any, predIndex: any): boolean;
+    setter_sempred(localctx: any, predIndex: any): boolean;
+    eos_sempred(localctx: any, predIndex: any): any;
     program(): ProgramContext;
     state: number | undefined;
     sourceElement(): SourceElementContext;
@@ -70,11 +83,13 @@ declare class ECMAScriptParser {
     _ctx: any;
     assignable(): AssignableContext;
     objectLiteral(): ObjectLiteralContext;
-    anoymousFunction(): AnoymousFunctionContext;
+    anonymousFunction(): AnonymousFunctionContext;
     arrowFunctionParameters(): ArrowFunctionParametersContext;
     arrowFunctionBody(): ArrowFunctionBodyContext;
     assignmentOperator(): AssignmentOperatorContext;
     literal(): LiteralContext;
+    templateStringLiteral(): TemplateStringLiteralContext;
+    templateStringAtom(): TemplateStringAtomContext;
     numericLiteral(): NumericLiteralContext;
     bigintLiteral(): BigintLiteralContext;
     getter(): GetterContext;
@@ -83,6 +98,7 @@ declare class ECMAScriptParser {
     identifier(): IdentifierContext;
     reservedWord(): ReservedWordContext;
     keyword(): KeywordContext;
+    let_(): Let_Context;
     eos(): EosContext;
     querySelectStatement(): QuerySelectStatementContext;
     queryExpression(): QueryExpressionContext;
@@ -103,21 +119,9 @@ declare class ECMAScriptParser {
     withinClause(): WithinClauseContext;
     queryObjectLiteral(): QueryObjectLiteralContext;
     queryPropertyAssignment(): QueryPropertyAssignmentContext;
-    sempred(localctx: any, ruleIndex: any, predIndex: any): any;
-    expressionStatement_sempred(localctx: any, predIndex: any): any;
-    iterationStatement_sempred(localctx: any, predIndex: any): any;
-    continueStatement_sempred(localctx: any, predIndex: any): any;
-    breakStatement_sempred(localctx: any, predIndex: any): any;
-    returnStatement_sempred(localctx: any, predIndex: any): any;
-    throwStatement_sempred(localctx: any, predIndex: any): any;
-    classElement_sempred(localctx: any, predIndex: any): any;
-    singleExpression_sempred(localctx: any, predIndex: any): any;
-    getter_sempred(localctx: any, predIndex: any): any;
-    setter_sempred(localctx: any, predIndex: any): any;
-    eos_sempred(localctx: any, predIndex: any): any;
 }
 declare namespace ECMAScriptParser {
-    export const EOF: number;
+    export const EOF: any;
     export const HashBangLine: number;
     export const MultiLineComment: number;
     export const SingleLineComment: number;
@@ -127,6 +131,7 @@ declare namespace ECMAScriptParser {
     export const OpenParen: number;
     export const CloseParen: number;
     export const OpenBrace: number;
+    export const TemplateCloseBrace: number;
     export const CloseBrace: number;
     export const SemiColon: number;
     export const Comma: number;
@@ -204,7 +209,7 @@ declare namespace ECMAScriptParser {
     export const Switch: number;
     export const While: number;
     export const Debugger: number;
-    export const Function: number;
+    export const Function_: number;
     export const This: number;
     export const With: number;
     export const Default: number;
@@ -215,7 +220,6 @@ declare namespace ECMAScriptParser {
     export const Try: number;
     export const As: number;
     export const From: number;
-    export const Let: number;
     export const Class: number;
     export const Enum: number;
     export const Extends: number;
@@ -247,13 +251,14 @@ declare namespace ECMAScriptParser {
     export const Yield: number;
     export const Identifier: number;
     export const StringLiteral: number;
-    export const TemplateStringLiteral: number;
+    export const BackTick: number;
     export const WhiteSpaces: number;
     export const LineTerminator: number;
-    export const NEWLINE: number;
     export const HtmlComment: number;
     export const CDataComment: number;
     export const UnexpectedCharacter: number;
+    export const TemplateStringStartExpression: number;
+    export const TemplateStringAtom: number;
     export const RULE_program: number;
     export const RULE_sourceElement: number;
     export const RULE_statement: number;
@@ -314,11 +319,13 @@ declare namespace ECMAScriptParser {
     export const RULE_singleExpression: number;
     export const RULE_assignable: number;
     export const RULE_objectLiteral: number;
-    export const RULE_anoymousFunction: number;
+    export const RULE_anonymousFunction: number;
     export const RULE_arrowFunctionParameters: number;
     export const RULE_arrowFunctionBody: number;
     export const RULE_assignmentOperator: number;
     export const RULE_literal: number;
+    export const RULE_templateStringLiteral: number;
+    export const RULE_templateStringAtom: number;
     export const RULE_numericLiteral: number;
     export const RULE_bigintLiteral: number;
     export const RULE_getter: number;
@@ -327,6 +334,7 @@ declare namespace ECMAScriptParser {
     export const RULE_identifier: number;
     export const RULE_reservedWord: number;
     export const RULE_keyword: number;
+    export const RULE_let_: number;
     export const RULE_eos: number;
     export const RULE_querySelectStatement: number;
     export const RULE_queryExpression: number;
@@ -347,76 +355,19 @@ declare namespace ECMAScriptParser {
     export const RULE_withinClause: number;
     export const RULE_queryObjectLiteral: number;
     export const RULE_queryPropertyAssignment: number;
-    export { ProgramContext };
-    export { SourceElementContext };
-    export { StatementContext };
-    export { BlockContext };
-    export { StatementListContext };
-    export { ImportStatementContext };
-    export { ImportFromBlockContext };
-    export { ModuleItemsContext };
-    export { ImportDefaultContext };
-    export { ImportNamespaceContext };
-    export { ImportFromContext };
-    export { AliasNameContext };
     export { ExportDefaultDeclarationContext };
     export { ExportDeclarationContext };
-    export { ExportStatementContext };
-    export { ExportFromBlockContext };
-    export { DeclarationContext };
-    export { VariableStatementContext };
-    export { VariableDeclarationListContext };
-    export { VariableDeclarationContext };
-    export { EmptyStatementContext };
-    export { ExpressionStatementContext };
-    export { IfStatementContext };
     export { DoStatementContext };
     export { WhileStatementContext };
     export { ForStatementContext };
     export { ForInStatementContext };
     export { ForOfStatementContext };
-    export { IterationStatementContext };
-    export { VarModifierContext };
-    export { ContinueStatementContext };
-    export { BreakStatementContext };
-    export { ReturnStatementContext };
-    export { WithStatementContext };
-    export { SwitchStatementContext };
-    export { CaseBlockContext };
-    export { CaseClausesContext };
-    export { CaseClauseContext };
-    export { DefaultClauseContext };
-    export { LabelledStatementContext };
-    export { ThrowStatementContext };
-    export { TryStatementContext };
-    export { CatchProductionContext };
-    export { FinallyProductionContext };
-    export { DebuggerStatementContext };
-    export { FunctionDeclarationContext };
-    export { ClassDeclarationContext };
-    export { ClassTailContext };
-    export { ClassHeritageContext };
-    export { ClassElementContext };
-    export { MethodDefinitionContext };
-    export { FormalParameterListContext };
-    export { FormalParameterArgContext };
-    export { LastFormalParameterArgContext };
-    export { FunctionBodyContext };
-    export { SourceElementsContext };
-    export { ArrayLiteralContext };
-    export { ElementListContext };
-    export { ArrayElementContext };
     export { PropertyExpressionAssignmentContext };
     export { ComputedPropertyExpressionAssignmentContext };
     export { PropertyShorthandContext };
     export { PropertySetterContext };
     export { PropertyGetterContext };
     export { FunctionPropertyContext };
-    export { PropertyAssignmentContext };
-    export { PropertyNameContext };
-    export { ArgumentsContext };
-    export { ArgumentContext };
-    export { ExpressionSequenceContext };
     export { TemplateStringExpressionContext };
     export { TernaryExpressionContext };
     export { LogicalAndExpressionContext };
@@ -465,16 +416,94 @@ declare namespace ECMAScriptParser {
     export { AssignmentOperatorExpressionContext };
     export { VoidExpressionContext };
     export { CoalesceExpressionContext };
-    export { AssignableContext };
-    export { ObjectLiteralContext };
-    export { AnoymousFunctionDeclContext };
+    export { AnonymousFunctionDeclContext };
     export { ArrowFunctionContext };
     export { FunctionDeclContext };
-    export { AnoymousFunctionContext };
+    export { QueryUnionExpressionContext };
+    export { QuerySelectExpressionContext };
+    export { QuerySelectListExpressionContext };
+    export { QueryFromExpressionContext };
+    export { QueryWhereExpressionContext };
+    export { QueryDataSourcesExpressionContext };
+    export { QueryDataSourceExpressionContext };
+    export { QueryDataSourceItemIdentifierExpressionContext };
+    export { QueryDataSourceItemUrlExpressionContext };
+    export { QueryDataSourceItemArgumentsExpressionContext };
+    export { QueryDataSourceItemSubqueryExpressionContext };
+    export { QueryJoinCrossApplyExpressionContext };
+    export { QueryJoinOnExpressionContext };
+    export { QuerySourceUsingLiteralExpressionContext };
+    export { QuerySourceUsingSingleExpressionContext };
+    export { QueryProduceExpressionContext };
+    export { QueryBindExpressionContext };
+    export { QueryWithinExpressionContext };
+    export { ProgramContext };
+    export { SourceElementContext };
+    export { StatementContext };
+    export { BlockContext };
+    export { StatementListContext };
+    export { ImportStatementContext };
+    export { ImportFromBlockContext };
+    export { ModuleItemsContext };
+    export { ImportDefaultContext };
+    export { ImportNamespaceContext };
+    export { ImportFromContext };
+    export { AliasNameContext };
+    export { ExportStatementContext };
+    export { ExportFromBlockContext };
+    export { DeclarationContext };
+    export { VariableStatementContext };
+    export { VariableDeclarationListContext };
+    export { VariableDeclarationContext };
+    export { EmptyStatementContext };
+    export { ExpressionStatementContext };
+    export { IfStatementContext };
+    export { IterationStatementContext };
+    export { VarModifierContext };
+    export { ContinueStatementContext };
+    export { BreakStatementContext };
+    export { ReturnStatementContext };
+    export { WithStatementContext };
+    export { SwitchStatementContext };
+    export { CaseBlockContext };
+    export { CaseClausesContext };
+    export { CaseClauseContext };
+    export { DefaultClauseContext };
+    export { LabelledStatementContext };
+    export { ThrowStatementContext };
+    export { TryStatementContext };
+    export { CatchProductionContext };
+    export { FinallyProductionContext };
+    export { DebuggerStatementContext };
+    export { FunctionDeclarationContext };
+    export { ClassDeclarationContext };
+    export { ClassTailContext };
+    export { ClassHeritageContext };
+    export { ClassElementContext };
+    export { MethodDefinitionContext };
+    export { FormalParameterListContext };
+    export { FormalParameterArgContext };
+    export { LastFormalParameterArgContext };
+    export { FunctionBodyContext };
+    export { SourceElementsContext };
+    export { ArrayLiteralContext };
+    export { ElementListContext };
+    export { ArrayElementContext };
+    export { PropertyAssignmentContext };
+    export { PropertyNameContext };
+    export { ArgumentsContext };
+    export { ArgumentContext };
+    export { ExpressionSequenceContext };
+    export { SingleExpressionContext };
+    export { AssignableContext };
+    export { ObjectLiteralContext };
+    export { AnonymousFunctionContext };
     export { ArrowFunctionParametersContext };
     export { ArrowFunctionBodyContext };
     export { AssignmentOperatorContext };
     export { LiteralContext };
+    export { TemplateStringLiteralContext };
+    export { TemplateStringAtomContext };
     export { NumericLiteralContext };
     export { BigintLiteralContext };
     export { GetterContext };
@@ -483,71 +512,50 @@ declare namespace ECMAScriptParser {
     export { IdentifierContext };
     export { ReservedWordContext };
     export { KeywordContext };
+    export { Let_Context };
     export { EosContext };
     export { QuerySelectStatementContext };
     export { QueryExpressionContext };
-    export { QueryUnionExpressionContext };
     export { Sql_unionContext };
-    export { QuerySelectExpressionContext };
     export { QuerySpecificationContext };
-    export { QuerySelectListExpressionContext };
     export { Select_listContext };
     export { Select_list_elemContext };
-    export { QueryFromExpressionContext };
     export { FromClauseContext };
-    export { QueryWhereExpressionContext };
     export { WhereClauseContext };
-    export { QueryDataSourcesExpressionContext };
     export { DataSourcesContext };
     export { DataSourceContext };
-    export { QueryDataSourceExpressionContext };
     export { Data_source_item_joinedContext };
-    export { QueryDataSourceItemIdentifierExpressionContext };
-    export { QueryDataSourceItemUrlExpressionContext };
-    export { QueryDataSourceItemArgumentsExpressionContext };
-    export { QueryDataSourceItemSubqueryExpressionContext };
     export { Data_source_itemContext };
-    export { QueryJoinCrossApplyExpressionContext };
-    export { QueryJoinOnExpressionContext };
     export { Join_clauseContext };
-    export { QuerySourceUsingLiteralExpressionContext };
-    export { QuerySourceUsingSingleExpressionContext };
     export { Using_source_clauseContext };
-    export { QueryProduceExpressionContext };
     export { Produce_clauseContext };
-    export { QueryBindExpressionContext };
     export { Bind_clauseContext };
-    export { QueryWithinExpressionContext };
     export { WithinClauseContext };
     export { QueryObjectLiteralContext };
     export { QueryPropertyAssignmentContext };
 }
-declare function ProgramContext(parser: any, parent: any, invokingState: any): any;
+export default ECMAScriptParser;
+import ECMAScriptParserBase from "./ECMAScriptParserBase.js";
 declare class ProgramContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ProgramContext;
     EOF(): any;
     HashBangLine(): any;
     sourceElements(): any;
     accept(visitor: any): any;
 }
-declare function SourceElementContext(parser: any, parent: any, invokingState: any): any;
 declare class SourceElementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof SourceElementContext;
     statement(): any;
     accept(visitor: any): any;
 }
-declare function StatementContext(parser: any, parent: any, invokingState: any): any;
 declare class StatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof StatementContext;
     block(): any;
     querySelectStatement(): any;
     variableStatement(): any;
@@ -570,42 +578,34 @@ declare class StatementContext {
     debuggerStatement(): any;
     accept(visitor: any): any;
 }
-declare function BlockContext(parser: any, parent: any, invokingState: any): any;
 declare class BlockContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof BlockContext;
     OpenBrace(): any;
     CloseBrace(): any;
     statementList(): any;
     accept(visitor: any): any;
 }
-declare function StatementListContext(parser: any, parent: any, invokingState: any): any;
 declare class StatementListContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof StatementListContext;
-    statement(i: any): any;
+    statement: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function ImportStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class ImportStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ImportStatementContext;
     Import(): any;
     importFromBlock(): any;
     accept(visitor: any): any;
 }
-declare function ImportFromBlockContext(parser: any, parent: any, invokingState: any): any;
 declare class ImportFromBlockContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ImportFromBlockContext;
     StringLiteral(): any;
     eos(): any;
     importDefault(): any;
@@ -615,212 +615,172 @@ declare class ImportFromBlockContext {
     moduleItems(): any;
     accept(visitor: any): any;
 }
-declare function ModuleItemsContext(parser: any, parent: any, invokingState: any): any;
 declare class ModuleItemsContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ModuleItemsContext;
     OpenBrace(): any;
     CloseBrace(): any;
-    aliasName(i: any): any;
-    Comma(i: any): any;
+    aliasName: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function ImportDefaultContext(parser: any, parent: any, invokingState: any): any;
 declare class ImportDefaultContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ImportDefaultContext;
     aliasName(): any;
     accept(visitor: any): any;
 }
-declare function ImportNamespaceContext(parser: any, parent: any, invokingState: any): any;
 declare class ImportNamespaceContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ImportNamespaceContext;
     Multiply(): any;
-    identifierName(i: any): any;
+    identifierName: (i: any) => any;
     As(): any;
     accept(visitor: any): any;
 }
-declare function ImportFromContext(parser: any, parent: any, invokingState: any): any;
 declare class ImportFromContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ImportFromContext;
     From(): any;
     StringLiteral(): any;
     accept(visitor: any): any;
 }
-declare function AliasNameContext(parser: any, parent: any, invokingState: any): any;
 declare class AliasNameContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof AliasNameContext;
-    identifierName(i: any): any;
+    identifierName: (i: any) => any;
     As(): any;
     accept(visitor: any): any;
 }
-declare function ExportStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class ExportStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ExportStatementContext;
     copyFrom(ctx: any): void;
 }
-declare function ExportFromBlockContext(parser: any, parent: any, invokingState: any): any;
 declare class ExportFromBlockContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ExportFromBlockContext;
     importNamespace(): any;
     importFrom(): any;
     eos(): any;
     moduleItems(): any;
     accept(visitor: any): any;
 }
-declare function DeclarationContext(parser: any, parent: any, invokingState: any): any;
 declare class DeclarationContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof DeclarationContext;
     variableStatement(): any;
     classDeclaration(): any;
     functionDeclaration(): any;
     accept(visitor: any): any;
 }
-declare function VariableStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class VariableStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof VariableStatementContext;
     variableDeclarationList(): any;
     eos(): any;
     accept(visitor: any): any;
 }
-declare function VariableDeclarationListContext(parser: any, parent: any, invokingState: any): any;
 declare class VariableDeclarationListContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof VariableDeclarationListContext;
     varModifier(): any;
-    variableDeclaration(i: any): any;
-    Comma(i: any): any;
+    variableDeclaration: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function VariableDeclarationContext(parser: any, parent: any, invokingState: any): any;
 declare class VariableDeclarationContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof VariableDeclarationContext;
     assignable(): any;
     Assign(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function EmptyStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class EmptyStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof EmptyStatementContext;
     SemiColon(): any;
     accept(visitor: any): any;
 }
-declare function ExpressionStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class ExpressionStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ExpressionStatementContext;
     expressionSequence(): any;
     eos(): any;
     accept(visitor: any): any;
 }
-declare function IfStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class IfStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof IfStatementContext;
     If(): any;
     OpenParen(): any;
     expressionSequence(): any;
     CloseParen(): any;
-    statement(i: any): any;
+    statement: (i: any) => any;
     Else(): any;
     accept(visitor: any): any;
 }
-declare function IterationStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class IterationStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof IterationStatementContext;
     copyFrom(ctx: any): void;
 }
-declare function VarModifierContext(parser: any, parent: any, invokingState: any): any;
 declare class VarModifierContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof VarModifierContext;
     Var(): any;
-    Let(): any;
+    let_(): any;
     Const(): any;
     accept(visitor: any): any;
 }
-declare function ContinueStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class ContinueStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ContinueStatementContext;
     Continue(): any;
     eos(): any;
     identifier(): any;
     accept(visitor: any): any;
 }
-declare function BreakStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class BreakStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof BreakStatementContext;
     Break(): any;
     eos(): any;
     identifier(): any;
     accept(visitor: any): any;
 }
-declare function ReturnStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class ReturnStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ReturnStatementContext;
     Return(): any;
     eos(): any;
     expressionSequence(): any;
     accept(visitor: any): any;
 }
-declare function WithStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class WithStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof WithStatementContext;
     With(): any;
     OpenParen(): any;
     expressionSequence(): any;
@@ -828,12 +788,10 @@ declare class WithStatementContext {
     statement(): any;
     accept(visitor: any): any;
 }
-declare function SwitchStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class SwitchStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof SwitchStatementContext;
     Switch(): any;
     OpenParen(): any;
     expressionSequence(): any;
@@ -841,90 +799,74 @@ declare class SwitchStatementContext {
     caseBlock(): any;
     accept(visitor: any): any;
 }
-declare function CaseBlockContext(parser: any, parent: any, invokingState: any): any;
 declare class CaseBlockContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof CaseBlockContext;
     OpenBrace(): any;
     CloseBrace(): any;
-    caseClauses(i: any): any;
+    caseClauses: (i: any) => any;
     defaultClause(): any;
     accept(visitor: any): any;
 }
-declare function CaseClausesContext(parser: any, parent: any, invokingState: any): any;
 declare class CaseClausesContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof CaseClausesContext;
-    caseClause(i: any): any;
+    caseClause: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function CaseClauseContext(parser: any, parent: any, invokingState: any): any;
 declare class CaseClauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof CaseClauseContext;
     Case(): any;
     expressionSequence(): any;
     Colon(): any;
     statementList(): any;
     accept(visitor: any): any;
 }
-declare function DefaultClauseContext(parser: any, parent: any, invokingState: any): any;
 declare class DefaultClauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof DefaultClauseContext;
     Default(): any;
     Colon(): any;
     statementList(): any;
     accept(visitor: any): any;
 }
-declare function LabelledStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class LabelledStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof LabelledStatementContext;
     identifier(): any;
     Colon(): any;
     statement(): any;
     accept(visitor: any): any;
 }
-declare function ThrowStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class ThrowStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ThrowStatementContext;
     Throw(): any;
     expressionSequence(): any;
     eos(): any;
     accept(visitor: any): any;
 }
-declare function TryStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class TryStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof TryStatementContext;
     Try(): any;
     block(): any;
     catchProduction(): any;
     finallyProduction(): any;
     accept(visitor: any): any;
 }
-declare function CatchProductionContext(parser: any, parent: any, invokingState: any): any;
 declare class CatchProductionContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof CatchProductionContext;
     Catch(): any;
     block(): any;
     OpenParen(): any;
@@ -932,33 +874,27 @@ declare class CatchProductionContext {
     assignable(): any;
     accept(visitor: any): any;
 }
-declare function FinallyProductionContext(parser: any, parent: any, invokingState: any): any;
 declare class FinallyProductionContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof FinallyProductionContext;
     Finally(): any;
     block(): any;
     accept(visitor: any): any;
 }
-declare function DebuggerStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class DebuggerStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof DebuggerStatementContext;
     Debugger(): any;
     eos(): any;
     accept(visitor: any): any;
 }
-declare function FunctionDeclarationContext(parser: any, parent: any, invokingState: any): any;
 declare class FunctionDeclarationContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof FunctionDeclarationContext;
-    Function(): any;
+    Function_(): any;
     identifier(): any;
     OpenParen(): any;
     CloseParen(): any;
@@ -970,49 +906,41 @@ declare class FunctionDeclarationContext {
     formalParameterList(): any;
     accept(visitor: any): any;
 }
-declare function ClassDeclarationContext(parser: any, parent: any, invokingState: any): any;
 declare class ClassDeclarationContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ClassDeclarationContext;
     Class(): any;
     identifier(): any;
     classTail(): any;
     accept(visitor: any): any;
 }
-declare function ClassTailContext(parser: any, parent: any, invokingState: any): any;
 declare class ClassTailContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ClassTailContext;
     OpenBrace(): any;
     CloseBrace(): any;
     classHeritage(): any;
-    classElement(i: any): any;
+    classElement: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function ClassHeritageContext(parser: any, parent: any, invokingState: any): any;
 declare class ClassHeritageContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ClassHeritageContext;
     Extends(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function ClassElementContext(parser: any, parent: any, invokingState: any): any;
 declare class ClassElementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ClassElementContext;
     methodDefinition(): any;
-    Static(i: any): any;
-    identifier(i: any): any;
-    Async(i: any): any;
+    Static: (i: any) => any;
+    identifier: (i: any) => any;
+    Async: (i: any) => any;
     emptyStatement(): any;
     propertyName(): any;
     Assign(): any;
@@ -1020,12 +948,10 @@ declare class ClassElementContext {
     Hashtag(): any;
     accept(visitor: any): any;
 }
-declare function MethodDefinitionContext(parser: any, parent: any, invokingState: any): any;
 declare class MethodDefinitionContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof MethodDefinitionContext;
     propertyName(): any;
     OpenParen(): any;
     CloseParen(): any;
@@ -1039,101 +965,81 @@ declare class MethodDefinitionContext {
     setter(): any;
     accept(visitor: any): any;
 }
-declare function FormalParameterListContext(parser: any, parent: any, invokingState: any): any;
 declare class FormalParameterListContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof FormalParameterListContext;
-    formalParameterArg(i: any): any;
-    Comma(i: any): any;
+    formalParameterArg: (i: any) => any;
+    Comma: (i: any) => any;
     lastFormalParameterArg(): any;
     accept(visitor: any): any;
 }
-declare function FormalParameterArgContext(parser: any, parent: any, invokingState: any): any;
 declare class FormalParameterArgContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof FormalParameterArgContext;
     assignable(): any;
     Assign(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function LastFormalParameterArgContext(parser: any, parent: any, invokingState: any): any;
 declare class LastFormalParameterArgContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof LastFormalParameterArgContext;
     Ellipsis(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function FunctionBodyContext(parser: any, parent: any, invokingState: any): any;
 declare class FunctionBodyContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof FunctionBodyContext;
     sourceElements(): any;
     accept(visitor: any): any;
 }
-declare function SourceElementsContext(parser: any, parent: any, invokingState: any): any;
 declare class SourceElementsContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof SourceElementsContext;
-    sourceElement(i: any): any;
+    sourceElement: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function ArrayLiteralContext(parser: any, parent: any, invokingState: any): any;
 declare class ArrayLiteralContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ArrayLiteralContext;
     OpenBracket(): any;
     elementList(): any;
     CloseBracket(): any;
     accept(visitor: any): any;
 }
-declare function ElementListContext(parser: any, parent: any, invokingState: any): any;
 declare class ElementListContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ElementListContext;
-    Comma(i: any): any;
-    arrayElement(i: any): any;
+    Comma: (i: any) => any;
+    arrayElement: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function ArrayElementContext(parser: any, parent: any, invokingState: any): any;
 declare class ArrayElementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ArrayElementContext;
     singleExpression(): any;
     Ellipsis(): any;
     accept(visitor: any): any;
 }
-declare function PropertyAssignmentContext(parser: any, parent: any, invokingState: any): any;
 declare class PropertyAssignmentContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof PropertyAssignmentContext;
     copyFrom(ctx: any): void;
 }
-declare function PropertyNameContext(parser: any, parent: any, invokingState: any): any;
 declare class PropertyNameContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof PropertyNameContext;
     identifierName(): any;
     StringLiteral(): any;
     numericLiteral(): any;
@@ -1142,100 +1048,82 @@ declare class PropertyNameContext {
     CloseBracket(): any;
     accept(visitor: any): any;
 }
-declare function ArgumentsContext(parser: any, parent: any, invokingState: any): any;
 declare class ArgumentsContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ArgumentsContext;
     OpenParen(): any;
     CloseParen(): any;
-    argument(i: any): any;
-    Comma(i: any): any;
+    argument: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function ArgumentContext(parser: any, parent: any, invokingState: any): any;
 declare class ArgumentContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ArgumentContext;
     singleExpression(): any;
     identifier(): any;
     Ellipsis(): any;
     accept(visitor: any): any;
 }
-declare function ExpressionSequenceContext(parser: any, parent: any, invokingState: any): any;
 declare class ExpressionSequenceContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ExpressionSequenceContext;
-    singleExpression(i: any): any;
-    Comma(i: any): any;
+    singleExpression: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function AssignableContext(parser: any, parent: any, invokingState: any): any;
 declare class AssignableContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof AssignableContext;
     identifier(): any;
     arrayLiteral(): any;
     objectLiteral(): any;
     accept(visitor: any): any;
 }
-declare function ObjectLiteralContext(parser: any, parent: any, invokingState: any): any;
 declare class ObjectLiteralContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ObjectLiteralContext;
     OpenBrace(): any;
     CloseBrace(): any;
-    propertyAssignment(i: any): any;
-    Comma(i: any): any;
+    propertyAssignment: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function AnoymousFunctionContext(parser: any, parent: any, invokingState: any): any;
-declare class AnoymousFunctionContext {
+declare class AnonymousFunctionContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof AnoymousFunctionContext;
     copyFrom(ctx: any): void;
 }
-declare function ArrowFunctionParametersContext(parser: any, parent: any, invokingState: any): any;
 declare class ArrowFunctionParametersContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ArrowFunctionParametersContext;
     identifier(): any;
     OpenParen(): any;
     CloseParen(): any;
     formalParameterList(): any;
     accept(visitor: any): any;
 }
-declare function ArrowFunctionBodyContext(parser: any, parent: any, invokingState: any): any;
 declare class ArrowFunctionBodyContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ArrowFunctionBodyContext;
     OpenBrace(): any;
     functionBody(): any;
     CloseBrace(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function AssignmentOperatorContext(parser: any, parent: any, invokingState: any): any;
 declare class AssignmentOperatorContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof AssignmentOperatorContext;
     MultiplyAssign(): any;
     DivideAssign(): any;
     ModulusAssign(): any;
@@ -1250,27 +1138,41 @@ declare class AssignmentOperatorContext {
     PowerAssign(): any;
     accept(visitor: any): any;
 }
-declare function LiteralContext(parser: any, parent: any, invokingState: any): any;
 declare class LiteralContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof LiteralContext;
     NullLiteral(): any;
     BooleanLiteral(): any;
     StringLiteral(): any;
-    TemplateStringLiteral(): any;
+    templateStringLiteral(): any;
     RegularExpressionLiteral(): any;
     numericLiteral(): any;
     bigintLiteral(): any;
     accept(visitor: any): any;
 }
-declare function NumericLiteralContext(parser: any, parent: any, invokingState: any): any;
+declare class TemplateStringLiteralContext {
+    constructor(parser: any, parent: any, invokingState: any);
+    parser: any;
+    ruleIndex: number;
+    BackTick: (i: any) => any;
+    templateStringAtom: (i: any) => any;
+    accept(visitor: any): any;
+}
+declare class TemplateStringAtomContext {
+    constructor(parser: any, parent: any, invokingState: any);
+    parser: any;
+    ruleIndex: number;
+    TemplateStringAtom(): any;
+    TemplateStringStartExpression(): any;
+    singleExpression(): any;
+    TemplateCloseBrace(): any;
+    accept(visitor: any): any;
+}
 declare class NumericLiteralContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof NumericLiteralContext;
     DecimalLiteral(): any;
     HexIntegerLiteral(): any;
     OctalIntegerLiteral(): any;
@@ -1278,76 +1180,62 @@ declare class NumericLiteralContext {
     BinaryIntegerLiteral(): any;
     accept(visitor: any): any;
 }
-declare function BigintLiteralContext(parser: any, parent: any, invokingState: any): any;
 declare class BigintLiteralContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof BigintLiteralContext;
     BigDecimalIntegerLiteral(): any;
     BigHexIntegerLiteral(): any;
     BigOctalIntegerLiteral(): any;
     BigBinaryIntegerLiteral(): any;
     accept(visitor: any): any;
 }
-declare function GetterContext(parser: any, parent: any, invokingState: any): any;
 declare class GetterContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof GetterContext;
     identifier(): any;
     propertyName(): any;
     accept(visitor: any): any;
 }
-declare function SetterContext(parser: any, parent: any, invokingState: any): any;
 declare class SetterContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof SetterContext;
     identifier(): any;
     propertyName(): any;
     accept(visitor: any): any;
 }
-declare function IdentifierNameContext(parser: any, parent: any, invokingState: any): any;
 declare class IdentifierNameContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof IdentifierNameContext;
     Identifier(): any;
     reservedWord(): any;
     accept(visitor: any): any;
 }
-declare function IdentifierContext(parser: any, parent: any, invokingState: any): any;
 declare class IdentifierContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof IdentifierContext;
     Identifier(): any;
     NonStrictLet(): any;
     Async(): any;
     accept(visitor: any): any;
 }
-declare function ReservedWordContext(parser: any, parent: any, invokingState: any): any;
 declare class ReservedWordContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof ReservedWordContext;
     keyword(): any;
     NullLiteral(): any;
     BooleanLiteral(): any;
     accept(visitor: any): any;
 }
-declare function KeywordContext(parser: any, parent: any, invokingState: any): any;
 declare class KeywordContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof KeywordContext;
     Break(): any;
     Do(): any;
     Instanceof(): any;
@@ -1365,7 +1253,7 @@ declare class KeywordContext {
     Switch(): any;
     While(): any;
     Debugger(): any;
-    Function(): any;
+    Function_(): any;
     This(): any;
     With(): any;
     Default(): any;
@@ -1382,7 +1270,7 @@ declare class KeywordContext {
     Export(): any;
     Import(): any;
     Implements(): any;
-    Let(): any;
+    let_(): any;
     Private(): any;
     Public(): any;
     Interface(): any;
@@ -1396,68 +1284,62 @@ declare class KeywordContext {
     As(): any;
     accept(visitor: any): any;
 }
-declare function EosContext(parser: any, parent: any, invokingState: any): any;
+declare class Let_Context {
+    constructor(parser: any, parent: any, invokingState: any);
+    parser: any;
+    ruleIndex: number;
+    NonStrictLet(): any;
+    StrictLet(): any;
+    accept(visitor: any): any;
+}
 declare class EosContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof EosContext;
     SemiColon(): any;
     EOF(): any;
     accept(visitor: any): any;
 }
-declare function QuerySelectStatementContext(parser: any, parent: any, invokingState: any): any;
 declare class QuerySelectStatementContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof QuerySelectStatementContext;
     queryExpression(): any;
     accept(visitor: any): any;
 }
-declare function QueryExpressionContext(parser: any, parent: any, invokingState: any): any;
 declare class QueryExpressionContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof QueryExpressionContext;
     querySpecification(): any;
     OpenParen(): any;
     queryExpression(): any;
     CloseParen(): any;
-    sql_union(i: any): any;
+    sql_union: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function Sql_unionContext(parser: any, parent: any, invokingState: any): any;
 declare class Sql_unionContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Sql_unionContext;
     copyFrom(ctx: any): void;
 }
-declare function QuerySpecificationContext(parser: any, parent: any, invokingState: any): any;
 declare class QuerySpecificationContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof QuerySpecificationContext;
     copyFrom(ctx: any): void;
 }
-declare function Select_listContext(parser: any, parent: any, invokingState: any): any;
 declare class Select_listContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Select_listContext;
     copyFrom(ctx: any): void;
 }
-declare function Select_list_elemContext(parser: any, parent: any, invokingState: any): any;
 declare class Select_list_elemContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Select_list_elemContext;
     Multiply(): any;
     identifier(): any;
     As(): any;
@@ -1466,124 +1348,96 @@ declare class Select_list_elemContext {
     arguments(): any;
     accept(visitor: any): any;
 }
-declare function FromClauseContext(parser: any, parent: any, invokingState: any): any;
 declare class FromClauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof FromClauseContext;
     copyFrom(ctx: any): void;
 }
-declare function WhereClauseContext(parser: any, parent: any, invokingState: any): any;
 declare class WhereClauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof WhereClauseContext;
     copyFrom(ctx: any): void;
 }
-declare function DataSourcesContext(parser: any, parent: any, invokingState: any): any;
 declare class DataSourcesContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof DataSourcesContext;
     copyFrom(ctx: any): void;
 }
-declare function DataSourceContext(parser: any, parent: any, invokingState: any): any;
 declare class DataSourceContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof DataSourceContext;
     data_source_item_joined(): any;
     OpenParen(): any;
     CloseParen(): any;
     accept(visitor: any): any;
 }
-declare function Data_source_item_joinedContext(parser: any, parent: any, invokingState: any): any;
 declare class Data_source_item_joinedContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Data_source_item_joinedContext;
     copyFrom(ctx: any): void;
 }
-declare function Data_source_itemContext(parser: any, parent: any, invokingState: any): any;
 declare class Data_source_itemContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Data_source_itemContext;
     copyFrom(ctx: any): void;
 }
-declare function Join_clauseContext(parser: any, parent: any, invokingState: any): any;
 declare class Join_clauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Join_clauseContext;
     copyFrom(ctx: any): void;
 }
-declare function Using_source_clauseContext(parser: any, parent: any, invokingState: any): any;
 declare class Using_source_clauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Using_source_clauseContext;
     copyFrom(ctx: any): void;
 }
-declare function Produce_clauseContext(parser: any, parent: any, invokingState: any): any;
 declare class Produce_clauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Produce_clauseContext;
     copyFrom(ctx: any): void;
 }
-declare function Bind_clauseContext(parser: any, parent: any, invokingState: any): any;
 declare class Bind_clauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof Bind_clauseContext;
     copyFrom(ctx: any): void;
 }
-declare function WithinClauseContext(parser: any, parent: any, invokingState: any): any;
 declare class WithinClauseContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof WithinClauseContext;
     copyFrom(ctx: any): void;
 }
-declare function QueryObjectLiteralContext(parser: any, parent: any, invokingState: any): any;
 declare class QueryObjectLiteralContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof QueryObjectLiteralContext;
     OpenBrace(): any;
     CloseBrace(): any;
-    queryPropertyAssignment(i: any): any;
-    Comma(i: any): any;
+    queryPropertyAssignment: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function QueryPropertyAssignmentContext(parser: any, parent: any, invokingState: any): any;
 declare class QueryPropertyAssignmentContext {
     constructor(parser: any, parent: any, invokingState: any);
     parser: any;
     ruleIndex: number;
-    constructor: typeof QueryPropertyAssignmentContext;
     propertyName(): any;
     Colon(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function ExportDefaultDeclarationContext(parser: any, ctx: any): any;
-declare class ExportDefaultDeclarationContext {
+declare class ExportDefaultDeclarationContext extends ExportStatementContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ExportDefaultDeclarationContext;
     Export(): any;
     Default(): any;
     eos(): any;
@@ -1592,20 +1446,16 @@ declare class ExportDefaultDeclarationContext {
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function ExportDeclarationContext(parser: any, ctx: any): any;
-declare class ExportDeclarationContext {
+declare class ExportDeclarationContext extends ExportStatementContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ExportDeclarationContext;
     Export(): any;
     eos(): any;
     exportFromBlock(): any;
     declaration(): any;
     accept(visitor: any): any;
 }
-declare function DoStatementContext(parser: any, ctx: any): any;
-declare class DoStatementContext {
+declare class DoStatementContext extends IterationStatementContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof DoStatementContext;
     Do(): any;
     statement(): any;
     While(): any;
@@ -1615,10 +1465,8 @@ declare class DoStatementContext {
     eos(): any;
     accept(visitor: any): any;
 }
-declare function WhileStatementContext(parser: any, ctx: any): any;
-declare class WhileStatementContext {
+declare class WhileStatementContext extends IterationStatementContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof WhileStatementContext;
     While(): any;
     OpenParen(): any;
     expressionSequence(): any;
@@ -1626,23 +1474,19 @@ declare class WhileStatementContext {
     statement(): any;
     accept(visitor: any): any;
 }
-declare function ForStatementContext(parser: any, ctx: any): any;
-declare class ForStatementContext {
+declare class ForStatementContext extends IterationStatementContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ForStatementContext;
     For(): any;
     OpenParen(): any;
-    SemiColon(i: any): any;
+    SemiColon: (i: any) => any;
     CloseParen(): any;
     statement(): any;
-    expressionSequence(i: any): any;
+    expressionSequence: (i: any) => any;
     variableDeclarationList(): any;
     accept(visitor: any): any;
 }
-declare function ForInStatementContext(parser: any, ctx: any): any;
-declare class ForInStatementContext {
+declare class ForInStatementContext extends IterationStatementContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ForInStatementContext;
     For(): any;
     OpenParen(): any;
     In(): any;
@@ -1653,10 +1497,8 @@ declare class ForInStatementContext {
     variableDeclarationList(): any;
     accept(visitor: any): any;
 }
-declare function ForOfStatementContext(parser: any, ctx: any): any;
-declare class ForOfStatementContext {
+declare class ForOfStatementContext extends IterationStatementContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ForOfStatementContext;
     For(): any;
     OpenParen(): any;
     identifier(): any;
@@ -1668,37 +1510,29 @@ declare class ForOfStatementContext {
     Await(): any;
     accept(visitor: any): any;
 }
-declare function PropertyExpressionAssignmentContext(parser: any, ctx: any): any;
-declare class PropertyExpressionAssignmentContext {
+declare class PropertyExpressionAssignmentContext extends PropertyAssignmentContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PropertyExpressionAssignmentContext;
     propertyName(): any;
     Colon(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function ComputedPropertyExpressionAssignmentContext(parser: any, ctx: any): any;
-declare class ComputedPropertyExpressionAssignmentContext {
+declare class ComputedPropertyExpressionAssignmentContext extends PropertyAssignmentContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ComputedPropertyExpressionAssignmentContext;
     OpenBracket(): any;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     CloseBracket(): any;
     Colon(): any;
     accept(visitor: any): any;
 }
-declare function PropertyShorthandContext(parser: any, ctx: any): any;
-declare class PropertyShorthandContext {
+declare class PropertyShorthandContext extends PropertyAssignmentContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PropertyShorthandContext;
     singleExpression(): any;
     Ellipsis(): any;
     accept(visitor: any): any;
 }
-declare function PropertySetterContext(parser: any, ctx: any): any;
-declare class PropertySetterContext {
+declare class PropertySetterContext extends PropertyAssignmentContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PropertySetterContext;
     setter(): any;
     OpenParen(): any;
     formalParameterArg(): any;
@@ -1708,10 +1542,8 @@ declare class PropertySetterContext {
     CloseBrace(): any;
     accept(visitor: any): any;
 }
-declare function PropertyGetterContext(parser: any, ctx: any): any;
-declare class PropertyGetterContext {
+declare class PropertyGetterContext extends PropertyAssignmentContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PropertyGetterContext;
     getter(): any;
     OpenParen(): any;
     CloseParen(): any;
@@ -1720,10 +1552,8 @@ declare class PropertyGetterContext {
     CloseBrace(): any;
     accept(visitor: any): any;
 }
-declare function FunctionPropertyContext(parser: any, ctx: any): any;
-declare class FunctionPropertyContext {
+declare class FunctionPropertyContext extends PropertyAssignmentContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof FunctionPropertyContext;
     propertyName(): any;
     OpenParen(): any;
     CloseParen(): any;
@@ -1735,153 +1565,115 @@ declare class FunctionPropertyContext {
     formalParameterList(): any;
     accept(visitor: any): any;
 }
-declare function TemplateStringExpressionContext(parser: any, ctx: any): any;
-declare class TemplateStringExpressionContext {
+declare class TemplateStringExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof TemplateStringExpressionContext;
     singleExpression(): any;
-    TemplateStringLiteral(): any;
+    templateStringLiteral(): any;
     accept(visitor: any): any;
 }
-declare function TernaryExpressionContext(parser: any, ctx: any): any;
-declare class TernaryExpressionContext {
+declare class TernaryExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof TernaryExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     QuestionMark(): any;
     Colon(): any;
     accept(visitor: any): any;
 }
-declare function LogicalAndExpressionContext(parser: any, ctx: any): any;
-declare class LogicalAndExpressionContext {
+declare class LogicalAndExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof LogicalAndExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     And(): any;
     accept(visitor: any): any;
 }
-declare function PowerExpressionContext(parser: any, ctx: any): any;
-declare class PowerExpressionContext {
+declare class PowerExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PowerExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Power(): any;
     accept(visitor: any): any;
 }
-declare function PreIncrementExpressionContext(parser: any, ctx: any): any;
-declare class PreIncrementExpressionContext {
+declare class PreIncrementExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PreIncrementExpressionContext;
     PlusPlus(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function ObjectLiteralExpressionContext(parser: any, ctx: any): any;
-declare class ObjectLiteralExpressionContext {
+declare class ObjectLiteralExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ObjectLiteralExpressionContext;
     objectLiteral(): any;
     accept(visitor: any): any;
 }
-declare function MetaExpressionContext(parser: any, ctx: any): any;
-declare class MetaExpressionContext {
+declare class MetaExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof MetaExpressionContext;
     New(): any;
     Dot(): any;
     identifier(): any;
     accept(visitor: any): any;
 }
-declare function InExpressionContext(parser: any, ctx: any): any;
-declare class InExpressionContext {
+declare class InExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof InExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     In(): any;
     accept(visitor: any): any;
 }
-declare function LogicalOrExpressionContext(parser: any, ctx: any): any;
-declare class LogicalOrExpressionContext {
+declare class LogicalOrExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof LogicalOrExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Or(): any;
     accept(visitor: any): any;
 }
-declare function NotExpressionContext(parser: any, ctx: any): any;
-declare class NotExpressionContext {
+declare class NotExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof NotExpressionContext;
     Not(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function PreDecreaseExpressionContext(parser: any, ctx: any): any;
-declare class PreDecreaseExpressionContext {
+declare class PreDecreaseExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PreDecreaseExpressionContext;
     MinusMinus(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function ArgumentsExpressionContext(parser: any, ctx: any): any;
-declare class ArgumentsExpressionContext {
+declare class ArgumentsExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ArgumentsExpressionContext;
     singleExpression(): any;
     arguments(): any;
     accept(visitor: any): any;
 }
-declare function AwaitExpressionContext(parser: any, ctx: any): any;
-declare class AwaitExpressionContext {
+declare class AwaitExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof AwaitExpressionContext;
     Await(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function ThisExpressionContext(parser: any, ctx: any): any;
-declare class ThisExpressionContext {
+declare class ThisExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ThisExpressionContext;
     This(): any;
     accept(visitor: any): any;
 }
-declare function FunctionExpressionContext(parser: any, ctx: any): any;
-declare class FunctionExpressionContext {
+declare class FunctionExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof FunctionExpressionContext;
-    anoymousFunction(): any;
+    anonymousFunction(): any;
     accept(visitor: any): any;
 }
-declare function UnaryMinusExpressionContext(parser: any, ctx: any): any;
-declare class UnaryMinusExpressionContext {
+declare class UnaryMinusExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof UnaryMinusExpressionContext;
     Minus(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function AssignmentExpressionContext(parser: any, ctx: any): any;
-declare class AssignmentExpressionContext {
+declare class AssignmentExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof AssignmentExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Assign(): any;
     accept(visitor: any): any;
 }
-declare function PostDecreaseExpressionContext(parser: any, ctx: any): any;
-declare class PostDecreaseExpressionContext {
+declare class PostDecreaseExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PostDecreaseExpressionContext;
     singleExpression(): any;
     MinusMinus(): any;
     accept(visitor: any): any;
 }
-declare function MemberNewExpressionContext(parser: any, ctx: any): any;
-declare class MemberNewExpressionContext {
+declare class MemberNewExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof MemberNewExpressionContext;
     New(): any;
     singleExpression(): any;
     Dot(): any;
@@ -1889,182 +1681,140 @@ declare class MemberNewExpressionContext {
     arguments(): any;
     accept(visitor: any): any;
 }
-declare function TypeofExpressionContext(parser: any, ctx: any): any;
-declare class TypeofExpressionContext {
+declare class TypeofExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof TypeofExpressionContext;
     Typeof(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function InstanceofExpressionContext(parser: any, ctx: any): any;
-declare class InstanceofExpressionContext {
+declare class InstanceofExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof InstanceofExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Instanceof(): any;
     accept(visitor: any): any;
 }
-declare function UnaryPlusExpressionContext(parser: any, ctx: any): any;
-declare class UnaryPlusExpressionContext {
+declare class UnaryPlusExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof UnaryPlusExpressionContext;
     Plus(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function DeleteExpressionContext(parser: any, ctx: any): any;
-declare class DeleteExpressionContext {
+declare class DeleteExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof DeleteExpressionContext;
     Delete(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function InlinedQueryExpressionContext(parser: any, ctx: any): any;
-declare class InlinedQueryExpressionContext {
+declare class InlinedQueryExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof InlinedQueryExpressionContext;
     queryExpression(): any;
     accept(visitor: any): any;
 }
-declare function ImportExpressionContext(parser: any, ctx: any): any;
-declare class ImportExpressionContext {
+declare class ImportExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ImportExpressionContext;
     Import(): any;
     OpenParen(): any;
     singleExpression(): any;
     CloseParen(): any;
     accept(visitor: any): any;
 }
-declare function EqualityExpressionContext(parser: any, ctx: any): any;
-declare class EqualityExpressionContext {
+declare class EqualityExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof EqualityExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Equals_(): any;
     NotEquals(): any;
     IdentityEquals(): any;
     IdentityNotEquals(): any;
     accept(visitor: any): any;
 }
-declare function BitXOrExpressionContext(parser: any, ctx: any): any;
-declare class BitXOrExpressionContext {
+declare class BitXOrExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof BitXOrExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     BitXOr(): any;
     accept(visitor: any): any;
 }
-declare function SuperExpressionContext(parser: any, ctx: any): any;
-declare class SuperExpressionContext {
+declare class SuperExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof SuperExpressionContext;
     Super(): any;
     accept(visitor: any): any;
 }
-declare function MultiplicativeExpressionContext(parser: any, ctx: any): any;
-declare class MultiplicativeExpressionContext {
+declare class MultiplicativeExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof MultiplicativeExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Multiply(): any;
     Divide(): any;
     Modulus(): any;
     accept(visitor: any): any;
 }
-declare function BitShiftExpressionContext(parser: any, ctx: any): any;
-declare class BitShiftExpressionContext {
+declare class BitShiftExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof BitShiftExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     LeftShiftArithmetic(): any;
     RightShiftArithmetic(): any;
     RightShiftLogical(): any;
     accept(visitor: any): any;
 }
-declare function ParenthesizedExpressionContext(parser: any, ctx: any): any;
-declare class ParenthesizedExpressionContext {
+declare class ParenthesizedExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ParenthesizedExpressionContext;
     OpenParen(): any;
     expressionSequence(): any;
     CloseParen(): any;
     accept(visitor: any): any;
 }
-declare function AdditiveExpressionContext(parser: any, ctx: any): any;
-declare class AdditiveExpressionContext {
+declare class AdditiveExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof AdditiveExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Plus(): any;
     Minus(): any;
     accept(visitor: any): any;
 }
-declare function RelationalExpressionContext(parser: any, ctx: any): any;
-declare class RelationalExpressionContext {
+declare class RelationalExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof RelationalExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     LessThan(): any;
     MoreThan(): any;
     LessThanEquals(): any;
     GreaterThanEquals(): any;
     accept(visitor: any): any;
 }
-declare function PostIncrementExpressionContext(parser: any, ctx: any): any;
-declare class PostIncrementExpressionContext {
+declare class PostIncrementExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof PostIncrementExpressionContext;
     singleExpression(): any;
     PlusPlus(): any;
     accept(visitor: any): any;
 }
-declare function YieldExpressionContext(parser: any, ctx: any): any;
-declare class YieldExpressionContext {
+declare class YieldExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof YieldExpressionContext;
     Yield(): any;
     expressionSequence(): any;
     Multiply(): any;
     accept(visitor: any): any;
 }
-declare function BitNotExpressionContext(parser: any, ctx: any): any;
-declare class BitNotExpressionContext {
+declare class BitNotExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof BitNotExpressionContext;
     BitNot(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function NewExpressionContext(parser: any, ctx: any): any;
-declare class NewExpressionContext {
+declare class NewExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof NewExpressionContext;
     New(): any;
     singleExpression(): any;
     arguments(): any;
     accept(visitor: any): any;
 }
-declare function LiteralExpressionContext(parser: any, ctx: any): any;
-declare class LiteralExpressionContext {
+declare class LiteralExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof LiteralExpressionContext;
     literal(): any;
     accept(visitor: any): any;
 }
-declare function ArrayLiteralExpressionContext(parser: any, ctx: any): any;
-declare class ArrayLiteralExpressionContext {
+declare class ArrayLiteralExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ArrayLiteralExpressionContext;
     arrayLiteral(): any;
     accept(visitor: any): any;
 }
-declare function MemberDotExpressionContext(parser: any, ctx: any): any;
-declare class MemberDotExpressionContext {
+declare class MemberDotExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof MemberDotExpressionContext;
     singleExpression(): any;
     Dot(): any;
     identifierName(): any;
@@ -2072,77 +1822,59 @@ declare class MemberDotExpressionContext {
     Hashtag(): any;
     accept(visitor: any): any;
 }
-declare function ClassExpressionContext(parser: any, ctx: any): any;
-declare class ClassExpressionContext {
+declare class ClassExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ClassExpressionContext;
     Class(): any;
     classTail(): any;
     identifier(): any;
     accept(visitor: any): any;
 }
-declare function MemberIndexExpressionContext(parser: any, ctx: any): any;
-declare class MemberIndexExpressionContext {
+declare class MemberIndexExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof MemberIndexExpressionContext;
     singleExpression(): any;
     OpenBracket(): any;
     expressionSequence(): any;
     CloseBracket(): any;
     accept(visitor: any): any;
 }
-declare function IdentifierExpressionContext(parser: any, ctx: any): any;
-declare class IdentifierExpressionContext {
+declare class IdentifierExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof IdentifierExpressionContext;
     identifier(): any;
     accept(visitor: any): any;
 }
-declare function BitAndExpressionContext(parser: any, ctx: any): any;
-declare class BitAndExpressionContext {
+declare class BitAndExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof BitAndExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     BitAnd(): any;
     accept(visitor: any): any;
 }
-declare function BitOrExpressionContext(parser: any, ctx: any): any;
-declare class BitOrExpressionContext {
+declare class BitOrExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof BitOrExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     BitOr(): any;
     accept(visitor: any): any;
 }
-declare function AssignmentOperatorExpressionContext(parser: any, ctx: any): any;
-declare class AssignmentOperatorExpressionContext {
+declare class AssignmentOperatorExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof AssignmentOperatorExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     assignmentOperator(): any;
     accept(visitor: any): any;
 }
-declare function VoidExpressionContext(parser: any, ctx: any): any;
-declare class VoidExpressionContext {
+declare class VoidExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof VoidExpressionContext;
     Void(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function CoalesceExpressionContext(parser: any, ctx: any): any;
-declare class CoalesceExpressionContext {
+declare class CoalesceExpressionContext extends SingleExpressionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof CoalesceExpressionContext;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     NullCoalesce(): any;
     accept(visitor: any): any;
 }
-declare function AnoymousFunctionDeclContext(parser: any, ctx: any): any;
-declare class AnoymousFunctionDeclContext {
+declare class AnonymousFunctionDeclContext extends AnonymousFunctionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof AnoymousFunctionDeclContext;
-    Function(): any;
+    Function_(): any;
     OpenParen(): any;
     CloseParen(): any;
     OpenBrace(): any;
@@ -2153,27 +1885,21 @@ declare class AnoymousFunctionDeclContext {
     formalParameterList(): any;
     accept(visitor: any): any;
 }
-declare function ArrowFunctionContext(parser: any, ctx: any): any;
-declare class ArrowFunctionContext {
+declare class ArrowFunctionContext extends AnonymousFunctionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof ArrowFunctionContext;
     arrowFunctionParameters(): any;
     ARROW(): any;
     arrowFunctionBody(): any;
     Async(): any;
     accept(visitor: any): any;
 }
-declare function FunctionDeclContext(parser: any, ctx: any): any;
-declare class FunctionDeclContext {
+declare class FunctionDeclContext extends AnonymousFunctionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof FunctionDeclContext;
     functionDeclaration(): any;
     accept(visitor: any): any;
 }
-declare function QueryUnionExpressionContext(parser: any, ctx: any): any;
-declare class QueryUnionExpressionContext {
+declare class QueryUnionExpressionContext extends Sql_unionContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryUnionExpressionContext;
     Union(): any;
     querySpecification(): any;
     OpenParen(): any;
@@ -2182,10 +1908,8 @@ declare class QueryUnionExpressionContext {
     All(): any;
     accept(visitor: any): any;
 }
-declare function QuerySelectExpressionContext(parser: any, ctx: any): any;
-declare class QuerySelectExpressionContext {
+declare class QuerySelectExpressionContext extends QuerySpecificationContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QuerySelectExpressionContext;
     Select(): any;
     select_list(): any;
     bind_clause(): any;
@@ -2195,137 +1919,110 @@ declare class QuerySelectExpressionContext {
     produce_clause(): any;
     accept(visitor: any): any;
 }
-declare function QuerySelectListExpressionContext(parser: any, ctx: any): any;
-declare class QuerySelectListExpressionContext {
+declare class QuerySelectListExpressionContext extends Select_listContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QuerySelectListExpressionContext;
-    select_list_elem(i: any): any;
-    Comma(i: any): any;
+    select_list_elem: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function QueryFromExpressionContext(parser: any, ctx: any): any;
-declare class QueryFromExpressionContext {
+declare class QueryFromExpressionContext extends FromClauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryFromExpressionContext;
     From(): any;
     dataSources(): any;
     accept(visitor: any): any;
 }
-declare function QueryWhereExpressionContext(parser: any, ctx: any): any;
-declare class QueryWhereExpressionContext {
+declare class QueryWhereExpressionContext extends WhereClauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryWhereExpressionContext;
     Where(): any;
     expressionSequence(): any;
     accept(visitor: any): any;
 }
-declare function QueryDataSourcesExpressionContext(parser: any, ctx: any): any;
-declare class QueryDataSourcesExpressionContext {
+declare class QueryDataSourcesExpressionContext extends DataSourcesContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryDataSourcesExpressionContext;
-    dataSource(i: any): any;
-    Comma(i: any): any;
+    dataSource: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function QueryDataSourceExpressionContext(parser: any, ctx: any): any;
-declare class QueryDataSourceExpressionContext {
+declare class QueryDataSourceExpressionContext extends Data_source_item_joinedContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryDataSourceExpressionContext;
     data_source_item(): any;
     using_source_clause(): any;
-    join_clause(i: any): any;
+    join_clause: (i: any) => any;
     accept(visitor: any): any;
 }
-declare function QueryDataSourceItemIdentifierExpressionContext(parser: any, ctx: any): any;
-declare class QueryDataSourceItemIdentifierExpressionContext {
+declare class QueryDataSourceItemIdentifierExpressionContext extends Data_source_itemContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryDataSourceItemIdentifierExpressionContext;
     identifier(): any;
     accept(visitor: any): any;
 }
-declare function QueryDataSourceItemUrlExpressionContext(parser: any, ctx: any): any;
-declare class QueryDataSourceItemUrlExpressionContext {
+declare class QueryDataSourceItemUrlExpressionContext extends Data_source_itemContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryDataSourceItemUrlExpressionContext;
     Url(): any;
     accept(visitor: any): any;
 }
-declare function QueryDataSourceItemArgumentsExpressionContext(parser: any, ctx: any): any;
-declare class QueryDataSourceItemArgumentsExpressionContext {
+declare class QueryDataSourceItemArgumentsExpressionContext extends Data_source_itemContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryDataSourceItemArgumentsExpressionContext;
     singleExpression(): any;
     arguments(): any;
     accept(visitor: any): any;
 }
-declare function QueryDataSourceItemSubqueryExpressionContext(parser: any, ctx: any): any;
-declare class QueryDataSourceItemSubqueryExpressionContext {
+declare class QueryDataSourceItemSubqueryExpressionContext extends Data_source_itemContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryDataSourceItemSubqueryExpressionContext;
     OpenParen(): any;
     queryExpression(): any;
     CloseParen(): any;
     accept(visitor: any): any;
 }
-declare function QueryJoinCrossApplyExpressionContext(parser: any, ctx: any): any;
-declare class QueryJoinCrossApplyExpressionContext {
+declare class QueryJoinCrossApplyExpressionContext extends Join_clauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryJoinCrossApplyExpressionContext;
     Join(): any;
     dataSources(): any;
     accept(visitor: any): any;
 }
-declare function QueryJoinOnExpressionContext(parser: any, ctx: any): any;
-declare class QueryJoinOnExpressionContext {
+declare class QueryJoinOnExpressionContext extends Join_clauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryJoinOnExpressionContext;
     Join(): any;
     dataSources(): any;
     On(): any;
-    singleExpression(i: any): any;
+    singleExpression: (i: any) => any;
     Equals_(): any;
     IdentityEquals(): any;
     accept(visitor: any): any;
 }
-declare function QuerySourceUsingLiteralExpressionContext(parser: any, ctx: any): any;
-declare class QuerySourceUsingLiteralExpressionContext {
+declare class QuerySourceUsingLiteralExpressionContext extends Using_source_clauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QuerySourceUsingLiteralExpressionContext;
     Using(): any;
     queryObjectLiteral(): any;
     accept(visitor: any): any;
 }
-declare function QuerySourceUsingSingleExpressionContext(parser: any, ctx: any): any;
-declare class QuerySourceUsingSingleExpressionContext {
+declare class QuerySourceUsingSingleExpressionContext extends Using_source_clauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QuerySourceUsingSingleExpressionContext;
     Using(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function QueryProduceExpressionContext(parser: any, ctx: any): any;
-declare class QueryProduceExpressionContext {
+declare class QueryProduceExpressionContext extends Produce_clauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryProduceExpressionContext;
     Produce(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function QueryBindExpressionContext(parser: any, ctx: any): any;
-declare class QueryBindExpressionContext {
+declare class QueryBindExpressionContext extends Bind_clauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryBindExpressionContext;
     Using(): any;
     singleExpression(): any;
     accept(visitor: any): any;
 }
-declare function QueryWithinExpressionContext(parser: any, ctx: any): any;
-declare class QueryWithinExpressionContext {
+declare class QueryWithinExpressionContext extends WithinClauseContext {
     constructor(parser: any, ctx: any);
-    constructor: typeof QueryWithinExpressionContext;
     Within(): any;
-    singleExpression(i: any): any;
-    Comma(i: any): any;
+    singleExpression: (i: any) => any;
+    Comma: (i: any) => any;
     accept(visitor: any): any;
 }
-export {};
+declare class SingleExpressionContext {
+    constructor(parser: any, parent: any, invokingState: any);
+    parser: any;
+    ruleIndex: number;
+    copyFrom(ctx: any): void;
+}

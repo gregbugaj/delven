@@ -1,4 +1,5 @@
 /**
  * Marker interface
  */
-export interface IDataContext {}
+export interface IDataContext {
+}
