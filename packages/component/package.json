@@ -1,0 +1,46 @@
+{
+  "name": "@delven/component",
+  "version": "1.0.0",
+  "description": "sample component",
+  "private": true,
+  "main": "./lib/common/index.js",
+  "___typings": "./lib/common/index.d.ts",
+  "browser": {
+    "./lib/browser/main.js": "./lib/browser/main.js"
+  },
+  "node": {
+    "./lib/node/main.js": "./lib/node/main.js"
+  },
+  "scripts": {
+    "watch:server": "NODE_ENV=development nodemon build/index.js --watch lib",
+    "watch:compile": "tsc -b ./tsconfig.json -w",
+    "watch": "concurrently --kill-others \"yarn run watch:compile\" \"yarn run watch:server\" ",
+    "build": "NODE_ENV=development tsc -b ./tsconfig.json",
+    "lint": "eslint 'src/**/*.ts' || true",
+    "lint:fix": "eslint 'src/**/*.ts' || true",
+    "prettier": "prettier --write 'src/**/*.ts'",
+    "test": "jest --coverage",
+    "clean": "echo 'Cleaning----'",
+    "check-types": "tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/node": "^14.14.31",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "nodemon": "^2.0.15",
+    "nyc": "^15.1.0",
+    "prettier": "^2.6.1",
+    "reflect-metadata": "^0.1.13",
+    "source-map-loader": "^3.0.1",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.7.0-dev.20220331",
+    "utf-8-validate": "^5.0.9",
+    "yarn": "^1.22.17"
+  },
+  "nyc": {
+    "extends": "../../configs/nyc.json"
+  }
+}

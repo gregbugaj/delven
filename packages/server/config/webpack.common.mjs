@@ -1,10 +1,9 @@
 import { CleanWebpackPlugin } from 'clean-webpack-plugin';
-
 import CopyWebpackPlugin from 'copy-webpack-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import WebpackShellPluginNext from "webpack-shell-plugin-next";
 import nodeExternals from 'webpack-node-externals';
-import paths from './paths.js';
+import paths from './paths.mjs';
 
 // Reference for some of the issues
 // https://stackoverflow.com/questions/68707553/uncaught-referenceerror-buffer-is-not-defined
@@ -34,7 +33,7 @@ const common = {
   // Required in order to prevent following error
   // WARNING in ./node_modules/express/lib/view.js 81:13-25
   // Critical dependency: the request of a dependency is an expression
-  externals: [nodeExternals(), { 'express': { commonjs: 'express' } }],
+  externals: [nodeExternals(), { 'express': { module: 'express' } }],
 
   // Customize the webpack build process
   plugins: [
@@ -45,17 +44,25 @@ const common = {
   // Determine how modules within the project are treated
   module: {
     rules: [
-      {
+			{
         test: /\.(ts|js)x?$/i,
-        exclude: /node_modules/,
-        use: {
-          loader: "ts-loader",
-          options: {
-            compilerOptions: {
-              "sourceMap": !isProduction,
-            }
-          }
-        },
+        use: [
+          {
+            loader: "ts-loader",
+            // optionsXXX: {
+            //   cacheDirectory: false,
+						// 	presets: [
+            //     ["@babel/preset-env", { targets: { node: "14" } }],
+            //     [
+            //       "@babel/preset-typescript",
+            //       {  allExtensions: true }
+            //     ]
+            //   ]
+            // }
+          },
+          // "ts-loader"
+        ],
+        exclude: /node_modules/
       },
     ],
   },

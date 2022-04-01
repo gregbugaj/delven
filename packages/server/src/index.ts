@@ -1,25 +1,13 @@
-
-// import express, { Request, Response } from 'express';
-
 import expressWs from 'express-ws';
 import bodyParser from 'body-parser';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
-
-import express, {Express} from "express";
-
- console.info(express)
+import express, { Request, Response } from 'express';
+import * as c from "@delven/component/node"
+console.info(c)
 
 //  https://stackoverflow.com/questions/60430761/express-not-working-with-typescript-in-nodejs-app
-
-// const server = (express as any).default();
-
-// const app = express();
-
-/*
-
-if(false){
 
 export interface NodeInfo {
   name: string;
@@ -74,16 +62,14 @@ async function main() {
   };
 
   const expressServer = express();
-
-	if(true){
-
-		console.info(Date.now())
-		return
-	}
-
-	const wss = expressWs(expressServer);
+  const wss = expressWs(expressServer);
   const app = wss.app;
 
+  // if(true){
+
+  // 	console.info(Date.now())
+  // 	return
+  // }
 
   // Parse HTTP JSON bodies
   app.use(express.json());
@@ -91,8 +77,9 @@ async function main() {
   app.use(express.urlencoded({ extended: true }));
 
   app.on('connection', webSocket => {
-    console.info('Total connected clients :', wss.clients.size);
-    app.locals.clients = wss.clients;
+    console.info('Total connected clients :????');
+    // console.info('Total connected clients :', wss.clients.size);
+    // app.locals.clients = wss.clients;
   });
 
   app.use(bodyParser.json());
@@ -147,12 +134,7 @@ async function main() {
   });
 
   const port = process.env.PORT || 8080;
-  const srv = app.listen(port as number, '0.0.0.0', err => {
-    if (err) {
-      console.log(err);
-      throw err;
-    }
-
+  const srv = app.listen(port as number, '0.0.0.0', () => {
     console.log(`Server listening on port ${port}!`);
   });
 }
@@ -162,7 +144,3 @@ async function main() {
 })().catch(err => {
   console.error('server error in main', err);
 });
-
-}
-
-*/

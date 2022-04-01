@@ -1,0 +1,6 @@
+{
+	"extends": "../../configs/base.eslintrc.json",
+	"rules": {
+		"no-console": "error"
+	}
+}

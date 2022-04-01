@@ -3,7 +3,7 @@ const { Configuration: WebpackDevServerConfiguration, WebpackConfiguration } = w
 
 // import { Configuration as WebpackDevServerConfiguration, WebpackConfiguration } from 'webpack-dev-server';
 import {merge} from "webpack-merge";
-import common from "./webpack.common.js";
+import common from "./webpack.common.mjs";
 // const { merge } = require('webpack-merge');
 // const common = require('./webpack.common');
 // const WebpackShellPluginNext = require('webpack-shell-plugin-next');

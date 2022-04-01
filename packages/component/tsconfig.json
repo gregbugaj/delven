@@ -3,14 +3,15 @@
   "compilerOptions": {
     "composite": true,
     "rootDir": "src",
-    "outDir": "build",
+    "outDir": "lib",
     "baseUrl": "."
   },
   "include": [
-		"src/**/*.ts"
-	],
-	"exclude": [
-		"node_modules",
-		"**/*.spec.ts"
-	]
+    "src"
+  ],
+  // "references": [
+  //   {
+  //     "path": "../core"
+  //   }
+  // ]
 }
