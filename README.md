@@ -78,6 +78,7 @@ https://ubuntu.com/tutorials/create-custom-lxd-images#1-overview
 https://gist.github.com/reqshark/90bed1c082a4a5eb0a5f
 https://github.com/jina-ai/jina
 https://github.com/c9/
+https://github.com/vercel/hyper
 
 
 [1]: https://docs.delven.io
