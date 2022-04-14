@@ -81,6 +81,9 @@ https://github.com/c9/
 https://github.com/vercel/hyper
 
 
+
+[Logo desing](https://www.zarla.com/design/m8bww4cdkw4ywxtkj3jt/icon/icon)
+
 [1]: https://docs.delven.io
 [2]: https://delven.io
 
