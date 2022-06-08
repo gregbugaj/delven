@@ -59,6 +59,12 @@ lxc exec  delven-invoker -- sudo --login --user ubuntu
  sudo adduser greg lxd
 ```
 
+## Bootstrap environment
+```sh
+nvm use $(cat .nvmrc)
+```
+
+
 NPM-Yarn migration
 
 https://classic.yarnpkg.com/en/docs/migrating-from-npm/
@@ -79,8 +85,7 @@ https://gist.github.com/reqshark/90bed1c082a4a5eb0a5f
 https://github.com/jina-ai/jina
 https://github.com/c9/
 https://github.com/vercel/hyper
-
-
+https://demo.questdb.io/
 
 [Logo desing](https://www.zarla.com/design/m8bww4cdkw4ywxtkj3jt/icon/icon)
 

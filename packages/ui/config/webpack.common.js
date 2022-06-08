@@ -3,7 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 const paths = require('./paths')
-const webpack = require('webpack');
+const webpack = require('webpack')
 
 // Reference for some of the issues
 // https://stackoverflow.com/questions/68707553/uncaught-referenceerror-buffer-is-not-defined
@@ -63,7 +63,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             process: 'process/browser',
         }),
-    
+
   ],
 
   // Determine how modules within the project are treated

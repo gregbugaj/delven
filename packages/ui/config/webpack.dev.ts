@@ -22,7 +22,7 @@ const config: Configuration = merge(common, {
     open: true,
     compress: false,
     hot: true,
-    port: 8080,
+    port: 9000,
   },
 
   // https://webpack.js.org/configuration/experiments/

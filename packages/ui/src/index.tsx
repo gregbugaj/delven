@@ -28,7 +28,7 @@ const AppInjected = () => {
 
 ReactDOM.render(<AppInjected/>, document.getElementById('root'));
 
-/* 
+/*
 if (false) {
     const cache = createCache({
         key: 'delven',
