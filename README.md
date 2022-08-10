@@ -86,6 +86,7 @@ https://github.com/jina-ai/jina
 https://github.com/c9/
 https://github.com/vercel/hyper
 https://demo.questdb.io/
+https://sqlflow.gudusoft.com
 
 [Logo desing](https://www.zarla.com/design/m8bww4cdkw4ywxtkj3jt/icon/icon)
 
