@@ -78,6 +78,7 @@ https://discuss.linuxcontainers.org/t/script-run-in-lxd/3999
 
 
 Source:
+
 https://docs.npmjs.com/getting-started/fixing-npm-permissions
 https://stackoverflow.com/questions/46058546/error-eacces-permission-denied-access-usr-lib-node-modules
 https://ubuntu.com/tutorials/create-custom-lxd-images#1-overview
@@ -87,6 +88,8 @@ https://github.com/c9/
 https://github.com/vercel/hyper
 https://demo.questdb.io/
 https://sqlflow.gudusoft.com
+https://docs.sqlstream.com/integrating-sqlstream/
+
 
 [Logo desing](https://www.zarla.com/design/m8bww4cdkw4ywxtkj3jt/icon/icon)
 
